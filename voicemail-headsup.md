@@ -16,14 +16,15 @@ terugbellen**.
 
 | Bestand | Stem | Duur |
 |---|---|---|
-| `audio/headsup-voicemail-vrouw.mp3` | Vrouwenstem | ± 20 sec |
-| `audio/headsup-voicemail-man.mp3` | Mannenstem | ± 20 sec |
+| `audio/headsup-voicemail-vrouw.mp3` | Vrouwenstem (neuraal) | ± 18 sec |
+| `audio/headsup-voicemail-man.mp3` | Mannenstem (neuraal) | ± 24 sec |
 
-> **Let op — kwaliteit:** Deze audio is offline gegenereerd met een
-> spraaksynthese-engine (espeak-ng + MBROLA). Het is verstaanbaar en bruikbaar
-> als concept/preview, maar het klinkt hoorbaar synthetisch. Voor een
-> klantgerichte merkstem raad ik een natuurlijke neurale stem aan
-> (bijv. ElevenLabs, Azure/Microsoft Neural, Google WaveNet) of een
-> professionele voice-over. De netwerkomgeving hier blokkeert die diensten,
-> dus die kon ik niet gebruiken. De tekst hierboven is kant-en-klaar om in
-> zo'n dienst te plakken of aan een stemacteur te geven.
+Beide bestanden zijn gegenereerd met een **neuraal** tekst-naar-spraakmodel
+(Piper, Nederlandse stemmen), volledig offline in deze omgeving. Ze klinken
+natuurlijk en vloeiend — geen robotstem.
+
+> **Nog een tandje professioneler?** Voor de allerhoogste (studio-)kwaliteit
+> blijft een dienst als ElevenLabs of Google WaveNet, of een echte stemacteur,
+> de gouden standaard. De tekst hierboven is kant-en-klaar om daar te
+> gebruiken. Deze neurale audio is voor de meeste voicemail-toepassingen
+> echter ruim voldoende.
