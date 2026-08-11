@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Vangst — app</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="app-body">
+  <div class="telefoon-frame">
+
+    <div class="schermen">
+
+      <!-- ============================================================
+           1. ONBOARDING
+           ============================================================ -->
+      <section class="scherm actief" id="scherm-onboarding">
+        <div class="ob">
+          <div class="ob-stappen">
+            <div class="stap aan" data-ob-stap="1"></div>
+            <div class="stap" data-ob-stap="2"></div>
+            <div class="stap" data-ob-stap="3"></div>
+          </div>
+
+          <!-- Stap 1 -->
+          <div class="ob-inhoud" data-ob="1">
+            <div class="ob-body">
+              <div class="stap-label">Stap 1 van 3 · ± 1 minuut</div>
+              <h2>Wat voor bedrijf heb je?</h2>
+              <p class="uitleg">Zo weet je assistent meteen waar het over gaat.</p>
+              <div class="branche-grid" id="branche-grid">
+                <button class="branche gekozen" data-branche="Schildersbedrijf"><span class="b-icoon">🎨</span><span class="b-naam">Schilder</span></button>
+                <button class="branche" data-branche="Kapper"><span class="b-icoon">✂️</span><span class="b-naam">Kapper</span></button>
+                <button class="branche" data-branche="Hovenier"><span class="b-icoon">🌳</span><span class="b-naam">Hovenier</span></button>
+                <button class="branche" data-branche="Rijschool"><span class="b-icoon">🚗</span><span class="b-naam">Rijschool</span></button>
+                <button class="branche" data-branche="Personal trainer"><span class="b-icoon">💪</span><span class="b-naam">Personal trainer</span></button>
+                <button class="branche" data-branche="Klusbedrijf"><span class="b-icoon">🔧</span><span class="b-naam">Klusbedrijf</span></button>
+              </div>
+            </div>
+            <div class="ob-voet">
+              <button class="knop knop--vol knop--groot" onclick="obNaar(2)">Verder</button>
+            </div>
+          </div>
+
+          <!-- Stap 2 -->
+          <div class="ob-inhoud" data-ob="2" style="display:none">
+            <div class="ob-body">
+              <div class="stap-label">Stap 2 van 3</div>
+              <h2>Vertel over je bedrijf</h2>
+              <p class="uitleg">Gewoon in je eigen woorden. Hier leert je assistent van.</p>
+              <div class="veld-groep">
+                <label>Wat doe je?</label>
+                <textarea rows="4">Wij zijn Schildersbedrijf Van Dijk uit Gouda. Binnen- en buitenschilderwerk, kozijnen, houtrot herstellen en behangen. Vakwerk, altijd netjes afgeleverd.</textarea>
+              </div>
+              <div class="veld-groep">
+                <label>Werkgebied</label>
+                <input type="text" value="Gouda en omstreken (± 25 km)" />
+              </div>
+              <div class="veld-groep">
+                <label>Prijzen (indicatie)</label>
+                <input type="text" value="Vanaf €45 per uur, gratis prijsopname aan huis" />
+                <div class="hint">Je assistent noemt dit alleen als een klant ernaar vraagt.</div>
+              </div>
+            </div>
+            <div class="ob-voet">
+              <button class="knop knop--vol knop--groot" onclick="obNaar(3)">Verder</button>
+            </div>
+          </div>
+
+          <!-- Stap 3 -->
+          <div class="ob-inhoud" data-ob="3" style="display:none">
+            <div class="ob-body">
+              <div class="stap-label">Stap 3 van 3 · Bijna klaar!</div>
+              <h2>Koppel je kanalen</h2>
+              <p class="uitleg">Zo vangt Vangst je aanvragen op. Je kunt dit later altijd aanpassen.</p>
+
+              <button class="koppel-knop" data-koppel onclick="koppel(this,'WhatsApp gekoppeld')">
+                <span class="k-icoon" style="background:#25d366">💬</span>
+                <span class="k-tekst">
+                  <span class="k-titel">WhatsApp Business</span>
+                  <span class="k-sub">Ontvang en beantwoord appjes</span>
+                </span>
+                <span class="k-status">+</span>
+              </button>
+
+              <button class="koppel-knop" data-koppel onclick="koppel(this,'Agenda gekoppeld')">
+                <span class="k-icoon" style="background:#3b82f6">📅</span>
+                <span class="k-tekst">
+                  <span class="k-titel">Agenda</span>
+                  <span class="k-sub">Google of Outlook agenda</span>
+                </span>
+                <span class="k-status">+</span>
+              </button>
+
+              <button class="koppel-knop" data-koppel onclick="koppel(this,'Websiteformulier gekoppeld')">
+                <span class="k-icoon" style="background:#f2792b">🌐</span>
+                <span class="k-tekst">
+                  <span class="k-titel">Websiteformulier</span>
+                  <span class="k-sub">Aanvragen van je eigen site</span>
+                </span>
+                <span class="k-status">+</span>
+              </button>
+            </div>
+            <div class="ob-voet">
+              <button class="knop knop--vol knop--groot knop--oranje" onclick="gaNaar('dashboard'); toon('Welkom bij Vangst! 🎣')">Start met Vangst</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           2. DASHBOARD
+           ============================================================ -->
+      <section class="scherm" id="scherm-dashboard">
+        <header class="app-header">
+          <div>
+            <div class="kop-mini">Goedemorgen 👋</div>
+            <h1>Schildersbedrijf Van Dijk</h1>
+          </div>
+        </header>
+        <div class="scherm-inhoud">
+          <div class="omzet-kaart">
+            <div class="label">Deze maand opgevangen</div>
+            <div class="bedrag"><span class="euro">€</span>2.340</div>
+            <div class="omzet-stats">
+              <div class="st"><div class="g">14</div><div class="t">aanvragen</div></div>
+              <div class="st"><div class="g">6</div><div class="t">afspraken</div></div>
+              <div class="st"><div class="g">3</div><div class="t">offertes open</div></div>
+            </div>
+          </div>
+
+          <div class="sectie-titel">
+            <h2>Recente aanvragen</h2>
+            <span class="link" onclick="gaNaar('inbox')">Alles →</span>
+          </div>
+
+          <button class="rij" onclick="openGesprek('debruin')">
+            <div class="avatar">MB<span class="kanaal-badge kanaal-whatsapp">💬</span></div>
+            <div class="midden">
+              <div class="naam">Mevr. De Bruin</div>
+              <div class="bericht">Kozijnen buiten schilderen, 8 ramen</div>
+            </div>
+            <div class="rechts">
+              <span class="tijd">09:15</span>
+              <span class="status status-afspraak">Afspraak gepland</span>
+            </div>
+          </button>
+
+          <button class="rij" onclick="openGesprek('bakker')">
+            <div class="avatar">JB<span class="kanaal-badge kanaal-formulier">🌐</span></div>
+            <div class="midden">
+              <div class="naam">Jeroen Bakker</div>
+              <div class="bericht">Woonkamer en hal sausen, offerte gestuurd</div>
+            </div>
+            <div class="rechts">
+              <span class="tijd">Gisteren</span>
+              <span class="status status-opgevolgd">Opgevolgd</span>
+            </div>
+          </button>
+
+          <button class="rij" onclick="openGesprek('willemsen')">
+            <div class="avatar">FW<span class="kanaal-badge kanaal-oproep">📞</span></div>
+            <div class="midden">
+              <div class="naam">Familie Willemsen</div>
+              <div class="bericht">Gemiste oproep — appje teruggestuurd</div>
+            </div>
+            <div class="rechts">
+              <span class="tijd">Gisteren</span>
+              <span class="status status-wacht">Wacht op reactie</span>
+            </div>
+          </button>
+
+          <button class="rij" onclick="openGesprek('smit')">
+            <div class="avatar">PS<span class="kanaal-badge kanaal-whatsapp">💬</span></div>
+            <div class="midden">
+              <div class="naam">Peter Smit</div>
+              <div class="bericht">Houtrot bij de dakkapel, kan iemand kijken?</div>
+            </div>
+            <div class="rechts">
+              <span class="tijd">Ma</span>
+              <span class="status status-beantwoord">Beantwoord</span>
+            </div>
+          </button>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           3. INBOX
+           ============================================================ -->
+      <section class="scherm" id="scherm-inbox">
+        <header class="app-header met-lijn">
+          <h1>Inbox</h1>
+        </header>
+        <div class="scherm-inhoud">
+
+          <button class="rij" onclick="openGesprek('debruin')">
+            <div class="avatar">MB<span class="kanaal-badge kanaal-whatsapp">💬</span></div>
+            <div class="midden">
+              <div class="naam">Mevr. De Bruin</div>
+              <div class="bericht">Genoteerd, ik zet 'm in de agenda. Tot donderdag!</div>
+            </div>
+            <div class="rechts">
+              <span class="tijd">09:15</span>
+              <span class="status status-afspraak">Afspraak gepland</span>
+            </div>
+          </button>
+
+          <button class="rij" onclick="openGesprek('smit')">
+            <div class="avatar">PS<span class="kanaal-badge kanaal-whatsapp">💬</span></div>
+            <div class="midden">
+              <div class="naam">Peter Smit</div>
+              <div class="bericht">Top, dan hoor ik het graag. Bedankt alvast!</div>
+            </div>
+            <div class="rechts">
+              <span class="tijd">11:02</span>
+              <span class="status status-beantwoord">Beantwoord</span>
+            </div>
+          </button>
+
+          <button class="rij" onclick="openGesprek('bakker')">
+            <div class="avatar">JB<span class="kanaal-badge kanaal-formulier">🌐</span></div>
+            <div class="midden">
+              <div class="naam">Jeroen Bakker</div>
+              <div class="bericht">Ik laat het je deze week weten, druk momentje</div>
+            </div>
+            <div class="rechts">
+              <span class="tijd">Gisteren</span>
+              <span class="status status-opgevolgd">Opgevolgd</span>
+            </div>
+          </button>
+
+          <button class="rij" onclick="openGesprek('willemsen')">
+            <div class="avatar">FW<span class="kanaal-badge kanaal-oproep">📞</span></div>
+            <div class="midden">
+              <div class="naam">Familie Willemsen</div>
+              <div class="bericht">U belde ons net — waarmee kunnen we helpen?</div>
+            </div>
+            <div class="rechts">
+              <span class="tijd">Gisteren</span>
+              <span class="status status-wacht">Wacht op reactie</span>
+            </div>
+          </button>
+
+          <button class="rij" onclick="openGesprek('jansen')">
+            <div class="avatar">AJ<span class="kanaal-badge kanaal-formulier">🌐</span></div>
+            <div class="midden">
+              <div class="naam">Anja Jansen</div>
+              <div class="bericht">Behang verwijderen en opnieuw sausen slaapkamer</div>
+            </div>
+            <div class="rechts">
+              <span class="tijd">Ma</span>
+              <span class="status status-afspraak">Afspraak gepland</span>
+            </div>
+          </button>
+
+          <button class="rij" onclick="openGesprek('vermeer')">
+            <div class="avatar">TV<span class="kanaal-badge kanaal-whatsapp">💬</span></div>
+            <div class="midden">
+              <div class="naam">Tim Vermeer</div>
+              <div class="bericht">Schuur buiten in de beits, kan dat nog dit najaar?</div>
+            </div>
+            <div class="rechts">
+              <span class="tijd">Ma</span>
+              <span class="status status-beantwoord">Beantwoord</span>
+            </div>
+          </button>
+
+        </div>
+      </section>
+
+      <!-- ============================================================
+           4. GESPREKSWEERGAVE
+           ============================================================ -->
+      <section class="scherm" id="scherm-gesprek">
+        <div class="gesprek-top">
+          <button class="terug" onclick="gaNaar('inbox')" style="width:40px;height:40px;border-radius:12px;background:#fff;border:1px solid var(--lijn);display:grid;place-items:center;font-size:1.2rem">←</button>
+          <div class="avatar" id="g-avatar">MB</div>
+          <div class="g-info">
+            <div class="naam" id="g-naam">Mevr. De Bruin</div>
+            <div class="via" id="g-via"><span>💬</span> via WhatsApp</div>
+          </div>
+          <button class="overnemen-knop" id="overnemen-knop" onclick="wisselOvernemen()">Zelf overnemen</button>
+        </div>
+
+        <div class="gesprek-berichten" id="gesprek-berichten">
+          <!-- gevuld door JS -->
+        </div>
+
+        <!-- Voorgesteld AI-antwoord -->
+        <div class="voorstel" id="voorstel-blok">
+          <div class="kop">⚡ Voorgesteld antwoord van je assistent</div>
+          <div class="tekst" id="voorstel-tekst">Genoteerd, ik zet 'm in de agenda. Tot donderdag! 🎨</div>
+          <div class="voorstel-acties">
+            <button class="knop" onclick="verstuurVoorstel()">Versturen</button>
+            <button class="knop knop--rand" onclick="toon('Antwoord aangepast')">Aanpassen</button>
+          </div>
+        </div>
+
+        <!-- Zelf typen (na overnemen) -->
+        <div class="zelf-invoer" id="zelf-invoer">
+          <input class="veld" type="text" placeholder="Typ zelf een bericht…" id="zelf-veld" />
+          <button class="verstuur" onclick="verstuurZelf()">➤</button>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           5. AFSPRAKEN
+           ============================================================ -->
+      <section class="scherm" id="scherm-afspraken">
+        <header class="app-header met-lijn">
+          <div>
+            <h1>Afspraken</h1>
+            <div class="kop-mini">Deze week · 6 afspraken</div>
+          </div>
+        </header>
+        <div class="scherm-inhoud">
+          <div class="week-strip">
+            <div class="dag"><div class="dn">ma</div><div class="dc">9</div></div>
+            <div class="dag"><div class="dn">di</div><div class="dc">10</div></div>
+            <div class="dag vandaag"><div class="dn">wo</div><div class="dc">11</div><div class="stip"></div></div>
+            <div class="dag"><div class="dn">do</div><div class="dc">12</div><div class="stip"></div></div>
+            <div class="dag"><div class="dn">vr</div><div class="dc">13</div><div class="stip"></div></div>
+            <div class="dag"><div class="dn">za</div><div class="dc">14</div></div>
+            <div class="dag"><div class="dn">zo</div><div class="dc">15</div></div>
+          </div>
+
+          <div class="dag-blok">
+            <div class="dag-kop">Vandaag · woensdag 11 aug</div>
+            <div class="afspraak">
+              <div class="tijd-blok"><div class="u">10:30</div><div class="duur">45 min</div></div>
+              <div class="a-info">
+                <div class="titel">Prijsopname — Anja Jansen</div>
+                <div class="plek">Slaapkamer sausen · Bloemendaalseweg 12, Gouda</div>
+                <span class="bron">🌐 via formulier geboekt</span>
+              </div>
+            </div>
+            <div class="afspraak">
+              <div class="tijd-blok"><div class="u">14:00</div><div class="duur">1 uur</div></div>
+              <div class="a-info">
+                <div class="titel">Klus — Peter Smit</div>
+                <div class="plek">Houtrot dakkapel bekijken · Kleiweg 88, Gouda</div>
+                <span class="bron">💬 via WhatsApp geboekt</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="dag-blok">
+            <div class="dag-kop">Donderdag 12 aug</div>
+            <div class="afspraak">
+              <div class="tijd-blok"><div class="u">15:00</div><div class="duur">45 min</div></div>
+              <div class="a-info">
+                <div class="titel">Prijsopname — Mevr. De Bruin</div>
+                <div class="plek">8 kozijnen buiten · Kattensingel 24, Gouda</div>
+                <span class="bron">💬 via WhatsApp geboekt</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="dag-blok">
+            <div class="dag-kop">Vrijdag 13 aug</div>
+            <div class="afspraak">
+              <div class="tijd-blok"><div class="u">09:00</div><div class="duur">halve dag</div></div>
+              <div class="a-info">
+                <div class="titel">Schilderwerk — Fam. Willemsen</div>
+                <div class="plek">Woonkamer sausen · Nieuwe Gouwe 5, Gouda</div>
+                <span class="bron">📞 via gemiste oproep geboekt</span>
+              </div>
+            </div>
+            <div class="afspraak">
+              <div class="tijd-blok"><div class="u">13:30</div><div class="duur">30 min</div></div>
+              <div class="a-info">
+                <div class="titel">Prijsopname — Tim Vermeer</div>
+                <div class="plek">Schuur in de beits · Goejanverwelledijk 3, Gouda</div>
+                <span class="bron">💬 via WhatsApp geboekt</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           6. OPVOLGING
+           ============================================================ -->
+      <section class="scherm" id="scherm-opvolging">
+        <header class="app-header met-lijn">
+          <div>
+            <h1>Opvolging</h1>
+            <div class="kop-mini">Vangst houdt je offertes warm</div>
+          </div>
+        </header>
+        <div class="scherm-inhoud">
+
+          <div class="opvolg-kaart">
+            <div class="ov-top">
+              <div class="ov-naam">Jeroen Bakker</div>
+              <div class="ov-bedrag">€ 780</div>
+            </div>
+            <div class="ov-omschrijving">Offerte: woonkamer en hal sausen · verstuurd 4 aug</div>
+            <div class="ov-voet">
+              <div class="ov-planning">
+                <div class="p-label">Volgende opvolging</div>
+                <div class="p-datum">🔔 morgen, 10:00</div>
+              </div>
+              <div class="schakelaar aan" onclick="wisselSchakelaar(this)"></div>
+            </div>
+          </div>
+
+          <div class="opvolg-kaart">
+            <div class="ov-top">
+              <div class="ov-naam">Tim Vermeer</div>
+              <div class="ov-bedrag">€ 450</div>
+            </div>
+            <div class="ov-omschrijving">Offerte: schuur in de beits · verstuurd 6 aug</div>
+            <div class="ov-voet">
+              <div class="ov-planning">
+                <div class="p-label">Volgende opvolging</div>
+                <div class="p-datum">🔔 vr 13 aug, 09:00</div>
+              </div>
+              <div class="schakelaar aan" onclick="wisselSchakelaar(this)"></div>
+            </div>
+          </div>
+
+          <div class="opvolg-kaart">
+            <div class="ov-top">
+              <div class="ov-naam">Familie Willemsen</div>
+              <div class="ov-bedrag">€ 1.110</div>
+            </div>
+            <div class="ov-omschrijving">Offerte: woonkamer sausen · verstuurd 8 aug</div>
+            <div class="ov-voet">
+              <div class="ov-planning">
+                <div class="p-label">Volgende opvolging</div>
+                <div class="p-datum">🔔 ma 15 aug, 10:00</div>
+              </div>
+              <div class="schakelaar aan" onclick="wisselSchakelaar(this)"></div>
+            </div>
+          </div>
+
+          <div class="opvolg-kaart uit">
+            <div class="ov-top">
+              <div class="ov-naam">Café De Zalm</div>
+              <div class="ov-bedrag">€ 2.400</div>
+            </div>
+            <div class="ov-omschrijving">Aanvraag: gevel schilderen · nog geen offerte</div>
+            <div class="ov-voet">
+              <div class="ov-planning">
+                <div class="p-label">Opvolging</div>
+                <div class="p-datum">Uitgeschakeld</div>
+              </div>
+              <div class="schakelaar" onclick="wisselSchakelaar(this)"></div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============================================================
+           7. INSTELLINGEN
+           ============================================================ -->
+      <section class="scherm" id="scherm-instellingen">
+        <header class="app-header met-lijn">
+          <h1>Instellingen</h1>
+        </header>
+        <div class="scherm-inhoud">
+
+          <div class="inst-bedrijf">
+            <div class="ib-logo">VD</div>
+            <div>
+              <div class="ib-naam">Schildersbedrijf Van Dijk</div>
+              <div class="ib-plaats">📍 Gouda en omstreken</div>
+            </div>
+          </div>
+
+          <!-- Toon -->
+          <div class="inst-groep">
+            <div class="g-kop"><span class="g-icoon">🗣️</span><h3>Toon van de assistent</h3></div>
+            <div class="g-uitleg">Zo klinkt je assistent tegen klanten.</div>
+            <div class="toon-keuze">
+              <div class="toon-optie">Formeel</div>
+              <div class="toon-optie gekozen" onclick="kiesToon(this)">Jovial vakman</div>
+              <div class="toon-optie" onclick="kiesToon(this)">Kort & zakelijk</div>
+            </div>
+            <div class="toon-voorbeeld" style="margin-top:14px">
+              <div class="q">Voorbeeldzin</div>
+              "Goeiemorgen! Zeker, dat doen we regelmatig. Ik kom graag even langs voor een nette prijs. 👍"
+            </div>
+            <div class="toon-voorbeeld">
+              <div class="q">Voorbeeldzin</div>
+              "Top, genoteerd! Ik zet 'm in de agenda, tot donderdag. 🎨"
+            </div>
+          </div>
+
+          <!-- Kennisbank -->
+          <div class="inst-groep">
+            <div class="g-kop"><span class="g-icoon">📚</span><h3>Kennisbank</h3></div>
+            <div class="g-uitleg">Wat je assistent weet over je bedrijf.</div>
+            <div class="kennis-item"><span class="k-check">✓</span><span class="k-tekst"><b>Diensten:</b> binnen- & buitenschilderwerk, kozijnen, houtrot, behangen</span></div>
+            <div class="kennis-item"><span class="k-check">✓</span><span class="k-tekst"><b>Werkgebied:</b> Gouda en omstreken (± 25 km)</span></div>
+            <div class="kennis-item"><span class="k-check">✓</span><span class="k-tekst"><b>Prijs:</b> vanaf €45 p/u, gratis prijsopname aan huis</span></div>
+            <div class="kennis-item"><span class="k-check">✓</span><span class="k-tekst"><b>Beschikbaarheid:</b> ma t/m vr, prijsopname vaak binnen een week</span></div>
+            <button class="knop knop--rand knop--vol" style="margin-top:16px" onclick="toon('Kennisbank openen (demo)')">Kennisbank aanvullen</button>
+          </div>
+
+          <!-- Kanalen -->
+          <div class="inst-groep">
+            <div class="g-kop"><span class="g-icoon">🔌</span><h3>Kanalen</h3></div>
+            <div class="g-uitleg">Waar Vangst je aanvragen opvangt.</div>
+
+            <div class="kanaal-regel">
+              <div class="kr-icoon" style="background:#25d366">💬</div>
+              <div class="kr-info"><div class="kr-naam">WhatsApp Business</div><div class="kr-sub">+31 6 12 34 56 78</div></div>
+              <div class="schakelaar aan" onclick="wisselSchakelaar(this)"></div>
+            </div>
+            <div class="kanaal-regel">
+              <div class="kr-icoon" style="background:#3b82f6">🌐</div>
+              <div class="kr-info"><div class="kr-naam">Websiteformulier</div><div class="kr-sub">vandijkschilders.nl</div></div>
+              <div class="schakelaar aan" onclick="wisselSchakelaar(this)"></div>
+            </div>
+            <div class="kanaal-regel">
+              <div class="kr-icoon" style="background:#f59e0b">📞</div>
+              <div class="kr-info"><div class="kr-naam">Gemiste oproep → appje</div><div class="kr-sub">Stuurt automatisch een WhatsApp terug</div></div>
+              <div class="schakelaar aan" onclick="wisselSchakelaar(this)"></div>
+            </div>
+            <div class="kanaal-regel">
+              <div class="kr-icoon" style="background:#3b82f6">📅</div>
+              <div class="kr-info"><div class="kr-naam">Agenda</div><div class="kr-sub">Google Agenda gekoppeld</div></div>
+              <div class="schakelaar aan" onclick="wisselSchakelaar(this)"></div>
+            </div>
+          </div>
+
+          <button class="knop knop--rand knop--vol" onclick="window.location.href='index.html'">Terug naar de website</button>
+          <div style="height:10px"></div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Onderbalk / navigatie -->
+    <nav class="nav verborgen" id="nav">
+      <button data-nav="dashboard" onclick="gaNaar('dashboard')">
+        <span class="n-icoon">🏠</span>Start
+      </button>
+      <button data-nav="inbox" onclick="gaNaar('inbox')">
+        <span class="n-icoon"><span class="badge-punt" data-badge="2">💬</span></span>Inbox
+      </button>
+      <button data-nav="afspraken" onclick="gaNaar('afspraken')">
+        <span class="n-icoon">📅</span>Afspraken
+      </button>
+      <button data-nav="opvolging" onclick="gaNaar('opvolging')">
+        <span class="n-icoon">🔔</span>Opvolging
+      </button>
+      <button data-nav="instellingen" onclick="gaNaar('instellingen')">
+        <span class="n-icoon">⚙️</span>Meer
+      </button>
+    </nav>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
