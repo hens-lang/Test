@@ -1,7 +1,7 @@
 ---
 import Base from '@/layouts/Base.astro';
-import Icon from '@/components/Icon.astro';
-import Figure from '@/components/Figure.astro';
+import Chapter from '@/components/Chapter.astro';
+import Duotone from '@/components/Duotone.astro';
 import AgendaWidget from '@/components/widgets/AgendaWidget.astro';
 import { site } from '@/lib/site';
 
@@ -26,26 +26,25 @@ const jsonLd = {
   knowsAbout: ['B2B acquisitie', 'leadgeneratie', 'telefonische acquisitie', 'salesafspraken'],
 };
 
-const doen = [
-  { k: '01', h: 'We bepalen je ideale klant', p: 'Eerst scherp krijgen bij wie je aan tafel wil. Branche, omvang en de juiste beslisser.' },
-  { k: '02', h: 'Wij bellen ze persoonlijk', p: 'Goed voorbereid en in jouw verhaal. Geen script, geen call center.' },
-  { k: '03', h: 'Jij zit aan tafel', p: 'De afspraak staat in je agenda, met de context van het gesprek erbij.' },
+const index = [
+  { n: '01', label: 'De belofte' },
+  { n: '02', label: 'Herkenbaar' },
+  { n: '03', label: 'Wat we doen' },
+  { n: '04', label: 'Anders' },
+  { n: '05', label: 'Deze week' },
+  { n: '06', label: 'Kennismaken' },
 ];
 
-const pillars = [
-  { n: '01', h: 'Wij groeien mee in jouw onderneming', p: 'Geen bureau op afstand, maar een partner aan jouw kant van de tafel. Jouw doelen worden onze doelen.', tag: 'Samen sterker' },
-  { n: '02', h: 'Wij kennen jouw markt', p: 'We verdiepen ons eerst in jouw bedrijf en doelgroep. Zo komen we met het juiste verhaal bij de juiste beslisser.', tag: 'Gericht & doordacht' },
-  { n: '03', h: 'We werken met een beperkt aantal partners', p: 'Een select aantal partners, zodat elke samenwerking volle aandacht krijgt. Geen lange contracten.', tag: 'Selectief & toegewijd' },
+const steps = [
+  { n: '01', t: 'We bepalen je ideale klant', p: 'Branche, omvang, de juiste beslisser. Scherp, <strong>vóór</strong> er iemand belt.' },
+  { n: '02', t: 'Wij bellen ze persoonlijk', p: 'Goed voorbereid en in jouw verhaal. Geen script, geen call center.' },
+  { n: '03', t: 'Jij zit aan tafel', p: 'De afspraak staat in je agenda, met de context van het gesprek erbij.' },
 ];
 
-const stappen = [
-  'We verdiepen ons in jouw bedrijf.',
-  'We bepalen samen het groeidoel.',
-  'We bepalen samen een doelgroep.',
-  'We stellen een prospectlijst samen.',
-  'Persoonlijke en gerichte outreach.',
-  'Interesse polsen en kansen kwalificeren.',
-  'De afspraak inplannen.',
+const anders = [
+  { n: '01', t: 'Wij groeien mee', p: 'Geen bureau op afstand, maar een partner aan jouw kant van de tafel. Jouw doelen worden onze doelen.' },
+  { n: '02', t: 'Wij kennen jouw markt', p: 'We verdiepen ons eerst in jouw bedrijf en doelgroep. Zo komen we met het juiste verhaal bij de juiste beslisser.' },
+  { n: '03', t: 'Een select aantal partners', p: 'Zodat elke samenwerking volle aandacht krijgt. Geen lange contracten, geen funnel vol losse afspraken.' },
 ];
 ---
 
@@ -54,118 +53,99 @@ const stappen = [
   description={site.description}
   path="/"
   jsonLd={jsonLd}
+  index={index}
 >
-  <!-- Hero -->
-  <section class="hero">
-    <Figure
-      class="hero-bg"
-      src="/assets/hens-call-harbor.jpeg"
-      alt="Hens van LINK. aan de telefoon bij de haven"
-      ratio="16 / 9"
-      position="center 32%"
-      eager
-    />
-    <div class="hero-overlay" aria-hidden="true"></div>
-    <div class="hero-left reveal">
-      <span class="eyebrow">B2B sales partner · Sinds 2025</span>
-      <h1>Dè partner van <span class="it">B2B</span> bedrijven<span class="punc">.</span></h1>
-      <p class="hero-sub">
+  <!-- 01 — Hero -->
+  <section class="hero" id="h01">
+    <div class="hero-copy reveal">
+      <Chapter n="01" label="De belofte" />
+      <h1 class="h-giant">Dè partner<br />van <em>B2B</em><br />bedrijven<span class="dot">.</span></h1>
+      <p class="lede-xl">
         Wij brengen je persoonlijk aan tafel bij de juiste beslisser. Jij voert
         het gesprek, wij zorgen dat het er komt.
       </p>
-      <div class="hero-actions">
-        <a class="btn-primary" href="/verhaal">Ons verhaal <Icon name="arrow" class="arrow" /></a>
-        <a class="btn-ghost" href="/aanpak">Onze aanpak</a>
+      <div class="hero-cta">
+        <a class="ebtn" href="/verhaal">Ons verhaal <span class="arw">→</span></a>
+        <a class="ebtn ghost" href="/aanpak">Onze aanpak</a>
       </div>
+    </div>
+    <div class="hero-photo reveal">
+      <Duotone src="/assets/hens-call-harbor.jpeg" alt="Hens aan de telefoon bij de haven" ratio="4 / 5" caption="HENS — AAN DE LIJN" position="center 30%" />
+    </div>
+    <div class="hero-meta">
+      <span>001</span>
+      <span>Telefonische acquisitie</span>
+      <span>Persoonlijk &amp; gericht</span>
+      <span>Sinds 2025</span>
     </div>
   </section>
 
-  <!-- Wat we doen (Reeks) -->
-  <section class="section">
-    <div class="section-head reveal">
+  <!-- 02 — Herkenbaar (dark statement) -->
+  <section class="statement-sec on-dark" id="h02">
+    <Chapter n="02" label="Even eerlijk" />
+    <h2>Je weet dat je moet bellen.<br />Je komt er alleen <em>nooit</em> aan toe<span class="dot">.</span></h2>
+  </section>
+
+  <!-- 03 — Wat we doen -->
+  <section class="mag-sec" id="h03">
+    <div class="split-head reveal">
       <div>
-        <span class="eyebrow">Wat we doen</span>
-        <h2>Wij bellen. Jij <span class="it">verkoopt</span><span class="punc">.</span></h2>
+        <Chapter n="03" label="Wat we doen" />
+        <h2 class="h-section">Wij bellen.<br />Jij <em>verkoopt</em><span class="dot">.</span></h2>
       </div>
-      <p class="lede">
+      <p class="lede-xl">
         Wij doen de telefonische acquisitie voor B2B-bedrijven. Wij leggen het
         eerste contact, jij voert het gesprek dat ertoe doet.
       </p>
     </div>
-    <div class="reeks reeks-3 reveal-stagger">
+    <ol class="steps reveal" style="margin-top: clamp(32px,4vw,64px)">
       {
-        doen.map((d) => (
-          <div class="reeks-item">
-            <span class="k">{d.k}</span>
-            <h3>{d.h}</h3>
-            <p>{d.p}</p>
-          </div>
+        steps.map((s) => (
+          <li class="step">
+            <span class="step-n">{s.n}</span>
+            <div class="step-body">
+              <h3>{s.t}</h3>
+              <p set:html={s.p} />
+            </div>
+            <i class="node sm" />
+          </li>
         ))
       }
-    </div>
-    <a class="text-link" href="/diensten">
-      Meer over telefonische acquisitie <Icon name="arrow" size={15} />
-    </a>
+    </ol>
+    <a class="ebtn ghost" href="/diensten" style="margin-top: clamp(28px,3vw,44px)">Meer over telefonische acquisitie <span class="arw">→</span></a>
   </section>
 
-  <!-- Pijlers -->
-  <section class="section">
-    <div class="section-head reveal">
+  <!-- 04 — Wat ons anders maakt -->
+  <section class="mag-sec tight" id="h04">
+    <div class="split-head reveal">
       <div>
-        <span class="eyebrow">Geen bureau. Een partner.</span>
-        <h2>Wat ons <span class="it">anders</span> maakt<span class="punc">.</span></h2>
+        <Chapter n="04" label="Geen bureau. Een partner." />
+        <h2 class="h-section">Wat ons <em>anders</em> maakt<span class="dot">.</span></h2>
       </div>
-      <p class="lede">
-        Geen funnel vol losse afspraken, maar de juiste gesprekken: met de juiste
-        persoon, op het juiste moment.
+      <p class="lede-xl">
+        Niet tien afspraken die nergens toe leiden, maar één die klopt. Met de
+        juiste persoon, op het juiste moment.
       </p>
     </div>
-    <div class="pillars reveal-stagger">
+    <div class="trio reveal-stagger">
       {
-        pillars.map((p) => (
-          <article class="pillar">
-            <span class="num">{p.n}</span>
-            <h3>{p.h}<span class="punc">.</span></h3>
-            <p>{p.p}</p>
-            <div class="spacer" />
-            <span class="tag">{p.tag}</span>
-          </article>
-        ))
-      }
-    </div>
-  </section>
-
-  <!-- Aanpak-preview (donker paneel) -->
-  <section class="approach reveal">
-    <div class="approach-head">
-      <span class="eyebrow">Onze aanpak</span>
-      <h2>Zo werken <span class="it">wij</span><span class="punc">.</span></h2>
-    </div>
-    <div class="approach-mini reveal-stagger">
-      {
-        stappen.map((s, i) => (
-          <div class="step-mini">
-            <span class="n">{String(i + 1).padStart(2, '0')}</span>
-            <span class="title">{s}</span>
+        anders.map((a) => (
+          <div class="trio-item">
+            <span class="trio-n">{a.n}</span>
+            <h3>{a.t}</h3>
+            <p>{a.p}</p>
           </div>
         ))
       }
     </div>
-    <div class="approach-cta">
-      <p class="lede">
-        Elke week een helder rapport, ook als het even tegenzit. Zo weet je altijd
-        waar je staat.
-      </p>
-      <a class="btn-primary" href="/aanpak">Bekijk de hele aanpak <Icon name="arrow" class="arrow" /></a>
-    </div>
   </section>
 
-  <!-- Agenda-showcase -->
-  <section class="agenda-showcase">
-    <div class="agenda-intro reveal">
-      <span class="eyebrow">Vandaag bij LINK<span class="punc">.</span></span>
-      <h2>Echte afspraken. <span class="it">Geboekt</span> voor partners<span class="punc">.</span></h2>
-      <p class="lede">
+  <!-- 05 — Deze week (bewijs) -->
+  <section class="proof" id="h05">
+    <div class="proof-intro reveal">
+      <Chapter n="05" label="Vandaag bij LINK." />
+      <h2 class="h-section">Echte afspraken. <em>Geboekt</em> voor partners<span class="dot">.</span></h2>
+      <p class="lede-xl">
         Wij leggen het eerste contact met de juiste beslisser. Jij voert het
         gesprek dat ertoe doet.
       </p>
@@ -173,384 +153,167 @@ const stappen = [
     <AgendaWidget />
   </section>
 
-  <!-- Rustpunt / statement -->
-  <section class="statement reveal">
-    <div class="statement-inner">
-      <span class="eyebrow">Even eerlijk</span>
-      <h2>Jij bent goed in het gesprek. Niet in de honderd <span class="it">telefoontjes</span> ervoor<span class="punc">.</span></h2>
+  <!-- 06 — Kennismaken -->
+  <section class="close" id="h06">
+    <div class="close-media reveal">
+      <Duotone src="/assets/hens-coffee.jpeg" alt="Hens bij een kop koffie" ratio="4 / 5" caption="EVEN KENNISMAKEN" position="center 20%" />
     </div>
-  </section>
-
-  <!-- Slot-CTA -->
-  <section class="closing">
-    <div class="watermark" data-parallax="0.18" aria-hidden="true">LINK<span class="dot"></span></div>
-    <div class="closing-inner reveal">
-      <div class="closing-photo">
-        <Figure
-          src="/assets/hens-coffee.jpeg"
-          alt="Hens drinkt koffie tijdens een kennismaking"
-          ratio="4 / 5"
-          radius="var(--r-card)"
-        />
-        <p class="photo-caption">
-          <b>Even kennismaken bij een kop koffie.</b>
-          Een open gesprek over wat we voor je kunnen betekenen.
-        </p>
-      </div>
-      <div class="closing-right">
-        <span class="eyebrow">Even kennismaken</span>
-        <h2>We drinken graag een kop <span class="it">koffie</span> met je<span class="punc">.</span></h2>
-        <p class="lede">
-          Een kop koffie en eerlijk advies, of we nu samenwerken of niet. Bel of
-          mail gerust, we reageren snel.
-        </p>
-        <div class="btn-row">
-          <a class="btn-primary" href="/contact">Plan een kennismaking <Icon name="arrow" class="arrow" /></a>
-          <a class="btn-ghost" href={`tel:${site.contact.phoneHref}`}>{site.contact.phoneDisplay}</a>
-        </div>
+    <div class="close-copy reveal">
+      <Chapter n="06" label="Kennismaken" />
+      <h2 class="h-display">We drinken graag een kop <em>koffie</em> met je<span class="dot">.</span></h2>
+      <p class="lede-xl">
+        Een kop koffie en eerlijk advies, of we nu samenwerken of niet. Bel of
+        mail gerust, we reageren snel.
+      </p>
+      <div class="hero-cta">
+        <a class="ebtn" href="/contact">Plan een kennismaking <span class="arw">→</span></a>
+        <a class="ebtn ghost" href={`tel:${site.contact.phoneHref}`}>{site.contact.phoneDisplay}</a>
       </div>
     </div>
   </section>
 </Base>
 
 <style>
-  /* Hero */
   .hero {
     position: relative;
-    padding: clamp(96px, 12vw, 180px) var(--pad-x) clamp(60px, 7vw, 120px);
-    overflow: hidden;
-  }
-  .hero :global(.hero-bg) {
-    position: absolute;
-    inset: 0;
-    aspect-ratio: auto;
-    border-radius: 0;
-    z-index: 0;
-  }
-  .hero :global(.hero-bg img) {
-    filter: saturate(112%);
-  }
-  .hero-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background: linear-gradient(
-      180deg,
-      color-mix(in oklab, var(--bg) 30%, transparent) 0%,
-      color-mix(in oklab, var(--bg) 42%, transparent) 40%,
-      color-mix(in oklab, var(--bg) 72%, transparent) 75%,
-      var(--bg) 100%
-    );
-  }
-  .hero-left {
-    position: relative;
     z-index: 2;
-    max-width: 46rem;
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: clamp(24px, 4vw, 64px);
+    padding: clamp(36px, 5vw, 88px) var(--rail) 0;
+    align-items: center;
+    min-height: 76vh;
   }
-  .hero h1 {
-    font-size: clamp(56px, 6.4vw, 112px);
-    line-height: 0.94;
-    letter-spacing: -0.05em;
-    font-weight: 800;
-    margin: 24px 0 0;
-    max-width: 14ch;
+  .hero-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
   }
-  .hero-sub {
-    margin-top: clamp(24px, 3vw, 40px);
-    font-size: var(--t-lede);
-    line-height: 1.45;
-    color: var(--ink-soft);
-    max-width: 42ch;
-  }
-  .hero-actions {
-    margin-top: clamp(24px, 3vw, 40px);
+  .hero-cta {
     display: flex;
     gap: 14px;
     flex-wrap: wrap;
   }
-
-  .text-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    margin-top: clamp(32px, 3.4vw, 48px);
-    font-weight: 600;
-    font-size: 15px;
-    color: var(--ink);
+  .hero-photo {
+    align-self: stretch;
+    display: flex;
   }
-  .text-link:hover {
+  .hero-photo :global(.duo) {
+    min-height: 58vh;
+    height: 100%;
+  }
+  .hero-meta {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: clamp(24px, 4vw, 56px);
+    padding: 18px 0 clamp(40px, 5vw, 72px);
+    border-top: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+  .hero-meta span:first-child {
     color: var(--blue-deep);
   }
-  .reeks-3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  .split-head {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(32px, 5vw, 80px);
+    align-items: end;
   }
 
-  /* Pijlers */
-  .pillars {
+  .trio {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
+    gap: clamp(28px, 3vw, 56px);
+    margin-top: clamp(40px, 5vw, 72px);
   }
-  .pillar {
-    background: var(--paper);
-    border: 1px solid var(--line-soft);
-    border-radius: var(--r-card);
-    padding: 36px 32px;
+  .trio-item {
+    border-top: 2px solid var(--ink);
+    padding-top: 20px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    min-height: 340px;
-    transition: border-color 0.25s ease;
+    gap: 12px;
   }
-  .pillar:hover {
-    border-color: var(--ink);
-  }
-  .pillar .num {
+  .trio-n {
     font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--mute);
-    font-variant-numeric: tabular-nums;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: var(--blue-deep);
   }
-  .pillar h3 {
-    font-size: var(--t-h3);
-    font-weight: 700;
-    letter-spacing: -0.022em;
+  .trio-item h3 {
+    font-size: clamp(24px, 2.4vw, 36px);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1;
     margin: 0;
-    line-height: 1.15;
-    max-width: 18ch;
   }
-  .pillar p {
+  .trio-item p {
     color: var(--ink-soft);
     font-size: 16px;
     line-height: 1.55;
     margin: 0;
-  }
-  .pillar .spacer {
-    flex: 1;
-  }
-  .pillar .tag {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    color: var(--mute);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .pillar .tag::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    background: var(--blue);
-    border-radius: 50%;
+    max-width: 38ch;
   }
 
-  /* Aanpak-preview (donker) */
-  .approach {
-    background: var(--ink);
-    color: var(--dark-text);
-    border-radius: var(--r-panel);
-    margin: clamp(40px, 5vw, 80px) var(--pad-x) 0;
-    padding: clamp(36px, 4vw, 56px) clamp(40px, 4vw, 64px);
-    position: relative;
-    overflow: hidden;
-  }
-  .approach-head .eyebrow {
-    color: var(--dark-mute);
-  }
-  .approach-head h2 {
-    font-size: clamp(32px, 3.4vw, 56px);
-    line-height: 1;
-    letter-spacing: -0.035em;
-    font-weight: 800;
-    color: var(--paper);
-    margin: 12px 0 0;
-  }
-  .approach-mini {
-    margin-top: clamp(40px, 4vw, 60px);
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 14px;
-    position: relative;
-  }
-  .approach-mini::before {
-    content: '';
-    position: absolute;
-    top: 21px;
-    left: 6%;
-    right: 6%;
-    height: 2px;
-    background: linear-gradient(
-      90deg,
-      rgba(41, 176, 242, 0) 0%,
-      rgba(41, 176, 242, 0.55) 12%,
-      rgba(41, 176, 242, 0.55) 88%,
-      rgba(41, 176, 242, 0) 100%
-    );
-    z-index: 0;
-  }
-  .step-mini {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 14px;
+  .proof {
     position: relative;
     z-index: 2;
-  }
-  .step-mini .n {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    background: linear-gradient(160deg, #1c2026 0%, #101216 100%);
-    border: 1.5px solid rgba(41, 176, 242, 0.45);
-    color: var(--blue);
-    font-family: var(--font-mono);
-    font-size: 15px;
-    font-variant-numeric: tabular-nums;
-    box-shadow: 0 0 0 6px var(--ink);
-    transition: border-color 0.35s ease;
-  }
-  .step-mini:hover .n {
-    border-color: var(--blue);
-  }
-  .step-mini .title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--dark-text);
-    line-height: 1.3;
-    letter-spacing: -0.01em;
-    max-width: 18ch;
-  }
-  .approach-cta {
-    margin-top: clamp(28px, 3vw, 40px);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-  .approach-cta .lede {
-    color: var(--dark-mute);
-    max-width: 50ch;
-    font-size: 17px;
-    line-height: 1.5;
-  }
-  .approach-cta .btn-primary {
-    background: var(--paper);
-    color: var(--ink);
-  }
-  .approach-cta .btn-primary:hover {
-    background: var(--blue);
-  }
-
-  /* Agenda-showcase */
-  .agenda-showcase {
-    padding: clamp(60px, 7vw, 120px) var(--pad-x);
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
-    gap: clamp(32px, 4vw, 64px);
+    gap: clamp(32px, 4vw, 72px);
     align-items: center;
+    padding: clamp(60px, 8vw, 130px) var(--rail);
   }
-  .agenda-intro {
+  .proof-intro {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    max-width: 46ch;
-  }
-  .agenda-intro h2 {
-    font-size: var(--t-h1);
-    line-height: 0.96;
-    letter-spacing: -0.04em;
-    font-weight: 800;
-    margin: 8px 0 0;
-    max-width: 14ch;
-  }
-  .agenda-intro .lede {
-    font-size: var(--t-lede);
-    color: var(--ink-soft);
-    line-height: 1.45;
+    max-width: 44ch;
   }
 
-  /* Closing */
-  .closing {
-    padding: clamp(80px, 9vw, 160px) var(--pad-x);
-    position: relative;
-    overflow: hidden;
-  }
-  .closing-inner {
-    display: grid;
-    grid-template-columns: 0.95fr 1.05fr;
-    gap: clamp(40px, 5vw, 80px);
-    align-items: center;
+  .close {
     position: relative;
     z-index: 2;
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: clamp(32px, 5vw, 80px);
+    align-items: center;
+    padding: clamp(60px, 8vw, 140px) var(--rail) clamp(80px, 10vw, 160px);
   }
-  .closing-photo {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  .close-media :global(.duo) {
+    min-height: 52vh;
   }
-  .photo-caption {
-    font-size: 15px;
-    line-height: 1.5;
-    color: var(--ink-soft);
-    max-width: 38ch;
-    margin: 0;
-  }
-  .photo-caption b {
-    font-weight: 600;
-    color: var(--ink);
-    margin-right: 6px;
-  }
-  .closing-right {
+  .close-copy {
     display: flex;
     flex-direction: column;
     gap: 22px;
   }
-  .closing-right h2 {
-    font-size: var(--t-display);
-    line-height: 0.9;
-    letter-spacing: -0.05em;
-    font-weight: 900;
-    margin: 8px 0 0;
-    max-width: 12ch;
-  }
-  .closing-right .lede {
-    font-size: var(--t-lede);
-    color: var(--ink-soft);
-    line-height: 1.45;
-    max-width: 42ch;
-  }
-  .btn-row {
-    display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
-  }
 
-  @media (max-width: 1100px) {
-    .approach-mini {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 28px 14px;
+  @media (max-width: 900px) {
+    .hero {
+      grid-template-columns: 1fr;
+      min-height: auto;
     }
-    .approach-mini::before {
-      display: none;
+    .hero-photo :global(.duo) {
+      min-height: 48vh;
     }
-  }
-  @media (max-width: 980px) {
-    .pillars {
+    .split-head {
       grid-template-columns: 1fr;
     }
-    .approach-mini {
-      grid-template-columns: 1fr 1fr;
-    }
-    .agenda-showcase {
+    .trio {
       grid-template-columns: 1fr;
     }
-    .closing-inner {
+    .proof {
+      grid-template-columns: 1fr;
+    }
+    .close {
       grid-template-columns: 1fr;
     }
   }

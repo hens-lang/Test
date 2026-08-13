@@ -1,4 +1,4 @@
-/* LINK. — gedeelde site-interacties (nav-drawer, scroll, reveal, parallax) */
+/* LINK. — editorial site-interacties (nav-drawer, thread, reveal, index) */
 
 const prefersReducedMotion = window.matchMedia(
   '(prefers-reduced-motion: reduce)',
@@ -6,9 +6,9 @@ const prefersReducedMotion = window.matchMedia(
 
 // ============== Mobiel nav-drawer ==============
 function buildMobileNav() {
-  const navInner = document.querySelector<HTMLElement>('.nav .nav-inner');
-  const links = document.querySelector<HTMLElement>('.nav .nav-links');
-  if (!navInner || !links || document.querySelector('.nav-burger')) return;
+  const navInner = document.querySelector<HTMLElement>('.enav');
+  const links = document.querySelector<HTMLElement>('.enav-links');
+  if (!navInner || document.querySelector('.nav-burger')) return;
 
   const burger = document.createElement('button');
   burger.className = 'nav-burger';
@@ -23,7 +23,7 @@ function buildMobileNav() {
   inner.className = 'nav-drawer-inner';
   inner.setAttribute('aria-label', 'Mobiel menu');
 
-  links.querySelectorAll('a').forEach((a) => {
+  links?.querySelectorAll('a').forEach((a) => {
     const item = document.createElement('a');
     item.href = a.getAttribute('href') || '#';
     item.textContent = a.textContent;
@@ -31,7 +31,7 @@ function buildMobileNav() {
     inner.appendChild(item);
   });
 
-  const right = document.querySelector('.nav .nav-right');
+  const right = document.querySelector('.enav-right');
   if (right) {
     const div = document.createElement('div');
     div.className = 'nav-drawer-div';
@@ -39,10 +39,10 @@ function buildMobileNav() {
     right.querySelectorAll('a').forEach((a) => {
       const item = document.createElement('a');
       item.href = a.getAttribute('href') || '#';
-      item.className = a.classList.contains('nav-cta') ? 'dr-cta' : 'dr-login';
+      item.className = a.classList.contains('enav-cta') ? 'dr-cta' : 'dr-login';
       if (a.getAttribute('target')) item.target = a.getAttribute('target')!;
       item.rel = a.getAttribute('rel') || '';
-      item.textContent = (a.textContent || '').trim();
+      item.textContent = (a.textContent || '').replace('→', '').trim();
       inner.appendChild(item);
     });
   }
@@ -70,22 +70,76 @@ function buildMobileNav() {
   });
 }
 
-// ============== Nav verbergen bij scrollen omlaag + schaduw ==============
+// ============== Nav verbergen bij scrollen omlaag ==============
 function navScroll() {
-  const nav = document.querySelector<HTMLElement>('.nav');
+  const nav = document.querySelector<HTMLElement>('.enav');
   if (!nav) return;
   let lastY = window.scrollY;
   window.addEventListener(
     'scroll',
     () => {
       const y = window.scrollY;
-      nav.classList.toggle('scrolled', y > 20);
-      if (y > 200 && y > lastY + 4) nav.classList.add('hidden');
-      else if (y < lastY - 4 || y < 100) nav.classList.remove('hidden');
+      if (y > 240 && y > lastY + 4) nav.classList.add('hidden');
+      else if (y < lastY - 4 || y < 120) nav.classList.remove('hidden');
       lastY = y;
     },
     { passive: true },
   );
+}
+
+// ============== Thread: voortgang tekenen op scroll ==============
+function thread() {
+  const el = document.querySelector<HTMLElement>('.thread');
+  if (!el) return;
+  if (prefersReducedMotion) {
+    el.style.setProperty('--p', '1');
+    return;
+  }
+  let ticking = false;
+  const update = () => {
+    const h = document.body.scrollHeight - window.innerHeight;
+    const p = Math.min(1, Math.max(0, window.scrollY / (h || 1)));
+    el.style.setProperty('--p', String(p));
+    ticking = false;
+  };
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
+      }
+    },
+    { passive: true },
+  );
+  update();
+}
+
+// ============== Hoofdstuk-index: actieve markeren ==============
+function chapterIndex() {
+  const links = document.querySelectorAll<HTMLElement>('.chapter-index a');
+  if (!links.length) return;
+  const map = new Map<string, HTMLElement>();
+  links.forEach((a) => {
+    const id = a.getAttribute('href')?.slice(1);
+    if (id) map.set(id, a);
+  });
+  const targets = Array.from(map.keys())
+    .map((id) => document.getElementById(id))
+    .filter(Boolean) as HTMLElement[];
+  if (!targets.length) return;
+  const obs = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          links.forEach((l) => l.classList.remove('active'));
+          map.get(e.target.id)?.classList.add('active');
+        }
+      });
+    },
+    { rootMargin: '-45% 0px -50% 0px' },
+  );
+  targets.forEach((t) => obs.observe(t));
 }
 
 // ============== Reveal-on-scroll ==============
@@ -109,37 +163,8 @@ function reveal() {
   els.forEach((el) => obs.observe(el));
 }
 
-// ============== Parallax ==============
-function parallax() {
-  if (prefersReducedMotion) return;
-  const parallaxEls =
-    document.querySelectorAll<HTMLElement>('[data-parallax]');
-  if (!parallaxEls.length) return;
-  let ticking = false;
-  const update = () => {
-    parallaxEls.forEach((el) => {
-      const speed = parseFloat(el.dataset.parallax || '0.2') || 0.2;
-      const rect = el.getBoundingClientRect();
-      const center = rect.top + rect.height / 2;
-      const off = (window.innerHeight / 2 - center) * speed;
-      el.style.transform = `translate3d(0, ${off}px, 0)`;
-    });
-    ticking = false;
-  };
-  window.addEventListener(
-    'scroll',
-    () => {
-      if (!ticking) {
-        requestAnimationFrame(update);
-        ticking = true;
-      }
-    },
-    { passive: true },
-  );
-  update();
-}
-
 buildMobileNav();
 navScroll();
+thread();
+chapterIndex();
 reveal();
-parallax();

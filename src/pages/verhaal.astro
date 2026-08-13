@@ -1,13 +1,22 @@
 ---
 import Base from '@/layouts/Base.astro';
-import Icon from '@/components/Icon.astro';
-import Figure from '@/components/Figure.astro';
+import Chapter from '@/components/Chapter.astro';
+import Duotone from '@/components/Duotone.astro';
 import TimelineWidget from '@/components/widgets/TimelineWidget.astro';
 
+const index = [
+  { n: '01', label: 'Ik ben Hens' },
+  { n: '02', label: 'Wie ik ben' },
+  { n: '03', label: 'Hoe ik werk' },
+  { n: '04', label: 'Uitgangspunt' },
+  { n: '05', label: 'Waarden' },
+  { n: '06', label: 'Koffie' },
+];
+
 const values = [
-  { n: 'i.', h: 'Transparantie', p: 'Je weet altijd waar je aan toe bent. We zijn open over wat we doen, hoe het gaat en wat beter kan. Onze rapportages geven je écht inzicht in de voortgang.', pull: 'Eerlijk, ook als het tegenzit.' },
-  { n: 'ii.', h: 'Eerlijkheid', p: 'We zeggen wat we denken. Ook als het niet uitkomt. We gaan geen samenwerking aan als we er niet achter staan. Liever een eerlijk nee vooraf dan een moeizame samenwerking achteraf.', pull: 'Recht door zee.' },
-  { n: 'iii.', h: 'Lange termijn', p: 'We willen meedenken, meegroeien en echt iets opbouwen. Daarom werken we niet met lange contracten, we verdienen onze plek elke maand opnieuw.', pull: 'Jouw succes is ons succes.' },
+  { n: '01', t: 'Transparantie', p: 'Je weet altijd waar je aan toe bent. Ik ben open over wat we doen, hoe het gaat en wat beter kan.', pull: 'Eerlijk, ook als het tegenzit.' },
+  { n: '02', t: 'Eerlijkheid', p: 'Ik zeg wat ik denk. Ook als het niet uitkomt. Ik ga geen samenwerking aan als ik er niet achter sta.', pull: 'Recht door zee.' },
+  { n: '03', t: 'Lange termijn', p: 'Ik wil meedenken, meegroeien en echt iets opbouwen. Daarom geen lange contracten, ik verdien mijn plek elke maand opnieuw.', pull: 'Jouw succes is mijn succes.' },
 ];
 ---
 
@@ -15,302 +24,184 @@ const values = [
   title="Ons verhaal | LINK. — één gezicht, één belofte"
   description="LINK. is opgericht door Hens: één vast gezicht dat gelooft in de juiste afspraak in plaats van volume. Lees waarom wij het anders doen."
   path="/verhaal"
+  index={index}
 >
-  <!-- Hero -->
-  <section class="page-hero">
-    <div class="intro reveal">
-      <span class="eyebrow">Ons verhaal</span>
-      <h1>Ik zag dat het <span class="it">anders</span> kon<span class="punc">.</span></h1>
-      <p class="lede">
+  <!-- 01 — Hero -->
+  <section class="page-hero" id="h01">
+    <div class="ph-copy reveal">
+      <Chapter n="01" label="Ons verhaal" />
+      <h1 class="h-giant">Ik zag dat het <em>anders</em> kon<span class="dot">.</span></h1>
+      <p class="lede-xl">
         Ik ben Hens. Ik werk graag dichtbij, denk met je mee en drink het liefst
         eerst een kop koffie voordat we iets afspreken.
       </p>
     </div>
-    <TimelineWidget />
-  </section>
-
-  <!-- Founder blokken -->
-  <section class="founders">
-    <article class="founder-block reveal">
-      <div class="portrait-wrap">
-        <Figure src="/assets/hens-sun-tall.jpeg" alt="Portret van Hens in de zon" ratio="3 / 2" radius="var(--r-card)" />
-      </div>
-      <div class="founder-content">
-        <div>
-          <span class="number">Wie ik ben</span>
-          <h2>Hens<span class="punc">.</span></h2>
-          <span class="role">Eigenaar · Sales &amp; outreach</span>
-        </div>
-        <p class="quote">
-          Drie jaar lang heb ik dagelijks aan direct sales gedaan: mensen
-          benaderd die mij niet verwachten, met een product waar zij niet op
-          zitten te wachten. Je leert snel wat werkt en wat niet. Precies die
-          ervaring zet ik nu in bij LINK<span class="punc">.</span>
-        </p>
-      </div>
-    </article>
-
-    <article class="founder-block reverse reveal">
-      <div class="founder-content">
-        <div>
-          <span class="number">Hoe ik werk</span>
-          <h2>Zelf aan de <span class="it">lijn</span><span class="punc">.</span></h2>
-          <span class="role">Met een team dat meegroeit</span>
-        </div>
-        <p class="quote">
-          Ik bel en schrijf zelf. Niet omdat het niet anders kan, maar omdat je
-          het verschil hoort in een gesprek dat door iemand met het verhaal wordt
-          gevoerd. Groeit een samenwerking, dan groeit het team mee. Je vaste
-          aanspreekpunt blijft.
-        </p>
-      </div>
-      <div class="portrait-wrap">
-        <Figure src="/assets/hens-notebook-laughing.jpeg" alt="Hens lachend met notitieboek" ratio="3 / 2" radius="var(--r-card)" />
-      </div>
-    </article>
-  </section>
-
-  <!-- Manifest (ik-vorm, donker) -->
-  <section class="manifesto reveal">
-    <div class="manifesto-photo">
-      <Figure src="/assets/hens-call-down.jpeg" alt="Hens aan de telefoon" ratio="4 / 5" radius="16px" />
+    <div class="ph-widget reveal">
+      <TimelineWidget />
     </div>
-    <div class="manifesto-body">
-      <span class="label">Hoe LINK<span class="punc">.</span> ontstond</span>
-      <h3><strong>Kwaliteit</strong> boven <strong>kwantiteit</strong><span class="punc">.</span></h3>
-      <p>
-        Ik stuur niet op aantallen, maar op afspraken die converteren naar
-        klanten. Liever één gesprek met de juiste beslisser dan tien afspraken
-        die nergens toe leiden.
-      </p>
-      <p>
-        Daarom verdiep ik me eerst in jouw bedrijf en doelgroep. Zo komen we met
-        het juiste verhaal, bij de juiste persoon, op het juiste moment. Zodat
-        jij écht een kans hebt om te verkopen.
+  </section>
+
+  <!-- 02 — Wie ik ben -->
+  <section class="bio" id="h02">
+    <div class="bio-media reveal">
+      <Duotone src="/assets/hens-sun-tall.jpeg" alt="Portret van Hens" ratio="4 / 5" caption="HENS — EIGENAAR" />
+    </div>
+    <div class="bio-copy reveal">
+      <Chapter n="02" label="Wie ik ben" />
+      <h2 class="h-section">Hens<span class="dot">.</span></h2>
+      <span class="role">Eigenaar · Sales &amp; outreach</span>
+      <p class="lede-xl">
+        Drie jaar lang heb ik dagelijks aan direct sales gedaan: mensen benaderd
+        die mij niet verwachten, met een product waar zij niet op zitten te
+        wachten. Je leert snel wat werkt en wat niet. Precies die ervaring zet ik
+        nu in bij LINK<span class="dot">.</span>
       </p>
     </div>
   </section>
 
-  <!-- Kernwaarden -->
-  <section class="values">
-    <div class="section-head reveal">
+  <!-- 03 — Hoe ik werk -->
+  <section class="bio reverse" id="h03">
+    <div class="bio-copy reveal">
+      <Chapter n="03" label="Hoe ik werk" />
+      <h2 class="h-section">Zelf aan de <em>lijn</em><span class="dot">.</span></h2>
+      <span class="role">Met een team dat meegroeit</span>
+      <p class="lede-xl">
+        Ik bel en schrijf zelf. Niet omdat het niet anders kan, maar omdat je het
+        verschil hoort in een gesprek dat door iemand met het verhaal wordt
+        gevoerd. Groeit een samenwerking, dan groeit het team mee. Je vaste
+        aanspreekpunt blijft.
+      </p>
+    </div>
+    <div class="bio-media reveal">
+      <Duotone src="/assets/hens-notebook-laughing.jpeg" alt="Hens lachend met notitieboek" ratio="4 / 5" caption="ZELF AAN DE LIJN" />
+    </div>
+  </section>
+
+  <!-- 04 — Manifest -->
+  <section class="statement-sec on-dark" id="h04">
+    <Chapter n="04" label="Hoe LINK. ontstond" />
+    <h2><em>Kwaliteit</em> boven kwantiteit<span class="dot">.</span></h2>
+    <p class="lede-xl" style="margin-top: 28px; max-width: 54ch;">
+      Ik stuur niet op aantallen, maar op afspraken die converteren naar klanten.
+      Liever één gesprek met de juiste beslisser dan tien afspraken die nergens
+      toe leiden. Zodat jij écht een kans hebt om te verkopen.
+    </p>
+  </section>
+
+  <!-- 05 — Waarden -->
+  <section class="mag-sec" id="h05">
+    <div class="split-head reveal">
       <div>
-        <span class="eyebrow">Waarom LINK.</span>
-        <h2>Drie dingen die voor ons <span class="it">altijd</span> gelden<span class="punc">.</span></h2>
+        <Chapter n="05" label="Waarom LINK." />
+        <h2 class="h-section">Drie dingen die <em>altijd</em> gelden<span class="dot">.</span></h2>
       </div>
-      <p class="lede">
+      <p class="lede-xl">
         Een goede samenwerking begint met vertrouwen, openheid en transparantie,
         van beide kanten. Als die basis er is, werkt de rest vanzelf.
       </p>
     </div>
-    <div class="values-grid reveal-stagger">
+    <div class="values reveal-stagger">
       {
         values.map((v) => (
           <article class="value">
-            <span class="num">{v.n}</span>
-            <h3>{v.h}</h3>
+            <span class="value-n">{v.n}</span>
+            <h3>{v.t}</h3>
             <p>{v.p}</p>
-            <span class="pull">{v.pull}</span>
+            <span class="value-pull">{v.pull}</span>
           </article>
         ))
       }
     </div>
   </section>
 
-  <!-- Uitgangspunt CTA -->
-  <section class="uitgangspunt">
-    <div class="watermark" data-parallax="0.15" aria-hidden="true">LINK<span class="dot"></span></div>
-    <div class="uitgangspunt-inner reveal">
-      <div>
-        <span class="eyebrow">Ons uitgangspunt</span>
-        <h2>Jouw succes is <span class="it">ons</span> succes<span class="punc">.</span></h2>
-      </div>
-      <div class="cta-right">
-        <p class="lede">
-          Wij groeien mee in jouw organisatie. Dit is geen marketingzin, dat is
-          hoe wij elke samenwerking aanpakken. Wij verdienen onze plek pas als jij
-          resultaat ziet vanuit ons werk.
-        </p>
-        <div class="btn-row">
-          <a class="btn-primary" href="/contact">Drink een koffie met ons <Icon name="arrow" class="arrow" /></a>
-          <a class="btn-ghost" href="/aanpak">Hoe wij werken</a>
-        </div>
-      </div>
+  <!-- 06 — CTA -->
+  <section class="mag-sec cta-sec" id="h06">
+    <Chapter n="06" label="Ons uitgangspunt" />
+    <h2 class="h-display">Jouw succes is <em>mijn</em> succes<span class="dot">.</span></h2>
+    <p class="lede-xl">
+      Ik groei mee in jouw organisatie. Geen marketingzin, maar hoe ik elke
+      samenwerking aanpak. Ik verdien mijn plek pas als jij resultaat ziet.
+    </p>
+    <div class="hero-cta">
+      <a class="ebtn" href="/contact">Drink een koffie met me <span class="arw">→</span></a>
+      <a class="ebtn ghost" href="/aanpak">Hoe ik werk</a>
     </div>
   </section>
 </Base>
 
 <style>
   .page-hero {
-    padding: clamp(56px, 7vw, 120px) var(--pad-x) clamp(40px, 5vw, 80px);
+    position: relative;
+    z-index: 2;
     display: grid;
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
     gap: clamp(40px, 5vw, 80px);
     align-items: center;
+    padding: clamp(40px, 6vw, 96px) var(--rail) clamp(48px, 6vw, 96px);
   }
-  .page-hero h1 {
-    font-size: var(--t-display);
-    line-height: 0.88;
-    letter-spacing: -0.05em;
-    font-weight: 900;
-    margin: 24px 0 0;
-    max-width: 14ch;
-  }
-  .page-hero .lede {
-    margin-top: clamp(28px, 3vw, 44px);
-    font-size: var(--t-lede);
-    color: var(--ink-soft);
-    max-width: 56ch;
-    line-height: 1.45;
-  }
-
-  .founders {
-    padding: clamp(40px, 5vw, 80px) var(--pad-x) clamp(80px, 9vw, 140px);
-  }
-  .founder-block {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-    gap: clamp(40px, 5vw, 96px);
-    align-items: center;
-    padding: clamp(48px, 6vw, 96px) 0;
-    border-top: 1px solid var(--line);
-  }
-  .founder-block.reverse {
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-  }
-  .founder-block.reverse .portrait-wrap {
-    order: 2;
-  }
-  .founder-block:last-child {
-    border-bottom: 1px solid var(--line);
-  }
-  .founder-content {
+  .ph-copy {
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    gap: 24px;
   }
-  .founder-content .number {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--mute);
-    font-weight: 500;
+  .bio {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: clamp(40px, 5vw, 96px);
+    align-items: center;
+    padding: clamp(56px, 7vw, 120px) var(--rail);
+    border-top: 1px solid var(--line);
   }
-  .founder-content h2 {
-    font-size: clamp(56px, 6vw, 112px);
-    font-weight: 900;
-    letter-spacing: -0.05em;
-    line-height: 0.9;
-    margin: 6px 0 0;
+  .bio.reverse {
+    grid-template-columns: 1.1fr 0.9fr;
   }
-  .founder-content .role {
+  .bio.reverse .bio-media {
+    order: 2;
+  }
+  .bio-media :global(.duo) {
+    min-height: 56vh;
+  }
+  .bio-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .bio-copy .role {
     font-family: var(--font-mono);
     font-size: 12px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--mute);
-    font-weight: 500;
   }
-  .founder-content .quote {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-size: clamp(22px, 1.8vw, 30px);
-    line-height: 1.4;
-    color: var(--ink);
-    border-left: 2px solid var(--blue);
-    padding-left: 22px;
-    max-width: 50ch;
-    margin: 0;
-  }
-
-  .manifesto {
-    margin: 0 var(--pad-x) clamp(40px, 5vw, 72px);
-    background: var(--ink);
-    color: var(--paper);
-    border-radius: var(--r-panel);
-    padding: clamp(28px, 3vw, 40px);
+  .split-head {
     display: grid;
-    grid-template-columns: 1fr 1.1fr;
-    gap: clamp(28px, 3.5vw, 56px);
-    align-items: stretch;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(32px, 5vw, 80px);
+    align-items: end;
   }
-  .manifesto-photo {
-    border-radius: 16px;
-    overflow: hidden;
-    min-height: 280px;
-  }
-  .manifesto-photo :global(.figure) {
-    height: 100%;
-    aspect-ratio: auto;
-  }
-  .manifesto-body {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    justify-content: center;
-    font-size: clamp(16px, 1.2vw, 19px);
-    line-height: 1.55;
-    color: var(--dark-text);
-    max-width: 56ch;
-    padding: clamp(8px, 2vw, 24px);
-  }
-  .manifesto-body p {
-    margin: 0;
-  }
-  .manifesto .label {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--dark-mute);
-    font-weight: 500;
-  }
-  .manifesto h3 {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 400;
-    font-size: clamp(28px, 3.2vw, 48px);
-    line-height: 1.05;
-    margin: 0;
-    color: var(--paper);
-    max-width: 13ch;
-  }
-  .manifesto h3 strong {
-    font-family: var(--font-sans);
-    font-style: normal;
-    font-weight: 800;
-    color: var(--blue);
-  }
-
   .values {
-    padding: clamp(80px, 9vw, 140px) var(--pad-x);
-    background: var(--paper);
-  }
-  .values-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: clamp(24px, 3vw, 40px);
+    gap: clamp(28px, 3vw, 56px);
+    margin-top: clamp(40px, 5vw, 72px);
   }
   .value {
+    border-top: 2px solid var(--ink);
+    padding-top: 20px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding-top: 28px;
-    border-top: 2px solid var(--ink);
-    transition: border-color 0.25s ease;
+    gap: 12px;
   }
-  .value:hover {
-    border-color: var(--blue);
-  }
-  .value .num {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-size: 22px;
-    color: var(--blue);
+  .value-n {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: var(--blue-deep);
   }
   .value h3 {
-    font-size: clamp(36px, 3.4vw, 56px);
+    font-size: clamp(26px, 2.6vw, 40px);
     font-weight: 800;
     letter-spacing: -0.035em;
     line-height: 1;
@@ -318,79 +209,44 @@ const values = [
   }
   .value p {
     color: var(--ink-soft);
-    font-size: 17px;
-    line-height: 1.6;
+    font-size: 16px;
+    line-height: 1.55;
     margin: 0;
     max-width: 38ch;
   }
-  .value .pull {
+  .value-pull {
     font-family: var(--font-serif);
     font-style: italic;
     font-size: 18px;
     color: var(--mute);
-    margin-top: 6px;
+    margin-top: 4px;
   }
-
-  .uitgangspunt {
-    padding: clamp(80px, 9vw, 140px) var(--pad-x);
-    position: relative;
-    overflow: hidden;
-  }
-  .uitgangspunt .watermark {
-    bottom: -60px;
-  }
-  .uitgangspunt-inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(40px, 5vw, 80px);
-    align-items: end;
-    position: relative;
-    z-index: 2;
-  }
-  .uitgangspunt h2 {
-    font-size: var(--t-display);
-    line-height: 0.9;
-    letter-spacing: -0.05em;
-    font-weight: 900;
-    margin: 14px 0 0;
-    max-width: 13ch;
-  }
-  .cta-right {
+  .cta-sec {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 22px;
+    align-items: flex-start;
   }
-  .cta-right .lede {
-    font-size: var(--t-lede);
-    color: var(--ink-soft);
-    line-height: 1.45;
-    margin: 0;
-    max-width: 42ch;
-  }
-  .btn-row {
+  .hero-cta {
     display: flex;
     gap: 14px;
     flex-wrap: wrap;
   }
-
-  @media (max-width: 980px) {
+  @media (max-width: 900px) {
     .page-hero {
       grid-template-columns: 1fr;
     }
-    .founder-block,
-    .founder-block.reverse {
+    .bio,
+    .bio.reverse {
       grid-template-columns: 1fr;
     }
-    .founder-block.reverse .portrait-wrap {
+    .bio.reverse .bio-media {
       order: 0;
     }
-    .manifesto {
+    .split-head {
       grid-template-columns: 1fr;
     }
-    .values-grid {
-      grid-template-columns: 1fr;
-    }
-    .uitgangspunt-inner {
+    .values {
       grid-template-columns: 1fr;
     }
   }

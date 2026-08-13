@@ -1,9 +1,17 @@
 ---
 import Base from '@/layouts/Base.astro';
-import Icon from '@/components/Icon.astro';
-import Figure from '@/components/Figure.astro';
-import Split from '@/components/Split.astro';
+import Chapter from '@/components/Chapter.astro';
+import Duotone from '@/components/Duotone.astro';
 import { site } from '@/lib/site';
+
+const index = [
+  { n: '01', label: 'Wij bellen' },
+  { n: '02', label: 'Acquisitie' },
+  { n: '03', label: 'Wie het doet' },
+  { n: '04', label: 'Portaal' },
+  { n: '05', label: 'Opbrengst' },
+  { n: '06', label: 'Kennismaken' },
+];
 
 const specs = [
   { k: 'Voor wie', v: 'B2B-bedrijven die hun salesmotor willen opzetten of versterken.' },
@@ -20,8 +28,8 @@ const portaal = [
 ];
 
 const opbrengst = [
-  { n: '01', h: 'Jouw team houdt tijd over', p: 'Het koud bellen regelen wij. Jouw team houdt zich bezig met de warme gesprekken.' },
-  { n: '02', h: 'Geen risico vooraf', p: 'Geen lange contracten of hoge investering vooraf. Maandelijks opzegbaar.' },
+  { n: '01', t: 'Jouw team houdt tijd over', p: 'Het koud bellen regelen wij. Jouw team houdt zich bezig met de warme gesprekken.' },
+  { n: '02', t: 'Geen risico vooraf', p: 'Geen lange contracten of hoge investering vooraf. Maandelijks opzegbaar.' },
 ];
 ---
 
@@ -29,123 +37,96 @@ const opbrengst = [
   title="Telefonische acquisitie voor B2B-bedrijven | LINK."
   description="Persoonlijke telefonische acquisitie voor B2B-bedrijven. Wij regelen de afspraken bij de juiste beslissers, jij sluit de deals."
   path="/diensten"
+  index={index}
 >
-  <!-- Hero -->
-  <section class="page-hero">
-    <div class="intro reveal">
-      <span class="eyebrow">Wat we doen</span>
-      <h1>Wij bellen. Jij <span class="it">verkoopt</span><span class="punc">.</span></h1>
-      <p class="lede">
+  <!-- 01 — Hero -->
+  <section class="page-hero" id="h01">
+    <div class="ph-copy reveal">
+      <Chapter n="01" label="Wat we doen" />
+      <h1 class="h-giant">Wij bellen.<br />Jij <em>verkoopt</em><span class="dot">.</span></h1>
+      <p class="lede-xl">
         Wij bellen jouw ideale klanten zelf op, goed voorbereid en in jouw
         verhaal. Jij voert het gesprek dat ertoe doet.
       </p>
-      <div class="hero-actions">
-        <a class="btn-primary" href="/contact">Plan een kennismaking <Icon name="arrow" class="arrow" /></a>
-        <a class="btn-ghost" href="#telefonisch">Hoe het werkt</a>
+      <div class="hero-cta">
+        <a class="ebtn" href="/contact">Plan een kennismaking <span class="arw">→</span></a>
+        <a class="ebtn ghost" href="#h02">Hoe het werkt</a>
       </div>
     </div>
-    <div class="channels reveal">
-      <a class="channel" href="#telefonisch">
-        <span class="ch-ic"><Icon name="phone" size={22} /><span class="live-dot"></span></span>
-        <span class="ch-text">
-          <span class="ch-num">01</span>
-          <span class="ch-name">Telefonische acquisitie</span>
-          <span class="ch-sub">Persoonlijk, in jouw verhaal</span>
-        </span>
-        <span class="ch-arrow"><Icon name="arrow" size={18} /></span>
-      </a>
-      <a class="channel" href="#portaal">
-        <span class="ch-ic"><Icon name="building" size={22} /></span>
-        <span class="ch-text">
-          <span class="ch-num">02</span>
-          <span class="ch-name">Jouw partnerportaal</span>
-          <span class="ch-sub">Altijd live inzicht</span>
-        </span>
-        <span class="ch-arrow"><Icon name="arrow" size={18} /></span>
-      </a>
-      <p class="ch-foot">Eén dienst, goed gedaan. <span class="it">Geen ruis.</span></p>
+    <div class="ph-widget reveal">
+      <div class="call-card">
+        <div class="cc-head"><span class="rec"></span> LIVE GESPREK</div>
+        <div class="cc-who">
+          <span class="cc-av">HB</span>
+          <div class="cc-txt">
+            <span class="cc-name">Beslisser · Logistiek</span>
+            <span class="cc-role">Regio Utrecht</span>
+          </div>
+          <span class="cc-timer">02:14</span>
+        </div>
+        <div class="cc-wave" aria-hidden="true">
+          {Array.from({ length: 20 }).map(() => <span></span>)}
+        </div>
+        <p class="cc-quote">"Klinkt interessant. <em>Stuur maar een voorstel</em>, dan plannen we een afspraak."</p>
+      </div>
     </div>
   </section>
 
-  <!-- Dienstdetail: telefonische acquisitie -->
-  <section class="service-detail" id="telefonisch">
-    <div class="service-grid">
-      <div class="reveal">
-        <span class="eyebrow">Telefonische acquisitie</span>
-        <h2>Telefonische <span class="it">acquisitie</span><span class="punc">.</span></h2>
-        <p class="service-lede">
-          Wij bellen jouw ideale klanten persoonlijk op, goed voorbereid en in
-          jouw verhaal. Alleen wat écht een gesprek waard is, brengen we door.
-        </p>
-        <div class="spec-list">
-          {
-            specs.map((s) => (
-              <div class="spec">
-                <span class="k">{s.k}</span>
-                <span class="v" set:html={s.v} />
-              </div>
-            ))
-          }
-        </div>
-      </div>
-
-      <div class="visual reveal">
-        <div class="call-card">
-          <div class="head"><span class="rec-dot"></span> Live gesprek</div>
-          <div class="who">
-            <span class="avatar">HB</span>
-            <div class="who-text">
-              <span class="who-name">Beslisser · Logistiek</span>
-              <span class="who-role">Regio Utrecht</span>
+  <!-- 02 — Telefonische acquisitie -->
+  <section class="service" id="h02">
+    <div class="service-copy reveal">
+      <Chapter n="02" label="De dienst" />
+      <h2 class="h-section">Telefonische <em>acquisitie</em><span class="dot">.</span></h2>
+      <p class="lede-xl">
+        Wij bellen jouw ideale klanten persoonlijk op, goed voorbereid en in jouw
+        verhaal. Alleen wat écht een gesprek waard is, brengen we door.
+      </p>
+      <div class="specs">
+        {
+          specs.map((s) => (
+            <div class="spec">
+              <span class="spec-k">{s.k}</span>
+              <span class="spec-v" set:html={s.v} />
             </div>
-            <span class="who-timer" data-timer>02:14</span>
-          </div>
-          <div class="waveform" aria-hidden="true">
-            {Array.from({ length: 18 }).map(() => <span class="bar"></span>)}
-          </div>
-          <p class="transcript">"Klinkt interessant. <em>Stuur maar een voorstel</em>, dan plannen we een afspraak."</p>
-        </div>
-        <p class="visual-cap">
-          <b>Een echt gesprek.</b> Geen script dat wordt afgerateld, maar een
-          voorbereid gesprek dat past bij jouw verhaal.
-        </p>
+          ))
+        }
       </div>
+    </div>
+    <div class="service-note reveal">
+      <p class="note">
+        <b>Een echt gesprek.</b> Geen script dat wordt afgerateld, maar een
+        voorbereid gesprek dat past bij jouw verhaal. Eén vast gezicht dat namens
+        jou belt en aan tafel zit.
+      </p>
     </div>
   </section>
 
-  <!-- Wie het doet (split) -->
-  <Split
-    src="/assets/hens-call-navy.jpeg"
-    alt="Hens aan de telefoon"
-    ratio="4 / 5"
-    tag="De telefoon"
-    reverse
-  >
-    <span class="eyebrow">Wie het doet</span>
-    <h2>Geen call center. <span class="it">Eén</span> vast gezicht<span class="punc">.</span></h2>
-    <p>
-      Bij LINK. spreek je geen tussenlaag. Je weet altijd precies wie er namens
-      jou belt en aan tafel zit.
-    </p>
-    <ul class="mini-list">
-      <li><b>Voorbereid.</b> We verdiepen ons in jouw markt voordat we bellen.</li>
-      <li><b>Persoonlijk.</b> Geen script. Een echt gesprek, met jouw verhaal.</li>
-      <li><b>Vast contact.</b> Altijd hetzelfde gezicht. Je weet wie er namens jou belt.</li>
-    </ul>
-  </Split>
+  <!-- 03 — Wie het doet -->
+  <section class="split-photo" id="h03">
+    <div class="sp-media reveal">
+      <Duotone src="/assets/hens-call-navy.jpeg" alt="Hens aan de telefoon" ratio="4 / 5" caption="DE TELEFOON" />
+    </div>
+    <div class="sp-copy reveal">
+      <Chapter n="03" label="Wie het doet" />
+      <h2 class="h-section">Geen call center. <em>Eén</em> gezicht<span class="dot">.</span></h2>
+      <p class="lede-xl">
+        Bij LINK. spreek je geen tussenlaag. Je weet altijd precies wie er namens
+        jou belt en aan tafel zit.
+      </p>
+      <ul class="mini-list">
+        <li><b>Voorbereid.</b> We verdiepen ons in jouw markt voordat we bellen.</li>
+        <li><b>Persoonlijk.</b> Geen script. Een echt gesprek, met jouw verhaal.</li>
+        <li><b>Vast contact.</b> Altijd hetzelfde gezicht.</li>
+      </ul>
+    </div>
+  </section>
 
-  <!-- Partnerportaal (split, gespiegeld, screenshot geblurd) -->
-  <section id="portaal">
-    <Split
-      src="/assets/portaal-laptop.jpeg"
-      alt="Het partnerportaal op een laptop"
-      ratio="4 / 3"
-      tag="Logboek"
-      blur
-    >
-      <span class="eyebrow">Altijd inzicht</span>
-      <h2>Jouw eigen <span class="it">partnerportaal</span><span class="punc">.</span></h2>
-      <p>
+  <!-- 04 — Partnerportaal -->
+  <section class="split-photo reverse" id="h04">
+    <div class="sp-copy reveal">
+      <Chapter n="04" label="Altijd inzicht" />
+      <h2 class="h-section">Jouw eigen <em>partnerportaal</em><span class="dot">.</span></h2>
+      <p class="lede-xl">
         Je hoeft nooit te vragen hoe het ervoor staat. Alles wat wij doen staat
         live in je eigen omgeving, ook als het even tegenzit.
       </p>
@@ -153,37 +134,40 @@ const opbrengst = [
         {
           portaal.map((p) => (
             <div class="portaal-item">
-              <span class="k">{p.k}</span>
+              <span class="pi-k">{p.k}</span>
               <b>{p.h}</b>
               <span>{p.p}</span>
             </div>
           ))
         }
       </div>
-      <a class="btn-primary" href={site.portal.url} target="_blank" rel="noopener" style="margin-top:8px">
-        Bekijk het partnerportaal <Icon name="arrow" class="arrow" />
+      <a class="ebtn ghost" href={site.portal.url} target="_blank" rel="noopener" style="margin-top:6px">
+        Bekijk het partnerportaal <span class="arw">→</span>
       </a>
-    </Split>
+    </div>
+    <div class="sp-media reveal">
+      <Duotone src="/assets/portaal-laptop.jpeg" alt="Het partnerportaal op een laptop" ratio="4 / 3" caption="LOGBOEK" blur />
+    </div>
   </section>
 
-  <!-- Wat levert het op -->
-  <section class="section">
-    <div class="section-head reveal">
+  <!-- 05 — Wat levert het op -->
+  <section class="mag-sec" id="h05">
+    <div class="split-head reveal">
       <div>
-        <span class="eyebrow">Wat levert het op</span>
-        <h2>Meer <span class="it">warme</span> gesprekken. Minder gedoe<span class="punc">.</span></h2>
+        <Chapter n="05" label="Wat levert het op" />
+        <h2 class="h-section">Meer <em>warme</em> gesprekken<span class="dot">.</span></h2>
       </div>
-      <p class="lede">
+      <p class="lede-xl">
         Samen bepalen we bij wie jij aan tafel wil zitten. Daarna gaan wij aan de
         slag, en blijven we bijsturen op wat we ophalen.
       </p>
     </div>
-    <div class="reeks reeks-2 reveal-stagger">
+    <div class="trio reveal-stagger">
       {
         opbrengst.map((o) => (
-          <div class="reeks-item">
-            <span class="k">{o.n}</span>
-            <h3>{o.h}</h3>
+          <div class="trio-item">
+            <span class="trio-n">{o.n}</span>
+            <h3>{o.t}</h3>
             <p>{o.p}</p>
           </div>
         ))
@@ -191,191 +175,40 @@ const opbrengst = [
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="cta-block">
-    <div class="watermark" data-parallax="0.15" aria-hidden="true">LINK<span class="dot"></span></div>
-    <div class="cta-inner reveal">
-      <div>
-        <span class="eyebrow">Klaar om te beginnen?</span>
-        <h2>Wij bellen. Jij <span class="it">verkoopt</span><span class="punc">.</span></h2>
-      </div>
-      <div class="cta-right">
-        <p class="lede">Stuur ons een berichtje of bel gewoon. We reageren snel en zonder gedoe.</p>
-        <div class="btn-row">
-          <a class="btn-primary" href="/contact">Plan een kennismaking <Icon name="arrow" class="arrow" /></a>
-          <a class="btn-ghost" href="/aanpak">Bekijk de aanpak</a>
-        </div>
-      </div>
+  <!-- 06 — CTA -->
+  <section class="mag-sec cta-sec" id="h06">
+    <Chapter n="06" label="Klaar om te beginnen?" />
+    <h2 class="h-display">Wij bellen. Jij <em>verkoopt</em><span class="dot">.</span></h2>
+    <p class="lede-xl">Stuur ons een berichtje of bel gewoon. We reageren snel en zonder gedoe.</p>
+    <div class="hero-cta">
+      <a class="ebtn" href="/contact">Plan een kennismaking <span class="arw">→</span></a>
+      <a class="ebtn ghost" href="/aanpak">Bekijk de aanpak</a>
     </div>
   </section>
 </Base>
 
 <style>
   .page-hero {
-    padding: clamp(56px, 7vw, 120px) var(--pad-x) clamp(40px, 5vw, 80px);
+    position: relative;
+    z-index: 2;
     display: grid;
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
     gap: clamp(40px, 5vw, 80px);
     align-items: center;
+    padding: clamp(40px, 6vw, 96px) var(--rail) clamp(48px, 6vw, 96px);
   }
-  .page-hero h1 {
-    font-size: var(--t-display);
-    line-height: 0.9;
-    letter-spacing: -0.05em;
-    font-weight: 900;
-    margin: 24px 0 0;
-    max-width: 16ch;
+  .ph-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
   }
-  .page-hero .lede {
-    margin-top: clamp(28px, 3vw, 44px);
-    font-size: var(--t-lede);
-    color: var(--ink-soft);
-    max-width: 56ch;
-    line-height: 1.45;
-  }
-  .hero-actions {
-    margin-top: clamp(24px, 3vw, 40px);
+  .hero-cta {
     display: flex;
     gap: 14px;
     flex-wrap: wrap;
   }
-  .channels {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .channel {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    background: var(--paper);
-    border: 1px solid var(--line-soft);
-    border-radius: var(--r-card);
-    padding: 20px 22px;
-    transition: border-color 0.2s ease;
-  }
-  .channel:hover {
-    border-color: var(--ink);
-  }
-  .ch-ic {
-    width: 52px;
-    height: 52px;
-    flex-shrink: 0;
-    border-radius: 14px;
-    display: grid;
-    place-items: center;
-    background: color-mix(in oklab, var(--blue) 14%, var(--bg));
-    color: var(--blue-deep);
-    position: relative;
-  }
-  .ch-ic .live-dot {
-    position: absolute;
-    top: -3px;
-    right: -3px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--blue);
-    border: 2px solid var(--paper);
-    animation: live-pulse 1.6s ease-out infinite;
-  }
-  .ch-text {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-  }
-  .ch-num {
-    font-family: var(--font-mono);
-    color: var(--blue-deep);
-    font-size: 12px;
-  }
-  .ch-name {
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--ink);
-    margin-top: 2px;
-  }
-  .ch-sub {
-    font-size: 13px;
-    color: var(--mute);
-    margin-top: 3px;
-  }
-  .ch-arrow {
-    color: var(--mute);
-    flex-shrink: 0;
-    display: grid;
-    transition: transform 0.25s var(--ease);
-  }
-  .channel:hover .ch-arrow {
-    transform: translateX(4px);
-    color: var(--blue-deep);
-  }
-  .ch-foot {
-    padding: 4px;
-    font-size: 13px;
-    color: var(--mute);
-    margin: 0;
-  }
 
-  .service-detail {
-    padding: clamp(80px, 9vw, 140px) var(--pad-x);
-    border-top: 1px solid var(--line);
-  }
-  .service-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-    gap: clamp(48px, 6vw, 120px);
-    align-items: start;
-  }
-  .service-grid h2 {
-    font-size: var(--t-h1);
-    line-height: 0.94;
-    letter-spacing: -0.045em;
-    font-weight: 900;
-    margin: 18px 0 0;
-    max-width: 14ch;
-  }
-  .service-lede {
-    margin-top: clamp(28px, 3vw, 44px);
-    font-size: var(--t-lede);
-    line-height: 1.5;
-    max-width: 48ch;
-    color: var(--ink-soft);
-  }
-  .spec-list {
-    margin-top: clamp(28px, 3vw, 44px);
-  }
-  .spec {
-    display: grid;
-    grid-template-columns: 160px 1fr;
-    gap: 24px;
-    padding: 18px 0;
-    border-top: 1px solid var(--line);
-    align-items: baseline;
-  }
-  .spec:last-child {
-    border-bottom: 1px solid var(--line);
-  }
-  .spec .k {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--mute);
-  }
-  .spec .v {
-    font-size: 17px;
-    line-height: 1.45;
-  }
-  .spec .v :global(em) {
-    font-family: var(--font-serif);
-    font-style: italic;
-    color: var(--blue);
-  }
-
-  /* Call-card visual */
+  /* Call-card */
   .call-card {
     background: var(--paper);
     border: 1px solid var(--line-soft);
@@ -386,29 +219,28 @@ const opbrengst = [
     flex-direction: column;
     gap: 14px;
   }
-  .call-card .head {
+  .cc-head {
     display: flex;
     align-items: center;
     gap: 10px;
     font-family: var(--font-mono);
     font-size: 11px;
-    color: var(--mute);
     letter-spacing: 0.14em;
-    text-transform: uppercase;
+    color: var(--mute);
   }
-  .rec-dot {
+  .rec {
     width: 8px;
     height: 8px;
     background: #e54b4b;
     border-radius: 50%;
-    animation: live-pulse 1.8s ease-out infinite;
+    animation: pulse 1.8s ease-out infinite;
   }
-  .call-card .who {
+  .cc-who {
     display: flex;
     align-items: center;
     gap: 12px;
   }
-  .call-card .avatar {
+  .cc-av {
     width: 36px;
     height: 36px;
     border-radius: 50%;
@@ -418,38 +250,34 @@ const opbrengst = [
     place-items: center;
     font-weight: 700;
     font-size: 13px;
-    flex-shrink: 0;
   }
-  .call-card .who-text {
+  .cc-txt {
     display: flex;
     flex-direction: column;
     gap: 1px;
   }
-  .call-card .who-name {
+  .cc-name {
     font-size: 14px;
     font-weight: 600;
-    color: var(--ink);
   }
-  .call-card .who-role {
+  .cc-role {
     font-size: 12px;
     color: var(--mute);
   }
-  .call-card .who-timer {
+  .cc-timer {
     margin-left: auto;
     font-family: var(--font-mono);
     font-size: 13px;
     color: var(--blue-deep);
     font-weight: 600;
-    font-variant-numeric: tabular-nums;
   }
-  .waveform {
+  .cc-wave {
     display: flex;
     align-items: flex-end;
     gap: 3px;
-    height: 26px;
-    padding: 0 2px;
+    height: 30px;
   }
-  .waveform .bar {
+  .cc-wave span {
     flex: 1;
     background: linear-gradient(to top, var(--blue), var(--blue-deep));
     border-radius: 2px;
@@ -457,30 +285,19 @@ const opbrengst = [
     transform-origin: bottom;
     animation: wave 1.4s ease-in-out infinite;
   }
-  .waveform .bar:nth-child(2n) {
-    animation-delay: -0.4s;
-  }
-  .waveform .bar:nth-child(3n) {
-    animation-delay: -0.8s;
-  }
-  .waveform .bar:nth-child(4n) {
-    animation-delay: -1.1s;
-  }
-  .waveform .bar:nth-child(5n) {
-    animation-delay: -0.2s;
-  }
+  .cc-wave span:nth-child(2n) { animation-delay: -0.4s; }
+  .cc-wave span:nth-child(3n) { animation-delay: -0.8s; }
+  .cc-wave span:nth-child(4n) { animation-delay: -1.1s; }
+  .cc-wave span:nth-child(5n) { animation-delay: -0.2s; }
   @keyframes wave {
-    0%,
-    100% {
-      transform: scaleY(0.35);
-      opacity: 0.55;
-    }
-    50% {
-      transform: scaleY(1);
-      opacity: 1;
-    }
+    0%, 100% { transform: scaleY(0.35); opacity: 0.55; }
+    50% { transform: scaleY(1); opacity: 1; }
   }
-  .call-card .transcript {
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.15); }
+  }
+  .cc-quote {
     font-family: var(--font-serif);
     font-style: italic;
     font-size: 14px;
@@ -490,27 +307,103 @@ const opbrengst = [
     border-top: 1px dashed var(--line);
     margin: 0;
   }
-  .call-card .transcript em {
+  .cc-quote em {
     color: var(--blue-deep);
-    font-style: italic;
-    font-weight: 500;
-  }
-  .visual-cap {
-    margin-top: 18px;
-    padding-top: 14px;
-    border-top: 1px solid var(--line);
-    font-size: 15px;
-    line-height: 1.55;
-    color: var(--ink-soft);
-    max-width: 42ch;
-  }
-  .visual-cap b {
-    font-weight: 600;
-    color: var(--ink);
-    margin-right: 8px;
   }
 
-  /* Split-inhoud helpers */
+  /* Service */
+  .service {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: clamp(40px, 6vw, 100px);
+    align-items: start;
+    padding: clamp(60px, 8vw, 130px) var(--rail);
+    border-top: 1px solid var(--line);
+  }
+  .service-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .specs {
+    margin-top: 12px;
+  }
+  .spec {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 24px;
+    padding: 18px 0;
+    border-top: 1px solid var(--line);
+    align-items: baseline;
+  }
+  .spec:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  .spec-k {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+  .spec-v {
+    font-size: 17px;
+    line-height: 1.45;
+  }
+  .spec-v :global(em) {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--blue-deep);
+  }
+  .service-note {
+    position: sticky;
+    top: 120px;
+  }
+  .note {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(20px, 1.8vw, 26px);
+    line-height: 1.4;
+    color: var(--ink);
+    border-left: 2px solid var(--blue);
+    padding-left: 22px;
+    margin: 0;
+  }
+  .note b {
+    font-family: var(--font-sans);
+    font-style: normal;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  /* Split-photo */
+  .split-photo {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: clamp(40px, 5vw, 96px);
+    align-items: center;
+    padding: clamp(56px, 7vw, 120px) var(--rail);
+    border-top: 1px solid var(--line);
+  }
+  .split-photo.reverse {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+  .split-photo.reverse .sp-media {
+    order: 2;
+  }
+  .sp-media :global(.duo) {
+    min-height: 52vh;
+  }
+  .sp-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
   .mini-list {
     list-style: none;
     padding: 0;
@@ -553,7 +446,7 @@ const opbrengst = [
     padding-top: 14px;
     border-top: 1px solid var(--line);
   }
-  .portaal-item .k {
+  .pi-k {
     font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.14em;
@@ -563,7 +456,6 @@ const opbrengst = [
   .portaal-item b {
     font-size: 16px;
     font-weight: 700;
-    color: var(--ink);
   }
   .portaal-item span:last-child {
     font-size: 14px;
@@ -571,79 +463,75 @@ const opbrengst = [
     line-height: 1.45;
   }
 
-  .reeks-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .cta-block {
-    padding: clamp(80px, 9vw, 140px) var(--pad-x);
-    position: relative;
-    overflow: hidden;
-  }
-  .cta-block .watermark {
-    bottom: -60px;
-  }
-  .cta-inner {
+  .split-head {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: clamp(40px, 5vw, 80px);
+    gap: clamp(32px, 5vw, 80px);
     align-items: end;
-    position: relative;
-    z-index: 2;
   }
-  .cta-inner h2 {
-    font-size: var(--t-display);
-    line-height: 0.9;
-    letter-spacing: -0.05em;
-    font-weight: 900;
-    margin: 14px 0 0;
-    max-width: 12ch;
+  .trio {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(28px, 3vw, 56px);
+    margin-top: clamp(40px, 5vw, 72px);
   }
-  .cta-right {
+  .trio-item {
+    border-top: 2px solid var(--ink);
+    padding-top: 20px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 12px;
   }
-  .cta-right .lede {
-    font-size: var(--t-lede);
-    color: var(--ink-soft);
-    line-height: 1.45;
+  .trio-n {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: var(--blue-deep);
+  }
+  .trio-item h3 {
+    font-size: clamp(24px, 2.4vw, 36px);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1;
     margin: 0;
-    max-width: 42ch;
   }
-  .btn-row {
+  .trio-item p {
+    color: var(--ink-soft);
+    font-size: 16px;
+    line-height: 1.55;
+    margin: 0;
+    max-width: 40ch;
+  }
+  .cta-sec {
     display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 22px;
+    align-items: flex-start;
   }
 
-  @keyframes live-pulse {
-    0%,
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.6;
-      transform: scale(1.2);
-    }
-  }
-
-  @media (max-width: 1100px) {
-    .service-grid {
-      grid-template-columns: 1fr;
-      gap: 40px;
-    }
-  }
-  @media (max-width: 980px) {
+  @media (max-width: 900px) {
     .page-hero {
       grid-template-columns: 1fr;
     }
-    .cta-inner {
+    .service {
       grid-template-columns: 1fr;
     }
-  }
-  @media (max-width: 560px) {
+    .service-note {
+      position: static;
+    }
+    .split-photo,
+    .split-photo.reverse {
+      grid-template-columns: 1fr;
+    }
+    .split-photo.reverse .sp-media {
+      order: 0;
+    }
+    .split-head {
+      grid-template-columns: 1fr;
+    }
+    .trio {
+      grid-template-columns: 1fr;
+    }
     .portaal-grid {
       grid-template-columns: 1fr;
     }

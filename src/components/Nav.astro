@@ -1,9 +1,6 @@
 ---
 import { nav, site } from '@/lib/site';
-import Logo from './Logo.astro';
-import Icon from './Icon.astro';
 
-// Actieve route bepalen (extensieloos, trailing slash weg).
 const current = '/' + (Astro.url.pathname.replace(/^\/|\/$/g, '') || '');
 function isActive(href: string) {
   if (href === '/') return current === '/';
@@ -11,141 +8,29 @@ function isActive(href: string) {
 }
 ---
 
-<header class="nav" data-nav>
-  <div class="nav-inner">
-    <Logo />
-    <nav class="nav-links" aria-label="Hoofdmenu">
-      {
-        nav.map((item) => (
+<!-- Dossier-metabar -->
+<div class="metabar">
+  <span>LINK<span class="b">.</span> — B2B ACQUISITIE</span>
+  <span class="hide-s">ALPHEN A/D RIJN</span>
+  <span class="hide-s">EST. MMXXV</span>
+  <span>MAANDELIJKS OPZEGBAAR</span>
+</div>
+
+<header class="enav" data-nav>
+  <a href="/" class="logo" aria-label="LINK.">LINK<span class="b">.</span></a>
+  <nav class="enav-links" aria-label="Hoofdmenu">
+    {
+      nav
+        .filter((i) => i.href !== '/')
+        .map((item) => (
           <a href={item.href} class:list={{ active: isActive(item.href) }}>
             {item.label}
           </a>
         ))
-      }
-    </nav>
-    <div class="nav-right">
-      <a
-        href={site.portal.url}
-        class="nav-login"
-        target="_blank"
-        rel="noopener"
-      >
-        <Icon name="login" size={15} />
-        <span>{site.portal.label}</span>
-      </a>
-      <a href="/contact" class="nav-cta">
-        Even kennismaken
-        <Icon name="arrow" size={14} />
-      </a>
-    </div>
+    }
+  </nav>
+  <div class="enav-right">
+    <a href={site.portal.url} class="enav-login hide-s" target="_blank" rel="noopener">Inloggen</a>
+    <a href="/contact" class="enav-cta">Even kennismaken <span class="arw">→</span></a>
   </div>
 </header>
-
-<style>
-  .nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    background: color-mix(in oklab, var(--bg) 78%, transparent);
-    border-bottom: 1px solid color-mix(in oklab, var(--line) 50%, transparent);
-    transition:
-      transform 0.4s var(--ease),
-      background 0.3s ease;
-  }
-  .nav.hidden {
-    transform: translateY(-100%);
-  }
-  .nav.scrolled {
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-  }
-  .nav-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px var(--pad-x);
-  }
-  .nav-links {
-    display: flex;
-    gap: 36px;
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--ink-soft);
-  }
-  .nav-links a {
-    position: relative;
-    padding: 6px 0;
-    transition: color 0.2s ease;
-  }
-  .nav-links a:hover {
-    color: var(--ink);
-  }
-  .nav-links a.active {
-    color: var(--ink);
-  }
-  .nav-links a.active::before {
-    content: '';
-    position: absolute;
-    left: -10px;
-    top: 50%;
-    width: 5px;
-    height: 5px;
-    background: var(--blue);
-    border-radius: 50%;
-    transform: translateY(-50%);
-  }
-  .nav-right {
-    display: flex;
-    align-items: center;
-    gap: 22px;
-  }
-  .nav-login {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--ink-soft);
-    transition: color 0.2s ease;
-  }
-  .nav-login :global(svg) {
-    opacity: 0.7;
-  }
-  .nav-login:hover {
-    color: var(--blue-deep);
-  }
-  .nav-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 20px;
-    background: var(--ink);
-    color: var(--paper);
-    border-radius: 999px;
-    font-size: 14px;
-    font-weight: 600;
-    transition: background 0.2s ease;
-  }
-  .nav-cta:hover {
-    background: var(--blue);
-    color: var(--ink);
-  }
-
-  @media (max-width: 980px) {
-    .nav-links {
-      display: none;
-    }
-  }
-  @media (max-width: 600px) {
-    .nav-cta,
-    .nav-login {
-      display: none;
-    }
-    .nav-inner {
-      padding: 14px var(--pad-x);
-    }
-  }
-</style>

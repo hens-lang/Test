@@ -1,14 +1,12 @@
 ---
 import { nav, site } from '@/lib/site';
-import Logo from './Logo.astro';
-const year = 2026;
 ---
 
-<footer class="footer-wrap">
-  <div class="footer-top">
+<footer class="efoot">
+  <div class="efoot-grid">
     <div class="col">
-      <Logo href="/" size={32} onDark />
-      <p class="footer-tagline">
+      <a href="/" class="logo">LINK<span class="b">.</span></a>
+      <p class="efoot-tag">
         Dè partner van B2B bedrijven. Wij brengen jou persoonlijk aan tafel bij
         nieuwe klanten.
       </p>
@@ -20,123 +18,23 @@ const year = 2026;
     <div class="col">
       <span class="k">Wat we doen</span>
       <a href="/diensten#telefonisch">Telefonische acquisitie</a>
+      <a href={site.portal.url} target="_blank" rel="noopener">Partnerportaal</a>
       <a href="/contact">Kennismaken</a>
     </div>
     <div class="col">
       <span class="k">Contact</span>
       <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
       <a href={`tel:${site.contact.phoneHref}`}>{site.contact.phoneDisplay}</a>
-      <a href={site.url}>www.linkgrp.nl</a>
-      <a
-        href={site.contact.mapsUrl}
-        target="_blank"
-        rel="noopener"
-        style="margin-top:6px;line-height:1.5;"
-      >
-        {site.contact.street}<br />{site.contact.postalCode}
-        {site.contact.city}
+      <a href={site.contact.mapsUrl} target="_blank" rel="noopener">
+        {site.contact.street}, {site.contact.postalCode} {site.contact.city}
       </a>
     </div>
   </div>
 
-  <div class="footer-mega" aria-hidden="true">LINK<span class="dot"></span></div>
+  <div class="efoot-mega" aria-hidden="true">LINK<span class="b">.</span></div>
 
-  <div class="footer-bottom">
-    <span>© {year} LINK<span class="blue">.</span> · Alle rechten voorbehouden</span>
-    <span>Gemaakt met aandacht in Nederland</span>
+  <div class="efoot-bottom">
+    <span>© 2026 LINK<span style="color:var(--blue)">.</span> — ALLE RECHTEN VOORBEHOUDEN</span>
+    <span>GEMAAKT MET AANDACHT IN NEDERLAND</span>
   </div>
 </footer>
-
-<style>
-  .footer-wrap {
-    background: var(--ink);
-    color: var(--dark-text);
-  }
-  .footer-top {
-    padding: clamp(64px, 7vw, 120px) var(--pad-x) clamp(32px, 4vw, 64px);
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: clamp(32px, 4vw, 80px);
-    border-bottom: 1px solid #1f1e1b;
-  }
-  .col {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .k {
-    text-transform: uppercase;
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    color: var(--dark-mute);
-    font-weight: 600;
-    margin-bottom: 6px;
-    font-family: var(--font-mono);
-  }
-  .footer-top a {
-    color: var(--dark-text);
-    transition: color 0.2s ease;
-    width: fit-content;
-  }
-  .footer-top a:hover {
-    color: var(--blue);
-  }
-  .footer-tagline {
-    color: var(--dark-mute);
-    max-width: 32ch;
-    margin-top: 8px;
-  }
-  .footer-mega {
-    padding: 0 var(--pad-x);
-    font-weight: 900;
-    font-size: clamp(90px, 15vw, 240px);
-    letter-spacing: -0.06em;
-    line-height: 0.85;
-    color: var(--paper);
-    display: flex;
-    align-items: baseline;
-    overflow: hidden;
-    user-select: none;
-  }
-  .footer-mega .dot {
-    width: clamp(18px, 2.6vw, 42px);
-    height: clamp(18px, 2.6vw, 42px);
-    background: var(--blue);
-    border-radius: 50%;
-    display: inline-block;
-    margin-left: 14px;
-  }
-  .footer-bottom {
-    padding: 28px var(--pad-x);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: var(--dark-mute);
-    font-size: 13px;
-    border-top: 1px solid #1f1e1b;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  .footer-bottom .blue {
-    color: var(--blue);
-  }
-  @media (max-width: 980px) {
-    .footer-top {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-  @media (max-width: 600px) {
-    .footer-top {
-      grid-template-columns: 1fr;
-      gap: 28px;
-    }
-    .footer-mega {
-      font-size: 26vw;
-    }
-    .footer-bottom {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
-    }
-  }
-</style>

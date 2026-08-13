@@ -1,17 +1,23 @@
 ---
 import Base from '@/layouts/Base.astro';
-import Figure from '@/components/Figure.astro';
+import Chapter from '@/components/Chapter.astro';
+import Duotone from '@/components/Duotone.astro';
 import TariefCalculator from '@/components/widgets/TariefCalculator.astro';
 
-const faq = [
-  { q: 'Met wat voor <span class="it">bedrijven</span> werken jullie?', a: 'Wij werken voor B2B-bedrijven die hun salesmotor willen opzetten of versterken. Of het nu een groothandel, dienstverlener of softwarebedrijf is, als jouw klant een ander bedrijf is, kunnen wij meestal helpen. Niet zeker of we passen? Bel ons gerust.' },
-  { q: 'Hoe lang duurt het voor we resultaat zien?', a: 'Eerlijk: de eerste weken zijn vooral voorbereiden, doelgroep scherpstellen, prospectlijst bouwen, jouw verhaal echt begrijpen. Vanaf maand twee verwacht je de eerste afspraken te zien. Maar we beloven niets dat we niet kunnen waarmaken.' },
-  { q: 'Werken jullie met <span class="it">vaste</span> contracten?', a: 'Nee. Wij werken maandelijks opzegbaar. Wij verdienen onze plek elke maand opnieuw, dat houdt ons scherp, en geeft jou de vrijheid om te stoppen als het niet meer klopt.' },
-  { q: 'Wat als jullie denken dat het niet gaat werken?', a: 'Dan zeggen we dat. Liever een eerlijk nee vooraf dan een moeizame samenwerking achteraf. We gaan geen samenwerking aan als we er niet achter staan, dat heeft niemand iets aan.' },
-  { q: 'Hoe zit het met <span class="it">rapportage</span>?', a: 'Wekelijks. Heldere rapportages die je écht inzicht geven in wat we hebben gedaan, wat het opleverde en wat beter kan. Als iets niet loopt zoals verwacht, hoor je dat van ons zonder dat je ernaar hoeft te vragen.' },
+const index = [
+  { n: '01', label: 'Koffie' },
+  { n: '02', label: 'Tarief' },
+  { n: '03', label: 'Vragen' },
 ];
 
-// Strip HTML uit de FAQ-vraag voor de structured data.
+const faq = [
+  { q: 'Met wat voor <em>bedrijven</em> werken jullie?', a: 'Wij werken voor B2B-bedrijven die hun salesmotor willen opzetten of versterken. Of het nu een groothandel, dienstverlener of softwarebedrijf is, als jouw klant een ander bedrijf is, kunnen wij meestal helpen. Niet zeker of we passen? Bel ons gerust.' },
+  { q: 'Hoe lang duurt het voor we resultaat zien?', a: 'Eerlijk: de eerste weken zijn vooral voorbereiden, doelgroep scherpstellen, prospectlijst bouwen, jouw verhaal echt begrijpen. Vanaf maand twee verwacht je de eerste afspraken te zien. Maar we beloven niets dat we niet kunnen waarmaken.' },
+  { q: 'Werken jullie met <em>vaste</em> contracten?', a: 'Nee. Wij werken maandelijks opzegbaar. Wij verdienen onze plek elke maand opnieuw, dat houdt ons scherp, en geeft jou de vrijheid om te stoppen als het niet meer klopt.' },
+  { q: 'Wat als jullie denken dat het niet gaat werken?', a: 'Dan zeggen we dat. Liever een eerlijk nee vooraf dan een moeizame samenwerking achteraf. We gaan geen samenwerking aan als we er niet achter staan, dat heeft niemand iets aan.' },
+  { q: 'Hoe zit het met <em>rapportage</em>?', a: 'Wekelijks. Heldere rapportages die je écht inzicht geven in wat we hebben gedaan, wat het opleverde en wat beter kan. Als iets niet loopt zoals verwacht, hoor je dat van ons zonder dat je ernaar hoeft te vragen.' },
+];
+
 const faqJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
@@ -25,9 +31,9 @@ const faqJsonLd = {
 const tracker = [
   { state: 'done', title: 'Bericht ontvangen', sub: 'We krijgen direct een melding op de telefoon.', time: '+ 0 min' },
   { state: 'done', title: 'Persoonlijke reactie van Hens', sub: 'Persoonlijk antwoord, geen auto-reply. Meestal binnen 30 minuten.', time: '+ 30 min' },
-  { state: 'now', title: 'Korte kennismaking inplannen', sub: '15-20 minuten via Teams of bij ons op kantoor. Een open gesprek waarin we samen kijken of het klopt.', time: 'Vandaag' },
-  { state: '', title: 'Voorstel op maat', sub: 'Als het past, sturen we een concreet voorstel: doelgroep, aanpak, tarief. Geen onleesbare offertes.', time: '+ 1 week' },
-  { state: '', title: 'Eerste afspraken voor jou', sub: 'Vanaf de 2e week bellen zie je de eerste gesprekken in je agenda staan.', time: '+ 2 weken' },
+  { state: 'now', title: 'Korte kennismaking inplannen', sub: '15-20 minuten via Teams of bij ons op kantoor. Kijken of het klopt.', time: 'Vandaag' },
+  { state: '', title: 'Voorstel op maat', sub: 'Als het past: doelgroep, aanpak, tarief. Geen onleesbare offertes.', time: '+ 1 week' },
+  { state: '', title: 'Eerste afspraken voor jou', sub: 'Vanaf de 2e week bellen zie je de eerste gesprekken in je agenda.', time: '+ 2 weken' },
 ];
 ---
 
@@ -36,22 +42,23 @@ const tracker = [
   description="Even kennismaken bij een kop koffie? Bel (0172) 27 10 08 of mail info@linkgrp.nl. We reageren meestal binnen 30 minuten. Gevestigd in Alphen aan den Rijn."
   path="/contact"
   jsonLd={faqJsonLd}
+  index={index}
 >
-  <!-- Hero -->
-  <section class="contact-hero">
-    <div class="intro reveal">
-      <span class="eyebrow">Contact</span>
-      <h1>We drinken graag een kop <span class="it">koffie</span> met je<span class="punc">.</span></h1>
-      <p class="lede">
+  <!-- 01 — Hero + tracker -->
+  <section class="page-hero" id="h01">
+    <div class="ph-copy reveal">
+      <Chapter n="01" label="Contact" />
+      <h1 class="h-giant">Een kop <em>koffie</em> met je<span class="dot">.</span></h1>
+      <p class="lede-xl">
         Gewoon kennismaken bij een kop koffie. Past het, dan plannen we een
         vervolg. Past het niet, dan zeggen we dat ook eerlijk.
       </p>
     </div>
 
-    <aside class="tracker-card reveal" aria-label="Wat gebeurt er na je bericht">
+    <aside class="tracker reveal" aria-label="Wat gebeurt er na je bericht">
       <div class="tr-head">
-        <div class="tr-title">
-          <span class="tr-eyebrow">Wat er gebeurt na je bericht</span>
+        <div>
+          <span class="tr-eyebrow">Na je bericht</span>
           <span class="tr-name">Zo gaan we te <em>werk</em></span>
         </div>
         <span class="tr-id">#LINK-2206</span>
@@ -69,19 +76,17 @@ const tracker = [
                   <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/></svg>
                 )}
               </span>
-              <div class="info">
-                <span class="tr-step-title">{t.title}</span>
-                <span class="tr-step-sub">{t.sub}</span>
+              <div class="tr-info">
+                <span class="tr-t">{t.title}</span>
+                <span class="tr-s">{t.sub}</span>
               </div>
-              <span class="tr-step-time">{t.time}</span>
+              <span class="tr-time">{t.time}</span>
             </li>
           ))
         }
       </ul>
       <div class="tr-foot">
-        <div class="tr-avatar-stack">
-          <span class="tr-av">HB</span>
-        </div>
+        <span class="tr-av">HB</span>
         <div class="tr-promise">
           <b>Reageert meestal <em>binnen 30 minuten</em></b>
           <span>Hens · zonder gedoe</span>
@@ -90,39 +95,38 @@ const tracker = [
     </aside>
   </section>
 
-  <!-- Formulier + sidebar -->
-  <section class="contact-grid" id="form">
-    <TariefCalculator />
-
-    <aside class="contact-side reveal">
-      <div class="side-photo">
-        <Figure src="/assets/hens-coffee.jpeg" alt="Hens bij een kop koffie" ratio="3 / 4" position="center 20%" radius="var(--r-card)" />
-        <div class="side-photo-overlay"></div>
-        <div class="side-photo-content">
-          <span class="sp-label">Even kennismaken</span>
-          <p class="sp-quote">"Als we denken dat het past, plannen we een kop koffie. Als het niet past, zeggen we dat ook <em>gewoon</em>."</p>
-          <span class="sp-by">Hens<span class="punc">.</span></span>
-        </div>
+  <!-- 02 — Tarief -->
+  <section class="contact-grid" id="h02">
+    <div class="cg-intro reveal">
+      <Chapter n="02" label="Tarief op maat" />
+      <h2 class="h-section">Wat kost het?<br />Dat <em>rekenen</em> we uit<span class="dot">.</span></h2>
+      <p class="lede-xl">
+        Vier korte vragen over jouw cijfers. Daarna maken we persoonlijk een
+        berekening op maat. Je verplicht je tot niets.
+      </p>
+      <div class="cg-photo">
+        <Duotone src="/assets/hens-coffee.jpeg" alt="Hens bij een kop koffie" ratio="4 / 3" caption="EVEN KENNISMAKEN" position="center 20%" />
       </div>
-    </aside>
+    </div>
+    <TariefCalculator />
   </section>
 
-  <!-- FAQ -->
-  <section class="faq">
-    <div class="section-head reveal">
+  <!-- 03 — FAQ -->
+  <section class="mag-sec" id="h03">
+    <div class="split-head reveal">
       <div>
-        <span class="eyebrow">Vragen vooraf</span>
-        <h2>Wat je nog wilde <span class="it">weten</span><span class="punc">.</span></h2>
+        <Chapter n="03" label="Vragen vooraf" />
+        <h2 class="h-section">Wat je nog wilde <em>weten</em><span class="dot">.</span></h2>
       </div>
-      <p class="lede">Een paar vragen die we vaak krijgen. Mist er iets? Stuur het ons gerust.</p>
+      <p class="lede-xl">Een paar vragen die we vaak krijgen. Mist er iets? Stuur het ons gerust.</p>
     </div>
-    <div class="faq-list">
+    <div class="faq-list reveal">
       {
         faq.map((f) => (
           <details class="faq-item">
             <summary>
               <span class="q" set:html={f.q} />
-              <span class="icon" aria-hidden="true">
+              <span class="ico" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
               </span>
             </summary>
@@ -135,31 +139,23 @@ const tracker = [
 </Base>
 
 <style>
-  .contact-hero {
-    padding: clamp(56px, 7vw, 120px) var(--pad-x) clamp(40px, 5vw, 80px);
+  .page-hero {
+    position: relative;
+    z-index: 2;
     display: grid;
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
     gap: clamp(40px, 5vw, 80px);
     align-items: center;
+    padding: clamp(40px, 6vw, 96px) var(--rail) clamp(48px, 6vw, 96px);
   }
-  .contact-hero h1 {
-    font-size: var(--t-display);
-    line-height: 0.88;
-    letter-spacing: -0.05em;
-    font-weight: 900;
-    margin: 24px 0 0;
-    max-width: 12ch;
-  }
-  .contact-hero .lede {
-    margin-top: clamp(28px, 3vw, 44px);
-    font-size: var(--t-lede);
-    color: var(--ink-soft);
-    max-width: 52ch;
-    line-height: 1.45;
+  .ph-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
   }
 
-  /* Status tracker */
-  .tracker-card {
+  /* Tracker */
+  .tracker {
     background: var(--paper);
     border: 1px solid var(--line-soft);
     border-radius: var(--r-card);
@@ -175,29 +171,21 @@ const tracker = [
     justify-content: space-between;
     align-items: center;
   }
-  .tr-title {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
   .tr-eyebrow {
+    display: block;
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--mute);
-    font-weight: 500;
+    margin-bottom: 2px;
   }
   .tr-name {
     font-size: 20px;
     font-weight: 800;
     letter-spacing: -0.02em;
-    color: var(--ink);
   }
   .tr-name em {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 400;
     color: var(--blue);
   }
   .tr-id {
@@ -213,8 +201,6 @@ const tracker = [
     list-style: none;
     padding: 0;
     margin: 0;
-    display: flex;
-    flex-direction: column;
   }
   .tr-step {
     display: grid;
@@ -232,7 +218,6 @@ const tracker = [
     left: 14px;
     width: 2px;
     background: var(--line);
-    z-index: 0;
   }
   .tr-step.done + .tr-step::before {
     background: var(--blue);
@@ -262,42 +247,40 @@ const tracker = [
     background: var(--ink);
     border-color: var(--ink);
     color: var(--paper);
-    animation: tr-now-pulse 2s ease-out infinite;
   }
-  .tr-step .info {
+  .tr-info {
     display: flex;
     flex-direction: column;
     gap: 3px;
     padding-top: 2px;
   }
-  .tr-step-title {
+  .tr-t {
     font-size: 14px;
     font-weight: 700;
-    color: var(--ink);
     letter-spacing: -0.01em;
     line-height: 1.2;
   }
-  .tr-step:not(.done):not(.now) .tr-step-title {
+  .tr-step:not(.done):not(.now) .tr-t {
     color: var(--mute);
   }
-  .tr-step-sub {
+  .tr-s {
     font-size: 12px;
     color: var(--mute);
     line-height: 1.45;
     max-width: 38ch;
   }
-  .tr-step-time {
+  .tr-time {
     font-family: var(--font-mono);
     font-size: 11px;
     color: var(--mute);
     padding-top: 4px;
     white-space: nowrap;
   }
-  .tr-step.done .tr-step-time {
+  .tr-step.done .tr-time {
     color: var(--blue);
     font-weight: 700;
   }
-  .tr-step.now .tr-step-time {
+  .tr-step.now .tr-time {
     color: var(--ink);
     font-weight: 700;
   }
@@ -314,7 +297,6 @@ const tracker = [
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    border: 2px solid var(--ink);
     background: linear-gradient(135deg, #e8916f, #b85b36);
     color: white;
     display: grid;
@@ -322,12 +304,8 @@ const tracker = [
     font-size: 11px;
     font-weight: 700;
   }
-  .tr-promise {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-  }
   .tr-promise b {
+    display: block;
     font-size: 13px;
     font-weight: 700;
     color: var(--paper);
@@ -342,108 +320,49 @@ const tracker = [
     font-size: 11px;
     color: var(--dark-mute);
   }
-  @keyframes tr-now-pulse {
-    0%,
-    100% {
-      box-shadow: 0 0 0 0 rgba(11, 11, 11, 0.4);
-    }
-    50% {
-      box-shadow: 0 0 0 8px rgba(11, 11, 11, 0);
-    }
-  }
 
-  /* Formulier-grid */
+  /* Contact-grid */
   .contact-grid {
-    padding: clamp(40px, 5vw, 80px) var(--pad-x) clamp(80px, 9vw, 140px);
-    display: grid;
-    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
-    gap: clamp(40px, 5vw, 96px);
-    align-items: stretch;
-  }
-  .side-photo {
-    position: relative;
-    border-radius: var(--r-card);
-    overflow: hidden;
-    min-height: 480px;
-    height: 100%;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.18);
-  }
-  .side-photo :global(.figure) {
-    position: absolute;
-    inset: 0;
-    aspect-ratio: auto;
-    border-radius: 0;
-  }
-  .side-photo-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background: linear-gradient(
-      180deg,
-      rgba(11, 11, 11, 0.05) 0%,
-      rgba(11, 11, 11, 0.18) 45%,
-      rgba(11, 11, 11, 0.78) 100%
-    );
-  }
-  .side-photo-content {
     position: relative;
     z-index: 2;
-    height: 100%;
-    padding: 32px;
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(40px, 5vw, 96px);
+    align-items: start;
+    padding: clamp(56px, 7vw, 120px) var(--rail);
+    border-top: 1px solid var(--line);
+  }
+  .cg-intro {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    gap: 16px;
-    color: var(--paper);
+    gap: 20px;
+    position: sticky;
+    top: 120px;
   }
-  .sp-label {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    font-weight: 500;
-    color: var(--paper);
+  .cg-photo {
+    margin-top: 8px;
   }
-  .sp-quote {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-size: clamp(22px, 1.9vw, 30px);
-    line-height: 1.3;
-    margin: 0;
-    color: var(--paper);
-    max-width: 22ch;
+  .cg-photo :global(.duo) {
+    min-height: 30vh;
   }
-  .sp-quote em {
-    color: var(--blue);
-  }
-  .sp-by {
-    font-size: 13px;
-    color: var(--paper);
-    font-weight: 500;
-    opacity: 0.85;
+
+  .split-head {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(32px, 5vw, 80px);
+    align-items: end;
   }
 
   /* FAQ */
-  .faq {
-    padding: clamp(80px, 9vw, 140px) var(--pad-x);
-    background: var(--paper);
-  }
   .faq-list {
     display: flex;
     flex-direction: column;
     border-top: 1px solid var(--line);
+    margin-top: clamp(32px, 4vw, 56px);
   }
   .faq-item {
     border-bottom: 1px solid var(--line);
-    padding: 18px;
-    transition: background 0.25s ease;
-    border-radius: 12px;
-  }
-  .faq-item:hover {
-    background: color-mix(in oklab, var(--blue) 5%, transparent);
-  }
-  .faq-item[open] {
-    background: color-mix(in oklab, var(--blue) 7%, transparent);
+    padding: 20px 4px;
   }
   .faq-item summary {
     display: flex;
@@ -451,59 +370,59 @@ const tracker = [
     align-items: center;
     list-style: none;
     cursor: pointer;
-    font-size: clamp(19px, 1.6vw, 24px);
-    font-weight: 600;
-    letter-spacing: -0.022em;
-    line-height: 1.2;
+    font-size: clamp(20px, 1.8vw, 28px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
     gap: 24px;
   }
   .faq-item summary::-webkit-details-marker {
     display: none;
   }
-  .faq-item summary .q {
-    flex: 1;
-    min-width: 0;
-  }
-  .faq-item summary .q :global(.it) {
+  .faq-item summary .q :global(em) {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
     color: var(--blue-deep);
   }
-  .faq-item:hover summary .q {
+  .faq-item:hover summary {
     color: var(--blue-deep);
   }
-  .faq-item .icon {
+  .faq-item .ico {
     flex-shrink: 0;
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
-    background: var(--bg);
     border: 1px solid var(--line);
     display: grid;
     place-items: center;
-    transition:
-      transform 0.3s var(--ease),
-      background 0.2s ease,
-      color 0.2s ease;
+    transition: transform 0.3s var(--ease), background 0.2s, color 0.2s;
     color: var(--ink);
   }
-  .faq-item[open] .icon {
+  .faq-item[open] .ico {
     transform: rotate(45deg);
     background: var(--blue);
     border-color: var(--blue);
-    color: var(--ink);
   }
   .faq-item .answer {
-    margin: 12px 0 0;
+    margin: 14px 0 0;
     color: var(--ink-soft);
     font-size: 16px;
     line-height: 1.6;
     max-width: 64ch;
   }
 
-  @media (max-width: 980px) {
-    .contact-hero {
+  @media (max-width: 900px) {
+    .page-hero {
       grid-template-columns: 1fr;
     }
     .contact-grid {
+      grid-template-columns: 1fr;
+    }
+    .cg-intro {
+      position: static;
+    }
+    .split-head {
       grid-template-columns: 1fr;
     }
   }
