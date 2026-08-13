@@ -1,0 +1,256 @@
+---
+/**
+ * Aanpak-hero — "live" pipeline. Deterministische cijfers per ISO-week.
+ */
+const stages = [
+  { n: '01', label: 'Contactpersonen benaderd', id: 'benaderd' },
+  { n: '02', label: 'Interesse gepolst', id: 'interesse' },
+  { n: '03', label: 'Afspraak ingepland', id: 'afspraak', active: true },
+];
+---
+
+<aside class="pipeline reveal" aria-label="Voorbeeld pipeline">
+  <div class="pl-head">
+    <div class="pl-title">
+      <span class="pl-eyebrow">Onze pipeline</span>
+      <span class="pl-name">Deze week<span class="punc">.</span></span>
+    </div>
+    <span class="pl-live"><span class="live-dot"></span> Live</span>
+  </div>
+
+  <ul class="pl-stages">
+    {
+      stages.map((s) => (
+        <li class:list={['pl-stage', { active: s.active }]} data-stage={s.id}>
+          <div class="pl-meta">
+            <span class="pl-step">{s.n}</span>
+            <span class="pl-label">{s.label}</span>
+            <span class="pl-num" data-num={s.id}>0</span>
+          </div>
+          <div class="pl-bar"><span class="pl-fill" data-fill={s.id}></span></div>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="pl-foot">
+    <div class="pl-stat">
+      <span class="pl-stat-num" data-num="afspraakBig">0</span>
+      <span class="pl-stat-lbl">afspraken<br />deze week</span>
+    </div>
+    <div class="pl-divider"></div>
+    <div class="pl-stat">
+      <span class="pl-stat-num" data-conversie>0<em>%</em></span>
+      <span class="pl-stat-lbl">conversie<br />van benaderd</span>
+    </div>
+  </div>
+</aside>
+
+<script is:inline>
+  (function () {
+    function isoWeek(d) {
+      var date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      var day = (date.getUTCDay() + 6) % 7;
+      date.setUTCDate(date.getUTCDate() - day + 3);
+      var ft = new Date(Date.UTC(date.getUTCFullYear(), 0, 4));
+      var fd = (ft.getUTCDay() + 6) % 7;
+      ft.setUTCDate(ft.getUTCDate() - fd + 3);
+      return 1 + Math.round((date - ft) / (7 * 24 * 3600 * 1000));
+    }
+    var week = isoWeek(new Date());
+    function seeded(n) {
+      var x = Math.sin(week * 97.13 + n * 7.7) * 10000;
+      return x - Math.floor(x);
+    }
+    var benaderd = 210 + Math.round(seeded(1) * 70);
+    var interesse = Math.round(benaderd * (0.32 + seeded(2) * 0.1));
+    var afspraak = Math.round(interesse * (0.22 + seeded(3) * 0.08));
+    var conversie = Math.round((afspraak / benaderd) * 100);
+
+    function set(sel, v) {
+      var el = document.querySelector(sel);
+      if (el) el.textContent = v;
+    }
+    set('[data-num="benaderd"]', benaderd);
+    set('[data-num="interesse"]', interesse);
+    set('[data-num="afspraak"]', afspraak);
+    set('[data-num="afspraakBig"]', afspraak);
+    var c = document.querySelector('[data-conversie]');
+    if (c) c.innerHTML = conversie + '<em>%</em>';
+
+    function width(sel, pct) {
+      var el = document.querySelector(sel);
+      if (el) el.style.width = pct + '%';
+    }
+    width('[data-fill="benaderd"]', 100);
+    width('[data-fill="interesse"]', Math.round((interesse / benaderd) * 100));
+    width('[data-fill="afspraak"]', Math.max(8, Math.round((afspraak / benaderd) * 100)));
+  })();
+</script>
+
+<style>
+  .pipeline {
+    background: var(--paper);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--r-card);
+    padding: 24px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .pl-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .pl-title {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .pl-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mute);
+    font-weight: 500;
+  }
+  .pl-name {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+  .pl-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--blue);
+    border-radius: 50%;
+    animation: live-pulse 1.6s ease-out infinite;
+  }
+  .pl-stages {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .pl-stage {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .pl-meta {
+    display: grid;
+    grid-template-columns: 32px 1fr auto;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .pl-step {
+    font-family: var(--font-mono);
+    color: var(--blue);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+  .pl-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .pl-stage.active .pl-label {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .pl-num {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .pl-stage.active .pl-num {
+    color: var(--blue);
+  }
+  .pl-bar {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--bg);
+    overflow: hidden;
+    border: 1px solid var(--line-soft);
+  }
+  .pl-fill {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--ink);
+    border-radius: 4px;
+    transition: width 1s var(--ease);
+  }
+  .pl-stage.active .pl-fill {
+    background: var(--blue);
+  }
+  .pl-foot {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .pl-stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .pl-stat-num {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  .pl-stat-num :global(em) {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--blue);
+    font-size: 18px;
+    font-weight: 400;
+  }
+  .pl-stat-lbl {
+    font-size: 11px;
+    color: var(--mute);
+    line-height: 1.35;
+  }
+  .pl-divider {
+    width: 1px;
+    height: 36px;
+    background: var(--line);
+  }
+  @keyframes live-pulse {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.6;
+      transform: scale(1.2);
+    }
+  }
+</style>

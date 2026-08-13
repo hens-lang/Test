@@ -1,0 +1,133 @@
+---
+import { site } from '@/lib/site';
+const appId = site.apollo.appId;
+---
+
+<div class="cookie" data-cookie hidden aria-live="polite">
+  <div class="cookie-inner">
+    <div class="cookie-text">
+      <strong>Even over cookies<span class="punc">.</span></strong>
+      <p>
+        We gebruiken één analysetool (Apollo) om te zien hoe de site wordt
+        gebruikt. Alleen met jouw toestemming. Functioneel werkt de site altijd.
+      </p>
+    </div>
+    <div class="cookie-actions">
+      <button type="button" class="btn-ghost" data-cookie-decline>
+        Alleen noodzakelijk
+      </button>
+      <button type="button" class="btn-primary" data-cookie-accept>
+        Prima, accepteren
+      </button>
+    </div>
+  </div>
+</div>
+
+<script is:inline define:vars={{ appId }}>
+  (function () {
+    var KEY = 'link-consent-v1';
+    var banner = document.querySelector('[data-cookie]');
+
+    function loadApollo() {
+      if (window.__apolloLoaded) return;
+      window.__apolloLoaded = true;
+      var n = Math.random().toString(36).substring(7);
+      var o = document.createElement('script');
+      o.src =
+        'https://assets.apollo.io/micro/website-tracker/tracker.iife.js?nocache=' +
+        n;
+      o.async = true;
+      o.defer = true;
+      o.onload = function () {
+        if (window.trackingFunctions)
+          window.trackingFunctions.onLoad({ appId: appId });
+      };
+      document.head.appendChild(o);
+    }
+
+    var choice = null;
+    try {
+      choice = localStorage.getItem(KEY);
+    } catch (e) {}
+
+    if (choice === 'accepted') {
+      loadApollo();
+    } else if (choice !== 'declined' && banner) {
+      banner.hidden = false;
+    }
+
+    function set(val) {
+      try {
+        localStorage.setItem(KEY, val);
+      } catch (e) {}
+      if (banner) banner.hidden = true;
+      if (val === 'accepted') loadApollo();
+    }
+
+    var a = document.querySelector('[data-cookie-accept]');
+    var d = document.querySelector('[data-cookie-decline]');
+    if (a) a.addEventListener('click', function () { set('accepted'); });
+    if (d) d.addEventListener('click', function () { set('declined'); });
+  })();
+</script>
+
+<style>
+  .cookie {
+    position: fixed;
+    left: clamp(16px, 3vw, 32px);
+    right: clamp(16px, 3vw, 32px);
+    bottom: clamp(16px, 3vw, 32px);
+    z-index: 200;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .cookie[hidden] {
+    display: none;
+  }
+  .cookie-inner {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 20px 22px;
+    flex-wrap: wrap;
+  }
+  .cookie-text {
+    flex: 1;
+    min-width: 220px;
+  }
+  .cookie-text strong {
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .cookie-text p {
+    margin: 6px 0 0;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    max-width: 52ch;
+  }
+  .cookie-actions {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .cookie-actions .btn-ghost,
+  .cookie-actions .btn-primary {
+    padding: 11px 18px;
+    font-size: 13.5px;
+  }
+  @media (max-width: 560px) {
+    .cookie-actions {
+      width: 100%;
+    }
+    .cookie-actions .btn-ghost,
+    .cookie-actions .btn-primary {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+</style>

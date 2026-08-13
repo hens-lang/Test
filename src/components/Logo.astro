@@ -1,0 +1,44 @@
+---
+/**
+ * Het merk: LINK + 8px blauwe cirkel (de punt).
+ */
+interface Props {
+  href?: string;
+  size?: number;
+  class?: string;
+  onDark?: boolean;
+}
+const { href = '/', size = 26, class: cls, onDark = false } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={['logo', cls, { 'on-dark': onDark }]}
+  aria-label="LINK."
+  style={`font-size:${size}px`}
+>
+  LINK<span class="dot" aria-hidden="true"></span>
+</a>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+  }
+  .logo.on-dark {
+    color: var(--paper);
+  }
+  .logo .dot {
+    width: 0.31em;
+    height: 0.31em;
+    background: var(--blue);
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 2px;
+    vertical-align: baseline;
+  }
+</style>

@@ -1,0 +1,510 @@
+---
+import Base from '@/layouts/Base.astro';
+import Figure from '@/components/Figure.astro';
+import TariefCalculator from '@/components/widgets/TariefCalculator.astro';
+
+const faq = [
+  { q: 'Met wat voor <span class="it">bedrijven</span> werken jullie?', a: 'Wij werken voor B2B-bedrijven die hun salesmotor willen opzetten of versterken. Of het nu een groothandel, dienstverlener of softwarebedrijf is, als jouw klant een ander bedrijf is, kunnen wij meestal helpen. Niet zeker of we passen? Bel ons gerust.' },
+  { q: 'Hoe lang duurt het voor we resultaat zien?', a: 'Eerlijk: de eerste weken zijn vooral voorbereiden, doelgroep scherpstellen, prospectlijst bouwen, jouw verhaal echt begrijpen. Vanaf maand twee verwacht je de eerste afspraken te zien. Maar we beloven niets dat we niet kunnen waarmaken.' },
+  { q: 'Werken jullie met <span class="it">vaste</span> contracten?', a: 'Nee. Wij werken maandelijks opzegbaar. Wij verdienen onze plek elke maand opnieuw, dat houdt ons scherp, en geeft jou de vrijheid om te stoppen als het niet meer klopt.' },
+  { q: 'Wat als jullie denken dat het niet gaat werken?', a: 'Dan zeggen we dat. Liever een eerlijk nee vooraf dan een moeizame samenwerking achteraf. We gaan geen samenwerking aan als we er niet achter staan, dat heeft niemand iets aan.' },
+  { q: 'Hoe zit het met <span class="it">rapportage</span>?', a: 'Wekelijks. Heldere rapportages die je écht inzicht geven in wat we hebben gedaan, wat het opleverde en wat beter kan. Als iets niet loopt zoals verwacht, hoor je dat van ons zonder dat je ernaar hoeft te vragen.' },
+];
+
+// Strip HTML uit de FAQ-vraag voor de structured data.
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({
+    '@type': 'Question',
+    name: f.q.replace(/<[^>]+>/g, ''),
+    acceptedAnswer: { '@type': 'Answer', text: f.a.replace(/<[^>]+>/g, '') },
+  })),
+};
+
+const tracker = [
+  { state: 'done', title: 'Bericht ontvangen', sub: 'We krijgen direct een melding op de telefoon.', time: '+ 0 min' },
+  { state: 'done', title: 'Persoonlijke reactie van Hens', sub: 'Persoonlijk antwoord, geen auto-reply. Meestal binnen 30 minuten.', time: '+ 30 min' },
+  { state: 'now', title: 'Korte kennismaking inplannen', sub: '15-20 minuten via Teams of bij ons op kantoor. Een open gesprek waarin we samen kijken of het klopt.', time: 'Vandaag' },
+  { state: '', title: 'Voorstel op maat', sub: 'Als het past, sturen we een concreet voorstel: doelgroep, aanpak, tarief. Geen onleesbare offertes.', time: '+ 1 week' },
+  { state: '', title: 'Eerste afspraken voor jou', sub: 'Vanaf de 2e week bellen zie je de eerste gesprekken in je agenda staan.', time: '+ 2 weken' },
+];
+---
+
+<Base
+  title="Contact | Plan een kennismaking met LINK."
+  description="Even kennismaken bij een kop koffie? Bel (0172) 27 10 08 of mail info@linkgrp.nl. We reageren meestal binnen 30 minuten. Gevestigd in Alphen aan den Rijn."
+  path="/contact"
+  jsonLd={faqJsonLd}
+>
+  <!-- Hero -->
+  <section class="contact-hero">
+    <div class="intro reveal">
+      <span class="eyebrow">Contact</span>
+      <h1>We drinken graag een kop <span class="it">koffie</span> met je<span class="punc">.</span></h1>
+      <p class="lede">
+        Gewoon kennismaken bij een kop koffie. Past het, dan plannen we een
+        vervolg. Past het niet, dan zeggen we dat ook eerlijk.
+      </p>
+    </div>
+
+    <aside class="tracker-card reveal" aria-label="Wat gebeurt er na je bericht">
+      <div class="tr-head">
+        <div class="tr-title">
+          <span class="tr-eyebrow">Wat er gebeurt na je bericht</span>
+          <span class="tr-name">Zo gaan we te <em>werk</em></span>
+        </div>
+        <span class="tr-id">#LINK-2206</span>
+      </div>
+      <ul class="tr-steps">
+        {
+          tracker.map((t) => (
+            <li class:list={['tr-step', t.state]}>
+              <span class="tr-marker">
+                {t.state === 'done' ? (
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                ) : t.state === 'now' ? (
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M12 8v4l3 3M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/></svg>
+                )}
+              </span>
+              <div class="info">
+                <span class="tr-step-title">{t.title}</span>
+                <span class="tr-step-sub">{t.sub}</span>
+              </div>
+              <span class="tr-step-time">{t.time}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="tr-foot">
+        <div class="tr-avatar-stack">
+          <span class="tr-av">HB</span>
+        </div>
+        <div class="tr-promise">
+          <b>Reageert meestal <em>binnen 30 minuten</em></b>
+          <span>Hens · zonder gedoe</span>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <!-- Formulier + sidebar -->
+  <section class="contact-grid" id="form">
+    <TariefCalculator />
+
+    <aside class="contact-side reveal">
+      <div class="side-photo">
+        <Figure src="/assets/hens-coffee.jpeg" alt="Hens bij een kop koffie" ratio="3 / 4" position="center 20%" radius="var(--r-card)" />
+        <div class="side-photo-overlay"></div>
+        <div class="side-photo-content">
+          <span class="sp-label">Even kennismaken</span>
+          <p class="sp-quote">"Als we denken dat het past, plannen we een kop koffie. Als het niet past, zeggen we dat ook <em>gewoon</em>."</p>
+          <span class="sp-by">Hens<span class="punc">.</span></span>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq">
+    <div class="section-head reveal">
+      <div>
+        <span class="eyebrow">Vragen vooraf</span>
+        <h2>Wat je nog wilde <span class="it">weten</span><span class="punc">.</span></h2>
+      </div>
+      <p class="lede">Een paar vragen die we vaak krijgen. Mist er iets? Stuur het ons gerust.</p>
+    </div>
+    <div class="faq-list">
+      {
+        faq.map((f) => (
+          <details class="faq-item">
+            <summary>
+              <span class="q" set:html={f.q} />
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </span>
+            </summary>
+            <p class="answer">{f.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contact-hero {
+    padding: clamp(56px, 7vw, 120px) var(--pad-x) clamp(40px, 5vw, 80px);
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(40px, 5vw, 80px);
+    align-items: center;
+  }
+  .contact-hero h1 {
+    font-size: var(--t-display);
+    line-height: 0.88;
+    letter-spacing: -0.05em;
+    font-weight: 900;
+    margin: 24px 0 0;
+    max-width: 12ch;
+  }
+  .contact-hero .lede {
+    margin-top: clamp(28px, 3vw, 44px);
+    font-size: var(--t-lede);
+    color: var(--ink-soft);
+    max-width: 52ch;
+    line-height: 1.45;
+  }
+
+  /* Status tracker */
+  .tracker-card {
+    background: var(--paper);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--r-card);
+    padding: 24px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow: hidden;
+  }
+  .tr-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .tr-title {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .tr-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mute);
+    font-weight: 500;
+  }
+  .tr-name {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .tr-name em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--blue);
+  }
+  .tr-id {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--mute);
+    background: var(--bg);
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--line-soft);
+  }
+  .tr-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .tr-step {
+    display: grid;
+    grid-template-columns: 30px 1fr auto;
+    gap: 14px;
+    align-items: start;
+    padding: 12px 0;
+    position: relative;
+  }
+  .tr-step + .tr-step::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    bottom: calc(100% - 16px);
+    left: 14px;
+    width: 2px;
+    background: var(--line);
+    z-index: 0;
+  }
+  .tr-step.done + .tr-step::before {
+    background: var(--blue);
+  }
+  .tr-marker {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--line);
+    display: grid;
+    place-items: center;
+    color: var(--mute);
+    position: relative;
+    z-index: 1;
+  }
+  .tr-marker svg {
+    width: 14px;
+    height: 14px;
+  }
+  .tr-step.done .tr-marker {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: var(--ink);
+  }
+  .tr-step.now .tr-marker {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+    animation: tr-now-pulse 2s ease-out infinite;
+  }
+  .tr-step .info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-top: 2px;
+  }
+  .tr-step-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  .tr-step:not(.done):not(.now) .tr-step-title {
+    color: var(--mute);
+  }
+  .tr-step-sub {
+    font-size: 12px;
+    color: var(--mute);
+    line-height: 1.45;
+    max-width: 38ch;
+  }
+  .tr-step-time {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--mute);
+    padding-top: 4px;
+    white-space: nowrap;
+  }
+  .tr-step.done .tr-step-time {
+    color: var(--blue);
+    font-weight: 700;
+  }
+  .tr-step.now .tr-step-time {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .tr-foot {
+    background: var(--ink);
+    color: var(--paper);
+    margin: 0 -24px -24px;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .tr-av {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--ink);
+    background: linear-gradient(135deg, #e8916f, #b85b36);
+    color: white;
+    display: grid;
+    place-items: center;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .tr-promise {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .tr-promise b {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--paper);
+  }
+  .tr-promise em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--blue);
+    font-weight: 400;
+  }
+  .tr-promise span {
+    font-size: 11px;
+    color: var(--dark-mute);
+  }
+  @keyframes tr-now-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(11, 11, 11, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 8px rgba(11, 11, 11, 0);
+    }
+  }
+
+  /* Formulier-grid */
+  .contact-grid {
+    padding: clamp(40px, 5vw, 80px) var(--pad-x) clamp(80px, 9vw, 140px);
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: clamp(40px, 5vw, 96px);
+    align-items: stretch;
+  }
+  .side-photo {
+    position: relative;
+    border-radius: var(--r-card);
+    overflow: hidden;
+    min-height: 480px;
+    height: 100%;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.18);
+  }
+  .side-photo :global(.figure) {
+    position: absolute;
+    inset: 0;
+    aspect-ratio: auto;
+    border-radius: 0;
+  }
+  .side-photo-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+      180deg,
+      rgba(11, 11, 11, 0.05) 0%,
+      rgba(11, 11, 11, 0.18) 45%,
+      rgba(11, 11, 11, 0.78) 100%
+    );
+  }
+  .side-photo-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 16px;
+    color: var(--paper);
+  }
+  .sp-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--paper);
+  }
+  .sp-quote {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(22px, 1.9vw, 30px);
+    line-height: 1.3;
+    margin: 0;
+    color: var(--paper);
+    max-width: 22ch;
+  }
+  .sp-quote em {
+    color: var(--blue);
+  }
+  .sp-by {
+    font-size: 13px;
+    color: var(--paper);
+    font-weight: 500;
+    opacity: 0.85;
+  }
+
+  /* FAQ */
+  .faq {
+    padding: clamp(80px, 9vw, 140px) var(--pad-x);
+    background: var(--paper);
+  }
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--line);
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--line);
+    padding: 18px;
+    transition: background 0.25s ease;
+    border-radius: 12px;
+  }
+  .faq-item:hover {
+    background: color-mix(in oklab, var(--blue) 5%, transparent);
+  }
+  .faq-item[open] {
+    background: color-mix(in oklab, var(--blue) 7%, transparent);
+  }
+  .faq-item summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+    cursor: pointer;
+    font-size: clamp(19px, 1.6vw, 24px);
+    font-weight: 600;
+    letter-spacing: -0.022em;
+    line-height: 1.2;
+    gap: 24px;
+  }
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-item summary .q {
+    flex: 1;
+    min-width: 0;
+  }
+  .faq-item summary .q :global(.it) {
+    color: var(--blue-deep);
+  }
+  .faq-item:hover summary .q {
+    color: var(--blue-deep);
+  }
+  .faq-item .icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    display: grid;
+    place-items: center;
+    transition:
+      transform 0.3s var(--ease),
+      background 0.2s ease,
+      color 0.2s ease;
+    color: var(--ink);
+  }
+  .faq-item[open] .icon {
+    transform: rotate(45deg);
+    background: var(--blue);
+    border-color: var(--blue);
+    color: var(--ink);
+  }
+  .faq-item .answer {
+    margin: 12px 0 0;
+    color: var(--ink-soft);
+    font-size: 16px;
+    line-height: 1.6;
+    max-width: 64ch;
+  }
+
+  @media (max-width: 980px) {
+    .contact-hero {
+      grid-template-columns: 1fr;
+    }
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

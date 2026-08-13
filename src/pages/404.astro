@@ -1,0 +1,66 @@
+---
+import Base from '@/layouts/Base.astro';
+import Icon from '@/components/Icon.astro';
+---
+
+<Base
+  title="Pagina niet gevonden | LINK."
+  description="Deze pagina bestaat niet (meer)."
+  path="/404"
+>
+  <section class="notfound">
+    <div class="notfound-inner">
+      <span class="code">404<span class="punc">.</span></span>
+      <h1>Deze pagina is er niet<span class="punc">.</span></h1>
+      <p class="lede">Misschien is de link verouderd. Ga terug naar de start, of neem gewoon even contact op.</p>
+      <div class="btn-row">
+        <a class="btn-primary" href="/">Naar home <Icon name="arrow" class="arrow" /></a>
+        <a class="btn-ghost" href="/contact">Contact</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .notfound {
+    padding: clamp(96px, 12vw, 200px) var(--pad-x);
+    display: grid;
+    place-items: center;
+    text-align: center;
+    min-height: 60vh;
+  }
+  .notfound-inner {
+    max-width: 40ch;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .code {
+    font-family: var(--font-mono);
+    font-size: clamp(56px, 10vw, 120px);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .notfound h1 {
+    font-size: var(--t-h2);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin: 0;
+  }
+  .notfound .lede {
+    font-size: var(--t-lede);
+    color: var(--ink-soft);
+    line-height: 1.45;
+    margin: 0;
+  }
+  .btn-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 12px;
+  }
+</style>

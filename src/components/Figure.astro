@@ -1,0 +1,134 @@
+---
+/**
+ * Fotocontainer met vaste aspect-ratio en overflow:hidden, zodat foto's
+ * de layout nooit oprekken. Toont een nette placeholder zolang het
+ * echte bestand ontbreekt (onError verbergt de <img>).
+ *
+ * `blur` is voor portaal-screenshots: 2–2.5px blur zodat klantnamen
+ * onleesbaar zijn — VERPLICHT bij echte screenshots (zie README/handoff).
+ */
+interface Props {
+  src: string;
+  alt: string;
+  ratio?: string; // bv. "3 / 2", "4 / 5"
+  tag?: string;
+  live?: boolean;
+  blur?: boolean;
+  position?: string; // object-position
+  radius?: string;
+  class?: string;
+  eager?: boolean;
+}
+const {
+  src,
+  alt,
+  ratio = '3 / 2',
+  tag,
+  live = false,
+  blur = false,
+  position = 'center',
+  radius,
+  class: cls,
+  eager = false,
+} = Astro.props;
+---
+
+<figure
+  class:list={['figure', cls, { blur }]}
+  style={`--ratio:${ratio};${radius ? `--radius:${radius};` : ''}`}
+  data-label={tag ?? alt}
+>
+  <img
+    src={src}
+    alt={alt}
+    loading={eager ? 'eager' : 'lazy'}
+    decoding="async"
+    style={`object-position:${position}`}
+    onerror="this.style.display='none';this.closest('.figure')?.classList.add('no-img')"
+  />
+  {
+    tag && (
+      <figcaption class="tag">
+        {live && <span class="live-dot" />}
+        {tag}
+      </figcaption>
+    )
+  }
+</figure>
+
+<style>
+  .figure {
+    position: relative;
+    aspect-ratio: var(--ratio, 3 / 2);
+    border-radius: var(--radius, var(--r-card));
+    overflow: hidden;
+    background: var(--bg-3);
+    background-image: repeating-linear-gradient(
+      135deg,
+      transparent 0 18px,
+      rgba(0, 0, 0, 0.045) 18px 19px
+    );
+  }
+  .figure img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .figure.blur img {
+    filter: blur(2.2px) saturate(103%);
+    transform: scale(1.06);
+  }
+  .figure.no-img::after {
+    content: attr(data-label);
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--mute);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .tag {
+    position: absolute;
+    left: 14px;
+    bottom: 14px;
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 5;
+    pointer-events: none;
+  }
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--blue);
+    border-radius: 50%;
+    animation: live-pulse 1.6s ease-out infinite;
+  }
+  @keyframes live-pulse {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.6;
+      transform: scale(1.2);
+    }
+  }
+</style>

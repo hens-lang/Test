@@ -1,0 +1,387 @@
+---
+/**
+ * Home — gesimuleerde week-agenda. Toont concreet wat de klant krijgt.
+ * De afspraken staan in data (verplaatsbaar naar CMS). Cijfers zijn
+ * deterministisch per ISO-week (stabiel binnen de week, wekelijks anders).
+ */
+import Icon from '../Icon.astro';
+
+const meetings = [
+  { time: '09:30', who: 'Logistiek bedrijf · Regio Utrecht', where: 'Teams', kind: 'introductie' },
+  { time: '11:00', who: 'Groothandel · Noord-Holland', where: 'Op kantoor', kind: 'tweede gesprek' },
+  { time: '14:00', who: 'Dienstverlener · Randstad', where: 'Teams', kind: 'tweede gesprek' },
+  { time: '15:30', who: 'Productiebedrijf · Brabant', where: 'Op locatie', kind: 'kennismaking' },
+];
+---
+
+<aside class="agenda reveal" aria-label="Voorbeeld weekagenda">
+  <div class="ag-head">
+    <div class="ag-title">
+      <span class="ag-eyebrow">Deze week</span>
+      <span class="ag-week" data-week>Week</span>
+    </div>
+    <span class="ag-live"><span class="live-dot"></span> Live</span>
+  </div>
+
+  <div class="ag-week-row" data-week-row></div>
+
+  <div class="ag-list">
+    <div class="ag-list-head">
+      <span class="lbl">Afspraken deze week</span>
+      <span class="count"><b data-today>3</b> vandaag</span>
+    </div>
+    {
+      meetings.map((m, i) => (
+        <article class="ag-meet" style={`--i:${i}`}>
+          <div class="ag-time"><span class="hh">{m.time}</span><span class="ampm">CET</span></div>
+          <div class="info">
+            <span class="who">{m.who}</span>
+            <span class="where">{m.where} · <em>{m.kind}</em></span>
+          </div>
+          <div class="ag-avs"><span class="av sector" aria-hidden="true"><Icon name="building" size={12} /></span></div>
+        </article>
+      ))
+    }
+  </div>
+
+  <div class="ag-stat">
+    <div class="num"><b data-total>14</b> <em>afspraken</em></div>
+    <span class="lbl">geboekt deze week<br />voor onze partners</span>
+  </div>
+</aside>
+
+<script is:inline>
+  (function () {
+    var NL_DAYS = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
+    var NL_MONTHS = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
+    var now = new Date();
+    var monday = new Date(now);
+    var dow = (now.getDay() + 6) % 7;
+    monday.setDate(now.getDate() - dow);
+    monday.setHours(0, 0, 0, 0);
+
+    function isoWeek(d) {
+      var date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      var day = (date.getUTCDay() + 6) % 7;
+      date.setUTCDate(date.getUTCDate() - day + 3);
+      var ft = new Date(Date.UTC(date.getUTCFullYear(), 0, 4));
+      var fd = (ft.getUTCDay() + 6) % 7;
+      ft.setUTCDate(ft.getUTCDate() - fd + 3);
+      return 1 + Math.round((date - ft) / (7 * 24 * 3600 * 1000));
+    }
+    var week = isoWeek(now);
+    function seeded(n) {
+      var x = Math.sin(week * 97.13 + n * 7.7) * 10000;
+      return x - Math.floor(x);
+    }
+
+    var weekEl = document.querySelector('[data-week]');
+    if (weekEl) {
+      var yy = String(now.getFullYear()).slice(2);
+      weekEl.innerHTML = 'Week <em>' + week + '</em> · ' + NL_MONTHS[now.getMonth()] + " '" + yy;
+    }
+    var rowEl = document.querySelector('[data-week-row]');
+    if (rowEl) {
+      var html = '';
+      for (var i = 0; i < 7; i++) {
+        var d = new Date(monday);
+        d.setDate(monday.getDate() + i);
+        var isToday = d.toDateString() === now.toDateString();
+        var dotCount = i >= 5 ? Math.floor(seeded(i) * 2) : 1 + Math.floor(seeded(i) * 3);
+        var dots = '';
+        for (var k = 0; k < dotCount; k++) dots += '<span></span>';
+        html += '<div class="ag-day' + (isToday ? ' today' : '') + '"><span class="dn">' + NL_DAYS[i] + '</span><span class="dd">' + d.getDate() + '</span><span class="dots">' + dots + '</span></div>';
+      }
+      rowEl.innerHTML = html;
+    }
+    var weekTotal = 12 + Math.floor(seeded(1) * 6);
+    var t = document.querySelector('[data-total]');
+    if (t) t.textContent = weekTotal;
+  })();
+</script>
+
+<style>
+  .agenda {
+    background: var(--paper);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--r-card);
+    padding: 28px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .ag-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .ag-title {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .ag-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  .ag-week {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+  }
+  .ag-week :global(em) {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--blue);
+  }
+  .ag-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--blue);
+    border-radius: 50%;
+    animation: live-pulse 1.6s ease-out infinite;
+  }
+  .ag-week-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+  .ag-week-row :global(.ag-day) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 0 10px;
+    border-radius: 10px;
+    background: var(--bg);
+  }
+  .ag-week-row :global(.dn) {
+    font-size: 10px;
+    color: var(--mute);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .ag-week-row :global(.dd) {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .ag-week-row :global(.dots) {
+    display: inline-flex;
+    gap: 3px;
+    margin-top: 2px;
+    min-height: 4px;
+  }
+  .ag-week-row :global(.dots span) {
+    width: 4px;
+    height: 4px;
+    background: var(--blue);
+    border-radius: 50%;
+    opacity: 0.7;
+  }
+  .ag-week-row :global(.ag-day.today) {
+    background: var(--ink);
+  }
+  .ag-week-row :global(.ag-day.today .dn) {
+    color: var(--dark-mute);
+  }
+  .ag-week-row :global(.ag-day.today .dd) {
+    color: var(--paper);
+  }
+  .ag-week-row :global(.ag-day.today .dots span) {
+    opacity: 1;
+  }
+  .ag-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .ag-list-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+  }
+  .ag-list-head .lbl {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mute);
+    font-weight: 500;
+  }
+  .ag-list-head .count {
+    font-size: 11px;
+    color: var(--mute);
+  }
+  .ag-list-head .count b {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--blue);
+    font-size: 18px;
+    margin-right: 4px;
+  }
+  .ag-meet {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 14px;
+    background: var(--bg);
+    border: 1px solid var(--line-soft);
+    border-radius: 12px;
+    animation: meet-in 0.6s var(--ease) both;
+    animation-delay: calc(0.6s + var(--i) * 0.5s);
+  }
+  .ag-meet:last-child {
+    border-color: var(--blue);
+    background: color-mix(in oklab, var(--blue) 10%, var(--bg));
+    position: relative;
+  }
+  .ag-meet:last-child::after {
+    content: 'NIEUW';
+    position: absolute;
+    top: -7px;
+    right: 10px;
+    background: var(--blue);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+  @keyframes meet-in {
+    from {
+      opacity: 0;
+      transform: translateX(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  .ag-time {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: center;
+    font-family: var(--font-mono);
+  }
+  .ag-time .hh {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .ag-time .ampm {
+    font-size: 9px;
+    color: var(--mute);
+    letter-spacing: 0.1em;
+  }
+  .ag-meet .info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .ag-meet .who {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ag-meet .where {
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+  .ag-meet .where em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--blue);
+  }
+  .ag-avs .av.sector {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--blue);
+    display: grid;
+    place-items: center;
+  }
+  .ag-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .ag-stat .num {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .ag-stat .num b {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+  .ag-stat .num em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--blue);
+    font-size: 14px;
+  }
+  .ag-stat .lbl {
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-align: right;
+  }
+  @keyframes live-pulse {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.6;
+      transform: scale(1.2);
+    }
+  }
+  @media (max-width: 600px) {
+    .agenda {
+      padding: 18px;
+    }
+  }
+</style>

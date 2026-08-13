@@ -1,0 +1,449 @@
+/* ============================================================
+   LINK. — globale basisstijlen
+   Reset, typografie, knoppen, de drie sectietypes, reveal, watermark.
+   Component-specifieke stijlen staan gescoped in de .astro-componenten.
+   ============================================================ */
+
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--t-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+img {
+  display: block;
+  max-width: 100%;
+}
+button {
+  font: inherit;
+  cursor: pointer;
+}
+::selection {
+  background: var(--blue);
+  color: var(--ink);
+}
+
+main {
+  padding-top: 72px;
+}
+
+/* ---- Typografie: strak, met echte hiërarchie ---- */
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+
+/* De punt (.punc) — accent van het merk. Alleen betekenisvol.
+   Per DESIGN-DIRECTION: blauwe punt vooral bij de h1 van een pagina. */
+.punc {
+  color: var(--blue);
+}
+
+/* Instrument Serif italic — maximaal één keer per scherm, in de h1. */
+.it {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+/* ---- Eyebrow / labels: monospace, administratief ---- */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--mute);
+}
+
+/* ---- Knoppen ---- */
+.btn-primary,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 26px;
+  border-radius: var(--r-button);
+  font-weight: 600;
+  font-size: 15px;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.btn-primary {
+  background: var(--ink);
+  color: var(--paper);
+}
+.btn-primary:hover {
+  background: var(--blue);
+  color: var(--ink);
+}
+.btn-ghost {
+  color: var(--ink);
+  border: 1px solid var(--ink);
+}
+.btn-ghost:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+.btn-primary .arrow,
+.btn-ghost .arrow {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.25s var(--ease);
+}
+.btn-primary:hover .arrow,
+.btn-ghost:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* ---- Sectie-omhulsels: één horizontale marge overal ---- */
+.section {
+  padding: var(--pad-y) var(--pad-x);
+  position: relative;
+}
+.section + .section {
+  padding-top: clamp(40px, 5vw, 80px);
+}
+
+/* A. STATEMENT — volle breedte, alleen typografie, veel lucht */
+.statement {
+  padding: clamp(72px, 10vw, 160px) var(--pad-x);
+}
+.statement .statement-inner {
+  max-width: 22ch;
+}
+.statement.center {
+  text-align: center;
+}
+.statement.center .statement-inner {
+  max-width: 26ch;
+  margin: 0 auto;
+}
+.statement h2 {
+  font-size: var(--t-display);
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  font-weight: 900;
+  margin: 14px 0 0;
+}
+
+/* B. SPLIT — foto/tekst om en om (component: Split.astro) */
+
+/* C. REEKS — items op één rij, bovenlijn + monospace-nummer, géén kaarten */
+.reeks {
+  display: grid;
+  gap: clamp(20px, 3vw, 56px);
+}
+.reeks-item {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+.reeks-item .k {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue-deep);
+  font-variant-numeric: tabular-nums;
+}
+.reeks-item h3 {
+  margin: 12px 0 8px;
+  font-size: clamp(19px, 1.6vw, 24px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.reeks-item p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ---- Section head (kop links, lede rechts) ---- */
+.section-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: start;
+  margin-bottom: clamp(56px, 6vw, 96px);
+}
+.section-head h2 {
+  font-size: var(--t-h1);
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+  margin: 14px 0 0;
+  max-width: 14ch;
+}
+.section-head .lede {
+  font-size: var(--t-lede);
+  color: var(--ink-soft);
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  line-height: 1.45;
+  max-width: 50ch;
+}
+
+/* ---- Watermerk (groot LINK.-type op de achtergrond) ---- */
+.watermark {
+  position: absolute;
+  left: var(--pad-x);
+  right: var(--pad-x);
+  bottom: -40px;
+  pointer-events: none;
+  font-weight: 900;
+  font-size: var(--t-mega);
+  letter-spacing: -0.05em;
+  line-height: 0.8;
+  color: var(--ink);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  opacity: 0.07;
+  user-select: none;
+  z-index: 0;
+}
+.watermark .dot {
+  width: clamp(20px, 2vw, 38px);
+  height: clamp(20px, 2vw, 38px);
+  background: var(--blue);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* ---- Reveal-on-scroll (JS voegt .in toe) ---- */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+  will-change: opacity, transform;
+}
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.reveal-stagger.in > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-stagger.in > *:nth-child(2) {
+  transition-delay: 0.08s;
+}
+.reveal-stagger.in > *:nth-child(3) {
+  transition-delay: 0.16s;
+}
+.reveal-stagger.in > *:nth-child(4) {
+  transition-delay: 0.24s;
+}
+.reveal-stagger.in > *:nth-child(5) {
+  transition-delay: 0.32s;
+}
+.reveal-stagger.in > *:nth-child(6) {
+  transition-delay: 0.4s;
+}
+.reveal-stagger.in > *:nth-child(7) {
+  transition-delay: 0.48s;
+}
+
+/* Respecteer prefers-reduced-motion: geen beweging, meteen zichtbaar. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal,
+  .reveal-stagger > * {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---- Mobiel nav-drawer (dynamisch opgebouwd in app.ts) ---- */
+.nav-burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 110;
+}
+.nav-burger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--ink);
+  border-radius: 2px;
+  margin: 0 auto;
+  transition:
+    transform 0.3s var(--ease),
+    opacity 0.2s ease;
+}
+.nav-burger.open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.nav-burger.open span:nth-child(2) {
+  opacity: 0;
+}
+.nav-burger.open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+.nav-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: color-mix(in oklab, var(--ink) 40%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+.nav-drawer.open {
+  opacity: 1;
+  visibility: visible;
+}
+.nav-drawer-inner {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(82vw, 360px);
+  background: var(--bg);
+  box-shadow: -20px 0 60px rgba(0, 0, 0, 0.22);
+  padding: 96px 32px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transform: translateX(100%);
+  transition: transform 0.35s var(--ease);
+  overflow-y: auto;
+}
+.nav-drawer.open .nav-drawer-inner {
+  transform: translateX(0);
+}
+.nav-drawer-inner a {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.nav-drawer-inner a.active {
+  color: var(--blue-deep);
+}
+.nav-drawer-div {
+  height: 18px;
+}
+.nav-drawer-inner a.dr-login {
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  padding: 12px 0;
+}
+.nav-drawer-inner a.dr-cta {
+  border: none;
+  margin-top: 8px;
+  background: var(--ink);
+  color: var(--paper);
+  text-align: center;
+  border-radius: 999px;
+  padding: 16px 24px;
+  font-size: 16px;
+}
+
+/* ---- Responsive basis ---- */
+@media (max-width: 980px) {
+  .nav-burger {
+    display: flex;
+  }
+}
+
+/* ---- Responsive basis ---- */
+@media (max-width: 980px) {
+  .section-head {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 860px) {
+  .reeks {
+    grid-template-columns: 1fr !important;
+    gap: 24px;
+  }
+}
+@media (max-width: 600px) {
+  :root {
+    --pad-x: 20px;
+  }
+  main {
+    padding-top: 64px;
+  }
+  .btn-primary,
+  .btn-ghost {
+    width: 100%;
+    justify-content: center;
+  }
+}

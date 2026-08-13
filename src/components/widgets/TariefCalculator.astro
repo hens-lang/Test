@@ -1,0 +1,472 @@
+---
+/**
+ * Meerstaps tarief-calculator die daadwerkelijk verzendt.
+ * Verzending via Web3Forms (key uit PUBLIC_WEB3FORMS_KEY). Bevat:
+ *  - honeypot (botvalidatie) via een verborgen veld
+ *  - client-side validatie van de contactgegevens
+ *  - redirect naar /bedankt bij succes
+ * Zonder key valt de knop terug op een duidelijke melding (dev-modus).
+ */
+import { site } from '@/lib/site';
+const web3formsKey = site.forms.web3formsKey;
+const endpoint = site.forms.endpoint;
+---
+
+<div class="form-card reveal">
+  <div class="calc" data-calc>
+    <div class="calc-head">
+      <span class="calc-title">Tarief opvragen</span>
+      <span class="calc-step" data-step-label>Stap 1 van 4</span>
+    </div>
+    <div class="calc-progress"><span data-bar></span></div>
+    <div class="calc-body" data-body></div>
+    <div class="calc-nav">
+      <button type="button" class="calc-back" data-back aria-label="Vorige stap">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Terug
+      </button>
+      <button type="button" class="calc-next" data-next>
+        <span data-next-label>Volgende</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <p class="calc-err" data-err hidden></p>
+    <p class="calc-foot">Je verplicht je tot niets. We maken eerst een berekening op maat met jouw cijfers.</p>
+  </div>
+
+  <div class="calc-done" data-done>
+    <div class="cd-ic">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h2>Bedankt, we gaan voor je <span class="it">rekenen</span>.</h2>
+    <p>We maken een berekening op maat met jouw cijfers en nemen binnen 24 uur persoonlijk contact met je op.</p>
+  </div>
+</div>
+
+<script is:inline define:vars={{ web3formsKey, endpoint }}>
+  (function () {
+    var STEPS = [
+      [
+        { key: 'omzet_klant', q: 'Hoeveel omzet levert 1 nieuwe klant gemiddeld per jaar op?', sub: 'Schuif naar wat het dichtst in de buurt komt.', opts: ['< €1.000', '€1.000 tot €2.500', '€2.500 tot €5.000', '€5.000 tot €10.000', '€10.000 tot €25.000', '€25.000 tot €50.000', '€50.000 tot €100.000', '€100.000 tot €250.000', '€250.000 tot €500.000', '€500.000+'], def: 4 },
+        { key: 'klantduur', q: 'Hoe lang blijft zo’n klant gemiddeld bij je?', sub: 'Vaak langer dan ondernemers denken, en juist dat maakt een klant waardevol.', opts: ['< 1 jaar', '1 jaar', '2 jaar', '3 jaar', '4 jaar', '5 jaar', '6 tot 8 jaar', '8 tot 10 jaar', '10 tot 15 jaar', '15+ jaar'], def: 2 },
+      ],
+      [
+        { key: 'marge', q: 'Wat houd je gemiddeld over per klant?', sub: 'Je brutomarge. Zo rekenen we met écht rendement, niet met kale omzet.', opts: ['< 10%', '10 tot 20%', '20 tot 30%', '30 tot 40%', '40 tot 50%', '50 tot 60%', '60 tot 70%', '70 tot 80%', '80 tot 90%', '90%+'], def: 3 },
+        { key: 'cac', q: 'Wat mag een nieuwe klant je waard zijn?', sub: 'Wat je maximaal wilt investeren om één klant binnen te halen.', opts: ['< €100', '€100 tot €250', '€250 tot €500', '€500 tot €1.000', '€1.000 tot €2.500', '€2.500 tot €5.000', '€5.000 tot €10.000', '€10.000 tot €25.000', '€25.000 tot €50.000', '€50.000+'], def: 3 },
+      ],
+      [
+        { key: 'afspraken_deal', q: 'Hoeveel afspraken heb je nodig om 1 deal te sluiten?', sub: 'Jouw conversie van afspraak naar klant.', opts: ['2', '3', '4', '5', '6', '8', '10', '15', '20', '25+'], def: 2 },
+        { key: 'klanten_maand', q: 'Hoeveel nieuwe klanten wil je er per maand bij?', sub: 'Denk aan waar je over een jaar wilt staan, niet aan wat nu lukt.', opts: ['1', '2', '3', '4', '5', '7', '10', '15', '20', '25+'], def: 1 },
+      ],
+    ];
+
+    var values = {};
+    var step = 0;
+    var TOTAL = STEPS.length + 1;
+    var root = document.querySelector('[data-calc]');
+    if (!root) return;
+    var body = root.querySelector('[data-body]');
+    var bar = root.querySelector('[data-bar]');
+    var stepLabel = root.querySelector('[data-step-label]');
+    var backBtn = root.querySelector('[data-back]');
+    var nextBtn = root.querySelector('[data-next]');
+    var nextLabel = root.querySelector('[data-next-label]');
+    var errEl = root.querySelector('[data-err]');
+    var doneEl = document.querySelector('[data-done]');
+
+    function esc(s) {
+      return String(s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    }
+
+    function renderQuestion(cfg) {
+      if (!(cfg.key in values)) values[cfg.key] = cfg.def;
+      var sel = values[cfg.key];
+      var dots = '';
+      for (var i = 0; i < cfg.opts.length; i++) {
+        var cls = 'dot' + (i < sel ? ' filled' : '') + (i === sel ? ' active' : '');
+        dots += '<button type="button" class="' + cls + '" data-i="' + i + '" aria-label="' + esc(cfg.opts[i]) + '"></button>';
+      }
+      var fillPct = cfg.opts.length > 1 ? (sel / (cfg.opts.length - 1)) * 100 : 0;
+      return '<div class="calc-q" data-key="' + cfg.key + '"><h3>' + esc(cfg.q) + '</h3><p class="sub">' + esc(cfg.sub) + '</p><div class="dot-track"><span class="dot-line"></span><span class="dot-fill" style="width:' + fillPct + '%"></span><span class="dots">' + dots + '</span></div><span class="calc-pill">' + esc(cfg.opts[sel]) + '</span></div>';
+    }
+
+    function renderContact() {
+      return '<div class="calc-q"><h3>Waar mogen we de berekening naartoe sturen?</h3><p class="sub">We maken persoonlijk een berekening op maat en nemen zo snel mogelijk contact met je op.</p></div>' +
+        '<div class="calc-field-row"><div class="calc-field"><label for="cf_naam">Naam</label><input type="text" id="cf_naam" autocomplete="name" placeholder="Voor- en achternaam" required /></div><div class="calc-field"><label for="cf_bedrijf">Bedrijf</label><input type="text" id="cf_bedrijf" autocomplete="organization" placeholder="Bedrijfsnaam" /></div></div>' +
+        '<div class="calc-field-row"><div class="calc-field"><label for="cf_email">E-mail</label><input type="email" id="cf_email" autocomplete="email" placeholder="naam@bedrijf.nl" required /></div><div class="calc-field"><label for="cf_tel">Telefoon</label><input type="tel" id="cf_tel" autocomplete="tel" placeholder="06 ..." /></div></div>' +
+        '<input type="text" name="botcheck" style="position:absolute;left:-9999px" tabindex="-1" autocomplete="off" aria-hidden="true" data-honeypot />';
+    }
+
+    function render() {
+      var isContact = step === STEPS.length;
+      if (errEl) errEl.hidden = true;
+      if (isContact) {
+        body.innerHTML = renderContact();
+        nextLabel.textContent = 'Vraag tarief op';
+      } else {
+        body.innerHTML = STEPS[step].map(renderQuestion).join('');
+        nextLabel.textContent = 'Volgende';
+        body.querySelectorAll('.calc-q').forEach(function (qEl) {
+          var key = qEl.dataset.key;
+          qEl.querySelectorAll('.dot').forEach(function (d) {
+            d.addEventListener('click', function () {
+              values[key] = parseInt(d.dataset.i, 10);
+              render();
+            });
+          });
+        });
+      }
+      bar.style.width = ((step + 1) / TOTAL) * 100 + '%';
+      stepLabel.textContent = 'Stap ' + (step + 1) + ' van ' + TOTAL;
+      backBtn.classList.toggle('show', step > 0);
+    }
+
+    function labelFor(key) {
+      for (var s = 0; s < STEPS.length; s++)
+        for (var j = 0; j < STEPS[s].length; j++)
+          if (STEPS[s][j].key === key) return STEPS[s][j].opts[values[key]];
+      return '';
+    }
+
+    function showErr(msg) {
+      if (!errEl) return;
+      errEl.textContent = msg;
+      errEl.hidden = false;
+    }
+
+    function submit() {
+      var honeypot = document.querySelector('[data-honeypot]');
+      if (honeypot && honeypot.value) return; // bot
+      var naam = (document.getElementById('cf_naam') || {}).value || '';
+      var bedrijf = (document.getElementById('cf_bedrijf') || {}).value || '';
+      var email = (document.getElementById('cf_email') || {}).value || '';
+      var tel = (document.getElementById('cf_tel') || {}).value || '';
+
+      if (!naam.trim()) return showErr('Vul je naam in.');
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return showErr('Vul een geldig e-mailadres in.');
+
+      var payload = {
+        subject: 'Nieuwe tariefaanvraag via de website' + (bedrijf ? ' — ' + bedrijf : ''),
+        from_name: 'LINK. Website',
+        naam: naam,
+        bedrijf: bedrijf,
+        email: email,
+        telefoon: tel,
+        botcheck: honeypot ? honeypot.value : '',
+      };
+      STEPS.forEach(function (group) {
+        group.forEach(function (q) {
+          payload[q.key] = labelFor(q.key);
+        });
+      });
+
+      if (!web3formsKey) {
+        // Geen key ingesteld: toon bevestiging maar log een waarschuwing.
+        console.warn('[LINK] PUBLIC_WEB3FORMS_KEY ontbreekt — formulier niet verzonden.');
+        finish();
+        return;
+      }
+
+      payload.access_key = web3formsKey;
+      nextBtn.disabled = true;
+      nextLabel.textContent = 'Versturen...';
+      fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(payload),
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data && data.success) {
+            window.location.href = '/bedankt';
+          } else {
+            finish();
+          }
+        })
+        .catch(function () {
+          nextBtn.disabled = false;
+          nextLabel.textContent = 'Vraag tarief op';
+          showErr('Er ging iets mis met verzenden. Bel ons gerust op (0172) 27 10 08.');
+        });
+    }
+
+    function finish() {
+      root.style.display = 'none';
+      if (doneEl) {
+        doneEl.classList.add('show');
+        doneEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    nextBtn.addEventListener('click', function () {
+      if (step < STEPS.length) {
+        step++;
+        render();
+        return;
+      }
+      submit();
+    });
+    backBtn.addEventListener('click', function () {
+      if (step > 0) {
+        step--;
+        render();
+      }
+    });
+    render();
+  })();
+</script>
+
+<style>
+  .form-card {
+    background: var(--paper);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--r-card);
+    padding: clamp(32px, 4vw, 48px);
+    position: relative;
+    overflow: hidden;
+  }
+  .calc-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+  }
+  .calc-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+  }
+  .calc-step {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--mute);
+  }
+  .calc-progress {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--bg-2);
+    overflow: hidden;
+    margin-bottom: 30px;
+  }
+  .calc-progress span {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--blue);
+    width: 25%;
+    transition: width 0.45s var(--ease);
+  }
+  .calc-body :global(.calc-q) {
+    margin-bottom: 30px;
+  }
+  .calc-body :global(h3) {
+    font-size: clamp(19px, 1.7vw, 23px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin: 0 0 5px;
+    line-height: 1.2;
+  }
+  .calc-body :global(.sub) {
+    font-size: 14px;
+    color: var(--mute);
+    margin: 0 0 22px;
+  }
+  .calc-body :global(.dot-track) {
+    position: relative;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    margin: 0 11px;
+  }
+  .calc-body :global(.dot-line) {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--line);
+    border-radius: 2px;
+  }
+  .calc-body :global(.dot-fill) {
+    position: absolute;
+    left: 0;
+    height: 3px;
+    background: var(--blue);
+    border-radius: 2px;
+    transition: width 0.25s ease;
+  }
+  .calc-body :global(.dots) {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    z-index: 2;
+  }
+  .calc-body :global(.dot) {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--line);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition:
+      transform 0.15s ease,
+      background 0.2s ease;
+  }
+  .calc-body :global(.dot.filled) {
+    background: var(--blue);
+  }
+  .calc-body :global(.dot.active) {
+    background: var(--paper);
+    box-shadow: 0 0 0 4px var(--blue);
+    transform: scale(1.15);
+  }
+  .calc-body :global(.dot:hover) {
+    transform: scale(1.2);
+  }
+  .calc-body :global(.calc-pill) {
+    display: inline-block;
+    margin-top: 18px;
+    background: var(--ink);
+    color: var(--blue);
+    font-size: 15px;
+    font-weight: 700;
+    padding: 9px 18px;
+    border-radius: 999px;
+  }
+  .calc-body :global(.calc-field-row) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .calc-body :global(.calc-field) {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .calc-body :global(.calc-field label) {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+  .calc-body :global(.calc-field input) {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font: inherit;
+    font-size: 16px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+  .calc-body :global(.calc-field input:focus) {
+    border-color: var(--ink);
+  }
+  .calc-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .calc-back {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    border-radius: 999px;
+    padding: 13px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+  }
+  .calc-back.show {
+    display: inline-flex;
+  }
+  .calc-back:hover {
+    border-color: var(--ink);
+  }
+  .calc-next {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 999px;
+    padding: 16px 22px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .calc-next:hover {
+    background: var(--blue);
+    color: var(--ink);
+  }
+  .calc-next:disabled {
+    opacity: 0.7;
+    cursor: default;
+  }
+  .calc-err {
+    color: #c2402e;
+    font-size: 13.5px;
+    margin: 12px 0 0;
+  }
+  .calc-foot {
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--mute);
+    margin: 16px 0 0;
+  }
+  .calc-done {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px 10px;
+  }
+  .calc-done.show {
+    display: flex;
+  }
+  .calc-done .cd-ic {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #e2f3e9;
+    color: #1f8a5b;
+    display: grid;
+    place-items: center;
+    margin-bottom: 20px;
+  }
+  .calc-done h2 {
+    font-size: clamp(26px, 2.6vw, 36px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin: 0 0 10px;
+  }
+  .calc-done p {
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 40ch;
+    line-height: 1.6;
+  }
+  @media (max-width: 560px) {
+    .calc-body :global(.calc-field-row) {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

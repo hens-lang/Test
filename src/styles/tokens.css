@@ -1,0 +1,52 @@
+/* ============================================================
+   LINK. — designtokens (één bron van waarheid)
+   Overgenomen uit README.md "Design Tokens" + DESIGN-DIRECTION.md.
+   De intentie van de oude link-editorial.css zit hier al in verwerkt:
+   strenge radii, monospace voor administratieve tekst, de punt als accent.
+   ============================================================ */
+
+:root {
+  /* ---- Kleuren ---- */
+  --bg: #f2ede3; /* paginakleur, warm crème */
+  --bg-2: #ece6d7;
+  --bg-3: #e5ddc9;
+  --paper: #faf7f0; /* kaarten, lichter dan bg */
+  --ink: #0b0b0b; /* tekst, donkere panelen */
+  --ink-soft: #2a2926; /* body op crème */
+  --mute: #6b665b; /* secundaire tekst */
+  --line: #d6cebd; /* randen */
+  --line-soft: #e3dbc8;
+  --blue: #29b0f2; /* accent: de punt */
+  --blue-deep: #0f8dcb; /* linkhover */
+  --dark: #0b0b0b;
+  --dark-text: #ece6d7; /* tekst op donker */
+  --dark-mute: #8e8a7e;
+
+  /* ---- Typografie ---- */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Instrument Serif', 'Times New Roman', serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+
+  --t-mega: clamp(96px, 14vw, 240px); /* footer-watermerk */
+  --t-display: clamp(64px, 8vw, 144px);
+  --t-h1: clamp(48px, 5.4vw, 96px);
+  --t-h2: clamp(36px, 3.6vw, 64px);
+  --t-h3: clamp(22px, 1.7vw, 30px);
+  --t-lede: clamp(20px, 1.55vw, 26px);
+  --t-body: 17px;
+  --t-small: 14px;
+  --t-eyebrow: 12px;
+
+  /* ---- Ruimte ---- */
+  --pad-x: clamp(24px, 5vw, 96px); /* horizontale paginamarge — ÉÉN waarde, overal */
+  --pad-y: clamp(80px, 9vw, 160px); /* verticale sectieruimte */
+
+  /* ---- Radii (vrijwel recht; grote donkere panelen mogen ronder) ---- */
+  --r-button: 2px;
+  --r-card: 3px;
+  --r-panel: 28px;
+
+  /* ---- Beweging ---- */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 0.6s;
+}

@@ -1,0 +1,28 @@
+# build output
+dist/
+.output/
+
+# dependencies
+node_modules/
+
+# astro
+.astro/
+
+# generated types
+src/env.d.ts.bak
+
+# environment
+.env
+.env.production
+.env.*.local
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# macOS / editor
+.DS_Store
+.vscode/
+*.swp

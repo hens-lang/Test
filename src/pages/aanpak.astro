@@ -1,0 +1,337 @@
+---
+import Base from '@/layouts/Base.astro';
+import Icon from '@/components/Icon.astro';
+import Figure from '@/components/Figure.astro';
+import PipelineWidget from '@/components/widgets/PipelineWidget.astro';
+import { site } from '@/lib/site';
+
+const steps = [
+  { n: '01', title: 'We verdiepen ons in jouw <span class="it">bedrijf</span><span class="punc">.</span>', desc: 'Wat verkoop je, wat onderscheidt je, en wie zit er nu al aan tafel? Hoe scherper het verhaal, hoe gerichter de outreach. We nemen de tijd om jouw bedrijf écht te leren kennen, <strong>geen oppervlakkige briefing</strong>.' },
+  { n: '02', title: 'We bepalen samen het <span class="it">groeidoel</span><span class="punc">.</span>', desc: 'Hoeveel afspraken? Welke omzet? Tegen welk tempo? Eerst helder, dan pas in actie. We werken altijd vanuit een <strong>concreet doel</strong>, niet vanuit een vaag voorgevoel.' },
+  { n: '03', title: 'We bepalen samen een <span class="it">doelgroep</span><span class="punc">.</span>', desc: 'Hier nemen we ruim de tijd voor. Want als we weten bij wie we moeten zijn, zitten we direct in de goede hoek. We blijven bijsturen totdat we op het <strong>ideale klantprofiel</strong> uitkomen.' },
+  { n: '04', title: 'We stellen een <span class="it">prospectlijst</span> samen<span class="punc">.</span>', desc: 'Geen gekochte database. Een handgemaakte lijst met bedrijven waar jij echt aan tafel wilt komen. We zoeken, vergelijken en beoordelen, totdat de lijst klopt.' },
+  { n: '05', title: 'De juiste beslisser bereiken, <span class="it">persoonlijk</span><span class="punc">.</span>', desc: 'Een goed voorbereide aanpak die past bij jouw bedrijf en jouw verhaal. We zoeken de juiste beslisser, en spreken hem of haar aan op de juiste manier.' },
+  { n: '06', title: 'Interesse polsen en kansen <span class="it">kwalificeren</span><span class="punc">.</span>', desc: 'We brengen alleen door wat ook écht een gesprek waard is. Liever één goede afspraak dan tien middelmatige. <strong>Volume is geen doel op zich</strong>, kwaliteit wel.' },
+  { n: '07', title: 'De afspraak inplannen. Daarna is het aan <span class="it">jou</span><span class="punc">.</span>', desc: 'Jij doet waar je goed in bent: het gesprek voeren en de deal sluiten. Wij blijven beschikbaar om mee te denken, bij te sturen en het traject samen verder te brengen.' },
+];
+---
+
+<Base
+  title="Onze aanpak in 7 stappen | LINK. B2B acquisitie"
+  description="Van doelgroep bepalen tot de afspraak in jouw agenda: ontdek hoe LINK. in zeven heldere stappen werkt aan kwalitatieve B2B-afspraken die ertoe doen."
+  path="/aanpak"
+>
+  <!-- Hero -->
+  <section class="page-hero">
+    <div class="intro reveal">
+      <span class="eyebrow">Onze aanpak</span>
+      <h1>Eerst goed begrijpen wie je <span class="it">ideale</span> klant is<span class="punc">.</span></h1>
+      <p class="lede">
+        Voordat we ook maar een telefoontje plegen, bepalen we samen met jou de
+        doelgroep. Hier nemen we ruim de tijd voor. Want als we weten bij wie we
+        moeten zijn, zitten we direct in de goede hoek.
+      </p>
+    </div>
+    <PipelineWidget />
+  </section>
+
+  <!-- Kicker -->
+  <section class="step-kicker">
+    <div class="reveal">
+      <span class="eyebrow">Zo werken wij</span>
+      <h2>Zeven stappen.<br />Eén <span class="it">doel</span><span class="punc">.</span></h2>
+    </div>
+    <div class="right reveal">
+      <p>
+        Elke week halen we uit de gesprekken op welke signalen, functietitels en
+        branches het beste werken, en sturen we de doelgroep bij tot we precies
+        bij het ideale klantprofiel uitkomen waar jij aan tafel wilt zitten.
+      </p>
+      <p>Gewoon een aanpak die werkt, met heldere stappen en eerlijke verwachtingen.</p>
+    </div>
+  </section>
+
+  <!-- Steps -->
+  <section class="steps-full">
+    <div class="steps-list">
+      {
+        steps.map((s) => (
+          <article class="step-row reveal">
+            <span class="n">{s.n}</span>
+            <h3 class="title" set:html={s.title} />
+            <p class="desc" set:html={s.desc} />
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Manifest (statement / donker) -->
+  <section class="manifesto reveal">
+    <div class="manifesto-photo">
+      <Figure src="/assets/hens-arms-bench.jpeg" alt="Hens van LINK." ratio="4 / 5" radius="16px" position="50% 18%" />
+    </div>
+    <div class="manifesto-body">
+      <span class="label">Ons uitgangspunt</span>
+      <h3><strong>Kwaliteit</strong> boven <strong>kwantiteit</strong><span class="punc">.</span></h3>
+      <p>
+        Wij sturen niet op aantallen, maar op afspraken die converteren naar
+        klanten. Liever één gesprek met de juiste beslisser dan tien afspraken
+        die nergens toe leiden.
+      </p>
+      <p>
+        Daarom verdiepen we ons eerst in jouw bedrijf en doelgroep. Zo komen we
+        met het juiste verhaal, bij de juiste persoon, op het juiste moment.
+      </p>
+      <p class="pull">"Geen grote beloftes. Gewoon een aanpak die werkt."</p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-block">
+    <div class="watermark" data-parallax="0.15" aria-hidden="true">LINK<span class="dot"></span></div>
+    <div class="cta-inner reveal">
+      <div>
+        <span class="eyebrow">Klaar om te beginnen?</span>
+        <h2>Vertel ons wat je <span class="it">doet</span><span class="punc">.</span></h2>
+      </div>
+      <div class="cta-right">
+        <p class="lede">
+          Bij wie wil je aan tafel zitten? Wat zijn je groeiambities? Stuur ons
+          een berichtje of bel gewoon. We reageren snel en zonder gedoe.
+        </p>
+        <div class="btn-row">
+          <a class="btn-primary" href="/contact">Plan een kennismaking <Icon name="arrow" class="arrow" /></a>
+          <a class="btn-ghost" href="/diensten">Bekijk diensten</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .page-hero {
+    padding: clamp(56px, 7vw, 120px) var(--pad-x) clamp(40px, 5vw, 80px);
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(40px, 5vw, 80px);
+    align-items: center;
+  }
+  .page-hero h1 {
+    font-size: var(--t-display);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    font-weight: 900;
+    margin: 24px 0 0;
+    max-width: 16ch;
+  }
+  .page-hero .lede {
+    margin-top: clamp(28px, 3vw, 44px);
+    font-size: var(--t-lede);
+    color: var(--ink-soft);
+    max-width: 56ch;
+    line-height: 1.45;
+  }
+
+  .step-kicker {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(40px, 5vw, 96px);
+    padding: clamp(56px, 6vw, 96px) var(--pad-x);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+  }
+  .step-kicker h2 {
+    font-size: clamp(36px, 4vw, 64px);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    margin: 0;
+  }
+  .step-kicker .right p {
+    margin: 0 0 14px;
+    color: var(--ink-soft);
+    font-size: 18px;
+    line-height: 1.6;
+  }
+
+  .steps-full {
+    padding: clamp(80px, 9vw, 140px) var(--pad-x);
+  }
+  .steps-list {
+    display: flex;
+    flex-direction: column;
+  }
+  .step-row {
+    display: grid;
+    grid-template-columns: 100px minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(24px, 4vw, 64px);
+    align-items: baseline;
+    padding: clamp(36px, 4vw, 64px) 0;
+    border-top: 1px solid var(--line);
+    transition: padding 0.3s var(--ease);
+  }
+  .step-row:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  .step-row:hover {
+    padding-left: 24px;
+  }
+  .step-row .n {
+    font-family: var(--font-mono);
+    font-size: clamp(28px, 3vw, 44px);
+    color: var(--blue);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .step-row .title {
+    font-size: clamp(26px, 2.4vw, 40px);
+    font-weight: 700;
+    letter-spacing: -0.028em;
+    line-height: 1.1;
+    margin: 0;
+    max-width: 14ch;
+  }
+  .step-row .desc {
+    color: var(--ink-soft);
+    font-size: 17px;
+    line-height: 1.6;
+    max-width: 52ch;
+  }
+  .step-row .desc :global(strong) {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .manifesto {
+    margin: clamp(48px, 6vw, 96px) auto;
+    width: calc(100% - 2 * var(--pad-x));
+    max-width: 1320px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: var(--r-panel);
+    padding: clamp(28px, 3vw, 40px);
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: clamp(28px, 3.5vw, 56px);
+    align-items: stretch;
+  }
+  .manifesto-photo {
+    border-radius: 16px;
+    overflow: hidden;
+    min-height: 100%;
+  }
+  .manifesto-photo :global(.figure) {
+    height: 100%;
+    aspect-ratio: auto;
+  }
+  .manifesto-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
+    color: var(--dark-text);
+    max-width: 56ch;
+    padding: clamp(8px, 2vw, 24px);
+    font-size: clamp(16px, 1.2vw, 19px);
+    line-height: 1.55;
+  }
+  .manifesto-body p {
+    margin: 0;
+  }
+  .manifesto .label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--dark-mute);
+    font-weight: 500;
+  }
+  .manifesto h3 {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(32px, 3.4vw, 52px);
+    line-height: 1.08;
+    margin: 6px 0 0;
+    color: var(--paper);
+    max-width: 14ch;
+  }
+  .manifesto h3 strong {
+    font-family: var(--font-sans);
+    font-style: normal;
+    font-weight: 800;
+    color: var(--blue);
+  }
+  .manifesto .pull {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--blue);
+    font-size: 1.15em;
+    margin-top: 4px;
+  }
+
+  .cta-block {
+    padding: clamp(80px, 9vw, 140px) var(--pad-x);
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-block .watermark {
+    bottom: -60px;
+  }
+  .cta-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(40px, 5vw, 80px);
+    align-items: end;
+    position: relative;
+    z-index: 2;
+  }
+  .cta-inner h2 {
+    font-size: var(--t-display);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    font-weight: 900;
+    margin: 14px 0 0;
+    max-width: 12ch;
+  }
+  .cta-right {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .cta-right .lede {
+    font-size: var(--t-lede);
+    color: var(--ink-soft);
+    line-height: 1.45;
+    margin: 0;
+    max-width: 42ch;
+  }
+  .btn-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 980px) {
+    .page-hero {
+      grid-template-columns: 1fr;
+    }
+    .step-kicker {
+      grid-template-columns: 1fr;
+    }
+    .step-row {
+      grid-template-columns: 60px 1fr;
+    }
+    .step-row .desc {
+      grid-column: 2 / -1;
+    }
+    .manifesto {
+      grid-template-columns: 1fr;
+    }
+    .cta-inner {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

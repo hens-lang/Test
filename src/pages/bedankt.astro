@@ -1,0 +1,76 @@
+---
+import Base from '@/layouts/Base.astro';
+import Icon from '@/components/Icon.astro';
+import { site } from '@/lib/site';
+---
+
+<Base
+  title="Bedankt | LINK."
+  description="Bedankt voor je bericht. We nemen binnen 24 uur persoonlijk contact met je op."
+  path="/bedankt"
+>
+  <section class="bedankt">
+    <div class="bedankt-inner reveal">
+      <div class="cd-ic">
+        <Icon name="check" size={30} />
+      </div>
+      <span class="eyebrow">Ontvangen</span>
+      <h1>Bedankt. We gaan voor je <span class="it">rekenen</span><span class="punc">.</span></h1>
+      <p class="lede">
+        We maken een berekening op maat met jouw cijfers en nemen binnen 24 uur
+        persoonlijk contact met je op. Meestal sneller.
+      </p>
+      <div class="btn-row">
+        <a class="btn-primary" href="/">Terug naar home <Icon name="arrow" class="arrow" /></a>
+        <a class="btn-ghost" href={`tel:${site.contact.phoneHref}`}>Of bel {site.contact.phoneDisplay}</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .bedankt {
+    padding: clamp(96px, 12vw, 200px) var(--pad-x);
+    display: grid;
+    place-items: center;
+    text-align: center;
+    min-height: 60vh;
+  }
+  .bedankt-inner {
+    max-width: 44ch;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+  .cd-ic {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #e2f3e9;
+    color: #1f8a5b;
+    display: grid;
+    place-items: center;
+    margin-bottom: 6px;
+  }
+  .bedankt h1 {
+    font-size: var(--t-h1);
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+    font-weight: 800;
+    margin: 0;
+  }
+  .bedankt .lede {
+    font-size: var(--t-lede);
+    color: var(--ink-soft);
+    line-height: 1.45;
+    margin: 0;
+  }
+  .btn-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 12px;
+  }
+</style>

@@ -1,0 +1,80 @@
+---
+import '@/styles/global.css';
+import { site, type SEO } from '@/lib/site';
+import Nav from '@/components/Nav.astro';
+import Footer from '@/components/Footer.astro';
+import CookieConsent from '@/components/CookieConsent.astro';
+
+interface Props extends SEO {
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title,
+  description,
+  path,
+  ogImage = '/assets/logo-square.png',
+  jsonLd,
+} = Astro.props;
+
+const canonical = new URL(path, site.url).href.replace(/\/$/, '') || site.url;
+const ogImageUrl = new URL(ogImage, site.url).href;
+---
+
+<!doctype html>
+<html lang={site.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="LINK." />
+    <link rel="canonical" href={canonical} />
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon-64.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon-180.png" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="LINK." />
+    <meta property="og:locale" content={site.locale} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+
+    {
+      jsonLd && (
+        <script
+          type="application/ld+json"
+          set:html={JSON.stringify(jsonLd)}
+        />
+      )
+    }
+  </head>
+  <body>
+    <Nav />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <CookieConsent />
+    <script>
+      import '@/scripts/app.ts';
+    </script>
+  </body>
+</html>
