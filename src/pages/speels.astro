@@ -1,0 +1,514 @@
+---
+/**
+ * CONCEPT 2 — speelse creative-agency richting (okcreativeagency/vayloo-vibe).
+ * Custom cursor, stuiterende punt, kinetische typografie met marker-highlight,
+ * draaiende stickers, marquee, magnetische knoppen, coral pop-accent.
+ * Zelfstandige pagina om de energie te valideren.
+ */
+import '@/styles/tokens.css';
+
+const doen = [
+  { n: '01', t: 'We bepalen je ideale klant', p: 'Branche, omvang, de juiste beslisser.' },
+  { n: '02', t: 'Wij bellen ze persoonlijk', p: 'Goed voorbereid, in jouw verhaal. Geen script.' },
+  { n: '03', t: 'Jij zit aan tafel', p: 'De afspraak staat in je agenda. Klaar.' },
+];
+---
+
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Concept speels — LINK.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="cursor" data-cursor aria-hidden="true"></div>
+
+    <!-- Nav (pill) -->
+    <header class="pnav">
+      <a class="plogo" href="#" data-hover>LINK<span class="d">.</span></a>
+      <nav class="pnav-links">
+        <a href="#" data-hover>Aanpak</a>
+        <a href="#" data-hover>Wat we doen</a>
+        <a href="#" data-hover>Ons verhaal</a>
+      </nav>
+      <a class="pnav-cta" href="#" data-magnetic data-hover>Even kennismaken</a>
+    </header>
+
+    <main>
+      <!-- HERO -->
+      <section class="phero">
+        <span class="pill-eyebrow">● B2B ACQUISITIE — SINDS 2025</span>
+        <h1 class="phero-h">
+          Wij bellen.<br />
+          Jij <mark class="mk">verkoopt</mark><span class="bouncedot"></span>
+        </h1>
+        <p class="phero-sub">
+          Wij brengen je persoonlijk aan tafel bij de juiste beslisser. Jij voert
+          het gesprek dat ertoe doet, wij zorgen dat het er komt.
+        </p>
+        <div class="phero-cta">
+          <a class="pbtn" href="#" data-magnetic data-hover>Plan een kennismaking →</a>
+          <a class="pbtn ghost" href="#" data-magnetic data-hover>Ons verhaal</a>
+        </div>
+
+        <!-- draaiende sticker -->
+        <a class="sticker" href="#" data-hover aria-label="Scroll">
+          <svg viewBox="0 0 100 100">
+            <defs>
+              <path id="circ" d="M50,50 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0" />
+            </defs>
+            <text class="sticker-txt">
+              <textPath href="#circ">EVEN KENNISMAKEN • BEL GERUST • KOFFIE? • </textPath>
+            </text>
+          </svg>
+          <span class="sticker-arrow">↓</span>
+        </a>
+      </section>
+
+      <!-- MARQUEE -->
+      <div class="marquee">
+        <div class="marquee-track">
+          {
+            Array.from({ length: 2 }).map(() => (
+              <span>
+                Afspraken <b>●</b> Bij de juiste beslisser <b>●</b> Maandelijks
+                opzegbaar <b>●</b> Geen call center <b>●</b> Persoonlijk <b>●</b>
+                Jij verkoopt <b>●</b>
+              </span>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- WAT WE DOEN — interactieve rijen -->
+      <section class="rows">
+        <div class="rows-head">
+          <span class="pill-eyebrow dark">● WAT WE DOEN</span>
+          <h2 class="rows-title">Wij bellen.<br />Jij <em>verkoopt</em>.</h2>
+        </div>
+        {
+          doen.map((d) => (
+            <a class="drow" href="#" data-hover>
+              <span class="drow-n">{d.n}</span>
+              <span class="drow-t">{d.t}</span>
+              <span class="drow-p">{d.p}</span>
+              <span class="drow-arrow">→</span>
+            </a>
+          ))
+        }
+      </section>
+
+      <!-- FUN STAT band -->
+      <section class="funstat">
+        <div class="funstat-in">
+          <div class="fs"><b>1</b><span>gezicht dat het<br />werk zelf doet</span></div>
+          <div class="fs"><b>0</b><span>lange contracten,<br />maandelijks opzegbaar</span></div>
+          <div class="fs"><b>100%</b><span>persoonlijk,<br />geen call center</span></div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="pcta">
+        <span class="bigdot"></span>
+        <h2 class="pcta-h">Even <mark class="mk blue">koffie</mark>?</h2>
+        <p class="pcta-sub">Een kop koffie en eerlijk advies, of we nu samenwerken of niet.</p>
+        <a class="pbtn big" href="#" data-magnetic data-hover>Plan een kennismaking →</a>
+      </section>
+    </main>
+
+    <footer class="pfoot">
+      <span class="plogo">LINK<span class="d">.</span></span>
+      <span>© 2026 · Alphen aan den Rijn · (0172) 27 10 08</span>
+    </footer>
+
+    <script is:inline>
+      (function () {
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var fine = window.matchMedia('(pointer: fine)').matches;
+
+        // Custom cursor
+        var cur = document.querySelector('[data-cursor]');
+        if (cur && fine && !reduce) {
+          document.documentElement.classList.add('has-cursor');
+          var cx = window.innerWidth / 2, cy = window.innerHeight / 2, tx = cx, ty = cy;
+          window.addEventListener('mousemove', function (e) { tx = e.clientX; ty = e.clientY; });
+          (function loop() {
+            cx += (tx - cx) * 0.2; cy += (ty - cy) * 0.2;
+            cur.style.transform = 'translate(' + cx + 'px,' + cy + 'px) translate(-50%,-50%)';
+            requestAnimationFrame(loop);
+          })();
+          document.querySelectorAll('[data-hover]').forEach(function (el) {
+            el.addEventListener('mouseenter', function () { cur.classList.add('big'); });
+            el.addEventListener('mouseleave', function () { cur.classList.remove('big'); });
+          });
+        }
+
+        // Magnetische knoppen
+        if (fine && !reduce) {
+          document.querySelectorAll('[data-magnetic]').forEach(function (el) {
+            el.addEventListener('mousemove', function (e) {
+              var r = el.getBoundingClientRect();
+              var dx = e.clientX - (r.left + r.width / 2);
+              var dy = e.clientY - (r.top + r.height / 2);
+              el.style.transform = 'translate(' + dx * 0.3 + 'px,' + dy * 0.3 + 'px)';
+            });
+            el.addEventListener('mouseleave', function () { el.style.transform = ''; });
+          });
+        }
+
+        // Reveal (pop)
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+        }, { threshold: 0.15 });
+        document.querySelectorAll('.pop').forEach(function (el) { io.observe(el); });
+      })();
+    </script>
+
+    <style is:global>
+      :root {
+        --pop: #ff6a3d; /* speels coral-accent naast blauw */
+        --pop-soft: #ffe9e1;
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      html.has-cursor, html.has-cursor a { cursor: none; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+      a { color: inherit; text-decoration: none; }
+      mark.mk {
+        background: var(--pop);
+        color: var(--ink);
+        padding: 0 0.12em 0.04em;
+        border-radius: 12px;
+        display: inline-block;
+        transform: rotate(-2.5deg);
+        line-height: 0.9;
+      }
+      mark.mk.blue { background: var(--blue); }
+      em { font-family: var(--font-serif); font-style: italic; font-weight: 400; }
+
+      /* Custom cursor */
+      .cursor {
+        position: fixed;
+        top: 0; left: 0;
+        width: 16px; height: 16px;
+        border-radius: 50%;
+        background: var(--blue);
+        pointer-events: none;
+        z-index: 9999;
+        mix-blend-mode: difference;
+        transition: width 0.22s var(--ease), height 0.22s var(--ease), background 0.22s;
+      }
+      .cursor.big { width: 64px; height: 64px; background: #fff; }
+
+      /* Pill-nav */
+      .pnav {
+        position: fixed;
+        top: 18px; left: 50%;
+        transform: translateX(-50%);
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        background: color-mix(in oklab, var(--paper) 90%, transparent);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 10px 12px 10px 24px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+      }
+      .plogo { font-weight: 900; font-size: 22px; letter-spacing: -0.05em; }
+      .plogo .d { color: var(--blue); }
+      .pnav-links { display: flex; gap: 22px; font-weight: 600; font-size: 14px; }
+      .pnav-links a { transition: color 0.2s; }
+      .pnav-links a:hover { color: var(--blue-deep); }
+      .pnav-cta {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 11px 20px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: background 0.2s, color 0.2s;
+      }
+      .pnav-cta:hover { background: var(--pop); color: var(--ink); }
+
+      /* Hero */
+      .phero {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 140px clamp(24px, 6vw, 110px) 80px;
+        gap: 28px;
+      }
+      .pill-eyebrow {
+        align-self: flex-start;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        color: var(--ink);
+        background: var(--paper);
+        border: 1px solid var(--line);
+        padding: 9px 16px;
+        border-radius: 999px;
+      }
+      .pill-eyebrow::first-letter { color: var(--pop); }
+      .pill-eyebrow.dark {
+        background: var(--ink);
+        color: var(--paper);
+        border-color: var(--ink);
+      }
+      .phero-h {
+        font-weight: 900;
+        font-size: clamp(56px, 12vw, 200px);
+        line-height: 0.85;
+        letter-spacing: -0.055em;
+        margin: 0;
+      }
+      .bouncedot {
+        display: inline-block;
+        width: 0.16em;
+        height: 0.16em;
+        border-radius: 50%;
+        background: var(--blue);
+        margin-left: 0.12em;
+        vertical-align: baseline;
+        animation: bounce 1.4s var(--ease) infinite;
+      }
+      @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        30% { transform: translateY(-0.5em); }
+        50% { transform: translateY(0); }
+      }
+      .phero-sub {
+        font-size: clamp(18px, 1.6vw, 24px);
+        line-height: 1.5;
+        color: var(--ink-soft);
+        max-width: 46ch;
+        margin: 0;
+      }
+      .phero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+      .pbtn {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 18px 30px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 16px;
+        transition: background 0.2s, color 0.2s;
+        will-change: transform;
+      }
+      .pbtn:hover { background: var(--blue); color: var(--ink); }
+      .pbtn.ghost { background: transparent; border: 1.5px solid var(--ink); color: var(--ink); }
+      .pbtn.ghost:hover { background: var(--ink); color: var(--paper); }
+      .pbtn.big { font-size: 19px; padding: 22px 38px; }
+
+      /* draaiende sticker */
+      .sticker {
+        position: absolute;
+        top: 20vh; right: clamp(24px, 6vw, 110px);
+        width: clamp(100px, 12vw, 150px);
+        height: clamp(100px, 12vw, 150px);
+        display: grid;
+        place-items: center;
+      }
+      .sticker svg {
+        position: absolute;
+        inset: 0;
+        width: 100%; height: 100%;
+        animation: spin 14s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .sticker-txt {
+        font-family: var(--font-mono);
+        font-size: 8.5px;
+        letter-spacing: 0.18em;
+        fill: var(--ink);
+        text-transform: uppercase;
+      }
+      .sticker-arrow {
+        width: 46px; height: 46px;
+        background: var(--blue);
+        color: var(--ink);
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      /* Marquee */
+      .marquee {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 22px 0;
+        overflow: hidden;
+        border-top: 2px solid var(--pop);
+        border-bottom: 2px solid var(--pop);
+      }
+      .marquee-track {
+        display: flex;
+        white-space: nowrap;
+        width: max-content;
+        animation: scroll 26s linear infinite;
+      }
+      .marquee-track span {
+        font-size: clamp(28px, 4vw, 60px);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        padding-right: 0.4em;
+      }
+      .marquee-track b { color: var(--pop); }
+      @keyframes scroll { to { transform: translateX(-50%); } }
+
+      /* Interactieve rijen */
+      .rows { padding: clamp(70px, 9vw, 150px) clamp(24px, 6vw, 110px); }
+      .rows-head { margin-bottom: clamp(32px, 4vw, 56px); display: flex; flex-direction: column; gap: 18px; }
+      .rows-title {
+        font-weight: 900;
+        font-size: clamp(40px, 6vw, 100px);
+        line-height: 0.86;
+        letter-spacing: -0.05em;
+        margin: 0;
+      }
+      .drow {
+        display: grid;
+        grid-template-columns: 90px 1fr 1fr 60px;
+        align-items: center;
+        gap: 20px;
+        padding: clamp(24px, 3vw, 42px) 10px;
+        border-top: 2px solid var(--ink);
+        position: relative;
+        transition: padding 0.3s var(--ease), color 0.3s;
+        overflow: hidden;
+      }
+      .drow:last-child { border-bottom: 2px solid var(--ink); }
+      .drow::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: var(--pop);
+        transform: translateY(101%);
+        transition: transform 0.4s var(--ease);
+        z-index: 0;
+      }
+      .drow:hover::before { transform: translateY(0); }
+      .drow:hover { padding-left: 30px; padding-right: 30px; }
+      .drow > * { position: relative; z-index: 1; }
+      .drow-n {
+        font-family: var(--font-mono);
+        font-size: 15px;
+        color: var(--blue-deep);
+      }
+      .drow:hover .drow-n { color: var(--ink); }
+      .drow-t {
+        font-size: clamp(24px, 3vw, 46px);
+        font-weight: 800;
+        letter-spacing: -0.035em;
+      }
+      .drow-p { color: var(--ink-soft); font-size: 16px; }
+      .drow:hover .drow-p { color: var(--ink); }
+      .drow-arrow {
+        font-size: 28px;
+        justify-self: end;
+        transition: transform 0.3s var(--ease);
+      }
+      .drow:hover .drow-arrow { transform: translateX(8px); }
+
+      /* Fun stat */
+      .funstat {
+        background: var(--blue);
+        color: var(--ink);
+        padding: clamp(56px, 8vw, 120px) clamp(24px, 6vw, 110px);
+      }
+      .funstat-in {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: clamp(28px, 4vw, 64px);
+      }
+      .fs { display: flex; flex-direction: column; gap: 8px; }
+      .fs b {
+        font-size: clamp(64px, 10vw, 150px);
+        font-weight: 900;
+        letter-spacing: -0.06em;
+        line-height: 0.8;
+      }
+      .fs span { font-size: 16px; font-weight: 600; line-height: 1.4; }
+
+      /* CTA */
+      .pcta {
+        position: relative;
+        text-align: center;
+        padding: clamp(90px, 13vw, 220px) clamp(24px, 6vw, 110px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 26px;
+      }
+      .bigdot {
+        width: clamp(60px, 8vw, 120px);
+        height: clamp(60px, 8vw, 120px);
+        border-radius: 50%;
+        background: var(--pop);
+        animation: bounce2 2s var(--ease) infinite;
+      }
+      @keyframes bounce2 {
+        0%, 100% { transform: translateY(0) scale(1); }
+        50% { transform: translateY(-18px) scale(1.05); }
+      }
+      .pcta-h {
+        font-weight: 900;
+        font-size: clamp(56px, 12vw, 190px);
+        line-height: 0.85;
+        letter-spacing: -0.055em;
+        margin: 0;
+      }
+      .pcta-sub { font-size: clamp(18px, 1.6vw, 24px); color: var(--ink-soft); margin: 0; max-width: 40ch; }
+
+      .pfoot {
+        background: var(--ink);
+        color: var(--dark-mute);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 28px clamp(24px, 6vw, 110px);
+        font-family: var(--font-mono);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .pfoot .plogo { color: var(--paper); }
+
+      /* Reveal-pop helper */
+      .pop { opacity: 0; transform: translateY(30px) scale(0.98); transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
+      .pop.in { opacity: 1; transform: none; }
+
+      @media (max-width: 820px) {
+        .pnav-links { display: none; }
+        .sticker { top: auto; bottom: 24px; right: 24px; }
+        .drow { grid-template-columns: 50px 1fr 40px; }
+        .drow-p { display: none; }
+        .funstat-in { grid-template-columns: 1fr; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .bouncedot, .bigdot, .sticker svg, .marquee-track { animation: none; }
+      }
+    </style>
+  </body>
+</html>
