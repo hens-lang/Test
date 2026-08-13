@@ -1,6 +1,6 @@
 ---
 import '@/styles/global.css';
-import '@/styles/editorial.css';
+import '@/styles/refined.css';
 import { site, type SEO } from '@/lib/site';
 import Nav from '@/components/Nav.astro';
 import Footer from '@/components/Footer.astro';
@@ -8,7 +8,6 @@ import CookieConsent from '@/components/CookieConsent.astro';
 
 interface Props extends SEO {
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
-  index?: { n: string; label: string }[];
 }
 
 const {
@@ -17,7 +16,6 @@ const {
   path,
   ogImage = '/assets/logo-square.png',
   jsonLd,
-  index,
 } = Astro.props;
 
 const canonical = new URL(path, site.url).href.replace(/\/$/, '') || site.url;
@@ -62,25 +60,9 @@ const ogImageUrl = new URL(ogImage, site.url).href;
   </head>
   <body>
     <Nav />
-
-    {
-      index && (
-        <nav class="chapter-index" aria-label="Hoofdstukken">
-          {index.map((c) => (
-            <a href={`#h${c.n}`} data-idx={c.n}>
-              <span class="bar" />
-              {c.n}
-            </a>
-          ))}
-        </nav>
-      )
-    }
-
-    <main class="mag">
-      <div class="thread" aria-hidden="true"><span class="spark"></span></div>
+    <main>
       <slot />
     </main>
-
     <Footer />
     <CookieConsent />
     <script>

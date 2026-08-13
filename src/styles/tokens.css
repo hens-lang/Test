@@ -47,7 +47,10 @@
   --r-card: 3px;
   --r-panel: 28px;
 
-  /* ---- Editorial ---- */
+  /* ---- Layout ---- */
+  --gutter: clamp(24px, 6vw, 110px); /* horizontale paginamarge (verfijnd) */
+
+  /* ---- Editorial (concept) ---- */
   --rail: clamp(20px, 6vw, 96px); /* buitenmarge = ruimte voor de thread */
   --thread-x: calc(var(--rail) + 6px); /* x-positie van de verbindingslijn */
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");

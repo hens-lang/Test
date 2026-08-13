@@ -2,27 +2,27 @@
 import { nav, site } from '@/lib/site';
 ---
 
-<footer class="efoot">
-  <div class="efoot-grid">
-    <div class="col">
-      <a href="/" class="logo">LINK<span class="b">.</span></a>
-      <p class="efoot-tag">
+<footer class="site-foot">
+  <div class="foot-grid">
+    <div class="fcol">
+      <a href="/" class="brand">LINK<span class="d">.</span></a>
+      <p class="foot-tag">
         Dè partner van B2B bedrijven. Wij brengen jou persoonlijk aan tafel bij
         nieuwe klanten.
       </p>
     </div>
-    <div class="col">
-      <span class="k">Site</span>
+    <div class="fcol">
+      <span class="fk">Site</span>
       {nav.map((item) => <a href={item.href}>{item.label}</a>)}
     </div>
-    <div class="col">
-      <span class="k">Wat we doen</span>
+    <div class="fcol">
+      <span class="fk">Wat we doen</span>
       <a href="/diensten#telefonisch">Telefonische acquisitie</a>
       <a href={site.portal.url} target="_blank" rel="noopener">Partnerportaal</a>
       <a href="/contact">Kennismaken</a>
     </div>
-    <div class="col">
-      <span class="k">Contact</span>
+    <div class="fcol">
+      <span class="fk">Contact</span>
       <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
       <a href={`tel:${site.contact.phoneHref}`}>{site.contact.phoneDisplay}</a>
       <a href={site.contact.mapsUrl} target="_blank" rel="noopener">
@@ -30,11 +30,8 @@ import { nav, site } from '@/lib/site';
       </a>
     </div>
   </div>
-
-  <div class="efoot-mega" aria-hidden="true">LINK<span class="b">.</span></div>
-
-  <div class="efoot-bottom">
-    <span>© 2026 LINK<span style="color:var(--blue)">.</span> — ALLE RECHTEN VOORBEHOUDEN</span>
-    <span>GEMAAKT MET AANDACHT IN NEDERLAND</span>
+  <div class="foot-bottom">
+    <span>© 2026 LINK<span class="d">.</span> — Alle rechten voorbehouden</span>
+    <span>Gemaakt met aandacht in Nederland</span>
   </div>
 </footer>

@@ -1,21 +1,14 @@
 ---
 import Base from '@/layouts/Base.astro';
-import Chapter from '@/components/Chapter.astro';
-import Duotone from '@/components/Duotone.astro';
+import Figure from '@/components/Figure.astro';
 import TariefCalculator from '@/components/widgets/TariefCalculator.astro';
 
-const index = [
-  { n: '01', label: 'Koffie' },
-  { n: '02', label: 'Tarief' },
-  { n: '03', label: 'Vragen' },
-];
-
 const faq = [
-  { q: 'Met wat voor <em>bedrijven</em> werken jullie?', a: 'Wij werken voor B2B-bedrijven die hun salesmotor willen opzetten of versterken. Of het nu een groothandel, dienstverlener of softwarebedrijf is, als jouw klant een ander bedrijf is, kunnen wij meestal helpen. Niet zeker of we passen? Bel ons gerust.' },
+  { q: 'Met wat voor <span class="serif">bedrijven</span> werken jullie?', a: 'Wij werken voor B2B-bedrijven die hun salesmotor willen opzetten of versterken. Of het nu een groothandel, dienstverlener of softwarebedrijf is, als jouw klant een ander bedrijf is, kunnen wij meestal helpen. Niet zeker of we passen? Bel ons gerust.' },
   { q: 'Hoe lang duurt het voor we resultaat zien?', a: 'Eerlijk: de eerste weken zijn vooral voorbereiden, doelgroep scherpstellen, prospectlijst bouwen, jouw verhaal echt begrijpen. Vanaf maand twee verwacht je de eerste afspraken te zien. Maar we beloven niets dat we niet kunnen waarmaken.' },
-  { q: 'Werken jullie met <em>vaste</em> contracten?', a: 'Nee. Wij werken maandelijks opzegbaar. Wij verdienen onze plek elke maand opnieuw, dat houdt ons scherp, en geeft jou de vrijheid om te stoppen als het niet meer klopt.' },
+  { q: 'Werken jullie met <span class="serif">vaste</span> contracten?', a: 'Nee. Wij werken maandelijks opzegbaar. Wij verdienen onze plek elke maand opnieuw, dat houdt ons scherp, en geeft jou de vrijheid om te stoppen als het niet meer klopt.' },
   { q: 'Wat als jullie denken dat het niet gaat werken?', a: 'Dan zeggen we dat. Liever een eerlijk nee vooraf dan een moeizame samenwerking achteraf. We gaan geen samenwerking aan als we er niet achter staan, dat heeft niemand iets aan.' },
-  { q: 'Hoe zit het met <em>rapportage</em>?', a: 'Wekelijks. Heldere rapportages die je écht inzicht geven in wat we hebben gedaan, wat het opleverde en wat beter kan. Als iets niet loopt zoals verwacht, hoor je dat van ons zonder dat je ernaar hoeft te vragen.' },
+  { q: 'Hoe zit het met <span class="serif">rapportage</span>?', a: 'Wekelijks. Heldere rapportages die je écht inzicht geven in wat we hebben gedaan, wat het opleverde en wat beter kan. Als iets niet loopt zoals verwacht, hoor je dat van ons zonder dat je ernaar hoeft te vragen.' },
 ];
 
 const faqJsonLd = {
@@ -42,24 +35,22 @@ const tracker = [
   description="Even kennismaken bij een kop koffie? Bel (0172) 27 10 08 of mail info@linkgrp.nl. We reageren meestal binnen 30 minuten. Gevestigd in Alphen aan den Rijn."
   path="/contact"
   jsonLd={faqJsonLd}
-  index={index}
 >
-  <!-- 01 — Hero + tracker -->
-  <section class="page-hero" id="h01">
+  <!-- Hero + tracker -->
+  <section class="page-hero">
     <div class="ph-copy reveal">
-      <Chapter n="01" label="Contact" />
-      <h1 class="h-giant">Een kop <em>koffie</em> met je<span class="dot">.</span></h1>
-      <p class="lede-xl">
+      <span class="eyebrow">Contact</span>
+      <h1 class="display">Een kop <span class="serif">koffie</span> met je<span class="d">.</span></h1>
+      <p class="sub">
         Gewoon kennismaken bij een kop koffie. Past het, dan plannen we een
         vervolg. Past het niet, dan zeggen we dat ook eerlijk.
       </p>
     </div>
-
     <aside class="tracker reveal" aria-label="Wat gebeurt er na je bericht">
       <div class="tr-head">
         <div>
           <span class="tr-eyebrow">Na je bericht</span>
-          <span class="tr-name">Zo gaan we te <em>werk</em></span>
+          <span class="tr-name">Zo gaan we te <span class="serif">werk</span></span>
         </div>
         <span class="tr-id">#LINK-2206</span>
       </div>
@@ -88,37 +79,37 @@ const tracker = [
       <div class="tr-foot">
         <span class="tr-av">HB</span>
         <div class="tr-promise">
-          <b>Reageert meestal <em>binnen 30 minuten</em></b>
+          <b>Reageert meestal <span class="serif">binnen 30 minuten</span></b>
           <span>Hens · zonder gedoe</span>
         </div>
       </div>
     </aside>
   </section>
 
-  <!-- 02 — Tarief -->
-  <section class="contact-grid" id="h02">
+  <!-- Tarief -->
+  <section class="band line contact-grid">
     <div class="cg-intro reveal">
-      <Chapter n="02" label="Tarief op maat" />
-      <h2 class="h-section">Wat kost het?<br />Dat <em>rekenen</em> we uit<span class="dot">.</span></h2>
-      <p class="lede-xl">
+      <span class="eyebrow">Tarief op maat</span>
+      <h2 class="headline">Wat kost het? Dat <span class="serif">rekenen</span> we uit<span class="d">.</span></h2>
+      <p class="lede">
         Vier korte vragen over jouw cijfers. Daarna maken we persoonlijk een
         berekening op maat. Je verplicht je tot niets.
       </p>
       <div class="cg-photo">
-        <Duotone src="/assets/hens-coffee.jpeg" alt="Hens bij een kop koffie" ratio="4 / 3" caption="EVEN KENNISMAKEN" position="center 20%" />
+        <Figure src="/assets/hens-coffee.jpeg" alt="Hens bij een kop koffie" ratio="4 / 3" radius="20px" position="center 20%" />
       </div>
     </div>
     <TariefCalculator />
   </section>
 
-  <!-- 03 — FAQ -->
-  <section class="mag-sec" id="h03">
-    <div class="split-head reveal">
+  <!-- FAQ -->
+  <section class="band">
+    <div class="head reveal">
       <div>
-        <Chapter n="03" label="Vragen vooraf" />
-        <h2 class="h-section">Wat je nog wilde <em>weten</em><span class="dot">.</span></h2>
+        <span class="eyebrow">Vragen vooraf</span>
+        <h2 class="headline">Wat je nog wilde <span class="serif">weten</span><span class="d">.</span></h2>
       </div>
-      <p class="lede-xl">Een paar vragen die we vaak krijgen. Mist er iets? Stuur het ons gerust.</p>
+      <p class="lede">Een paar vragen die we vaak krijgen. Mist er iets? Stuur het ons gerust.</p>
     </div>
     <div class="faq-list reveal">
       {
@@ -140,13 +131,11 @@ const tracker = [
 
 <style>
   .page-hero {
-    position: relative;
-    z-index: 2;
     display: grid;
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
     gap: clamp(40px, 5vw, 80px);
     align-items: center;
-    padding: clamp(40px, 6vw, 96px) var(--rail) clamp(48px, 6vw, 96px);
+    padding: clamp(48px, 7vw, 110px) var(--gutter) clamp(48px, 6vw, 96px);
   }
   .ph-copy {
     display: flex;
@@ -158,7 +147,7 @@ const tracker = [
   .tracker {
     background: var(--paper);
     border: 1px solid var(--line-soft);
-    border-radius: var(--r-card);
+    border-radius: 20px;
     padding: 24px;
     box-shadow: 0 30px 80px rgba(0, 0, 0, 0.1);
     display: flex;
@@ -184,9 +173,6 @@ const tracker = [
     font-size: 20px;
     font-weight: 800;
     letter-spacing: -0.02em;
-  }
-  .tr-name em {
-    color: var(--blue);
   }
   .tr-id {
     font-family: var(--font-mono);
@@ -310,11 +296,8 @@ const tracker = [
     font-weight: 700;
     color: var(--paper);
   }
-  .tr-promise em {
-    font-family: var(--font-serif);
-    font-style: italic;
+  .tr-promise .serif {
     color: var(--blue);
-    font-weight: 400;
   }
   .tr-promise span {
     font-size: 11px;
@@ -323,34 +306,20 @@ const tracker = [
 
   /* Contact-grid */
   .contact-grid {
-    position: relative;
-    z-index: 2;
     display: grid;
     grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
     gap: clamp(40px, 5vw, 96px);
     align-items: start;
-    padding: clamp(56px, 7vw, 120px) var(--rail);
-    border-top: 1px solid var(--line);
   }
   .cg-intro {
     display: flex;
     flex-direction: column;
     gap: 20px;
     position: sticky;
-    top: 120px;
+    top: 110px;
   }
   .cg-photo {
     margin-top: 8px;
-  }
-  .cg-photo :global(.duo) {
-    min-height: 30vh;
-  }
-
-  .split-head {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(32px, 5vw, 80px);
-    align-items: end;
   }
 
   /* FAQ */
@@ -375,14 +344,12 @@ const tracker = [
     letter-spacing: -0.03em;
     line-height: 1.1;
     gap: 24px;
+    transition: color 0.2s;
   }
   .faq-item summary::-webkit-details-marker {
     display: none;
   }
-  .faq-item summary .q :global(em) {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 400;
+  .faq-item summary .q :global(.serif) {
     color: var(--blue-deep);
   }
   .faq-item:hover summary {
@@ -421,9 +388,6 @@ const tracker = [
     }
     .cg-intro {
       position: static;
-    }
-    .split-head {
-      grid-template-columns: 1fr;
     }
   }
 </style>

@@ -1,6 +1,5 @@
 ---
 import Base from '@/layouts/Base.astro';
-import Icon from '@/components/Icon.astro';
 ---
 
 <Base
@@ -8,57 +7,45 @@ import Icon from '@/components/Icon.astro';
   description="Deze pagina bestaat niet (meer)."
   path="/404"
 >
-  <section class="notfound">
-    <div class="notfound-inner">
-      <span class="code">404<span class="punc">.</span></span>
-      <h1>Deze pagina is er niet<span class="punc">.</span></h1>
+  <section class="nf">
+    <div class="nf-in reveal">
+      <span class="nf-code">404<span class="d">.</span></span>
+      <h1 class="headline">Deze pagina is er niet<span class="d">.</span></h1>
       <p class="lede">Misschien is de link verouderd. Ga terug naar de start, of neem gewoon even contact op.</p>
-      <div class="btn-row">
-        <a class="btn-primary" href="/">Naar home <Icon name="arrow" class="arrow" /></a>
-        <a class="btn-ghost" href="/contact">Contact</a>
+      <div class="nf-row">
+        <a class="btn" href="/" data-magnetic>Naar home <span class="arw">→</span></a>
+        <a class="link" href="/contact">Contact</a>
       </div>
     </div>
   </section>
 </Base>
 
 <style>
-  .notfound {
-    padding: clamp(96px, 12vw, 200px) var(--pad-x);
+  .nf {
+    padding: clamp(96px, 13vw, 200px) var(--gutter);
     display: grid;
     place-items: center;
     text-align: center;
     min-height: 60vh;
   }
-  .notfound-inner {
-    max-width: 40ch;
+  .nf-in {
+    max-width: 42ch;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 16px;
   }
-  .code {
+  .nf-code {
     font-family: var(--font-mono);
     font-size: clamp(56px, 10vw, 120px);
     font-weight: 700;
     letter-spacing: -0.04em;
-    color: var(--ink);
     line-height: 1;
   }
-  .notfound h1 {
-    font-size: var(--t-h2);
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    margin: 0;
-  }
-  .notfound .lede {
-    font-size: var(--t-lede);
-    color: var(--ink-soft);
-    line-height: 1.45;
-    margin: 0;
-  }
-  .btn-row {
+  .nf-row {
     display: flex;
-    gap: 14px;
+    align-items: center;
+    gap: 26px;
     flex-wrap: wrap;
     justify-content: center;
     margin-top: 12px;

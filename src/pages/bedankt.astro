@@ -1,6 +1,5 @@
 ---
 import Base from '@/layouts/Base.astro';
-import Icon from '@/components/Icon.astro';
 import { site } from '@/lib/site';
 ---
 
@@ -9,41 +8,41 @@ import { site } from '@/lib/site';
   description="Bedankt voor je bericht. We nemen binnen 24 uur persoonlijk contact met je op."
   path="/bedankt"
 >
-  <section class="bedankt">
-    <div class="bedankt-inner reveal">
-      <div class="cd-ic">
-        <Icon name="check" size={30} />
+  <section class="thanks">
+    <div class="thanks-in reveal">
+      <div class="thanks-ic">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <span class="eyebrow">Ontvangen</span>
-      <h1>Bedankt. We gaan voor je <span class="it">rekenen</span><span class="punc">.</span></h1>
+      <h1 class="display">Bedankt. We gaan voor je <span class="serif">rekenen</span><span class="d">.</span></h1>
       <p class="lede">
         We maken een berekening op maat met jouw cijfers en nemen binnen 24 uur
         persoonlijk contact met je op. Meestal sneller.
       </p>
-      <div class="btn-row">
-        <a class="btn-primary" href="/">Terug naar home <Icon name="arrow" class="arrow" /></a>
-        <a class="btn-ghost" href={`tel:${site.contact.phoneHref}`}>Of bel {site.contact.phoneDisplay}</a>
+      <div class="thanks-row">
+        <a class="btn" href="/" data-magnetic>Terug naar home <span class="arw">→</span></a>
+        <a class="link" href={`tel:${site.contact.phoneHref}`}>Of bel {site.contact.phoneDisplay}</a>
       </div>
     </div>
   </section>
 </Base>
 
 <style>
-  .bedankt {
-    padding: clamp(96px, 12vw, 200px) var(--pad-x);
+  .thanks {
+    padding: clamp(96px, 13vw, 200px) var(--gutter);
     display: grid;
     place-items: center;
     text-align: center;
     min-height: 60vh;
   }
-  .bedankt-inner {
-    max-width: 44ch;
+  .thanks-in {
+    max-width: 46ch;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 18px;
   }
-  .cd-ic {
+  .thanks-ic {
     width: 64px;
     height: 64px;
     border-radius: 50%;
@@ -53,22 +52,13 @@ import { site } from '@/lib/site';
     place-items: center;
     margin-bottom: 6px;
   }
-  .bedankt h1 {
-    font-size: var(--t-h1);
-    line-height: 0.98;
-    letter-spacing: -0.04em;
-    font-weight: 800;
-    margin: 0;
+  .thanks .display {
+    max-width: none;
   }
-  .bedankt .lede {
-    font-size: var(--t-lede);
-    color: var(--ink-soft);
-    line-height: 1.45;
-    margin: 0;
-  }
-  .btn-row {
+  .thanks-row {
     display: flex;
-    gap: 14px;
+    align-items: center;
+    gap: 26px;
     flex-wrap: wrap;
     justify-content: center;
     margin-top: 12px;

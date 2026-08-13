@@ -1,23 +1,15 @@
 ---
 import Base from '@/layouts/Base.astro';
-import Chapter from '@/components/Chapter.astro';
-import Duotone from '@/components/Duotone.astro';
+import Figure from '@/components/Figure.astro';
 import PipelineWidget from '@/components/widgets/PipelineWidget.astro';
 
-const index = [
-  { n: '01', label: 'Ideale klant' },
-  { n: '02', label: '7 stappen' },
-  { n: '03', label: 'Uitgangspunt' },
-  { n: '04', label: 'Beginnen' },
-];
-
 const steps = [
-  { n: '01', t: 'We verdiepen ons in jouw <em>bedrijf</em>', p: 'Wat verkoop je, wat onderscheidt je, en wie zit er nu al aan tafel? Hoe scherper het verhaal, hoe gerichter de outreach. <strong>Geen oppervlakkige briefing.</strong>' },
-  { n: '02', t: 'We bepalen samen het <em>groeidoel</em>', p: 'Hoeveel afspraken? Welke omzet? Tegen welk tempo? Eerst helder, dan pas in actie. We werken vanuit een <strong>concreet doel</strong>, niet vanuit een vaag voorgevoel.' },
-  { n: '03', t: 'We bepalen samen een <em>doelgroep</em>', p: 'Hier nemen we ruim de tijd voor. Want als we weten bij wie we moeten zijn, zitten we direct in de goede hoek. We sturen bij tot het <strong>ideale klantprofiel</strong> klopt.' },
-  { n: '04', t: 'We stellen een <em>prospectlijst</em> samen', p: 'Geen gekochte database. Een handgemaakte lijst met bedrijven waar jij echt aan tafel wilt komen. We zoeken, vergelijken en beoordelen, tot de lijst klopt.' },
-  { n: '05', t: 'De juiste beslisser bereiken', p: 'Een goed voorbereide aanpak die past bij jouw bedrijf en verhaal. We zoeken de juiste beslisser, en spreken hem of haar aan op de juiste manier.' },
-  { n: '06', t: 'Interesse polsen en <em>kwalificeren</em>', p: 'We brengen alleen door wat écht een gesprek waard is. Liever één goede afspraak dan tien middelmatige. <strong>Volume is geen doel op zich</strong>, kwaliteit wel.' },
+  { n: '01', t: 'We verdiepen ons in jouw <span class="serif">bedrijf</span>', p: 'Wat verkoop je, wat onderscheidt je, en wie zit er nu al aan tafel? Hoe scherper het verhaal, hoe gerichter de outreach. <strong>Geen oppervlakkige briefing.</strong>' },
+  { n: '02', t: 'We bepalen samen het <span class="serif">groeidoel</span>', p: 'Hoeveel afspraken? Welke omzet? Tegen welk tempo? Eerst helder, dan pas in actie. We werken vanuit een <strong>concreet doel</strong>.' },
+  { n: '03', t: 'We bepalen samen een <span class="serif">doelgroep</span>', p: 'Hier nemen we ruim de tijd voor. Weten we bij wie we moeten zijn, dan zitten we direct in de goede hoek. We sturen bij tot het <strong>ideale klantprofiel</strong> klopt.' },
+  { n: '04', t: 'We stellen een <span class="serif">prospectlijst</span> samen', p: 'Geen gekochte database. Een handgemaakte lijst met bedrijven waar jij echt aan tafel wilt komen. We zoeken, vergelijken en beoordelen, tot de lijst klopt.' },
+  { n: '05', t: 'De juiste beslisser bereiken', p: 'Een goed voorbereide aanpak die past bij jouw bedrijf en verhaal. We zoeken de juiste beslisser en spreken hem of haar aan op de juiste manier.' },
+  { n: '06', t: 'Interesse polsen en <span class="serif">kwalificeren</span>', p: 'We brengen alleen door wat écht een gesprek waard is. Liever één goede afspraak dan tien middelmatige. <strong>Kwaliteit boven volume.</strong>' },
   { n: '07', t: 'De afspraak inplannen', p: 'Jij doet waar je goed in bent: het gesprek voeren en de deal sluiten. Wij blijven beschikbaar om mee te denken en bij te sturen.' },
 ];
 ---
@@ -26,67 +18,62 @@ const steps = [
   title="Onze aanpak in 7 stappen | LINK. B2B acquisitie"
   description="Van doelgroep bepalen tot de afspraak in jouw agenda: ontdek hoe LINK. in zeven heldere stappen werkt aan kwalitatieve B2B-afspraken die ertoe doen."
   path="/aanpak"
-  index={index}
 >
-  <!-- 01 — Hero -->
-  <section class="page-hero" id="h01">
+  <!-- Hero -->
+  <section class="page-hero">
     <div class="ph-copy reveal">
-      <Chapter n="01" label="Onze aanpak" />
-      <h1 class="h-giant">Eerst begrijpen wie je <em>ideale</em> klant is<span class="dot">.</span></h1>
-      <p class="lede-xl">
+      <span class="eyebrow">Onze aanpak</span>
+      <h1 class="display">Eerst begrijpen wie je <span class="serif">ideale</span> klant is<span class="d">.</span></h1>
+      <p class="sub">
         Voordat we ook maar één telefoontje plegen, bepalen we samen de doelgroep.
-        Hier nemen we ruim de tijd voor. Weten we bij wie we moeten zijn, dan
-        zitten we direct in de goede hoek.
+        Weten we bij wie we moeten zijn, dan zitten we direct in de goede hoek.
       </p>
     </div>
-    <div class="ph-widget reveal">
-      <PipelineWidget />
-    </div>
+    <div class="ph-widget reveal"><PipelineWidget /></div>
   </section>
 
-  <!-- 02 — 7 stappen -->
-  <section class="mag-sec" id="h02">
-    <div class="split-head reveal">
+  <!-- 7 stappen -->
+  <section class="band line">
+    <div class="head reveal">
       <div>
-        <Chapter n="02" label="Zo werken wij" />
-        <h2 class="h-section">Zeven stappen.<br />Eén <em>doel</em><span class="dot">.</span></h2>
+        <span class="eyebrow">Zo werken wij</span>
+        <h2 class="headline">Zeven stappen. Eén <span class="serif">doel</span><span class="d">.</span></h2>
       </div>
-      <p class="lede-xl">
+      <p class="lede">
         Elke week halen we uit de gesprekken op welke signalen, functietitels en
         branches het beste werken, en sturen we bij. Heldere stappen, eerlijke
         verwachtingen.
       </p>
     </div>
-    <ol class="steps reveal" style="margin-top: clamp(32px,4vw,64px)">
+    <ol class="steplist reveal">
       {
         steps.map((s) => (
-          <li class="step">
-            <span class="step-n">{s.n}</span>
-            <div class="step-body">
+          <li class="stepitem">
+            <span class="stepitem-n">{s.n}</span>
+            <div class="stepitem-body">
               <h3 set:html={s.t} />
               <p set:html={s.p} />
             </div>
-            <i class="node sm" />
           </li>
         ))
       }
     </ol>
   </section>
 
-  <!-- 03 — Uitgangspunt (manifest, donker + duotone) -->
-  <section class="manifest on-dark" id="h03">
-    <div class="manifest-media reveal">
-      <Duotone src="/assets/hens-arms-bench.jpeg" alt="Hens" ratio="4 / 5" caption="ONS UITGANGSPUNT" position="50% 18%" />
+  <!-- Manifest (donker + foto) -->
+  <section class="split on-dark manifest">
+    <div class="split-media reveal">
+      <Figure src="/assets/hens-arms-bench.jpeg" alt="Hens van LINK." ratio="4 / 5" radius="20px" position="50% 18%" />
     </div>
-    <div class="manifest-copy reveal">
-      <Chapter n="03" label="Ons uitgangspunt" />
-      <h2 class="h-display"><em>Kwaliteit</em> boven kwantiteit<span class="dot">.</span></h2>
-      <p class="lede-xl">
+    <div class="split-body reveal">
+      <span class="eyebrow">Ons uitgangspunt</span>
+      <h2 class="headline"><span class="serif">Kwaliteit</span> boven kwantiteit<span class="d">.</span></h2>
+      <p class="lede">
         Wij sturen niet op aantallen, maar op afspraken die converteren naar
         klanten. Liever één gesprek met de juiste beslisser dan tien afspraken
         die nergens toe leiden.
       </p>
-      <p class="lede-xl">
+      <p class="lede">
         Daarom verdiepen we ons eerst in jouw bedrijf en doelgroep. Zo komen we
         met het juiste verhaal, bij de juiste persoon, op het juiste moment.
       </p>
@@ -94,58 +81,83 @@ const steps = [
     </div>
   </section>
 
-  <!-- 04 — Beginnen -->
-  <section class="mag-sec cta-sec" id="h04">
-    <Chapter n="04" label="Klaar om te beginnen?" />
-    <h2 class="h-display">Vertel ons wat je <em>doet</em><span class="dot">.</span></h2>
-    <p class="lede-xl">
+  <!-- CTA -->
+  <section class="band cta">
+    <span class="eyebrow">Klaar om te beginnen?</span>
+    <h2 class="display">Vertel ons wat je <span class="serif">doet</span><span class="d">.</span></h2>
+    <p class="lede">
       Bij wie wil je aan tafel zitten? Wat zijn je groeiambities? Stuur ons een
       berichtje of bel gewoon. We reageren snel en zonder gedoe.
     </p>
-    <div class="hero-cta">
-      <a class="ebtn" href="/contact">Plan een kennismaking <span class="arw">→</span></a>
-      <a class="ebtn ghost" href="/diensten">Bekijk diensten</a>
+    <div class="cta-row">
+      <a class="btn" href="/contact" data-magnetic>Plan een kennismaking <span class="arw">→</span></a>
+      <a class="link" href="/diensten">Bekijk diensten</a>
     </div>
   </section>
 </Base>
 
 <style>
   .page-hero {
-    position: relative;
-    z-index: 2;
     display: grid;
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
     gap: clamp(40px, 5vw, 80px);
     align-items: center;
-    padding: clamp(40px, 6vw, 96px) var(--rail) clamp(48px, 6vw, 96px);
+    padding: clamp(48px, 7vw, 110px) var(--gutter) clamp(48px, 6vw, 96px);
   }
   .ph-copy {
     display: flex;
     flex-direction: column;
     gap: 24px;
   }
-  .split-head {
+  .steplist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .stepitem {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(32px, 5vw, 80px);
-    align-items: end;
+    grid-template-columns: 90px 1fr;
+    gap: clamp(20px, 4vw, 56px);
+    align-items: baseline;
+    padding: clamp(24px, 3vw, 40px) 0;
+    border-top: 1px solid var(--line);
+  }
+  .stepitem:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  .stepitem-n {
+    font-family: var(--font-mono);
+    font-size: clamp(22px, 2.4vw, 34px);
+    color: var(--blue-deep);
+    font-variant-numeric: tabular-nums;
+  }
+  .stepitem-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: clamp(16px, 3vw, 48px);
+    align-items: baseline;
+  }
+  .stepitem-body h3 {
+    font-size: clamp(22px, 2vw, 30px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin: 0;
+    max-width: 16ch;
+  }
+  .stepitem-body p {
+    color: var(--ink-soft);
+    font-size: 16px;
+    line-height: 1.55;
+    margin: 0;
+    max-width: 52ch;
+  }
+  .stepitem-body strong {
+    color: var(--ink);
+    font-weight: 600;
   }
   .manifest {
-    position: relative;
-    z-index: 2;
-    display: grid;
-    grid-template-columns: 0.8fr 1.2fr;
-    gap: clamp(32px, 5vw, 80px);
-    align-items: center;
-    padding: clamp(60px, 8vw, 130px) var(--rail);
-  }
-  .manifest-media :global(.duo) {
-    min-height: 52vh;
-  }
-  .manifest-copy {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
+    border-top: none;
   }
   .manifest-pull {
     font-family: var(--font-serif);
@@ -154,26 +166,28 @@ const steps = [
     font-size: clamp(20px, 1.8vw, 26px);
     margin: 6px 0 0;
   }
-  .cta-sec {
+  .cta {
     display: flex;
     flex-direction: column;
     gap: 22px;
     align-items: flex-start;
   }
-  .hero-cta {
+  .cta-row {
     display: flex;
-    gap: 14px;
+    align-items: center;
+    gap: 28px;
     flex-wrap: wrap;
   }
   @media (max-width: 900px) {
     .page-hero {
       grid-template-columns: 1fr;
     }
-    .split-head {
-      grid-template-columns: 1fr;
+    .stepitem {
+      grid-template-columns: 50px 1fr;
     }
-    .manifest {
+    .stepitem-body {
       grid-template-columns: 1fr;
+      gap: 8px;
     }
   }
 </style>

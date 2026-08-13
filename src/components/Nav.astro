@@ -8,17 +8,9 @@ function isActive(href: string) {
 }
 ---
 
-<!-- Dossier-metabar -->
-<div class="metabar">
-  <span>LINK<span class="b">.</span> — B2B ACQUISITIE</span>
-  <span class="hide-s">ALPHEN A/D RIJN</span>
-  <span class="hide-s">EST. MMXXV</span>
-  <span>MAANDELIJKS OPZEGBAAR</span>
-</div>
-
-<header class="enav" data-nav>
-  <a href="/" class="logo" aria-label="LINK.">LINK<span class="b">.</span></a>
-  <nav class="enav-links" aria-label="Hoofdmenu">
+<header class="site-nav" data-nav>
+  <a href="/" class="brand" aria-label="LINK.">LINK<span class="d">.</span></a>
+  <nav class="site-links" aria-label="Hoofdmenu">
     {
       nav
         .filter((i) => i.href !== '/')
@@ -29,8 +21,8 @@ function isActive(href: string) {
         ))
     }
   </nav>
-  <div class="enav-right">
-    <a href={site.portal.url} class="enav-login hide-s" target="_blank" rel="noopener">Inloggen</a>
-    <a href="/contact" class="enav-cta">Even kennismaken <span class="arw">→</span></a>
+  <div class="site-right">
+    <a href={site.portal.url} class="site-login" target="_blank" rel="noopener">Inloggen</a>
+    <a href="/contact" class="site-cta" data-magnetic>Even kennismaken <span class="arw">→</span></a>
   </div>
 </header>

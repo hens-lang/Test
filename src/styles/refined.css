@@ -1,0 +1,530 @@
+/* ============================================================
+   LINK. — verfijnde designtaal (clean & professioneel)
+   Rustig, veel witruimte, één accent (merkblauw). Subtiele craft.
+   Global classes zodat pagina's slank blijven.
+   ============================================================ */
+
+.serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.d {
+  color: var(--blue);
+}
+.arw {
+  display: inline-block;
+  transition: transform 0.25s var(--ease);
+}
+a:hover .arw {
+  transform: translateX(4px);
+}
+[data-magnetic] {
+  will-change: transform;
+}
+
+/* ---- Eyebrow: mono, ingetogen ---- */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+  font-weight: 500;
+}
+.eyebrow::before {
+  content: none;
+}
+
+/* ---- Link met onderstreping die naar een punt groeit (signature) ---- */
+.link {
+  position: relative;
+  font-weight: 600;
+  color: var(--ink);
+  padding-bottom: 3px;
+}
+.link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1.5px;
+  width: 0;
+  background: var(--blue);
+  transition: width 0.3s var(--ease);
+}
+.link:hover {
+  color: var(--blue-deep);
+}
+.link:hover::after {
+  width: 100%;
+}
+.on-dark .link {
+  color: var(--paper);
+}
+.on-dark .link:hover {
+  color: var(--blue);
+}
+
+/* ---- Knoppen ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 16px 28px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 15.5px;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+.btn:hover {
+  background: var(--blue);
+  color: var(--ink);
+}
+.btn.ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.btn.ghost:hover {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.on-dark .btn.ghost {
+  color: var(--paper);
+  border-color: color-mix(in oklab, var(--paper) 40%, transparent);
+}
+.on-dark .btn {
+  background: var(--paper);
+  color: var(--ink);
+}
+.on-dark .btn:hover {
+  background: var(--blue);
+}
+
+/* ---- Typografie-helpers ---- */
+.display {
+  font-weight: 800;
+  font-size: clamp(48px, 6vw, 104px);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  margin: 8px 0 0;
+  max-width: 15ch;
+}
+.headline {
+  font-weight: 800;
+  font-size: clamp(36px, 4.4vw, 72px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  margin: 14px 0 0;
+  max-width: 15ch;
+}
+.on-dark .display,
+.on-dark .headline {
+  color: var(--paper);
+}
+.lede {
+  font-size: clamp(18px, 1.4vw, 21px);
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0;
+  max-width: 48ch;
+}
+.on-dark .lede {
+  color: var(--dark-text);
+}
+.sub {
+  font-size: clamp(18px, 1.5vw, 23px);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  max-width: 42ch;
+  margin: 0;
+}
+
+/* ---- Banden (secties) ---- */
+.band {
+  padding: clamp(60px, 8vw, 120px) var(--gutter);
+  position: relative;
+}
+.band.line {
+  border-top: 1px solid var(--line);
+}
+.band.dark,
+.on-dark {
+  background: var(--ink);
+  color: var(--dark-text);
+}
+.on-dark .eyebrow {
+  color: var(--dark-mute);
+}
+
+/* kop links, lede rechts */
+.head {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(32px, 5vw, 80px);
+  align-items: end;
+  margin-bottom: clamp(44px, 5vw, 72px);
+}
+.head .lede {
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+/* ---- Kolommen (reeks) ---- */
+.cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(28px, 3vw, 56px);
+}
+.cols.two {
+  grid-template-columns: repeat(2, 1fr);
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+.col-n {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--blue-deep);
+}
+.col h3 {
+  font-size: clamp(20px, 1.8vw, 27px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin: 0;
+  line-height: 1.2;
+}
+.col p {
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 40ch;
+}
+.col strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ---- Statement (rustpunt) ---- */
+.statement {
+  padding: clamp(70px, 10vw, 150px) var(--gutter);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.statement.dark {
+  border: none;
+}
+.statement p,
+.statement h2 {
+  font-weight: 800;
+  font-size: clamp(30px, 4.4vw, 78px);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  margin: 0;
+  max-width: 20ch;
+}
+.statement .eyebrow {
+  margin-bottom: 24px;
+}
+.on-dark.statement p,
+.on-dark.statement h2 {
+  color: var(--paper);
+}
+
+/* ---- Foto-frame (nette foto, geen duotone) ---- */
+.frame {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--bg-3);
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0 18px,
+    rgba(0, 0, 0, 0.04) 18px 19px
+  );
+  display: grid;
+  place-items: center;
+}
+.frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.frame.blur img {
+  filter: blur(2.2px);
+  transform: scale(1.04);
+}
+.frame .ph {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--mute);
+  text-transform: uppercase;
+}
+
+/* status-chip op een foto */
+.status {
+  position: absolute;
+  left: 18px;
+  bottom: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: color-mix(in oklab, var(--paper) 92%, transparent);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--line-soft);
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  z-index: 3;
+}
+.status i {
+  width: 8px;
+  height: 8px;
+  background: var(--blue);
+  border-radius: 50%;
+  animation: chip-pulse 1.8s ease-out infinite;
+}
+@keyframes chip-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(41, 176, 242, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 7px rgba(41, 176, 242, 0);
+  }
+}
+
+/* ---- Split (foto de ene kant, tekst de andere) ---- */
+.split {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: clamp(40px, 5vw, 90px);
+  align-items: center;
+  padding: clamp(56px, 7vw, 120px) var(--gutter);
+  border-top: 1px solid var(--line);
+}
+.split.reverse {
+  grid-template-columns: 1.1fr 0.9fr;
+}
+.split.reverse .split-media {
+  order: 2;
+}
+.split-body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* meta-rij (statcijfers) */
+.meta {
+  display: flex;
+  gap: clamp(20px, 3vw, 44px);
+  margin-top: 8px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: var(--mute);
+}
+.meta b {
+  display: block;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+/* ---- Nav ---- */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px var(--gutter);
+  background: color-mix(in oklab, var(--bg) 80%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  transition: transform 0.4s var(--ease);
+}
+.site-nav.hidden {
+  transform: translateY(-100%);
+}
+.brand {
+  font-weight: 900;
+  font-size: 23px;
+  letter-spacing: -0.05em;
+  color: var(--ink);
+}
+.brand .d {
+  color: var(--blue);
+}
+.site-links {
+  display: flex;
+  gap: 34px;
+  font-size: 15px;
+}
+.site-links a {
+  position: relative;
+  color: var(--ink-soft);
+  padding: 4px 0;
+  transition: color 0.2s;
+}
+.site-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 1.5px;
+  width: 0;
+  background: var(--blue);
+  transition: width 0.3s var(--ease);
+}
+.site-links a:hover,
+.site-links a.active {
+  color: var(--ink);
+}
+.site-links a:hover::after,
+.site-links a.active::after {
+  width: 100%;
+}
+.site-right {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+.site-login {
+  font-size: 14.5px;
+  color: var(--ink-soft);
+}
+.site-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 12px 22px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14.5px;
+  transition: background 0.2s;
+}
+.site-cta:hover {
+  background: var(--blue);
+  color: var(--ink);
+}
+
+/* ---- Footer ---- */
+.site-foot {
+  background: var(--ink);
+  color: var(--dark-text);
+  padding: clamp(56px, 7vw, 110px) var(--gutter) 0;
+}
+.foot-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+  gap: clamp(28px, 4vw, 72px);
+  padding-bottom: clamp(40px, 5vw, 72px);
+  border-bottom: 1px solid #1f1e1b;
+}
+.foot-grid .fcol {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.site-foot .fk {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dark-mute);
+  margin-bottom: 6px;
+}
+.site-foot a {
+  color: var(--dark-text);
+  width: fit-content;
+  transition: color 0.2s;
+}
+.site-foot a:hover {
+  color: var(--blue);
+}
+.site-foot .brand {
+  color: var(--paper);
+  font-size: 30px;
+}
+.foot-tag {
+  color: var(--dark-mute);
+  max-width: 34ch;
+  line-height: 1.5;
+  margin: 6px 0 0;
+}
+.foot-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--dark-mute);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 980px) {
+  .site-links {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
+  .head {
+    grid-template-columns: 1fr;
+  }
+  .cols,
+  .cols.two {
+    grid-template-columns: 1fr;
+  }
+  .split,
+  .split.reverse {
+    grid-template-columns: 1fr;
+  }
+  .split.reverse .split-media {
+    order: 0;
+  }
+  .foot-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .foot-grid {
+    grid-template-columns: 1fr;
+  }
+  .site-login {
+    display: none;
+  }
+}

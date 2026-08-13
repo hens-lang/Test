@@ -1,13 +1,14 @@
-/* LINK. — editorial site-interacties (nav-drawer, thread, reveal, index) */
+/* LINK. — verfijnde site-interacties (nav-drawer, reveals, magnetische CTA) */
 
 const prefersReducedMotion = window.matchMedia(
   '(prefers-reduced-motion: reduce)',
 ).matches;
+const finePointer = window.matchMedia('(pointer: fine)').matches;
 
 // ============== Mobiel nav-drawer ==============
 function buildMobileNav() {
-  const navInner = document.querySelector<HTMLElement>('.enav');
-  const links = document.querySelector<HTMLElement>('.enav-links');
+  const navInner = document.querySelector<HTMLElement>('.site-nav');
+  const links = document.querySelector<HTMLElement>('.site-links');
   if (!navInner || document.querySelector('.nav-burger')) return;
 
   const burger = document.createElement('button');
@@ -31,7 +32,7 @@ function buildMobileNav() {
     inner.appendChild(item);
   });
 
-  const right = document.querySelector('.enav-right');
+  const right = document.querySelector('.site-right');
   if (right) {
     const div = document.createElement('div');
     div.className = 'nav-drawer-div';
@@ -39,7 +40,7 @@ function buildMobileNav() {
     right.querySelectorAll('a').forEach((a) => {
       const item = document.createElement('a');
       item.href = a.getAttribute('href') || '#';
-      item.className = a.classList.contains('enav-cta') ? 'dr-cta' : 'dr-login';
+      item.className = a.classList.contains('site-cta') ? 'dr-cta' : 'dr-login';
       if (a.getAttribute('target')) item.target = a.getAttribute('target')!;
       item.rel = a.getAttribute('rel') || '';
       item.textContent = (a.textContent || '').replace('→', '').trim();
@@ -72,7 +73,7 @@ function buildMobileNav() {
 
 // ============== Nav verbergen bij scrollen omlaag ==============
 function navScroll() {
-  const nav = document.querySelector<HTMLElement>('.enav');
+  const nav = document.querySelector<HTMLElement>('.site-nav');
   if (!nav) return;
   let lastY = window.scrollY;
   window.addEventListener(
@@ -87,62 +88,7 @@ function navScroll() {
   );
 }
 
-// ============== Thread: voortgang tekenen op scroll ==============
-function thread() {
-  const el = document.querySelector<HTMLElement>('.thread');
-  if (!el) return;
-  if (prefersReducedMotion) {
-    el.style.setProperty('--p', '1');
-    return;
-  }
-  let ticking = false;
-  const update = () => {
-    const h = document.body.scrollHeight - window.innerHeight;
-    const p = Math.min(1, Math.max(0, window.scrollY / (h || 1)));
-    el.style.setProperty('--p', String(p));
-    ticking = false;
-  };
-  window.addEventListener(
-    'scroll',
-    () => {
-      if (!ticking) {
-        requestAnimationFrame(update);
-        ticking = true;
-      }
-    },
-    { passive: true },
-  );
-  update();
-}
-
-// ============== Hoofdstuk-index: actieve markeren ==============
-function chapterIndex() {
-  const links = document.querySelectorAll<HTMLElement>('.chapter-index a');
-  if (!links.length) return;
-  const map = new Map<string, HTMLElement>();
-  links.forEach((a) => {
-    const id = a.getAttribute('href')?.slice(1);
-    if (id) map.set(id, a);
-  });
-  const targets = Array.from(map.keys())
-    .map((id) => document.getElementById(id))
-    .filter(Boolean) as HTMLElement[];
-  if (!targets.length) return;
-  const obs = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting) {
-          links.forEach((l) => l.classList.remove('active'));
-          map.get(e.target.id)?.classList.add('active');
-        }
-      });
-    },
-    { rootMargin: '-45% 0px -50% 0px' },
-  );
-  targets.forEach((t) => obs.observe(t));
-}
-
-// ============== Reveal-on-scroll ==============
+// ============== Zachte reveals ==============
 function reveal() {
   const els = document.querySelectorAll('.reveal, .reveal-stagger');
   if (prefersReducedMotion) {
@@ -158,13 +104,28 @@ function reveal() {
         }
       });
     },
-    { rootMargin: '0px 0px -80px 0px', threshold: 0.05 },
+    { rootMargin: '0px 0px -60px 0px', threshold: 0.1 },
   );
   els.forEach((el) => obs.observe(el));
 }
 
+// ============== Ingetogen magnetische elementen ==============
+function magnetic() {
+  if (!finePointer || prefersReducedMotion) return;
+  document.querySelectorAll<HTMLElement>('[data-magnetic]').forEach((el) => {
+    el.addEventListener('mousemove', (e) => {
+      const r = el.getBoundingClientRect();
+      const dx = (e.clientX - (r.left + r.width / 2)) * 0.18;
+      const dy = (e.clientY - (r.top + r.height / 2)) * 0.18;
+      el.style.transform = `translate(${dx}px, ${dy}px)`;
+    });
+    el.addEventListener('mouseleave', () => {
+      el.style.transform = '';
+    });
+  });
+}
+
 buildMobileNav();
 navScroll();
-thread();
-chapterIndex();
 reveal();
+magnetic();

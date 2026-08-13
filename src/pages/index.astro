@@ -1,7 +1,6 @@
 ---
 import Base from '@/layouts/Base.astro';
-import Chapter from '@/components/Chapter.astro';
-import Duotone from '@/components/Duotone.astro';
+import Figure from '@/components/Figure.astro';
 import AgendaWidget from '@/components/widgets/AgendaWidget.astro';
 import { site } from '@/lib/site';
 
@@ -26,17 +25,8 @@ const jsonLd = {
   knowsAbout: ['B2B acquisitie', 'leadgeneratie', 'telefonische acquisitie', 'salesafspraken'],
 };
 
-const index = [
-  { n: '01', label: 'De belofte' },
-  { n: '02', label: 'Herkenbaar' },
-  { n: '03', label: 'Wat we doen' },
-  { n: '04', label: 'Anders' },
-  { n: '05', label: 'Deze week' },
-  { n: '06', label: 'Kennismaken' },
-];
-
-const steps = [
-  { n: '01', t: 'We bepalen je ideale klant', p: 'Branche, omvang, de juiste beslisser. Scherp, <strong>vóór</strong> er iemand belt.' },
+const doen = [
+  { n: '01', t: 'We bepalen je ideale klant', p: 'Branche, omvang en de juiste beslisser. Scherp, <strong>voordat</strong> er iemand belt.' },
   { n: '02', t: 'Wij bellen ze persoonlijk', p: 'Goed voorbereid en in jouw verhaal. Geen script, geen call center.' },
   { n: '03', t: 'Jij zit aan tafel', p: 'De afspraak staat in je agenda, met de context van het gesprek erbij.' },
 ];
@@ -44,7 +34,7 @@ const steps = [
 const anders = [
   { n: '01', t: 'Wij groeien mee', p: 'Geen bureau op afstand, maar een partner aan jouw kant van de tafel. Jouw doelen worden onze doelen.' },
   { n: '02', t: 'Wij kennen jouw markt', p: 'We verdiepen ons eerst in jouw bedrijf en doelgroep. Zo komen we met het juiste verhaal bij de juiste beslisser.' },
-  { n: '03', t: 'Een select aantal partners', p: 'Zodat elke samenwerking volle aandacht krijgt. Geen lange contracten, geen funnel vol losse afspraken.' },
+  { n: '03', t: 'Een select aantal partners', p: 'Zodat elke samenwerking volle aandacht krijgt. Geen lange contracten.' },
 ];
 ---
 
@@ -53,85 +43,81 @@ const anders = [
   description={site.description}
   path="/"
   jsonLd={jsonLd}
-  index={index}
 >
-  <!-- 01 — Hero -->
-  <section class="hero" id="h01">
+  <!-- Hero -->
+  <section class="hero">
     <div class="hero-copy reveal">
-      <Chapter n="01" label="De belofte" />
-      <h1 class="h-giant">Dè partner<br />van <em>B2B</em><br />bedrijven<span class="dot">.</span></h1>
-      <p class="lede-xl">
+      <span class="eyebrow">B2B sales partner · Sinds 2025</span>
+      <h1 class="display">Dè partner van <span class="serif">B2B</span> bedrijven<span class="d">.</span></h1>
+      <p class="sub">
         Wij brengen je persoonlijk aan tafel bij de juiste beslisser. Jij voert
         het gesprek, wij zorgen dat het er komt.
       </p>
       <div class="hero-cta">
-        <a class="ebtn" href="/verhaal">Ons verhaal <span class="arw">→</span></a>
-        <a class="ebtn ghost" href="/aanpak">Onze aanpak</a>
+        <a class="btn" href="/contact" data-magnetic>Plan een kennismaking <span class="arw">→</span></a>
+        <a class="link" href="/verhaal">Ons verhaal</a>
+      </div>
+      <div class="meta">
+        <span><b>1</b> vast gezicht</span>
+        <span><b>0</b> lange contracten</span>
+        <span><b>100%</b> persoonlijk</span>
       </div>
     </div>
     <div class="hero-photo reveal">
-      <Duotone src="/assets/hens-call-harbor.jpeg" alt="Hens aan de telefoon bij de haven" ratio="4 / 5" caption="HENS — AAN DE LIJN" position="center 30%" />
-    </div>
-    <div class="hero-meta">
-      <span>001</span>
-      <span>Telefonische acquisitie</span>
-      <span>Persoonlijk &amp; gericht</span>
-      <span>Sinds 2025</span>
+      <Figure src="/assets/hens-call-navy.jpeg" alt="Hens van LINK. aan de telefoon" ratio="4 / 5" radius="20px" eager />
+      <span class="status"><i></i> Nu ruimte voor 2 nieuwe partners</span>
     </div>
   </section>
 
-  <!-- 02 — Herkenbaar (dark statement) -->
-  <section class="statement-sec on-dark" id="h02">
-    <Chapter n="02" label="Even eerlijk" />
-    <h2>Je weet dat je moet bellen.<br />Je komt er alleen <em>nooit</em> aan toe<span class="dot">.</span></h2>
-  </section>
-
-  <!-- 03 — Wat we doen -->
-  <section class="mag-sec" id="h03">
-    <div class="split-head reveal">
+  <!-- Wat we doen -->
+  <section class="band line">
+    <div class="head reveal">
       <div>
-        <Chapter n="03" label="Wat we doen" />
-        <h2 class="h-section">Wij bellen.<br />Jij <em>verkoopt</em><span class="dot">.</span></h2>
+        <span class="eyebrow">Wat we doen</span>
+        <h2 class="headline">Wij bellen. Jij <span class="serif">verkoopt</span><span class="d">.</span></h2>
       </div>
-      <p class="lede-xl">
+      <p class="lede">
         Wij doen de telefonische acquisitie voor B2B-bedrijven. Wij leggen het
         eerste contact, jij voert het gesprek dat ertoe doet.
       </p>
     </div>
-    <ol class="steps reveal" style="margin-top: clamp(32px,4vw,64px)">
+    <div class="cols reveal">
       {
-        steps.map((s) => (
-          <li class="step">
-            <span class="step-n">{s.n}</span>
-            <div class="step-body">
-              <h3>{s.t}</h3>
-              <p set:html={s.p} />
-            </div>
-            <i class="node sm" />
-          </li>
+        doen.map((s) => (
+          <div class="col">
+            <span class="col-n">{s.n}</span>
+            <h3>{s.t}</h3>
+            <p set:html={s.p} />
+            <a class="link" href="/diensten">Lees meer</a>
+          </div>
         ))
       }
-    </ol>
-    <a class="ebtn ghost" href="/diensten" style="margin-top: clamp(28px,3vw,44px)">Meer over telefonische acquisitie <span class="arw">→</span></a>
+    </div>
   </section>
 
-  <!-- 04 — Wat ons anders maakt -->
-  <section class="mag-sec tight" id="h04">
-    <div class="split-head reveal">
+  <!-- Statement (herkenning) -->
+  <section class="statement dark on-dark reveal">
+    <span class="eyebrow">Even eerlijk</span>
+    <p>Je weet dat je moet bellen. Je komt er alleen <span class="serif">nooit</span> aan toe<span class="d">.</span></p>
+  </section>
+
+  <!-- Wat ons anders maakt -->
+  <section class="band">
+    <div class="head reveal">
       <div>
-        <Chapter n="04" label="Geen bureau. Een partner." />
-        <h2 class="h-section">Wat ons <em>anders</em> maakt<span class="dot">.</span></h2>
+        <span class="eyebrow">Geen bureau. Een partner.</span>
+        <h2 class="headline">Wat ons <span class="serif">anders</span> maakt<span class="d">.</span></h2>
       </div>
-      <p class="lede-xl">
+      <p class="lede">
         Niet tien afspraken die nergens toe leiden, maar één die klopt. Met de
         juiste persoon, op het juiste moment.
       </p>
     </div>
-    <div class="trio reveal-stagger">
+    <div class="cols reveal">
       {
         anders.map((a) => (
-          <div class="trio-item">
-            <span class="trio-n">{a.n}</span>
+          <div class="col">
+            <span class="col-n">{a.n}</span>
             <h3>{a.t}</h3>
             <p>{a.p}</p>
           </div>
@@ -140,34 +126,34 @@ const anders = [
     </div>
   </section>
 
-  <!-- 05 — Deze week (bewijs) -->
-  <section class="proof" id="h05">
-    <div class="proof-intro reveal">
-      <Chapter n="05" label="Vandaag bij LINK." />
-      <h2 class="h-section">Echte afspraken. <em>Geboekt</em> voor partners<span class="dot">.</span></h2>
-      <p class="lede-xl">
+  <!-- Bewijs: agenda -->
+  <section class="proof band line">
+    <div class="proof-copy reveal">
+      <span class="eyebrow">Vandaag bij LINK.</span>
+      <h2 class="headline">Echte afspraken. <span class="serif">Geboekt</span> voor partners<span class="d">.</span></h2>
+      <p class="lede">
         Wij leggen het eerste contact met de juiste beslisser. Jij voert het
         gesprek dat ertoe doet.
       </p>
     </div>
-    <AgendaWidget />
+    <div class="reveal"><AgendaWidget /></div>
   </section>
 
-  <!-- 06 — Kennismaken -->
-  <section class="close" id="h06">
+  <!-- Koffie CTA -->
+  <section class="band close">
     <div class="close-media reveal">
-      <Duotone src="/assets/hens-coffee.jpeg" alt="Hens bij een kop koffie" ratio="4 / 5" caption="EVEN KENNISMAKEN" position="center 20%" />
+      <Figure src="/assets/hens-coffee.jpeg" alt="Hens bij een kop koffie" ratio="4 / 5" radius="20px" position="center 20%" />
     </div>
     <div class="close-copy reveal">
-      <Chapter n="06" label="Kennismaken" />
-      <h2 class="h-display">We drinken graag een kop <em>koffie</em> met je<span class="dot">.</span></h2>
-      <p class="lede-xl">
+      <span class="eyebrow">Even kennismaken</span>
+      <h2 class="display">We drinken graag een kop <span class="serif">koffie</span> met je<span class="d">.</span></h2>
+      <p class="lede">
         Een kop koffie en eerlijk advies, of we nu samenwerken of niet. Bel of
         mail gerust, we reageren snel.
       </p>
       <div class="hero-cta">
-        <a class="ebtn" href="/contact">Plan een kennismaking <span class="arw">→</span></a>
-        <a class="ebtn ghost" href={`tel:${site.contact.phoneHref}`}>{site.contact.phoneDisplay}</a>
+        <a class="btn" href="/contact" data-magnetic>Plan een kennismaking <span class="arw">→</span></a>
+        <a class="link" href={`tel:${site.contact.phoneHref}`}>{site.contact.phoneDisplay}</a>
       </div>
     </div>
   </section>
@@ -175,14 +161,11 @@ const anders = [
 
 <style>
   .hero {
-    position: relative;
-    z-index: 2;
     display: grid;
     grid-template-columns: 1.05fr 0.95fr;
-    gap: clamp(24px, 4vw, 64px);
-    padding: clamp(36px, 5vw, 88px) var(--rail) 0;
+    gap: clamp(40px, 6vw, 90px);
     align-items: center;
-    min-height: 76vh;
+    padding: clamp(48px, 7vw, 110px) var(--gutter) clamp(56px, 8vw, 110px);
   }
   .hero-copy {
     display: flex;
@@ -191,128 +174,39 @@ const anders = [
   }
   .hero-cta {
     display: flex;
-    gap: 14px;
+    align-items: center;
+    gap: 28px;
     flex-wrap: wrap;
   }
   .hero-photo {
-    align-self: stretch;
-    display: flex;
-  }
-  .hero-photo :global(.duo) {
-    min-height: 58vh;
-    height: 100%;
-  }
-  .hero-meta {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-top: clamp(24px, 4vw, 56px);
-    padding: 18px 0 clamp(40px, 5vw, 72px);
-    border-top: 1px solid var(--line);
-    font-family: var(--font-mono);
-    font-size: 11.5px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--mute);
-  }
-  .hero-meta span:first-child {
-    color: var(--blue-deep);
-  }
-
-  .split-head {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(32px, 5vw, 80px);
-    align-items: end;
-  }
-
-  .trio {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: clamp(28px, 3vw, 56px);
-    margin-top: clamp(40px, 5vw, 72px);
-  }
-  .trio-item {
-    border-top: 2px solid var(--ink);
-    padding-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .trio-n {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    letter-spacing: 0.14em;
-    color: var(--blue-deep);
-  }
-  .trio-item h3 {
-    font-size: clamp(24px, 2.4vw, 36px);
-    font-weight: 800;
-    letter-spacing: -0.035em;
-    line-height: 1;
-    margin: 0;
-  }
-  .trio-item p {
-    color: var(--ink-soft);
-    font-size: 16px;
-    line-height: 1.55;
-    margin: 0;
-    max-width: 38ch;
-  }
-
-  .proof {
     position: relative;
-    z-index: 2;
+  }
+  .proof {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
     gap: clamp(32px, 4vw, 72px);
     align-items: center;
-    padding: clamp(60px, 8vw, 130px) var(--rail);
   }
-  .proof-intro {
+  .proof-copy {
     display: flex;
     flex-direction: column;
     gap: 20px;
     max-width: 44ch;
   }
-
   .close {
-    position: relative;
-    z-index: 2;
     display: grid;
     grid-template-columns: 0.8fr 1.2fr;
-    gap: clamp(32px, 5vw, 80px);
+    gap: clamp(40px, 5vw, 80px);
     align-items: center;
-    padding: clamp(60px, 8vw, 140px) var(--rail) clamp(80px, 10vw, 160px);
-  }
-  .close-media :global(.duo) {
-    min-height: 52vh;
   }
   .close-copy {
     display: flex;
     flex-direction: column;
     gap: 22px;
   }
-
   @media (max-width: 900px) {
-    .hero {
-      grid-template-columns: 1fr;
-      min-height: auto;
-    }
-    .hero-photo :global(.duo) {
-      min-height: 48vh;
-    }
-    .split-head {
-      grid-template-columns: 1fr;
-    }
-    .trio {
-      grid-template-columns: 1fr;
-    }
-    .proof {
-      grid-template-columns: 1fr;
-    }
+    .hero,
+    .proof,
     .close {
       grid-template-columns: 1fr;
     }
