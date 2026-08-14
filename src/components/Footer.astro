@@ -3,32 +3,30 @@ import { nav, site } from '@/lib/site';
 ---
 
 <footer class="site-foot">
-  <div class="foot-grid">
-    <div class="fcol">
-      <a href="/" class="brand">LINK<span class="d">.</span></a>
-      <p class="foot-tag">
-        Dè partner van B2B bedrijven. Wij brengen jou persoonlijk aan tafel bij
-        nieuwe klanten.
-      </p>
-    </div>
-    <div class="fcol">
-      <span class="fk">Site</span>
-      {nav.map((item) => <a href={item.href}>{item.label}</a>)}
-    </div>
-    <div class="fcol">
-      <span class="fk">Wat we doen</span>
-      <a href="/diensten#telefonisch">Telefonische acquisitie</a>
-      <a href={site.portal.url} target="_blank" rel="noopener">Partnerportaal</a>
-      <a href="/contact">Kennismaken</a>
-    </div>
-    <div class="fcol">
-      <span class="fk">Contact</span>
-      <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
-      <a href={`tel:${site.contact.phoneHref}`}>{site.contact.phoneDisplay}</a>
-      <a href={site.contact.mapsUrl} target="_blank" rel="noopener">
-        {site.contact.street}, {site.contact.postalCode} {site.contact.city}
-      </a>
-    </div>
+  <div class="foot-brand">
+    <a href="/" class="brand">LINK<span class="d">.</span></a>
+    <p class="foot-tag">
+      Dè partner van B2B bedrijven. Wij brengen jou persoonlijk aan tafel bij
+      nieuwe klanten.
+    </p>
+  </div>
+  <div class="foot-col">
+    <span class="fk">Site</span>
+    {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+  </div>
+  <div class="foot-col">
+    <span class="fk">Wat we doen</span>
+    <a href="/diensten#telefonisch">Telefonische acquisitie</a>
+    <a href={site.portal.url} target="_blank" rel="noopener">Partnerportaal</a>
+    <a href="/contact">Kennismaken</a>
+  </div>
+  <div class="foot-col wide">
+    <span class="fk">Contact</span>
+    <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+    <a href={`tel:${site.contact.phoneHref}`}>{site.contact.phoneDisplay}</a>
+    <a href={site.contact.mapsUrl} target="_blank" rel="noopener">
+      {site.contact.street}, {site.contact.postalCode} {site.contact.city}
+    </a>
   </div>
   <div class="foot-bottom">
     <span>© 2026 LINK<span class="d">.</span> — Alle rechten voorbehouden</span>

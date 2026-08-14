@@ -4,13 +4,13 @@ import Figure from '@/components/Figure.astro';
 import PipelineWidget from '@/components/widgets/PipelineWidget.astro';
 
 const steps = [
-  { n: '01', t: 'We verdiepen ons in jouw <span class="serif">bedrijf</span>', p: 'Wat verkoop je, wat onderscheidt je, en wie zit er nu al aan tafel? Hoe scherper het verhaal, hoe gerichter de outreach. <strong>Geen oppervlakkige briefing.</strong>' },
-  { n: '02', t: 'We bepalen samen het <span class="serif">groeidoel</span>', p: 'Hoeveel afspraken? Welke omzet? Tegen welk tempo? Eerst helder, dan pas in actie. We werken vanuit een <strong>concreet doel</strong>.' },
-  { n: '03', t: 'We bepalen samen een <span class="serif">doelgroep</span>', p: 'Hier nemen we ruim de tijd voor. Weten we bij wie we moeten zijn, dan zitten we direct in de goede hoek. We sturen bij tot het <strong>ideale klantprofiel</strong> klopt.' },
-  { n: '04', t: 'We stellen een <span class="serif">prospectlijst</span> samen', p: 'Geen gekochte database. Een handgemaakte lijst met bedrijven waar jij echt aan tafel wilt komen. We zoeken, vergelijken en beoordelen, tot de lijst klopt.' },
-  { n: '05', t: 'De juiste beslisser bereiken', p: 'Een goed voorbereide aanpak die past bij jouw bedrijf en verhaal. We zoeken de juiste beslisser en spreken hem of haar aan op de juiste manier.' },
-  { n: '06', t: 'Interesse polsen en <span class="serif">kwalificeren</span>', p: 'We brengen alleen door wat écht een gesprek waard is. Liever één goede afspraak dan tien middelmatige. <strong>Kwaliteit boven volume.</strong>' },
-  { n: '07', t: 'De afspraak inplannen', p: 'Jij doet waar je goed in bent: het gesprek voeren en de deal sluiten. Wij blijven beschikbaar om mee te denken en bij te sturen.' },
+  { n: '01', t: 'We verdiepen ons in jouw <span class="serif">bedrijf</span>', p: 'Wat verkoop je, wat onderscheidt je, en wie zit er nu al aan tafel? <strong>Geen oppervlakkige briefing.</strong>' },
+  { n: '02', t: 'We bepalen samen het <span class="serif">groeidoel</span>', p: 'Hoeveel afspraken? Welke omzet? Tegen welk tempo? Eerst helder, dan pas in actie.' },
+  { n: '03', t: 'We bepalen samen een <span class="serif">doelgroep</span>', p: 'Hier nemen we ruim de tijd voor. We sturen bij tot het <strong>ideale klantprofiel</strong> klopt.' },
+  { n: '04', t: 'We stellen een <span class="serif">prospectlijst</span> samen', p: 'Geen gekochte database. Een handgemaakte lijst met bedrijven waar jij echt aan tafel wilt komen.' },
+  { n: '05', t: 'De juiste beslisser bereiken', p: 'Een goed voorbereide aanpak die past bij jouw bedrijf en verhaal. De juiste persoon, op de juiste manier.' },
+  { n: '06', t: 'Interesse polsen en <span class="serif">kwalificeren</span>', p: 'We brengen alleen door wat écht een gesprek waard is. <strong>Kwaliteit boven volume.</strong>' },
+  { n: '07', t: 'De afspraak inplannen', p: 'Jij voert het gesprek en sluit de deal. Wij blijven beschikbaar om mee te denken en bij te sturen.' },
 ];
 ---
 
@@ -20,8 +20,8 @@ const steps = [
   path="/aanpak"
 >
   <!-- Hero -->
-  <section class="page-hero">
-    <div class="ph-copy reveal">
+  <section class="section pair hero">
+    <div class="hero-copy reveal">
       <span class="eyebrow">Onze aanpak</span>
       <h1 class="display">Eerst begrijpen wie je <span class="serif">ideale</span> klant is<span class="d">.</span></h1>
       <p class="sub">
@@ -29,20 +29,19 @@ const steps = [
         Weten we bij wie we moeten zijn, dan zitten we direct in de goede hoek.
       </p>
     </div>
-    <div class="ph-widget reveal"><PipelineWidget /></div>
+    <div class="reveal"><PipelineWidget /></div>
   </section>
 
   <!-- 7 stappen -->
-  <section class="band line">
-    <div class="head reveal">
-      <div>
+  <section class="section line">
+    <div class="head">
+      <div class="reveal">
         <span class="eyebrow">Zo werken wij</span>
         <h2 class="headline">Zeven stappen. Eén <span class="serif">doel</span><span class="d">.</span></h2>
       </div>
-      <p class="lede">
-        Elke week halen we uit de gesprekken op welke signalen, functietitels en
-        branches het beste werken, en sturen we bij. Heldere stappen, eerlijke
-        verwachtingen.
+      <p class="lede reveal">
+        Elke week halen we op welke signalen, functietitels en branches het beste
+        werken, en sturen we bij. Heldere stappen, eerlijke verwachtingen.
       </p>
     </div>
     <ol class="steplist reveal">
@@ -50,10 +49,8 @@ const steps = [
         steps.map((s) => (
           <li class="stepitem">
             <span class="stepitem-n">{s.n}</span>
-            <div class="stepitem-body">
-              <h3 set:html={s.t} />
-              <p set:html={s.p} />
-            </div>
+            <h3 class="stepitem-title" set:html={s.t} />
+            <p class="stepitem-desc" set:html={s.p} />
           </li>
         ))
       }
@@ -61,11 +58,11 @@ const steps = [
   </section>
 
   <!-- Manifest (donker + foto) -->
-  <section class="split on-dark manifest">
-    <div class="split-media reveal">
-      <Figure src="/assets/hens-arms-bench.jpeg" alt="Hens van LINK." ratio="4 / 5" radius="20px" position="50% 18%" />
+  <section class="section pair dark on-dark">
+    <div class="reveal">
+      <Figure src="/assets/hens-arms-bench.jpeg" alt="Hens van LINK." ratio="4 / 5" radius="16px" position="50% 18%" />
     </div>
-    <div class="split-body reveal">
+    <div class="reveal manifest-copy">
       <span class="eyebrow">Ons uitgangspunt</span>
       <h2 class="headline"><span class="serif">Kwaliteit</span> boven kwantiteit<span class="d">.</span></h2>
       <p class="lede">
@@ -82,112 +79,53 @@ const steps = [
   </section>
 
   <!-- CTA -->
-  <section class="band cta">
-    <span class="eyebrow">Klaar om te beginnen?</span>
-    <h2 class="display">Vertel ons wat je <span class="serif">doet</span><span class="d">.</span></h2>
-    <p class="lede">
-      Bij wie wil je aan tafel zitten? Wat zijn je groeiambities? Stuur ons een
-      berichtje of bel gewoon. We reageren snel en zonder gedoe.
-    </p>
-    <div class="cta-row">
-      <a class="btn" href="/contact" data-magnetic>Plan een kennismaking <span class="arw">→</span></a>
-      <a class="link" href="/diensten">Bekijk diensten</a>
+  <section class="section">
+    <div class="cta-block reveal">
+      <span class="eyebrow">Klaar om te beginnen?</span>
+      <h2 class="display">Vertel ons wat je <span class="serif">doet</span><span class="d">.</span></h2>
+      <p class="lede">
+        Bij wie wil je aan tafel zitten? Wat zijn je groeiambities? Stuur ons een
+        berichtje of bel gewoon. We reageren snel en zonder gedoe.
+      </p>
+      <div class="actions">
+        <a class="btn" href="/contact" data-magnetic>Plan een kennismaking <span class="arw">→</span></a>
+        <a class="link" href="/diensten">Bekijk diensten</a>
+      </div>
     </div>
   </section>
 </Base>
 
 <style>
-  .page-hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-    gap: clamp(40px, 5vw, 80px);
-    align-items: center;
-    padding: clamp(48px, 7vw, 110px) var(--gutter) clamp(48px, 6vw, 96px);
+  .hero {
+    padding-top: clamp(40px, 5vw, 80px);
   }
-  .ph-copy {
+  .hero-copy {
     display: flex;
     flex-direction: column;
     gap: 24px;
   }
-  .steplist {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .stepitem {
-    display: grid;
-    grid-template-columns: 90px 1fr;
-    gap: clamp(20px, 4vw, 56px);
-    align-items: baseline;
-    padding: clamp(24px, 3vw, 40px) 0;
-    border-top: 1px solid var(--line);
-  }
-  .stepitem:last-child {
-    border-bottom: 1px solid var(--line);
-  }
-  .stepitem-n {
-    font-family: var(--font-mono);
-    font-size: clamp(22px, 2.4vw, 34px);
-    color: var(--blue-deep);
-    font-variant-numeric: tabular-nums;
-  }
-  .stepitem-body {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-    gap: clamp(16px, 3vw, 48px);
-    align-items: baseline;
-  }
-  .stepitem-body h3 {
-    font-size: clamp(22px, 2vw, 30px);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
-    margin: 0;
-    max-width: 16ch;
-  }
-  .stepitem-body p {
-    color: var(--ink-soft);
-    font-size: 16px;
-    line-height: 1.55;
-    margin: 0;
-    max-width: 52ch;
-  }
-  .stepitem-body strong {
-    color: var(--ink);
-    font-weight: 600;
-  }
-  .manifest {
-    border-top: none;
+  .manifest-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
   .manifest-pull {
     font-family: var(--font-serif);
     font-style: italic;
     color: var(--blue);
-    font-size: clamp(20px, 1.8vw, 26px);
+    font-size: clamp(19px, 1.7vw, 25px);
     margin: 6px 0 0;
   }
-  .cta {
+  .cta-block {
+    grid-column: 1 / 9;
     display: flex;
     flex-direction: column;
     gap: 22px;
     align-items: flex-start;
   }
-  .cta-row {
-    display: flex;
-    align-items: center;
-    gap: 28px;
-    flex-wrap: wrap;
-  }
-  @media (max-width: 900px) {
-    .page-hero {
-      grid-template-columns: 1fr;
-    }
-    .stepitem {
-      grid-template-columns: 50px 1fr;
-    }
-    .stepitem-body {
-      grid-template-columns: 1fr;
-      gap: 8px;
+  @media (max-width: 860px) {
+    .cta-block {
+      grid-column: 1 / -1;
     }
   }
 </style>

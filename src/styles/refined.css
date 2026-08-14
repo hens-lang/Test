@@ -1,9 +1,9 @@
 /* ============================================================
-   LINK. — verfijnde designtaal (clean & professioneel)
-   Rustig, veel witruimte, één accent (merkblauw). Subtiele craft.
-   Global classes zodat pagina's slank blijven.
+   LINK. — verfijnde designtaal op een strikt 12-koloms grid
+   Alles lijnt uit: zelfde gutter, kolomlijnen en verticaal ritme.
    ============================================================ */
 
+/* ---------- Utilities ---------- */
 .serif {
   font-family: var(--font-serif);
   font-style: italic;
@@ -24,7 +24,7 @@ a:hover .arw {
   will-change: transform;
 }
 
-/* ---- Eyebrow: mono, ingetogen ---- */
+/* ---------- Eyebrow ---------- */
 .eyebrow {
   display: inline-flex;
   align-items: center;
@@ -36,16 +36,17 @@ a:hover .arw {
   color: var(--mute);
   font-weight: 500;
 }
-.eyebrow::before {
-  content: none;
+.on-dark .eyebrow {
+  color: var(--dark-mute);
 }
 
-/* ---- Link met onderstreping die naar een punt groeit (signature) ---- */
+/* ---------- Link met onderstreping die naar een punt groeit ---------- */
 .link {
   position: relative;
   font-weight: 600;
   color: var(--ink);
   padding-bottom: 3px;
+  align-self: flex-start;
 }
 .link::after {
   content: '';
@@ -70,7 +71,7 @@ a:hover .arw {
   color: var(--blue);
 }
 
-/* ---- Knoppen ---- */
+/* ---------- Knoppen ---------- */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -99,10 +100,6 @@ a:hover .arw {
   color: var(--paper);
   border-color: var(--ink);
 }
-.on-dark .btn.ghost {
-  color: var(--paper);
-  border-color: color-mix(in oklab, var(--paper) 40%, transparent);
-}
 .on-dark .btn {
   background: var(--paper);
   color: var(--ink);
@@ -111,90 +108,126 @@ a:hover .arw {
   background: var(--blue);
 }
 
-/* ---- Typografie-helpers ---- */
+/* ---------- Typografie-helpers ---------- */
 .display {
   font-weight: 800;
-  font-size: clamp(48px, 6vw, 104px);
+  font-size: clamp(46px, 5.6vw, 96px);
   line-height: 0.98;
   letter-spacing: -0.045em;
-  margin: 8px 0 0;
-  max-width: 15ch;
+  margin: 10px 0 0;
 }
 .headline {
   font-weight: 800;
-  font-size: clamp(36px, 4.4vw, 72px);
+  font-size: clamp(34px, 4vw, 64px);
   line-height: 1;
   letter-spacing: -0.04em;
   margin: 14px 0 0;
-  max-width: 15ch;
 }
 .on-dark .display,
 .on-dark .headline {
   color: var(--paper);
 }
 .lede {
-  font-size: clamp(18px, 1.4vw, 21px);
+  font-size: clamp(17px, 1.3vw, 20px);
   line-height: 1.55;
   color: var(--ink-soft);
   margin: 0;
-  max-width: 48ch;
 }
 .on-dark .lede {
   color: var(--dark-text);
 }
 .sub {
-  font-size: clamp(18px, 1.5vw, 23px);
+  font-size: clamp(18px, 1.4vw, 22px);
   line-height: 1.5;
   color: var(--ink-soft);
-  max-width: 42ch;
   margin: 0;
 }
 
-/* ---- Banden (secties) ---- */
-.band {
-  padding: clamp(60px, 8vw, 120px) var(--gutter);
-  position: relative;
+/* ============================================================
+   HET GRID — elke sectie is een 12-koloms grid
+   ============================================================ */
+.section {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  padding: var(--section-y) var(--gutter);
+  align-items: start;
 }
-.band.line {
+.section > * {
+  min-width: 0;
+}
+.section.line {
   border-top: 1px solid var(--line);
 }
-.band.dark,
+.section.dark,
 .on-dark {
   background: var(--ink);
   color: var(--dark-text);
 }
-.on-dark .eyebrow {
-  color: var(--dark-mute);
+
+/* Twee gelijke helften, exact uitgelijnd (hero, splits, service, contact) */
+.pair {
+  align-items: center;
+  row-gap: clamp(32px, 5vw, 56px);
+}
+.pair > :nth-child(1) {
+  grid-column: 1 / 7;
+}
+.pair > :nth-child(2) {
+  grid-column: 7 / 13;
+}
+.pair.reverse > :nth-child(1) {
+  grid-column: 7 / 13;
+  order: 2;
+}
+.pair.reverse > :nth-child(2) {
+  grid-column: 1 / 7;
 }
 
-/* kop links, lede rechts */
+/* Kop links, ondersteunende lede boven de laatste kolom */
 .head {
+  grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(32px, 5vw, 80px);
+  grid-template-columns: subgrid;
   align-items: end;
-  margin-bottom: clamp(44px, 5vw, 72px);
+  margin-bottom: clamp(40px, 5vw, 72px);
+  row-gap: 24px;
 }
-.head .lede {
+.head > :first-child {
+  grid-column: 1 / 9;
+}
+.head > .lede {
+  grid-column: 9 / 13;
   padding-top: 16px;
   border-top: 1px solid var(--line);
 }
-
-/* ---- Kolommen (reeks) ---- */
-.cols {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(28px, 3vw, 56px);
+.head.two > .lede {
+  grid-column: 7 / 13;
 }
-.cols.two {
-  grid-template-columns: repeat(2, 1fr);
+.on-dark .head > .lede {
+  border-top-color: #24231f;
+}
+
+/* Reeks van kolommen op het grid (4-4-4 of 6-6) */
+.cols {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  row-gap: clamp(28px, 3vw, 48px);
 }
 .col {
+  grid-column: span 4;
   display: flex;
   flex-direction: column;
   gap: 12px;
   padding-top: 22px;
   border-top: 1px solid var(--line);
+}
+.cols.two .col {
+  grid-column: span 6;
+}
+.on-dark .col {
+  border-top-color: #24231f;
 }
 .col-n {
   font-family: var(--font-mono);
@@ -203,7 +236,7 @@ a:hover .arw {
   color: var(--blue-deep);
 }
 .col h3 {
-  font-size: clamp(20px, 1.8vw, 27px);
+  font-size: clamp(20px, 1.7vw, 26px);
   font-weight: 700;
   letter-spacing: -0.025em;
   margin: 0;
@@ -214,44 +247,83 @@ a:hover .arw {
   font-size: 16px;
   line-height: 1.55;
   margin: 0;
-  max-width: 40ch;
 }
 .col strong {
   color: var(--ink);
   font-weight: 600;
 }
 
-/* ---- Statement (rustpunt) ---- */
-.statement {
-  padding: clamp(70px, 10vw, 150px) var(--gutter);
+/* Genummerde stappenlijst — uitgelijnd op het grid */
+.steplist {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+}
+.stepitem {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: baseline;
+  padding: clamp(24px, 3vw, 40px) 0;
   border-top: 1px solid var(--line);
+  row-gap: 10px;
+}
+.stepitem:last-child {
   border-bottom: 1px solid var(--line);
 }
-.statement.dark {
-  border: none;
+.stepitem-n {
+  grid-column: 1 / 2;
+  font-family: var(--font-mono);
+  font-size: clamp(20px, 2vw, 30px);
+  color: var(--blue-deep);
+  font-variant-numeric: tabular-nums;
+}
+.stepitem-title {
+  grid-column: 2 / 9;
+  font-size: clamp(21px, 1.9vw, 29px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin: 0;
+}
+.stepitem-desc {
+  grid-column: 9 / 13;
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1.55;
+  margin: 0;
+}
+.stepitem-desc strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* Statement (rustpunt) — volle breedte, links uitgelijnd */
+.statement {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 .statement p,
 .statement h2 {
   font-weight: 800;
-  font-size: clamp(30px, 4.4vw, 78px);
+  font-size: clamp(30px, 4.2vw, 74px);
   line-height: 0.98;
   letter-spacing: -0.045em;
   margin: 0;
-  max-width: 20ch;
+  max-width: 24ch;
 }
-.statement .eyebrow {
-  margin-bottom: 24px;
-}
-.on-dark.statement p,
-.on-dark.statement h2 {
+.on-dark .statement p,
+.on-dark .statement h2 {
   color: var(--paper);
 }
 
-/* ---- Foto-frame (nette foto, geen duotone) ---- */
+/* Foto-frame */
 .frame {
   position: relative;
   aspect-ratio: 4 / 5;
-  border-radius: 20px;
+  border-radius: 16px;
   overflow: hidden;
   background: var(--bg-3);
   background-image: repeating-linear-gradient(
@@ -281,7 +353,7 @@ a:hover .arw {
   text-transform: uppercase;
 }
 
-/* status-chip op een foto */
+/* Status-chip op een foto */
 .status {
   position: absolute;
   left: 18px;
@@ -316,47 +388,37 @@ a:hover .arw {
   }
 }
 
-/* ---- Split (foto de ene kant, tekst de andere) ---- */
-.split {
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  gap: clamp(40px, 5vw, 90px);
-  align-items: center;
-  padding: clamp(56px, 7vw, 120px) var(--gutter);
-  border-top: 1px solid var(--line);
-}
-.split.reverse {
-  grid-template-columns: 1.1fr 0.9fr;
-}
-.split.reverse .split-media {
-  order: 2;
-}
-.split-body {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-/* meta-rij (statcijfers) */
+/* Meta-rij (statcijfers) — uitgelijnd, gelijke kolommen */
 .meta {
-  display: flex;
-  gap: clamp(20px, 3vw, 44px);
-  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(16px, 2vw, 32px);
+  margin-top: 6px;
   padding-top: 22px;
   border-top: 1px solid var(--line);
-  flex-wrap: wrap;
   font-size: 14px;
   color: var(--mute);
 }
 .meta b {
   display: block;
-  font-size: 30px;
+  font-size: clamp(26px, 2.4vw, 32px);
   font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--ink);
+  margin-bottom: 2px;
 }
 
-/* ---- Nav ---- */
+/* Rij met knop + link, netjes uitgelijnd */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   NAV + FOOTER
+   ============================================================ */
 .site-nav {
   position: sticky;
   top: 0;
@@ -438,23 +500,29 @@ a:hover .arw {
   color: var(--ink);
 }
 
-/* ---- Footer ---- */
 .site-foot {
   background: var(--ink);
   color: var(--dark-text);
-  padding: clamp(56px, 7vw, 110px) var(--gutter) 0;
-}
-.foot-grid {
   display: grid;
-  grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
-  gap: clamp(28px, 4vw, 72px);
-  padding-bottom: clamp(40px, 5vw, 72px);
-  border-bottom: 1px solid #1f1e1b;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: clamp(28px, 4vw, 48px);
+  padding: clamp(56px, 7vw, 110px) var(--gutter) 28px;
 }
-.foot-grid .fcol {
+.foot-brand {
+  grid-column: 1 / 5;
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+.foot-col {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.foot-col.wide {
+  grid-column: span 3;
 }
 .site-foot .fk {
   font-family: var(--font-mono);
@@ -478,15 +546,18 @@ a:hover .arw {
 }
 .foot-tag {
   color: var(--dark-mute);
-  max-width: 34ch;
+  max-width: 30ch;
   line-height: 1.5;
   margin: 6px 0 0;
 }
 .foot-bottom {
+  grid-column: 1 / -1;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 0;
+  padding-top: 24px;
+  margin-top: clamp(24px, 4vw, 48px);
+  border-top: 1px solid #1f1e1b;
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.1em;
@@ -495,34 +566,58 @@ a:hover .arw {
   gap: 12px;
 }
 
-/* ---- Responsive ---- */
+/* ============================================================
+   RESPONSIVE — alles netjes naar één kolom
+   ============================================================ */
 @media (max-width: 980px) {
   .site-links {
     display: none;
   }
 }
-@media (max-width: 900px) {
-  .head {
-    grid-template-columns: 1fr;
-  }
-  .cols,
-  .cols.two {
-    grid-template-columns: 1fr;
-  }
-  .split,
-  .split.reverse {
-    grid-template-columns: 1fr;
-  }
-  .split.reverse .split-media {
+@media (max-width: 860px) {
+  .pair > :nth-child(1),
+  .pair > :nth-child(2),
+  .pair.reverse > :nth-child(1),
+  .pair.reverse > :nth-child(2) {
+    grid-column: 1 / -1;
     order: 0;
   }
-  .foot-grid {
-    grid-template-columns: 1fr 1fr;
+  .head > :first-child,
+  .head > .lede,
+  .head.two > .lede {
+    grid-column: 1 / -1;
+  }
+  .head > .lede {
+    border-top: none;
+    padding-top: 0;
+  }
+  .col {
+    grid-column: 1 / -1 !important;
+  }
+  .stepitem-n {
+    grid-column: 1 / 2;
+  }
+  .stepitem-title {
+    grid-column: 2 / -1;
+  }
+  .stepitem-desc {
+    grid-column: 2 / -1;
+  }
+  .foot-brand,
+  .foot-col,
+  .foot-col.wide {
+    grid-column: span 6;
   }
 }
-@media (max-width: 600px) {
-  .foot-grid {
+@media (max-width: 560px) {
+  .meta {
     grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .foot-brand,
+  .foot-col,
+  .foot-col.wide {
+    grid-column: 1 / -1;
   }
   .site-login {
     display: none;

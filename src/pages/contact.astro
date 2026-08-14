@@ -37,8 +37,8 @@ const tracker = [
   jsonLd={faqJsonLd}
 >
   <!-- Hero + tracker -->
-  <section class="page-hero">
-    <div class="ph-copy reveal">
+  <section class="section pair hero">
+    <div class="hero-copy reveal">
       <span class="eyebrow">Contact</span>
       <h1 class="display">Een kop <span class="serif">koffie</span> met je<span class="d">.</span></h1>
       <p class="sub">
@@ -87,8 +87,8 @@ const tracker = [
   </section>
 
   <!-- Tarief -->
-  <section class="band line contact-grid">
-    <div class="cg-intro reveal">
+  <section class="section line pair">
+    <div class="reveal cg-intro">
       <span class="eyebrow">Tarief op maat</span>
       <h2 class="headline">Wat kost het? Dat <span class="serif">rekenen</span> we uit<span class="d">.</span></h2>
       <p class="lede">
@@ -96,20 +96,20 @@ const tracker = [
         berekening op maat. Je verplicht je tot niets.
       </p>
       <div class="cg-photo">
-        <Figure src="/assets/hens-coffee.jpeg" alt="Hens bij een kop koffie" ratio="4 / 3" radius="20px" position="center 20%" />
+        <Figure src="/assets/hens-coffee.jpeg" alt="Hens bij een kop koffie" ratio="4 / 3" radius="16px" position="center 20%" />
       </div>
     </div>
-    <TariefCalculator />
+    <div class="reveal"><TariefCalculator /></div>
   </section>
 
   <!-- FAQ -->
-  <section class="band">
-    <div class="head reveal">
-      <div>
+  <section class="section">
+    <div class="head">
+      <div class="reveal">
         <span class="eyebrow">Vragen vooraf</span>
         <h2 class="headline">Wat je nog wilde <span class="serif">weten</span><span class="d">.</span></h2>
       </div>
-      <p class="lede">Een paar vragen die we vaak krijgen. Mist er iets? Stuur het ons gerust.</p>
+      <p class="lede reveal">Een paar vragen die we vaak krijgen. Mist er iets? Stuur het ons gerust.</p>
     </div>
     <div class="faq-list reveal">
       {
@@ -130,191 +130,18 @@ const tracker = [
 </Base>
 
 <style>
-  .page-hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-    gap: clamp(40px, 5vw, 80px);
-    align-items: center;
-    padding: clamp(48px, 7vw, 110px) var(--gutter) clamp(48px, 6vw, 96px);
+  .hero {
+    padding-top: clamp(40px, 5vw, 80px);
   }
-  .ph-copy {
+  .hero-copy {
     display: flex;
     flex-direction: column;
     gap: 24px;
   }
-
-  /* Tracker */
-  .tracker {
-    background: var(--paper);
-    border: 1px solid var(--line-soft);
-    border-radius: 20px;
-    padding: 24px;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    overflow: hidden;
-  }
-  .tr-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .tr-eyebrow {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--mute);
-    margin-bottom: 2px;
-  }
-  .tr-name {
-    font-size: 20px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-  }
-  .tr-id {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--mute);
-    background: var(--bg);
-    padding: 4px 8px;
-    border-radius: 6px;
-    border: 1px solid var(--line-soft);
-  }
-  .tr-steps {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .tr-step {
-    display: grid;
-    grid-template-columns: 30px 1fr auto;
-    gap: 14px;
-    align-items: start;
-    padding: 12px 0;
-    position: relative;
-  }
-  .tr-step + .tr-step::before {
-    content: '';
-    position: absolute;
-    top: -8px;
-    bottom: calc(100% - 16px);
-    left: 14px;
-    width: 2px;
-    background: var(--line);
-  }
-  .tr-step.done + .tr-step::before {
-    background: var(--blue);
-  }
-  .tr-marker {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: var(--bg);
-    border: 2px solid var(--line);
-    display: grid;
-    place-items: center;
-    color: var(--mute);
-    position: relative;
-    z-index: 1;
-  }
-  .tr-marker svg {
-    width: 14px;
-    height: 14px;
-  }
-  .tr-step.done .tr-marker {
-    background: var(--blue);
-    border-color: var(--blue);
-    color: var(--ink);
-  }
-  .tr-step.now .tr-marker {
-    background: var(--ink);
-    border-color: var(--ink);
-    color: var(--paper);
-  }
-  .tr-info {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    padding-top: 2px;
-  }
-  .tr-t {
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    line-height: 1.2;
-  }
-  .tr-step:not(.done):not(.now) .tr-t {
-    color: var(--mute);
-  }
-  .tr-s {
-    font-size: 12px;
-    color: var(--mute);
-    line-height: 1.45;
-    max-width: 38ch;
-  }
-  .tr-time {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--mute);
-    padding-top: 4px;
-    white-space: nowrap;
-  }
-  .tr-step.done .tr-time {
-    color: var(--blue);
-    font-weight: 700;
-  }
-  .tr-step.now .tr-time {
-    color: var(--ink);
-    font-weight: 700;
-  }
-  .tr-foot {
-    background: var(--ink);
-    color: var(--paper);
-    margin: 0 -24px -24px;
-    padding: 18px 24px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .tr-av {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #e8916f, #b85b36);
-    color: white;
-    display: grid;
-    place-items: center;
-    font-size: 11px;
-    font-weight: 700;
-  }
-  .tr-promise b {
-    display: block;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--paper);
-  }
-  .tr-promise .serif {
-    color: var(--blue);
-  }
-  .tr-promise span {
-    font-size: 11px;
-    color: var(--dark-mute);
-  }
-
-  /* Contact-grid */
-  .contact-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    gap: clamp(40px, 5vw, 96px);
-    align-items: start;
-  }
   .cg-intro {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 18px;
     position: sticky;
     top: 110px;
   }
@@ -322,72 +149,45 @@ const tracker = [
     margin-top: 8px;
   }
 
-  /* FAQ */
-  .faq-list {
-    display: flex;
-    flex-direction: column;
-    border-top: 1px solid var(--line);
-    margin-top: clamp(32px, 4vw, 56px);
-  }
-  .faq-item {
-    border-bottom: 1px solid var(--line);
-    padding: 20px 4px;
-  }
-  .faq-item summary {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    list-style: none;
-    cursor: pointer;
-    font-size: clamp(20px, 1.8vw, 28px);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
-    gap: 24px;
-    transition: color 0.2s;
-  }
-  .faq-item summary::-webkit-details-marker {
-    display: none;
-  }
-  .faq-item summary .q :global(.serif) {
-    color: var(--blue-deep);
-  }
-  .faq-item:hover summary {
-    color: var(--blue-deep);
-  }
-  .faq-item .ico {
-    flex-shrink: 0;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: 1px solid var(--line);
-    display: grid;
-    place-items: center;
-    transition: transform 0.3s var(--ease), background 0.2s, color 0.2s;
-    color: var(--ink);
-  }
-  .faq-item[open] .ico {
-    transform: rotate(45deg);
-    background: var(--blue);
-    border-color: var(--blue);
-  }
-  .faq-item .answer {
-    margin: 14px 0 0;
-    color: var(--ink-soft);
-    font-size: 16px;
-    line-height: 1.6;
-    max-width: 64ch;
-  }
+  /* Tracker */
+  .tracker { background: var(--paper); border: 1px solid var(--line-soft); border-radius: 16px; padding: 24px; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; gap: 20px; overflow: hidden; }
+  .tr-head { display: flex; justify-content: space-between; align-items: center; }
+  .tr-eyebrow { display: block; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mute); margin-bottom: 2px; }
+  .tr-name { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+  .tr-id { font-family: var(--font-mono); font-size: 10px; color: var(--mute); background: var(--bg); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--line-soft); }
+  .tr-steps { list-style: none; padding: 0; margin: 0; }
+  .tr-step { display: grid; grid-template-columns: 30px 1fr auto; gap: 14px; align-items: start; padding: 12px 0; position: relative; }
+  .tr-step + .tr-step::before { content: ''; position: absolute; top: -8px; bottom: calc(100% - 16px); left: 14px; width: 2px; background: var(--line); }
+  .tr-step.done + .tr-step::before { background: var(--blue); }
+  .tr-marker { width: 30px; height: 30px; border-radius: 50%; background: var(--bg); border: 2px solid var(--line); display: grid; place-items: center; color: var(--mute); position: relative; z-index: 1; }
+  .tr-marker svg { width: 14px; height: 14px; }
+  .tr-step.done .tr-marker { background: var(--blue); border-color: var(--blue); color: var(--ink); }
+  .tr-step.now .tr-marker { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+  .tr-info { display: flex; flex-direction: column; gap: 3px; padding-top: 2px; }
+  .tr-t { font-size: 14px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
+  .tr-step:not(.done):not(.now) .tr-t { color: var(--mute); }
+  .tr-s { font-size: 12px; color: var(--mute); line-height: 1.45; max-width: 38ch; }
+  .tr-time { font-family: var(--font-mono); font-size: 11px; color: var(--mute); padding-top: 4px; white-space: nowrap; }
+  .tr-step.done .tr-time { color: var(--blue); font-weight: 700; }
+  .tr-step.now .tr-time { color: var(--ink); font-weight: 700; }
+  .tr-foot { background: var(--ink); color: var(--paper); margin: 0 -24px -24px; padding: 18px 24px; display: flex; align-items: center; gap: 14px; }
+  .tr-av { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, #e8916f, #b85b36); color: white; display: grid; place-items: center; font-size: 11px; font-weight: 700; }
+  .tr-promise b { display: block; font-size: 13px; font-weight: 700; color: var(--paper); }
+  .tr-promise .serif { color: var(--blue); }
+  .tr-promise span { font-size: 11px; color: var(--dark-mute); }
 
-  @media (max-width: 900px) {
-    .page-hero {
-      grid-template-columns: 1fr;
-    }
-    .contact-grid {
-      grid-template-columns: 1fr;
-    }
-    .cg-intro {
-      position: static;
-    }
+  /* FAQ */
+  .faq-list { grid-column: 1 / -1; display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+  .faq-item { border-bottom: 1px solid var(--line); padding: 20px 4px; }
+  .faq-item summary { display: flex; justify-content: space-between; align-items: center; list-style: none; cursor: pointer; font-size: clamp(20px, 1.8vw, 28px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; gap: 24px; transition: color 0.2s; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary .q :global(.serif) { color: var(--blue-deep); }
+  .faq-item:hover summary { color: var(--blue-deep); }
+  .faq-item .ico { flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); display: grid; place-items: center; transition: transform 0.3s var(--ease), background 0.2s, color 0.2s; color: var(--ink); }
+  .faq-item[open] .ico { transform: rotate(45deg); background: var(--blue); border-color: var(--blue); }
+  .faq-item .answer { margin: 14px 0 0; color: var(--ink-soft); font-size: 16px; line-height: 1.6; max-width: 64ch; }
+
+  @media (max-width: 860px) {
+    .cg-intro { position: static; }
   }
 </style>

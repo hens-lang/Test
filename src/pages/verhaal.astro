@@ -16,8 +16,8 @@ const values = [
   path="/verhaal"
 >
   <!-- Hero -->
-  <section class="page-hero">
-    <div class="ph-copy reveal">
+  <section class="section pair hero">
+    <div class="hero-copy reveal">
       <span class="eyebrow">Ons verhaal</span>
       <h1 class="display">Ik zag dat het <span class="serif">anders</span> kon<span class="d">.</span></h1>
       <p class="sub">
@@ -25,15 +25,15 @@ const values = [
         eerst een kop koffie voordat we iets afspreken.
       </p>
     </div>
-    <div class="ph-widget reveal"><TimelineWidget /></div>
+    <div class="reveal"><TimelineWidget /></div>
   </section>
 
   <!-- Wie ik ben -->
-  <section class="split">
-    <div class="split-media reveal">
-      <Figure src="/assets/hens-sun-tall.jpeg" alt="Portret van Hens" ratio="4 / 5" radius="20px" />
+  <section class="section line pair">
+    <div class="reveal">
+      <Figure src="/assets/hens-sun-tall.jpeg" alt="Portret van Hens" ratio="4 / 5" radius="16px" />
     </div>
-    <div class="split-body reveal">
+    <div class="reveal bio-copy">
       <span class="eyebrow">Wie ik ben</span>
       <h2 class="headline">Hens<span class="d">.</span></h2>
       <span class="role">Eigenaar · Sales &amp; outreach</span>
@@ -47,8 +47,8 @@ const values = [
   </section>
 
   <!-- Hoe ik werk -->
-  <section class="split reverse">
-    <div class="split-body reveal">
+  <section class="section pair">
+    <div class="reveal bio-copy">
       <span class="eyebrow">Hoe ik werk</span>
       <h2 class="headline">Zelf aan de <span class="serif">lijn</span><span class="d">.</span></h2>
       <span class="role">Met een team dat meegroeit</span>
@@ -59,30 +59,32 @@ const values = [
         aanspreekpunt blijft.
       </p>
     </div>
-    <div class="split-media reveal">
-      <Figure src="/assets/hens-notebook-laughing.jpeg" alt="Hens lachend met notitieboek" ratio="4 / 5" radius="20px" />
+    <div class="reveal">
+      <Figure src="/assets/hens-notebook-laughing.jpeg" alt="Hens lachend met notitieboek" ratio="4 / 5" radius="16px" />
     </div>
   </section>
 
   <!-- Manifest -->
-  <section class="statement dark on-dark reveal">
-    <span class="eyebrow">Hoe LINK. ontstond</span>
-    <p><span class="serif">Kwaliteit</span> boven kwantiteit<span class="d">.</span></p>
-    <p class="lede manifest-lede">
-      Ik stuur niet op aantallen, maar op afspraken die converteren naar klanten.
-      Liever één gesprek met de juiste beslisser dan tien afspraken die nergens
-      toe leiden. Zodat jij écht een kans hebt om te verkopen.
-    </p>
+  <section class="section dark on-dark">
+    <div class="statement reveal">
+      <span class="eyebrow">Hoe LINK. ontstond</span>
+      <p><span class="serif">Kwaliteit</span> boven kwantiteit<span class="d">.</span></p>
+      <p class="lede manifest-lede">
+        Ik stuur niet op aantallen, maar op afspraken die converteren naar
+        klanten. Liever één gesprek met de juiste beslisser dan tien afspraken
+        die nergens toe leiden. Zodat jij écht een kans hebt om te verkopen.
+      </p>
+    </div>
   </section>
 
   <!-- Waarden -->
-  <section class="band">
-    <div class="head reveal">
-      <div>
+  <section class="section">
+    <div class="head">
+      <div class="reveal">
         <span class="eyebrow">Waarom LINK.</span>
         <h2 class="headline">Drie dingen die <span class="serif">altijd</span> gelden<span class="d">.</span></h2>
       </div>
-      <p class="lede">
+      <p class="lede reveal">
         Een goede samenwerking begint met vertrouwen, openheid en transparantie,
         van beide kanten. Als die basis er is, werkt de rest vanzelf.
       </p>
@@ -102,32 +104,35 @@ const values = [
   </section>
 
   <!-- CTA -->
-  <section class="band line cta">
-    <span class="eyebrow">Ons uitgangspunt</span>
-    <h2 class="display">Jouw succes is <span class="serif">mijn</span> succes<span class="d">.</span></h2>
-    <p class="lede">
-      Ik groei mee in jouw organisatie. Geen marketingzin, maar hoe ik elke
-      samenwerking aanpak. Ik verdien mijn plek pas als jij resultaat ziet.
-    </p>
-    <div class="cta-row">
-      <a class="btn" href="/contact" data-magnetic>Drink een koffie met me <span class="arw">→</span></a>
-      <a class="link" href="/aanpak">Hoe ik werk</a>
+  <section class="section line">
+    <div class="cta-block reveal">
+      <span class="eyebrow">Ons uitgangspunt</span>
+      <h2 class="display">Jouw succes is <span class="serif">mijn</span> succes<span class="d">.</span></h2>
+      <p class="lede">
+        Ik groei mee in jouw organisatie. Geen marketingzin, maar hoe ik elke
+        samenwerking aanpak. Ik verdien mijn plek pas als jij resultaat ziet.
+      </p>
+      <div class="actions">
+        <a class="btn" href="/contact" data-magnetic>Drink een koffie met me <span class="arw">→</span></a>
+        <a class="link" href="/aanpak">Hoe ik werk</a>
+      </div>
     </div>
   </section>
 </Base>
 
 <style>
-  .page-hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-    gap: clamp(40px, 5vw, 80px);
-    align-items: center;
-    padding: clamp(48px, 7vw, 110px) var(--gutter) clamp(48px, 6vw, 96px);
+  .hero {
+    padding-top: clamp(40px, 5vw, 80px);
   }
-  .ph-copy {
+  .hero-copy {
     display: flex;
     flex-direction: column;
     gap: 24px;
+  }
+  .bio-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
   .role {
     font-family: var(--font-mono);
@@ -137,9 +142,8 @@ const values = [
     color: var(--mute);
   }
   .manifest-lede {
-    margin-top: 26px;
+    margin-top: 8px;
     max-width: 54ch;
-    color: var(--dark-text);
   }
   .val-pull {
     font-family: var(--font-serif);
@@ -148,21 +152,16 @@ const values = [
     color: var(--mute);
     margin-top: 4px;
   }
-  .cta {
+  .cta-block {
+    grid-column: 1 / 9;
     display: flex;
     flex-direction: column;
     gap: 22px;
     align-items: flex-start;
   }
-  .cta-row {
-    display: flex;
-    align-items: center;
-    gap: 28px;
-    flex-wrap: wrap;
-  }
-  @media (max-width: 900px) {
-    .page-hero {
-      grid-template-columns: 1fr;
+  @media (max-width: 860px) {
+    .cta-block {
+      grid-column: 1 / -1;
     }
   }
 </style>
