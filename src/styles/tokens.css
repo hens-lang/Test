@@ -50,7 +50,7 @@
   /* ---- Layout ---- */
   --gutter: clamp(24px, 6vw, 110px); /* horizontale paginamarge (verfijnd) */
   --col-gap: clamp(16px, 1.8vw, 30px); /* kolom-tussenruimte op het 12-grid */
-  --section-y: clamp(72px, 9vw, 132px); /* verticaal ritme — ÉÉN waarde */
+  --section-y: clamp(64px, 8vw, 116px); /* verticaal ritme — ÉÉN waarde */
 
   /* ---- Editorial (concept) ---- */
   --rail: clamp(20px, 6vw, 96px); /* buitenmarge = ruimte voor de thread */

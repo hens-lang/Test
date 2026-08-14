@@ -165,10 +165,14 @@ a:hover .arw {
   color: var(--dark-text);
 }
 
-/* Twee gelijke helften, exact uitgelijnd (hero, splits, service, contact) */
+/* Twee gelijke helften, exact uitgelijnd (hero, splits, service, contact).
+   Top-uitlijning: beide kolommen beginnen op dezelfde lijn. */
 .pair {
+  align-items: start;
+  row-gap: clamp(28px, 4vw, 48px);
+}
+.pair.center {
   align-items: center;
-  row-gap: clamp(32px, 5vw, 56px);
 }
 .pair > :nth-child(1) {
   grid-column: 1 / 7;
@@ -190,7 +194,7 @@ a:hover .arw {
   display: grid;
   grid-template-columns: subgrid;
   align-items: end;
-  margin-bottom: clamp(40px, 5vw, 72px);
+  margin-bottom: clamp(36px, 4.5vw, 64px);
   row-gap: 24px;
 }
 .head > :first-child {
@@ -305,8 +309,8 @@ a:hover .arw {
   flex-direction: column;
   gap: 24px;
 }
-.statement p,
-.statement h2 {
+.statement > p:not(.lede),
+.statement > h2 {
   font-weight: 800;
   font-size: clamp(30px, 4.2vw, 74px);
   line-height: 0.98;
@@ -314,8 +318,8 @@ a:hover .arw {
   margin: 0;
   max-width: 24ch;
 }
-.on-dark .statement p,
-.on-dark .statement h2 {
+.on-dark .statement > p:not(.lede),
+.on-dark .statement > h2 {
   color: var(--paper);
 }
 
