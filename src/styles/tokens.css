@@ -7,24 +7,27 @@
 
 :root {
   /* ---- Kleuren ---- */
-  --bg: #f2ede3; /* paginakleur, warm crème */
+  --bg: #f3eee4; /* paginakleur, warm crème */
   --bg-2: #ece6d7;
-  --bg-3: #e5ddc9;
-  --paper: #faf7f0; /* kaarten, lichter dan bg */
-  --ink: #0b0b0b; /* tekst, donkere panelen */
-  --ink-soft: #2a2926; /* body op crème */
-  --mute: #6b665b; /* secundaire tekst */
-  --line: #d6cebd; /* randen */
-  --line-soft: #e3dbc8;
+  --bg-3: #e6ddc9;
+  --paper: #fbf8f1; /* kaarten, lichter dan bg */
+  --ink: #191410; /* tekst, donkere panelen — zacht warm-zwart */
+  --ink-soft: #3a342b; /* body op crème */
+  --mute: #6f695c; /* secundaire tekst */
+  --line: #d8cfbd; /* randen */
+  --line-soft: #e5dcc9;
   --blue: #29b0f2; /* accent: de punt */
   --blue-deep: #0f8dcb; /* linkhover */
-  --dark: #0b0b0b;
-  --dark-text: #ece6d7; /* tekst op donker */
-  --dark-mute: #8e8a7e;
+  --warm: #c2603f; /* warm accent (terracotta/koffie), spaarzaam */
+  --warm-soft: #efd9cd;
+  --dark: #191410;
+  --dark-text: #ece5d6; /* tekst op donker */
+  --dark-mute: #948d7e;
 
   /* ---- Typografie ---- */
   --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-serif: 'Instrument Serif', 'Times New Roman', serif;
+  --font-hand: 'Caveat', 'Segoe Script', cursive; /* handgeschreven signatuur */
   --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
 
   --t-giant: clamp(64px, 11vw, 190px); /* editorial hero-display */

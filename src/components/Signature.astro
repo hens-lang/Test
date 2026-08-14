@@ -1,0 +1,15 @@
+---
+/**
+ * Handgeschreven signatuur van Hens — persoonlijk, terugkerend merkdetail.
+ */
+interface Props {
+  name?: string;
+  role?: string;
+}
+const { name = 'Hens', role = 'Eigenaar · LINK.' } = Astro.props;
+---
+
+<span class="sign">
+  <span class="name">{name}<span class="d">.</span></span>
+  {role && <span class="role">{role}</span>}
+</span>

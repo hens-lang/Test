@@ -24,6 +24,36 @@ a:hover .arw {
   will-change: transform;
 }
 
+/* ---------- Handgeschreven signatuur (persoonlijk merkdetail) ---------- */
+.sign {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sign .name {
+  font-family: var(--font-hand);
+  font-weight: 600;
+  font-size: clamp(34px, 3.4vw, 52px);
+  line-height: 0.85;
+  color: var(--ink);
+}
+.sign .name .d {
+  color: var(--blue);
+}
+.sign .role {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.on-dark .sign .name {
+  color: var(--paper);
+}
+.on-dark .sign .role {
+  color: var(--dark-mute);
+}
+
 /* ---------- Eyebrow ---------- */
 .eyebrow {
   display: inline-flex;

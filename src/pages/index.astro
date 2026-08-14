@@ -1,6 +1,7 @@
 ---
 import Base from '@/layouts/Base.astro';
 import Figure from '@/components/Figure.astro';
+import Signature from '@/components/Signature.astro';
 import AgendaWidget from '@/components/widgets/AgendaWidget.astro';
 import { site } from '@/lib/site';
 
@@ -71,8 +72,27 @@ const anders = [
     </div>
   </section>
 
+  <!-- Even voorstellen (persoonlijk, warm welkom) -->
+  <section class="section line pair intro">
+    <div class="reveal">
+      <div class="photo-wrap">
+        <Figure src="/assets/hens-notebook-smile.jpeg" alt="Hens van LINK." ratio="4 / 5" radius="16px" />
+      </div>
+    </div>
+    <div class="reveal intro-copy">
+      <span class="eyebrow">Even voorstellen</span>
+      <h2 class="headline">Geen bureau. <span class="serif">Gewoon</span> ik<span class="d">.</span></h2>
+      <p class="lede">
+        Ik ben Hens. Geen bureau op afstand, maar iemand die jouw verhaal kent en
+        zelf de telefoon pakt. Het liefst begin ik met een kop koffie, even kijken
+        of het klikt. Past het niet, dan zeg ik dat ook gewoon.
+      </p>
+      <Signature />
+    </div>
+  </section>
+
   <!-- Wat we doen -->
-  <section class="section line">
+  <section class="section">
     <div class="head">
       <div class="reveal">
         <span class="eyebrow">Wat we doen</span>
@@ -181,5 +201,13 @@ const anders = [
     display: flex;
     flex-direction: column;
     gap: 22px;
+  }
+  .intro-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .intro-copy .sign {
+    margin-top: 8px;
   }
 </style>
