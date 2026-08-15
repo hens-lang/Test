@@ -115,13 +115,14 @@ export default async function InzichtenPage() {
 
       {Object.keys(timing).length > 0 && (
         <Card title="Wanneer komen reacties binnen?">
-          <div className="flex h-24 items-end gap-3">
+          <div className="flex items-end gap-3">
             {DAY_NAMES.map((name, i) => {
               const v = timing[String(i + 1)] ?? 0;
               return (
                 <div key={name} className="flex flex-1 flex-col items-center gap-1">
-                  <div className="w-full rounded-t bg-brand-500" style={{ height: `${(v / maxTiming) * 100}%`, minHeight: v > 0 ? 4 : 0 }} />
+                  <div className="w-full rounded-t bg-brand-500" style={{ height: `${v > 0 ? Math.max(6, (v / maxTiming) * 80) : 2}px` }} />
                   <span className="text-xs text-gray-400">{name}</span>
+                  <span className="text-[10px] text-gray-500">{v > 0 ? v : ''}</span>
                 </div>
               );
             })}
