@@ -1,0 +1,574 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PlanType {
+  CAMPAIGN
+  DATA_ONLY
+}
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  PAUSED
+  CANCELED
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  CLIENT
+}
+
+enum EmailStatus {
+  UNVERIFIED
+  VALID
+  RISKY
+  INVALID
+  BOUNCED
+  UNSUBSCRIBED
+}
+
+enum ContactSource {
+  IMPORT
+  MANUAL
+  API
+  REFERRAL
+}
+
+enum DomainStatus {
+  PENDING
+  WARMING
+  ACTIVE
+  PAUSED
+  BLOCKED
+}
+
+enum MailboxStatus {
+  WARMING
+  ACTIVE
+  PAUSED
+  ERROR
+}
+
+enum CampaignStatus {
+  DRAFT
+  REVIEW
+  ACTIVE
+  PAUSED
+  COMPLETED
+}
+
+enum EnrollmentStatus {
+  PENDING_PERSONALIZATION
+  PENDING_APPROVAL
+  ACTIVE
+  REPLIED
+  BOUNCED
+  UNSUBSCRIBED
+  COMPLETED
+  STOPPED
+}
+
+enum Variant {
+  A
+  B
+}
+
+enum ActivityType {
+  EMAIL_QUEUED
+  EMAIL_SENT
+  EMAIL_OPENED
+  EMAIL_CLICKED
+  EMAIL_REPLIED
+  EMAIL_BOUNCED
+  EMAIL_UNSUBSCRIBED
+  LEAD_CREATED
+  REFERRAL_RECEIVED
+  NOTE
+  CALL_MADE
+  CALL_RESULT
+}
+
+enum LeadStatus {
+  NEW
+  QUALIFIED
+  MEETING_BOOKED
+  REJECTED
+}
+
+enum ReferralStatus {
+  SUGGESTED
+  APPROVED
+  REJECTED
+  CONTACT_CREATED
+}
+
+enum ReplyDraftGeneratedBy {
+  AI
+  RULE
+}
+
+enum ReplyDraftStatus {
+  PROPOSED
+  EDITED
+  SENT
+  DISCARDED
+}
+
+enum TemplateStatScope {
+  GLOBAL
+}
+
+enum TemplateKind {
+  SUBJECT
+  OPENER
+  BODY
+}
+
+enum SuppressionReason {
+  UNSUBSCRIBE
+  HARD_BOUNCE
+  MANUAL
+  COMPLAINT
+}
+
+enum MessageDirection {
+  OUT
+  IN
+}
+
+enum ReplyClassification {
+  POSITIVE
+  REFERRAL
+  NOT_NOW
+  NEGATIVE
+  OOO
+  UNSUBSCRIBE
+  BOUNCE
+  OTHER
+}
+
+model Tenant {
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  brandColor    String?
+  logoUrl       String?
+  industry      String?
+  toneOfVoice   String? // tekstprofiel voor AI
+  // Verplichte afzendergegevens (fysiek adres in footer)
+  senderAddress String?
+  webhookUrl    String? // notificatie-webhook voor de klant (optioneel)
+  shareTemplates Boolean @default(true) // deelname aan TemplateStat-aggregatie (per campagne overschrijfbaar)
+  reportRecipients String? // komma-gescheiden e-mailadressen voor rapportages
+  createdAt     DateTime @default(now())
+
+  users          User[]
+  companies      Company[]
+  contacts       Contact[]
+  sendingDomains SendingDomain[]
+  campaigns      Campaign[]
+  activities     Activity[]
+  leads          Lead[]
+  referrals      Referral[]
+  replyDrafts    ReplyDraft[]
+  dataHealthRuns DataHealthRun[]
+  suppressions   Suppression[]
+  messages       Message[]
+  subscriptions  Subscription[]
+  insightSnapshots InsightSnapshot[]
+}
+
+model Plan {
+  id                       String   @id @default(cuid())
+  name                     String
+  type                     PlanType
+  monthlyPriceCents        Int
+  setupFeeCents            Int      @default(0)
+  includedActiveProspects  Int
+  includedMailboxes        Int
+  features                 Json     @default("{}")
+  active                   Boolean  @default(true)
+
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id                 String             @id @default(cuid())
+  tenantId           String
+  planId             String
+  status             SubscriptionStatus @default(TRIAL)
+  startedAt          DateTime           @default(now())
+  canceledAt         DateTime?
+  priceOverrideCents Int?
+  notes              String?
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  plan   Plan   @relation(fields: [planId], references: [id])
+
+  @@index([tenantId])
+}
+
+model User {
+  id           String    @id @default(cuid())
+  tenantId     String? // null = LINK.-intern
+  email        String    @unique
+  passwordHash String
+  name         String
+  role         Role
+  lastLoginAt  DateTime?
+
+  tenant    Tenant?    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  auditLogs AuditLog[]
+}
+
+model Company {
+  id             String   @id @default(cuid())
+  tenantId       String
+  name           String
+  domain         String
+  industry       String?
+  size           String?
+  city           String?
+  country        String   @default("NL")
+  linkedinUrl    String?
+  websiteSummary String? // tekst, voor AI
+  createdAt      DateTime @default(now())
+
+  tenant   Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contacts Contact[]
+
+  @@unique([tenantId, domain])
+  @@index([tenantId])
+}
+
+model Contact {
+  id           String        @id @default(cuid())
+  tenantId     String
+  companyId    String
+  firstName    String
+  lastName     String
+  title        String?
+  email        String
+  emailStatus  EmailStatus   @default(UNVERIFIED)
+  emailCheckedAt DateTime?
+  phone        String?
+  linkedinUrl  String?
+  source       ContactSource @default(IMPORT)
+  customFields Json          @default("{}")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  tenant      Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  company     Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  enrollments Enrollment[]
+  activities  Activity[]
+  leads       Lead[]
+
+  @@unique([tenantId, email])
+  @@index([tenantId, emailStatus])
+}
+
+model SendingDomain {
+  id            String       @id @default(cuid())
+  tenantId      String
+  domain        String
+  dkimSelector  String?
+  spfOk         Boolean      @default(false)
+  dkimOk        Boolean      @default(false)
+  dmarcOk       Boolean      @default(false)
+  mxOk          Boolean      @default(false)
+  lastCheckedAt DateTime?
+  healthScore   Int          @default(0) // 0-100
+  status        DomainStatus @default(PENDING)
+  complaintCount Int         @default(0)
+
+  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  mailboxes Mailbox[]
+
+  @@unique([tenantId, domain])
+}
+
+model Mailbox {
+  id                String        @id @default(cuid())
+  sendingDomainId   String
+  email             String        @unique
+  displayName       String
+  smtpHost          String
+  smtpPort          Int           @default(587)
+  smtpUser          String
+  smtpPassEncrypted String
+  imapHost          String
+  imapPort          Int           @default(993)
+  imapUser          String
+  imapPassEncrypted String
+  dailyCap          Int           @default(10) // actueel, volgt warm-up-schema
+  maxDailyCap       Int           @default(50) // absolute bovengrens; >50 tot 100 alleen door ADMIN
+  warmupStartedAt   DateTime?
+  warmupDay         Int           @default(0)
+  status            MailboxStatus @default(WARMING)
+  sentToday         Int           @default(0)
+  bouncedToday      Int           @default(0)
+  consecutiveSmtpErrors Int       @default(0)
+  lastResetAt       DateTime      @default(now())
+  lastImapUid       Int           @default(0)
+  lastError         String?
+
+  sendingDomain SendingDomain @relation(fields: [sendingDomainId], references: [id], onDelete: Cascade)
+  enrollments   Enrollment[]
+}
+
+model Campaign {
+  id               String         @id @default(cuid())
+  tenantId         String
+  name             String
+  status           CampaignStatus @default(DRAFT)
+  timezone         String         @default("Europe/Amsterdam")
+  sendWindowStart  String         @default("08:30")
+  sendWindowEnd    String         @default("17:00")
+  sendDays         String         @default("1,2,3,4,5") // ISO weekdagen, ma-vr
+  dailyCampaignCap Int?
+  requiresApproval Boolean        @default(true)
+  trackingEnabled  Boolean        @default(true)
+  shareTemplates   Boolean        @default(true) // "delen met bibliotheek" (§12)
+  audienceFilter   Json           @default("{}")
+  proposition      String? // campagne-propositie, context voor AI-replydrafts
+  createdAt        DateTime       @default(now())
+
+  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  sequenceSteps SequenceStep[]
+  enrollments   Enrollment[]
+  activities    Activity[]
+  leads         Lead[]
+
+  @@index([tenantId])
+}
+
+model SequenceStep {
+  id         String  @id @default(cuid())
+  campaignId String
+  order      Int
+  waitDays   Int     @default(0)
+  subjectA   String
+  bodyA      String
+  subjectB   String?
+  bodyB      String?
+  abSplit    Int     @default(50)
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, order])
+}
+
+model Enrollment {
+  id                 String           @id @default(cuid())
+  campaignId         String
+  contactId          String
+  mailboxId          String
+  currentStep        Int              @default(0)
+  status             EnrollmentStatus @default(PENDING_PERSONALIZATION)
+  variant            Variant          @default(A)
+  personalizedOpener String?
+  openerApprovedBy   String?
+  nextSendAt         DateTime?
+  oooPausedUntil     DateTime?
+  createdAt          DateTime         @default(now())
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  contact  Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  mailbox  Mailbox  @relation(fields: [mailboxId], references: [id])
+  messages Message[]
+  activities Activity[]
+
+  @@unique([campaignId, contactId])
+  @@index([status, nextSendAt])
+}
+
+model Activity {
+  id           String       @id @default(cuid())
+  tenantId     String
+  contactId    String
+  campaignId   String?
+  enrollmentId String?
+  type         ActivityType
+  meta         Json         @default("{}")
+  occurredAt   DateTime     @default(now())
+
+  tenant     Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contact    Contact     @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  campaign   Campaign?   @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  enrollment Enrollment? @relation(fields: [enrollmentId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, occurredAt])
+  @@index([contactId])
+}
+
+model Lead {
+  id           String     @id @default(cuid())
+  tenantId     String
+  contactId    String
+  campaignId   String
+  status       LeadStatus @default(NEW)
+  replySnippet String
+  viaReferral  Boolean    @default(false)
+  assignedTo   String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contact  Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, createdAt])
+}
+
+model Referral {
+  id               String         @id @default(cuid())
+  tenantId         String
+  sourceContactId  String
+  sourceMessageId  String
+  suggestedName    String?
+  suggestedEmail   String?
+  suggestedTitle   String?
+  suggestedCompany String?
+  rawSnippet       String
+  status           ReferralStatus @default(SUGGESTED)
+  createdContactId String?
+  createdAt        DateTime       @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, status])
+}
+
+model ReplyDraft {
+  id            String                @id @default(cuid())
+  messageId     String // inkomend bericht (Message.id)
+  tenantId      String
+  draftSubject  String
+  draftBody     String
+  generatedBy   ReplyDraftGeneratedBy
+  status        ReplyDraftStatus      @default(PROPOSED)
+  finalBody     String?
+  sentMessageId String?
+  createdAt     DateTime              @default(now())
+
+  tenant  Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, status])
+}
+
+model TemplateStat {
+  id            String            @id @default(cuid())
+  scope         TemplateStatScope @default(GLOBAL)
+  industry      String
+  kind          TemplateKind
+  textHash      String
+  textSample    String // geanonimiseerd: variabelen als placeholders
+  sentCount     Int               @default(0)
+  replyCount    Int               @default(0)
+  positiveCount Int               @default(0)
+  lastUsedAt    DateTime          @default(now())
+
+  @@unique([industry, kind, textHash])
+}
+
+model DataHealthRun {
+  id              String   @id @default(cuid())
+  tenantId        String
+  ranAt           DateTime @default(now())
+  contactsChecked Int      @default(0)
+  newInvalid      Int      @default(0)
+  newRisky        Int      @default(0)
+  bouncesRemoved  Int      @default(0)
+  suppressed      Int      @default(0)
+  enriched        Int      @default(0)
+  reportJson      Json     @default("{}")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, ranAt])
+}
+
+model Suppression {
+  id        String            @id @default(cuid())
+  tenantId  String? // null = globaal over alle tenants
+  email     String
+  reason    SuppressionReason
+  createdAt DateTime          @default(now())
+
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, email])
+  @@index([email])
+}
+
+model Message {
+  id           String               @id @default(cuid())
+  enrollmentId String?
+  tenantId     String
+  direction    MessageDirection
+  messageId    String // RFC Message-ID
+  inReplyTo    String?
+  subject      String
+  body         String
+  classifiedAs ReplyClassification?
+  classificationConfirmed Boolean   @default(false)
+  fromEmail    String?
+  toEmail      String?
+  mailboxEmail String?
+  sentAt       DateTime?
+  receivedAt   DateTime?
+  createdAt    DateTime             @default(now())
+
+  tenant      Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  enrollment  Enrollment?  @relation(fields: [enrollmentId], references: [id], onDelete: SetNull)
+  replyDrafts ReplyDraft[]
+
+  @@index([tenantId, direction])
+  @@index([messageId])
+}
+
+// Maandelijkse inzicht-snapshot per tenant (marktintelligentie-laag).
+// Het geheugen waar segmentanalyse, bezwarenanalyse en trends op draaien —
+// hoe langer een klant meedraait, hoe waardevoller dit wordt.
+model InsightSnapshot {
+  id                  String   @id @default(cuid())
+  tenantId            String
+  period              String // "2026-08"
+  volumeSent          Int      @default(0)
+  volumeReplies       Int      @default(0)
+  volumeLeads         Int      @default(0)
+  volumeCalls         Int      @default(0)
+  segmentStats        Json     @default("[]") // per branche/functiegroep/grootte/regio: sent, replies, leads
+  classificationStats Json     @default("{}") // verdeling POSITIVE/NOT_NOW/NEGATIVE/…
+  objectionClusters   Json     @default("[]") // bezwaarclusters met aantallen en citaten
+  timingStats         Json     @default("{}") // replies per weekdag
+  conclusions         Json     @default("[]") // geschreven conclusies (regelgebaseerd of AI)
+  createdAt           DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, period])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String
+  meta      Json     @default("{}")
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([entity, entityId])
+}
