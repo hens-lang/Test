@@ -68,6 +68,12 @@ export async function buildMonthlyValueReport(tenantId: string): Promise<{ subje
   });
   const trend = await weeklyTrend(tenantId, 4);
 
+  const latestSnapshot = await prisma.insightSnapshot.findFirst({
+    where: { tenantId },
+    orderBy: { period: 'desc' },
+  });
+  const conclusions = (latestSnapshot?.conclusions as string[] | null) ?? [];
+
   const leadRows = leads
     .map((l) => `<li><strong>${l.contact.firstName} ${l.contact.lastName}</strong> — ${l.contact.company.name}${l.viaReferral ? ' <em>(via doorverwijzing)</em>' : ''}</li>`)
     .join('');
@@ -85,6 +91,7 @@ ${statRow('Benaderde prospects', String(stats.approached))}
 ${statRow('Reply-rate', pct(stats.replyRate) + (benchmark !== null ? ` (branchegemiddelde: ${pct(benchmark)})` : ''))}
 </table>
 ${leads.length > 0 ? `<h3>Uw leads deze maand</h3><ul>${leadRows}</ul>` : ''}
+${conclusions.length > 0 ? `<h3>Wat wij deze maand over uw markt leerden</h3><ul>${conclusions.map((c) => `<li>${c}</li>`).join('')}</ul>` : ''}
 <h3>Verloop per week</h3>
 <table style="width:100%;border-collapse:collapse">${trendRows}</table>
 <h3>Datahygiëne</h3>

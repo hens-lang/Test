@@ -182,6 +182,7 @@ model Tenant {
   suppressions   Suppression[]
   messages       Message[]
   subscriptions  Subscription[]
+  insightSnapshots InsightSnapshot[]
 }
 
 model Plan {
@@ -533,6 +534,29 @@ model Message {
 
   @@index([tenantId, direction])
   @@index([messageId])
+}
+
+// Maandelijkse inzicht-snapshot per tenant (marktintelligentie-laag).
+// Het geheugen waar segmentanalyse, bezwarenanalyse en trends op draaien —
+// hoe langer een klant meedraait, hoe waardevoller dit wordt.
+model InsightSnapshot {
+  id                  String   @id @default(cuid())
+  tenantId            String
+  period              String // "2026-08"
+  volumeSent          Int      @default(0)
+  volumeReplies       Int      @default(0)
+  volumeLeads         Int      @default(0)
+  volumeCalls         Int      @default(0)
+  segmentStats        Json     @default("[]") // per branche/functiegroep/grootte/regio: sent, replies, leads
+  classificationStats Json     @default("{}") // verdeling POSITIVE/NOT_NOW/NEGATIVE/…
+  objectionClusters   Json     @default("[]") // bezwaarclusters met aantallen en citaten
+  timingStats         Json     @default("{}") // replies per weekdag
+  conclusions         Json     @default("[]") // geschreven conclusies (regelgebaseerd of AI)
+  createdAt           DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, period])
 }
 
 model AuditLog {

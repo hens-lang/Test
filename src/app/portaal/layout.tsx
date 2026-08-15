@@ -21,6 +21,7 @@ export default async function PortaalLayout({ children }: { children: React.Reac
     ...(isDataOnly ? [] : [
       { href: '/portaal/leads', label: 'Leads' },
       { href: '/portaal/prospects', label: 'Prospects' },
+      { href: '/portaal/inzichten', label: 'Inzichten' },
     ]),
     { href: '/portaal/databestand', label: 'Databestand' },
     { href: '/portaal/maandrapport', label: 'Maandrapport' },

@@ -11,6 +11,7 @@ const NAV = [
   { href: '/beheer/inbox', label: 'Inbox' },
   { href: '/beheer/referrals', label: 'Referrals' },
   { href: '/beheer/infra', label: 'Domeinen & mailboxen' },
+  { href: '/beheer/beldata', label: 'Beldata & inzichten' },
   { href: '/beheer/bibliotheek', label: 'Bibliotheek' },
   { href: '/beheer/abonnementen', label: 'Abonnementen' },
 ];

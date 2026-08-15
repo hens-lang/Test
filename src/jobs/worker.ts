@@ -81,6 +81,16 @@ async function main() {
     const tenants = await prisma.tenant.findMany({ select: { id: true } });
     for (const t of tenants) await runDataHealth(t.id);
   });
+  // Marktintelligentie: op de 1e definitieve snapshot van de vorige maand,
+  // wekelijks een verse tussenstand van de lopende maand.
+  await cron('cron-insight-snapshots', '30 6 1 * *', async () => {
+    const { buildSnapshotsForAllTenants } = await import('./insights');
+    await buildSnapshotsForAllTenants();
+  });
+  await cron('cron-insight-refresh', '45 6 * * 1', async () => {
+    const { buildSnapshotsForAllTenants } = await import('./insights');
+    await buildSnapshotsForAllTenants();
+  });
 
   // Scheduler-lus: elke minuut kijken of er mails ingepland moeten worden.
   await cron('cron-plan-sends', '* * * * *', async () => {

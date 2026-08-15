@@ -104,6 +104,7 @@ async function main() {
         name: `${ACHTERNAMEN[i % ACHTERNAMEN.length]} ${['Transport', 'Bouw', 'Solutions', 'Groep', 'Techniek'][i % 5]} BV`,
         domain: `bedrijf${i}.nl`,
         industry: BRANCHES[i % BRANCHES.length],
+        size: ['1-10', '10-50', '50-100', '100+'][i % 4],
         city: STEDEN[cityIdx],
         websiteSummary: i % 3 === 0 ? `Familiebedrijf in ${BRANCHES[i % BRANCHES.length]}, actief in de regio ${STEDEN[cityIdx]}. Bekend om betrouwbare service en vaste klantrelaties.` : null,
       },
@@ -268,6 +269,90 @@ async function main() {
       enrollmentId: referralEnrollment.id, type: 'REFERRAL_RECEIVED', meta: { seed: true },
     },
   });
+
+  // Bezwaar-replies (NEGATIVE/NOT_NOW) + belactiviteiten voor de inzichtenlaag
+  const objectionEnrollments = await prisma.enrollment.findMany({
+    where: { campaignId: campaign.id, status: 'ACTIVE' },
+    include: { contact: true },
+    take: 3,
+  });
+  const objectionBodies = [
+    { c: 'NEGATIVE' as const, body: 'Bedankt, maar we zijn al voorzien — we werken al jaren met een vaste leverancier voor onze leadgeneratie.' },
+    { c: 'NOT_NOW' as const, body: 'Interessant, maar niet op dit moment. Ons budget is bevroren tot Q1, kom dan gerust terug.' },
+    { c: 'NEGATIVE' as const, body: 'Wij doen dit zelf met een eigen team, dus geen behoefte aan externe partijen.' },
+  ];
+  for (let i = 0; i < objectionEnrollments.length && i < objectionBodies.length; i++) {
+    const e = objectionEnrollments[i];
+    await prisma.message.create({
+      data: {
+        enrollmentId: e.id, tenantId: demo.id, direction: 'IN',
+        messageId: `<objection-${i}@bedrijf.nl>`, subject: 'Re: Nieuwe klanten',
+        body: objectionBodies[i].body, classifiedAs: objectionBodies[i].c,
+        fromEmail: e.contact.email, mailboxEmail: 'jan@mail.demoklant.nl',
+        receivedAt: new Date(Date.now() - (3 + i) * 86400_000),
+      },
+    });
+    await prisma.enrollment.update({ where: { id: e.id }, data: { status: 'REPLIED' } });
+    await prisma.activity.create({
+      data: {
+        tenantId: demo.id, contactId: e.contactId, campaignId: campaign.id, enrollmentId: e.id,
+        type: 'EMAIL_REPLIED', meta: { classification: objectionBodies[i].c },
+        occurredAt: new Date(Date.now() - (3 + i) * 86400_000),
+      },
+    });
+    await prisma.activity.create({
+      data: {
+        tenantId: demo.id, contactId: e.contactId, type: 'CALL_RESULT',
+        meta: { resultaat: ['Afspraak', 'Terugbellen', 'Geen gehoor'][i], bron: 'belexport' },
+        occurredAt: new Date(Date.now() - (2 + i) * 86400_000),
+      },
+    });
+  }
+
+  // Drie maand-snapshots (marktintelligentie) zodat inzichten én trends direct tonen
+  const now = new Date();
+  const periods = [2, 1, 0].map((back) => {
+    const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - back, 1));
+    return d.toISOString().slice(0, 7);
+  });
+  const snapshotSeries = [
+    { sent: 180, replies: 7, leads: 1, calls: 40, alVoorzien: 45, budget: 10, timing: 25 },
+    { sent: 210, replies: 10, leads: 2, calls: 55, alVoorzien: 38, budget: 18, timing: 26 },
+    { sent: 240, replies: 14, leads: 3, calls: 60, alVoorzien: 30, budget: 32, timing: 22 },
+  ];
+  for (let i = 0; i < 3; i++) {
+    const s = snapshotSeries[i];
+    await prisma.insightSnapshot.create({
+      data: {
+        tenantId: demo.id,
+        period: periods[i],
+        volumeSent: s.sent, volumeReplies: s.replies, volumeLeads: s.leads, volumeCalls: s.calls,
+        segmentStats: [
+          { dimension: 'branche', value: 'logistiek', sent: Math.round(s.sent * 0.5), replies: Math.round(s.replies * 0.7), leads: s.leads, replyRate: (s.replies * 0.7) / (s.sent * 0.5) },
+          { dimension: 'branche', value: 'bouw', sent: Math.round(s.sent * 0.3), replies: Math.round(s.replies * 0.2), leads: 0, replyRate: (s.replies * 0.2) / (s.sent * 0.3) },
+          { dimension: 'functiegroep', value: 'Operationeel', sent: Math.round(s.sent * 0.4), replies: Math.round(s.replies * 0.6), leads: s.leads, replyRate: (s.replies * 0.6) / (s.sent * 0.4) },
+          { dimension: 'functiegroep', value: 'Directie', sent: Math.round(s.sent * 0.4), replies: Math.round(s.replies * 0.25), leads: 0, replyRate: (s.replies * 0.25) / (s.sent * 0.4) },
+          { dimension: 'grootte', value: '10-50', sent: Math.round(s.sent * 0.45), replies: Math.round(s.replies * 0.6), leads: s.leads, replyRate: (s.replies * 0.6) / (s.sent * 0.45) },
+          { dimension: 'grootte', value: '100+', sent: Math.round(s.sent * 0.25), replies: Math.round(s.replies * 0.15), leads: 0, replyRate: (s.replies * 0.15) / (s.sent * 0.25) },
+          { dimension: 'regio', value: 'Utrecht', sent: Math.round(s.sent * 0.35), replies: Math.round(s.replies * 0.45), leads: s.leads, replyRate: (s.replies * 0.45) / (s.sent * 0.35) },
+          { dimension: 'regio', value: 'Rotterdam', sent: Math.round(s.sent * 0.3), replies: Math.round(s.replies * 0.3), leads: 0, replyRate: (s.replies * 0.3) / (s.sent * 0.3) },
+        ],
+        classificationStats: { POSITIVE: s.leads + 1, NOT_NOW: 4, NEGATIVE: 5, REFERRAL: 1, OOO: 2 },
+        objectionClusters: [
+          { cluster: 'AL_VOORZIEN', label: 'Al voorzien / vaste leverancier', count: Math.round(s.alVoorzien / 10), share: s.alVoorzien / 100, quotes: ['We werken al jaren met een vaste leverancier voor onze leadgeneratie.'], advice: 'Benoem in de eerste mail expliciet waarin het aanbod verschilt van een zittende leverancier, en vraag naar het contractmoment.' },
+          { cluster: 'GEEN_BUDGET', label: 'Geen budget / te duur', count: Math.round(s.budget / 10), share: s.budget / 100, quotes: ['Ons budget is bevroren tot Q1, kom dan gerust terug.'], advice: 'Verschuif de boodschap van kosten naar opbrengst/risico, of richt op segmenten met investeringsruimte.' },
+          { cluster: 'SLECHTE_TIMING', label: 'Timing — nu niet, later wel', count: Math.round(s.timing / 10), share: s.timing / 100, quotes: ['Kom in het nieuwe kwartaal maar eens terug.'], advice: 'Zet deze prospects in de heractiveringswachtrij — deze groep komt terug en is dan warm.' },
+        ],
+        timingStats: { '1': 2, '2': Math.round(s.replies * 0.4), '3': Math.round(s.replies * 0.25), '4': Math.round(s.replies * 0.2), '5': 1 },
+        conclusions: [
+          `Binnen functiegroep reageert "Operationeel" het best (${((s.replies * 0.6) / (s.sent * 0.4) * 100).toFixed(1)}% reply-rate) — 2,4× beter dan "Directie". Advies: verschuif volume naar operationeel management.`,
+          `Het meest gehoorde bezwaar is "${s.budget > s.alVoorzien ? 'Geen budget / te duur' : 'Al voorzien / vaste leverancier'}" (${Math.max(s.budget, s.alVoorzien)}% van de afwijzingen). ${s.budget > s.alVoorzien ? 'Verschuif de boodschap van kosten naar opbrengst — dit signaal wordt sterker en wijst op krappere budgetten in de markt.' : 'Vraag naar het contractmoment en benoem het onderscheid met de zittende leverancier.'}`,
+          'De meeste reacties komen op dinsdag binnen — plan belangrijke verzendingen aan het begin van de week.',
+          '4 prospects zeiden "nu niet" — deze groep is warm en hoort in de heractiveringswachtrij.',
+        ],
+      },
+    });
+  }
 
   // DataHealthRun voor de DATA_ONLY-tenant
   await prisma.dataHealthRun.create({

@@ -780,6 +780,67 @@ export async function runDataHealthNow(formData: FormData) {
   revalidatePath('/beheer/tenants');
 }
 
+// ---------- Marktintelligentie & beldata ----------
+
+export async function buildSnapshotNow(formData: FormData) {
+  const user = await requireStaff();
+  const tenantId = String(formData.get('tenantId'));
+  const { buildSnapshot } = await import('@/jobs/insights');
+  const prev = new Date();
+  prev.setUTCMonth(prev.getUTCMonth() - 1);
+  await buildSnapshot(tenantId, prev);
+  const id = await buildSnapshot(tenantId, new Date());
+  await audit(user.userId, 'insight_snapshot_built', 'InsightSnapshot', id);
+  revalidatePath('/beheer/beldata');
+  revalidatePath('/portaal/inzichten');
+}
+
+/**
+ * Belexport-import (Steam Connect/Belstat): koppelt belresultaten aan contacten
+ * zodat beldata in dezelfde Activity-tijdlijn en analyses meedraait als e-mail.
+ * Kolommen: email OF bedrijf, resultaat, datum (optioneel), notitie (optioneel).
+ */
+export async function importCallData(formData: FormData) {
+  const user = await requireStaff();
+  const tenantId = String(formData.get('tenantId'));
+  const csv = String(formData.get('csv') || '');
+  const parsed = Papa.parse<Record<string, string>>(csv.trim(), { header: true, skipEmptyLines: true });
+  const db = tenantDb(tenantId);
+
+  let matched = 0;
+  let unmatched = 0;
+  for (const row of parsed.data) {
+    const email = (row.email || row['e-mail'] || '').trim().toLowerCase();
+    const companyName = (row.bedrijf || row.company || '').trim();
+    const result = (row.resultaat || row.result || row.resultaatcode || '').trim();
+    const note = (row.notitie || row.note || '').trim();
+    const when = row.datum ? new Date(row.datum) : new Date();
+
+    let contact = email ? await db.contact.findFirst({ where: { email } }) : null;
+    if (!contact && companyName) {
+      contact = await db.contact.findFirst({
+        where: { company: { name: { contains: companyName, mode: 'insensitive' } } },
+      });
+    }
+    if (!contact) {
+      unmatched += 1;
+      continue;
+    }
+    await prisma.activity.create({
+      data: {
+        tenantId,
+        contactId: contact.id,
+        type: result ? 'CALL_RESULT' : 'CALL_MADE',
+        meta: { resultaat: result || null, notitie: note || null, bron: 'belexport' },
+        occurredAt: isNaN(when.getTime()) ? new Date() : when,
+      },
+    });
+    matched += 1;
+  }
+  await audit(user.userId, 'calldata_imported', 'Tenant', tenantId, { matched, unmatched });
+  redirect(`/beheer/beldata?tenantId=${tenantId}&matched=${matched}&unmatched=${unmatched}`);
+}
+
 // ---------- Demo-simulatie (acceptatiecriteria §18) ----------
 
 /** Simuleert een inkomende reply op de laatst verzonden mail van een contact (alleen demo-modus). */
