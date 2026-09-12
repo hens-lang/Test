@@ -52,15 +52,17 @@ button{font-family:inherit}
   padding:14px 28px;gap:16px;z-index:30;
 }
 .brandrow{display:flex;align-items:center;gap:14px;min-width:0}
-.ced-mark{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:.5px;color:#fff;line-height:1}
-.ced-mark .dot{color:var(--green)}
+.ced-mark{display:flex;align-items:center}
+.ced-mark img{height:24px;width:auto;display:block}
+.ced-mark .logo-dark{display:none}
+.deck.on-light .ced-mark .logo-dark{display:block}
+.deck.on-light .ced-mark .logo-light{display:none}
 .brand-sep{width:1px;height:22px;background:rgba(255,255,255,.28)}
 .brand-sub{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.62);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .counter{font-size:12.5px;letter-spacing:.1em;color:rgba(255,255,255,.6);font-variant-numeric:tabular-nums;white-space:nowrap}
 .progress{position:absolute;top:0;left:0;height:3px;width:100%;background:rgba(255,255,255,.12);z-index:40}
 .progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--green));
   box-shadow:0 0 12px rgba(134,188,53,.8);transition:width .6s var(--ease)}
-.deck.on-light .ced-mark{color:var(--ink)}
 .deck.on-light .brand-sub{color:var(--muted)}
 .deck.on-light .brand-sep{background:var(--line)}
 .deck.on-light .counter{color:var(--muted)}
@@ -384,7 +386,10 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 
   <header class="topbar">
     <div class="brandrow">
-      <div class="ced-mark">ced<span class="dot">.</span></div>
+      <span class="ced-mark">
+        <img class="logo-dark" src="assets/ced-logo.png" alt="CED">
+        <img class="logo-light" src="assets/ced-logo-wit.png" alt="CED">
+      </span>
       <div class="brand-sep"></div>
       <div class="brand-sub">Remote expertise &middot; Van Campen &amp; Dijkstra</div>
     </div>
@@ -685,6 +690,7 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
           <a href="mailto:hens.boer@ced.nl">hens.boer@ced.nl</a>
         </div>
         <div class="partners" data-a="5">
+          <img src="assets/ced-logo.png" alt="CED">
           <img src="assets/vcd-logo.png" alt="Van Campen & Dijkstra">
           <img class="badges" src="assets/badges.png" alt="Best Places to Work, EcoVadis 2022 Sustainability Rating en ESG-certificering">
         </div>
