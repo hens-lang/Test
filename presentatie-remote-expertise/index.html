@@ -157,9 +157,9 @@ h2.slide-title{font-size:clamp(26px,3.4vw,42px);font-weight:700;line-height:1.12
   transition:transform .35s var(--ease),box-shadow .35s var(--ease);will-change:transform}
 .tilt{transform-style:preserve-3d}
 .tilt:hover{box-shadow:0 24px 50px rgba(28,5,79,.16)}
-.card .ico{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
+.ico{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
   transition:transform .45s var(--spring)}
-.card:hover .ico{transform:scale(1.15) rotate(-8deg)}
+.card:hover .ico,.pillar:hover .ico{transform:scale(1.15) rotate(-8deg)}
 .ico.b{background:rgba(56,153,221,.14);color:var(--blue)}
 .ico.g{background:rgba(134,188,53,.18);color:#5F8A1E}
 .ico.p{background:rgba(86,35,142,.12);color:var(--purple)}
@@ -216,10 +216,11 @@ h2.slide-title{font-size:clamp(26px,3.4vw,42px);font-weight:700;line-height:1.12
   background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.08) 50%,transparent 65%);
   background-size:260% 100%;background-position:130% 0}
 .slide.active .stat::after{animation:sheen 7s ease-in-out infinite 2s}
-.stat b{display:block;font-family:var(--display);font-size:clamp(30px,3.4vw,44px);font-weight:800;line-height:1;
+.stat b{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-family:var(--display);
+  font-size:clamp(34px,3.6vw,48px);font-weight:800;line-height:1;
   color:#fff;font-variant-numeric:tabular-nums}
-.stat b em{font-style:normal;color:var(--green)}
-.stat span{display:block;margin-top:10px;font-size:13.5px;color:rgba(255,255,255,.72)}
+.stat b em{font-style:normal;color:var(--green);font-size:.4em;font-weight:700;letter-spacing:.02em}
+.stat .lbl{display:block;margin-top:10px;font-size:13.5px;color:rgba(255,255,255,.72)}
 
 /* ---------- criteria ---------- */
 .crit{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:32px}
@@ -255,6 +256,11 @@ h2.slide-title{font-size:clamp(26px,3.4vw,42px);font-weight:700;line-height:1.12
 .mailcard .row b{font-weight:600}
 .mailcard .addr{font-family:var(--display);font-weight:700;font-size:clamp(17px,1.8vw,22px);color:var(--green);word-break:break-all}
 .mailcard .cc{color:rgba(255,255,255,.75);font-size:13.5px}
+.check-head{font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+.cnum{width:34px;height:34px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;
+  background:rgba(134,188,53,.18);color:#5F8A1E;font-weight:700;font-family:var(--display);font-size:14px;
+  border:1.5px solid rgba(134,188,53,.5)}
+.check-note{font-size:13.5px;color:#5F8A1E;font-weight:600;padding:4px 2px 0}
 .checklist{display:flex;flex-direction:column;gap:12px;margin-top:26px}
 .checklist .item{display:flex;gap:14px;align-items:flex-start;background:var(--white);border:1px solid var(--line);border-radius:14px;padding:14px 18px;
   transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
@@ -421,14 +427,14 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
           <p class="lede" data-a="3">Gemak voor de klant staat daarbij altijd centraal.</p>
           <div class="pillars">
             <div class="pillar" data-a="3">
-              <span class="ico b"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+              <span class="ico b"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg></span>
               <div>
                 <h3>Zorgvuldige schadevaststelling, snel geregeld</h3>
                 <p>Ervaren, speciaal getrainde experts stellen de schade op afstand vast. Op verzoek beoordelen wij ook de dekking.</p>
               </div>
             </div>
             <div class="pillar" data-a="4">
-              <span class="ico p"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span>
+              <span class="ico p"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></span>
               <div>
                 <h3>Flexibel en schaalbaar</h3>
                 <p>Digitaal op afstand, met behoud van persoonlijk contact. Het hele jaar verzekerd van capaciteit — en bij calamiteiten snel opschalen.</p>
@@ -493,9 +499,9 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
           <h2 class="slide-title" data-a="2">Snelle opvolging zorgt voor hoge klanttevredenheid</h2>
           <p class="lede" data-a="3">Sommige schades lenen zich uitstekend voor expertise op afstand. Dat is prettig voor uw klanten én voor u: dossiers sluiten sneller, en als het druk is helpt u uw klanten toch vlot verder. En mocht het niet anders kunnen, dan zetten we natuurlijk fysieke expertise voor u in.</p>
           <div class="statrow">
-            <div class="stat tilt" data-a="4"><b><span class="count" data-count="1">0</span> <em>werkdag</em></b><span>intake na ontvangst van opdracht en dossierstukken</span></div>
-            <div class="stat tilt" data-a="5"><b><span class="count" data-count="2">0</span> <em>werkdagen</em></b><span>van expertise tot helder schaderapport</span></div>
-            <div class="stat tilt" data-a="6"><b><span class="count" data-count="0">0</span> <em>installaties</em></b><span>de verzekerde hoeft zelf niets te installeren</span></div>
+            <div class="stat tilt" data-a="4"><b><span class="count" data-count="1">0</span> <em>werkdag</em></b><span class="lbl">intake na ontvangst van opdracht en dossierstukken</span></div>
+            <div class="stat tilt" data-a="5"><b><span class="count" data-count="2">0</span> <em>werkdagen</em></b><span class="lbl">van expertise tot helder schaderapport</span></div>
+            <div class="stat tilt" data-a="6"><b><span class="count" data-count="0">0</span> <em>installaties</em></b><span class="lbl">de verzekerde hoeft zelf niets te installeren</span></div>
           </div>
         </div>
         <figure class="photo-frame tilt" data-a="3" style="margin:0">
@@ -557,24 +563,37 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
           </div>
         </div>
         <div>
-          <h3 data-a="3" style="font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:8px">Meesturen in het dossier</h3>
+          <h3 data-a="3" class="check-head">Checklist: dit stuurt u mee</h3>
           <div class="checklist">
             <div class="item" data-a="3">
-              <span class="ico b" style="width:36px;height:36px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
-              <p>Prijsopgave / offerte</p>
+              <span class="cnum">1</span>
+              <div>
+                <p><b>Prijsopgave of offerte</b></p>
+                <small>De prijsopgave of offerte voor herstel of vervanging van de schade.</small>
+              </div>
             </div>
             <div class="item" data-a="4">
-              <span class="ico p" style="width:36px;height:36px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
-              <p>SAF <small>schadeaangifteformulier</small></p>
+              <span class="cnum">2</span>
+              <div>
+                <p><b>SAF &mdash; schadeaangifteformulier</b></p>
+                <small>Het door de verzekerde ingevulde en ondertekende formulier.</small>
+              </div>
             </div>
             <div class="item" data-a="5">
-              <span class="ico g" style="width:36px;height:36px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
-              <p>Polisinformatie</p>
+              <span class="cnum">3</span>
+              <div>
+                <p><b>Polisinformatie</b></p>
+                <small>De polis met de relevante voorwaarden en dekking.</small>
+              </div>
             </div>
             <div class="item" data-a="6">
-              <span class="ico b" style="width:36px;height:36px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
-              <p>Eventuele opmerkingen van de schadebehandelaar</p>
+              <span class="cnum">4</span>
+              <div>
+                <p><b>Opmerkingen van de schadebehandelaar</b></p>
+                <small>Bijzonderheden of aandachtspunten voor onze expert, indien van toepassing.</small>
+              </div>
             </div>
+            <p class="check-note" data-a="6"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5F8A1E" stroke-width="2.4" stroke-linecap="round" style="vertical-align:-2px;margin-right:6px"><path d="M20 6L9 17l-5-5"/></svg>Compleet dossier meegestuurd? Dan starten wij de intake binnen 1 werkdag.</p>
           </div>
         </div>
       </div>
