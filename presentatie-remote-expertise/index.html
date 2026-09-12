@@ -222,6 +222,39 @@ h2.slide-title{font-size:clamp(26px,3.4vw,42px);font-weight:700;line-height:1.12
 .stat b em{font-style:normal;color:var(--green);font-size:.4em;font-weight:700;letter-spacing:.02em}
 .stat .lbl{display:block;margin-top:10px;font-size:13.5px;color:rgba(255,255,255,.72)}
 
+/* ---------- video ---------- */
+.video-thumb{position:relative;display:block;width:100%;padding:0;border:none;cursor:pointer;
+  border-radius:20px;overflow:hidden;box-shadow:0 24px 55px rgba(0,0,0,.4);background:var(--ink);
+  transition:transform .35s var(--ease)}
+.video-thumb:hover{transform:translateY(-4px)}
+.video-thumb img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;opacity:.92}
+.video-thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(200deg,rgba(18,3,58,.05) 45%,rgba(18,3,58,.6))}
+.play-ring{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;
+  width:76px;height:76px;border-radius:50%;display:grid;place-items:center;color:var(--ink);
+  background:rgba(255,255,255,.94);box-shadow:0 0 0 0 rgba(255,255,255,.45);
+  animation:playpulse 2.4s ease-out infinite;transition:transform .35s var(--spring)}
+.video-thumb:hover .play-ring{transform:translate(-50%,-50%) scale(1.12)}
+.play-ring svg{margin-left:4px}
+@keyframes playpulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.45)}70%{box-shadow:0 0 0 22px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+.video-cap{position:absolute;left:16px;bottom:14px;z-index:2;color:#fff;font-size:13.5px;font-weight:600;
+  font-family:var(--body);text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.portal-link{margin-top:18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  color:#fff;text-decoration:none;font-weight:600;font-size:14.5px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:14px 18px;
+  transition:background .25s,border-color .25s,transform .3s var(--spring)}
+.portal-link:hover{background:rgba(134,188,53,.16);border-color:rgba(134,188,53,.55);transform:translateY(-3px)}
+.portal-link svg{color:var(--green);flex:0 0 auto}
+.portal-sub{font-weight:400;font-size:12px;color:rgba(255,255,255,.55);word-break:break-all}
+.video-modal{position:fixed;inset:0;z-index:100;display:none;place-items:center;padding:24px;
+  background:rgba(10,2,32,.88);backdrop-filter:blur(8px)}
+.video-modal.open{display:grid}
+.video-modal .frame{position:relative;width:min(1080px,96vw)}
+.video-modal video{display:block;width:100%;border-radius:16px;box-shadow:0 40px 90px rgba(0,0,0,.6);background:#000}
+.video-close{position:absolute;right:-6px;top:-48px;width:40px;height:40px;border-radius:50%;cursor:pointer;
+  display:grid;place-items:center;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;
+  transition:background .25s}
+.video-close:hover{background:var(--green);color:var(--ink);border-color:var(--green)}
+
 /* ---------- criteria ---------- */
 .crit{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:32px}
 .crit-col{border-radius:18px;padding:24px 26px;background:var(--white);border:1px solid var(--line)}
@@ -504,9 +537,17 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
             <div class="stat tilt" data-a="6"><b><span class="count" data-count="0">0</span> <em>installaties</em></b><span class="lbl">de verzekerde hoeft zelf niets te installeren</span></div>
           </div>
         </div>
-        <figure class="photo-frame tilt" data-a="3" style="margin:0">
-          <img src="assets/videotool.jpg" alt="CED-expert voert een remote expertise uit via de videotool">
-        </figure>
+        <div data-a="3">
+          <button class="video-thumb" id="playVideo" aria-label="Speel de video over CED Remote Solution af">
+            <img src="assets/videotool.jpg" alt="CED-expert voert een remote expertise uit via de videotool">
+            <span class="play-ring"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+            <span class="video-cap">Bekijk de video &middot; 1:41</span>
+          </button>
+          <a class="portal-link" href="https://wa-videoappportal-p.azurewebsites.net/#/pages/login?returnUrl=%2Fdashboard" target="_blank" rel="noopener">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Open de CED-videotool<span class="portal-sub">wa-videoappportal-p.azurewebsites.net</span>
+          </a>
+        </div>
       </div>
     </section>
 
@@ -652,6 +693,13 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 
   </main>
 
+  <div class="video-modal" id="videoModal" role="dialog" aria-label="Video: CED Remote Solution">
+    <div class="frame">
+      <button class="video-close" id="videoClose" aria-label="Sluit video"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <video id="cedVideo" src="assets/ced-remote.mp4" controls preload="metadata" playsinline></video>
+    </div>
+  </div>
+
   <nav class="nav" aria-label="Slide-navigatie">
     <span class="hint">Scroll, klik of gebruik &larr; &rarr;</span>
     <div class="dots" id="dots" role="tablist"></div>
@@ -743,7 +791,20 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
   document.getElementById('next').addEventListener('click', function(){ go(i+1); });
   document.getElementById('prev').addEventListener('click', function(){ go(i-1); });
 
+  /* --- video-modal --- */
+  var modal = document.getElementById('videoModal');
+  var vid = document.getElementById('cedVideo');
+  function openVideo(){ modal.classList.add('open'); vid.play(); }
+  function closeVideo(){ modal.classList.remove('open'); vid.pause(); }
+  document.getElementById('playVideo').addEventListener('click', openVideo);
+  document.getElementById('videoClose').addEventListener('click', closeVideo);
+  modal.addEventListener('click', function(e){ if(e.target === modal) closeVideo(); });
+
   document.addEventListener('keydown', function(e){
+    if(modal.classList.contains('open')){
+      if(e.key === 'Escape') closeVideo();
+      return; /* pijltjes/spatie bedienen de video, niet de slides */
+    }
     if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown'){ e.preventDefault(); go(i+1); }
     else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); go(i-1); }
     else if(e.key === 'Home'){ go(0); }
@@ -770,6 +831,7 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
   /* --- scrollen bladert door de slides --- */
   var wheelLock = 0, wheelAcc = 0;
   document.addEventListener('wheel', function(e){
+    if(modal.classList.contains('open')) return;
     var s = slides[i];
     var canScroll = s.scrollHeight - s.clientHeight > 8;
     if(canScroll){
