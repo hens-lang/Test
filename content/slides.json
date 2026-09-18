@@ -173,7 +173,7 @@
         { "value": "3 × 4", "unit": "weken", "label": "Drie werkperiodes van vier weken" },
         { "value": "€ 1.500", "unit": "per werkperiode", "label": "Excl. btw, vooraf gefactureerd" },
         { "value": "4", "unit": "afspraken per werkperiode", "label": "Gekwalificeerd volgens fit, interesse, beslisser" },
-        { "value": "12", "unit": "afspraken in totaal", "label": "Totale investering € 5.495 excl. btw: eenmalige kick-off fee van € 995 plus drie werkperiodes van € 1.500", "highlight": true }
+        { "value": "12", "unit": "afspraken in totaal", "label": "Werkperiodes samen € 4.500 excl. btw, dat is € 375 per gekwalificeerde afspraak. De kick-off fee van € 995 staat hier eenmalig los van.", "highlight": true }
       ],
       "timeline": [
         { "phase": "Kick-off", "period": "2 weken · eenmalig € 995", "text": "Doelgroep, script, lijst, uitsluitingen" },

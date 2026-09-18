@@ -14,10 +14,13 @@ Kennismakingsdeck van LINK. voor Bart van Techmetric3d. Negen slides, 16:9 (1920
 Vanuit de projectroot (één map boven deze map):
 
 ```bash
-npm install          # eenmalig, installeert playwright, pptxgenjs, sharp en de fonts
-node build/render.js # bouwt deck.html, de PDF en de PNG-previews
-node build/pptx.js   # bouwt de PPTX
+npm install            # eenmalig, installeert playwright, pptxgenjs, sharp en de fonts
+node build/render.js   # bouwt deck.html, de PDF en de PNG-previews
+node build/pptx.js     # bouwt de PPTX
+node build/artifact.js # bouwt build/webdeck.html, de deelbare webversie
 ```
+
+De webversie (`build/webdeck.html`) is dezelfde deck als klikbare presentatie in de browser, met pijltjestoetsen, stippen, swipe en volledig scherm. Die wordt als artifact gepubliceerd zodat je één link kunt delen.
 
 De PDF wordt gerenderd met Playwright (Chromium headless). In deze omgeving staat Chromium op `/opt/pw-browsers/chromium`; draai je lokaal, verwijder dan de `executablePath` in `build/render.js` of draai eenmalig `npx playwright install chromium`.
 

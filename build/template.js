@@ -276,9 +276,9 @@ const RENDERERS = {
   next: slideNext,
 };
 
-function buildHtml(data, { fontBase = '../node_modules' } = {}) {
+function renderSlides(data) {
   const total = data.slides.length;
-  const slides = data.slides
+  return data.slides
     .map((s, i) => {
       const body = RENDERERS[s.type](s);
       return `<section class="slide theme-${s.theme} slide-${s.type}" id="slide-${i + 1}">
@@ -288,20 +288,18 @@ function buildHtml(data, { fontBase = '../node_modules' } = {}) {
       </section>`;
     })
     .join('\n');
+}
 
-  return `<!DOCTYPE html>
-<html lang="nl">
-<head>
-<meta charset="utf-8">
-<title>${esc(data.meta.title)}</title>
-<style>
+const fontFaces = (fontBase) => `
 @font-face { font-family:'Inter'; font-weight:400; font-style:normal; src:url('${fontBase}/@fontsource/inter/files/inter-latin-400-normal.woff2') format('woff2'); }
 @font-face { font-family:'Inter'; font-weight:500; font-style:normal; src:url('${fontBase}/@fontsource/inter/files/inter-latin-500-normal.woff2') format('woff2'); }
 @font-face { font-family:'Inter'; font-weight:600; font-style:normal; src:url('${fontBase}/@fontsource/inter/files/inter-latin-600-normal.woff2') format('woff2'); }
 @font-face { font-family:'Inter'; font-weight:700; font-style:normal; src:url('${fontBase}/@fontsource/inter/files/inter-latin-700-normal.woff2') format('woff2'); }
 @font-face { font-family:'Inter'; font-weight:800; font-style:normal; src:url('${fontBase}/@fontsource/inter/files/inter-latin-800-normal.woff2') format('woff2'); }
 @font-face { font-family:'Playfair Display'; font-weight:600; font-style:italic; src:url('${fontBase}/@fontsource/playfair-display/files/playfair-display-latin-600-italic.woff2') format('woff2'); }
+`;
 
+const BASE_CSS = `
 :root {
   --black:#000000; --dark:#141821; --cream:#e9e0cd; --card:#f8f4eb;
   --ink:#1c2230; --muted:#6f6a5c; --accent:#38b6ff;
@@ -491,12 +489,23 @@ h1.title { font-size:104px; letter-spacing:-0.03em; }
 .contact-role { font-size:21px; color:var(--accent); font-weight:600; margin-top:8px; }
 .contact-lines { margin-top:40px; display:flex; flex-direction:column; gap:16px; }
 .contact-lines div { font-size:22px; color:var(--dark-muted); }
+`;
+
+function buildHtml(data, { fontBase = '../node_modules' } = {}) {
+  return `<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>${esc(data.meta.title)}</title>
+<style>
+${fontFaces(fontBase)}
+${BASE_CSS}
 </style>
 </head>
 <body>
-${slides}
+${renderSlides(data)}
 </body>
 </html>`;
 }
 
-module.exports = { buildHtml, ICONS };
+module.exports = { buildHtml, renderSlides, BASE_CSS, ICONS };

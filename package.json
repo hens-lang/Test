@@ -5,7 +5,8 @@
   "scripts": {
     "render": "node build/render.js",
     "pptx": "node build/pptx.js",
-    "build": "node build/render.js && node build/pptx.js"
+    "build": "node build/render.js && node build/pptx.js && node build/artifact.js",
+    "web": "node build/artifact.js"
   },
   "repository": {
     "type": "git",
