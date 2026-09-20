@@ -293,8 +293,29 @@ function slideOffer(s) {
   </div>`;
 }
 
+function slidePlan(s) {
+  return `
+  <div class="head">${eyebrow(s.eyebrow)}${title(s.title)}</div>
+  <div class="plan-row">
+    ${s.steps
+      .map(
+        (st, i) => `
+    <div class="plan-step">
+      <div class="step-track"><div class="step-num">${i + 1}</div>${
+          i < s.steps.length - 1 ? '<div class="step-line"></div>' : ''
+        }</div>
+      <h3>${esc(st.title)}</h3>
+      <p>${esc(st.text)}</p>
+    </div>`
+      )
+      .join('')}
+  </div>
+  <p class="closing">${esc(s.closing)}</p>`;
+}
+
 const RENDERERS = {
   offer: slideOffer,
+  plan: slidePlan,
   cover: slideCover,
   about: slideAbout,
   services: slideServices,
@@ -504,6 +525,15 @@ h1.title { font-size:104px; letter-spacing:-0.03em; }
 .need-card .icon-badge { margin-bottom:0; }
 .need-card h3 { font-size:29px; font-weight:700; letter-spacing:-0.015em; margin-bottom:12px; }
 .need-card p { font-size:21px; line-height:1.55; color:var(--muted); max-width:640px; }
+
+/* ---------- plan (licht stappenpad) ---------- */
+.plan-row {
+  position:absolute; left:var(--m); right:var(--m); top:460px;
+  display:grid; grid-template-columns:repeat(3,1fr); gap:56px;
+}
+.plan-row .step-line { margin-right:-56px; background:rgba(56,182,255,0.45); }
+.plan-step h3 { font-size:30px; font-weight:700; letter-spacing:-0.015em; margin-bottom:14px; }
+.plan-step p { font-size:21px; line-height:1.6; color:var(--muted); max-width:480px; }
 
 /* ---------- offer (dark) ---------- */
 .offer-cards {

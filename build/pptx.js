@@ -380,6 +380,42 @@ async function main() {
       });
     }
 
+    if (s.type === 'plan') {
+      const colW = 545, gap = 56, y = 460;
+      s.steps.forEach((st, n) => {
+        const x = 96 + n * (colW + gap);
+        slide.addShape('ellipse', {
+          x: p(x), y: p(y), w: p(48), h: p(48),
+          fill: { type: 'none' }, line: { color: C.accent, width: 1.2 },
+        });
+        slide.addText(String(n + 1), {
+          x: p(x), y: p(y), w: p(48), h: p(48), isTextBox: true, margin: 0,
+          fontFace: SANS, bold: true, fontSize: 10.5, color: C.accent, align: 'center', valign: 'middle',
+        });
+        if (n < s.steps.length - 1) {
+          slide.addShape('line', {
+            x: p(x + 64), y: p(y + 24), w: p(colW + gap - 72), h: 0,
+            line: { color: C.accent, width: 0.75, transparency: 45 },
+          });
+        }
+        slide.addText(st.title, {
+          x: p(x), y: p(y + 74), w: p(colW - 60), h: p(44), isTextBox: true, margin: 0,
+          fontFace: SANS, bold: true, fontSize: 15, color: C.ink, valign: 'middle',
+        });
+        slide.addText(st.text, {
+          x: p(x), y: p(y + 128), w: p(colW - 60), h: p(220), isTextBox: true, margin: 0,
+          fontFace: SANS, fontSize: 10.5, color: C.muted, lineSpacingMultiple: 1.35, valign: 'top',
+        });
+      });
+      slide.addShape('ellipse', {
+        x: p(96), y: p(922), w: p(12), h: p(12), fill: { color: C.accent }, line: { type: 'none' },
+      });
+      slide.addText(s.closing, {
+        x: p(126), y: p(900), w: p(1560), h: p(56), isTextBox: true, margin: 0,
+        fontFace: SANS, bold: true, fontSize: 12, color: C.ink, valign: 'middle',
+      });
+    }
+
     if (s.type === 'offer') {
       const w = 414, gap = 24, y = 388, h = 372;
       const darkInk = '0D1420';
