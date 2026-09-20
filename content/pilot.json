@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "title": "LINK. standaardpilot",
+    "footerLeft": "LINK. · Standaardpilot",
+    "webTitle": "LINK. Standaardpilot",
+    "slug": "pilot",
+    "logoText": "LINK"
+  },
+  "slides": [
+    {
+      "id": "cover",
+      "type": "cover",
+      "theme": "dark",
+      "eyebrow": "Standaardpilot · 12 weken · één vaste prijs",
+      "title": [
+        { "t": "Eerst " },
+        { "t": "bewijzen", "accent": true },
+        { "t": ", dan verder." }
+      ],
+      "sub": "De standaardpilot van LINK.: twaalf weken bellen en mailen en tien gekwalificeerde afspraken in jullie agenda. Alles inbegrepen, € 4.950 excl. btw."
+    },
+    {
+      "id": "doel",
+      "type": "qualification",
+      "theme": "light",
+      "eyebrow": "Waarvoor de pilot dient",
+      "title": [
+        { "t": "Twaalf weken om drie vragen te " },
+        { "t": "beantwoorden", "accent": true },
+        { "t": "." }
+      ],
+      "cards": [
+        {
+          "icon": "target",
+          "title": "Klopt de doelgroep",
+          "text": "We testen in de praktijk of het ideale klantprofiel klopt: de juiste branche, de juiste omvang en de juiste beslisser aan de lijn."
+        },
+        {
+          "icon": "spark",
+          "title": "Landt de boodschap",
+          "text": "Elk gesprek laat zien wat werkt: welke ingang opent, welke bezwaren terugkomen en waar de timing zit. Dat koppelen we elke week terug."
+        },
+        {
+          "icon": "calendar",
+          "title": "Komen de afspraken",
+          "text": "Tien gekwalificeerde afspraken in jullie agenda bewijzen dat koude acquisitie voor jullie werkt, met cijfers in plaats van aannames."
+        }
+      ],
+      "closing": "Na twaalf weken ligt er een eerlijk beeld en een advies. Jullie beslissen op resultaat of we structureel doorgaan."
+    },
+    {
+      "id": "aanbod",
+      "type": "offer",
+      "theme": "dark",
+      "eyebrow": "Wat er in de pilot zit",
+      "title": [
+        { "t": "Vier bouwstenen, één vaste " },
+        { "t": "prijs", "accent": true },
+        { "t": "." }
+      ],
+      "cards": [
+        {
+          "title": "Propositie en strategie",
+          "text": "Samen scherp in de kick-off: doelgroep, beslisser, boodschap en bezwaren. Wij schrijven het belscript en de mails, jullie keuren goed."
+        },
+        {
+          "title": "Bellijst op maat",
+          "text": "Wij bouwen de bellijst op jullie ideale klantprofiel: branche, grootte, regio en functie. Bestaande relaties en uitsluitingen halen we er vooraf uit."
+        },
+        {
+          "title": "Twaalf weken uitvoering",
+          "text": "Dagelijks bellen met een regionaal nummer op jullie naam, korte persoonlijke mails als opening en opvolging. Rapportage elke week, evaluatie om de week."
+        },
+        {
+          "title": "Tien gekwalificeerde afspraken",
+          "text": "Fit: het bedrijf past bij de criteria uit de kick-off. Interesse: er is een concrete aanleiding of vraag. Beslisser: de afspraak staat met wie over de aankoop gaat.",
+          "highlight": true
+        }
+      ],
+      "bar": {
+        "label": "Pilot",
+        "price": "€ 4.950",
+        "note": "excl. btw, alles inbegrepen",
+        "items": [
+          "Propositie, belscript en mails",
+          "Bellijst op jullie ideale klantprofiel",
+          "Twaalf weken dagelijks bellen en mailen",
+          "Rapportage elke week, evaluatie om de week",
+          "Tien gekwalificeerde afspraken, € 495 per afspraak",
+          "Eindrapport met marktinzicht en advies"
+        ]
+      }
+    }
+  ]
+}

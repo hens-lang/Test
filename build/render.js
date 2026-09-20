@@ -10,12 +10,14 @@ const { buildHtml } = require('./template');
 
 const ROOT = path.resolve(__dirname, '..');
 const OUT = path.join(ROOT, 'output');
-const PREVIEW = path.join(OUT, 'preview');
-const data = JSON.parse(fs.readFileSync(path.join(ROOT, 'content', 'slides.json'), 'utf8'));
+const contentFile = process.argv[2] || 'slides.json';
+const data = JSON.parse(fs.readFileSync(path.join(ROOT, 'content', contentFile), 'utf8'));
+const slug = data.meta.slug;
+const PREVIEW = path.join(OUT, slug ? `preview-${slug}` : 'preview');
 
 async function main() {
   fs.mkdirSync(PREVIEW, { recursive: true });
-  const htmlPath = path.join(ROOT, 'build', 'deck.html');
+  const htmlPath = path.join(ROOT, 'build', slug ? `deck-${slug}.html` : 'deck.html');
   fs.writeFileSync(htmlPath, buildHtml(data));
 
   const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });

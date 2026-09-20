@@ -264,7 +264,37 @@ function slideNext(s) {
   </div>`;
 }
 
+function slideOffer(s) {
+  return `
+  <div class="head">${eyebrow(s.eyebrow)}${title(s.title)}</div>
+  <div class="offer-cards">
+    ${s.cards
+      .map(
+        (c, i) => `
+    <div class="card dark-card offer-card${c.highlight ? ' offer-highlight' : ''}">
+      <div class="num-badge">${i + 1}</div>
+      <h3>${esc(c.title)}</h3>
+      <p>${esc(c.text)}</p>
+    </div>`
+      )
+      .join('')}
+  </div>
+  <div class="offer-bar">
+    <div class="offer-price">
+      <div class="offer-label">${esc(s.bar.label)}</div>
+      <div class="offer-amount">${esc(s.bar.price)}</div>
+      <div class="offer-note">${esc(s.bar.note)}</div>
+    </div>
+    <div class="offer-items">
+      ${s.bar.items
+        .map((it) => `<div class="offer-item">${icon('checkSmall')}<span>${esc(it)}</span></div>`)
+        .join('')}
+    </div>
+  </div>`;
+}
+
 const RENDERERS = {
+  offer: slideOffer,
   cover: slideCover,
   about: slideAbout,
   services: slideServices,
@@ -474,6 +504,38 @@ h1.title { font-size:104px; letter-spacing:-0.03em; }
 .need-card .icon-badge { margin-bottom:0; }
 .need-card h3 { font-size:29px; font-weight:700; letter-spacing:-0.015em; margin-bottom:12px; }
 .need-card p { font-size:21px; line-height:1.55; color:var(--muted); max-width:640px; }
+
+/* ---------- offer (dark) ---------- */
+.offer-cards {
+  position:absolute; left:var(--m); right:var(--m); top:388px; height:372px;
+  display:grid; grid-template-columns:repeat(4,1fr); gap:24px;
+}
+.offer-card { padding:36px 34px; display:flex; flex-direction:column; }
+.num-badge {
+  width:46px; height:46px; border-radius:50%; flex:none;
+  border:1.5px solid var(--accent); color:var(--accent);
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; font-weight:700; margin-bottom:24px;
+}
+.offer-card h3 { font-size:23px; font-weight:700; letter-spacing:-0.015em; margin-bottom:12px; }
+.offer-card p { font-size:17.5px; line-height:1.5; color:var(--dark-muted); }
+.offer-highlight { border:1.5px solid rgba(56,182,255,0.65); box-shadow:0 0 60px rgba(56,182,255,0.12); }
+.offer-highlight h3 { color:var(--accent); }
+.offer-bar {
+  position:absolute; left:var(--m); right:var(--m); bottom:118px;
+  background:var(--accent); border-radius:16px; color:#0d1420;
+  display:flex; align-items:center; gap:56px; padding:34px 48px;
+}
+.offer-price { flex:none; width:300px; }
+.offer-label { font-size:15px; font-weight:700; text-transform:uppercase; letter-spacing:0.22em; opacity:0.75; }
+.offer-amount { font-size:58px; font-weight:800; letter-spacing:-0.03em; line-height:1.05; margin-top:6px; }
+.offer-note { font-size:16px; font-weight:600; margin-top:6px; opacity:0.75; }
+.offer-items {
+  flex:1; display:grid; grid-template-columns:1fr 1fr; gap:14px 40px;
+  border-left:1.5px solid rgba(13,20,32,0.25); padding-left:56px;
+}
+.offer-item { display:flex; align-items:flex-start; gap:12px; font-size:18px; font-weight:600; line-height:1.35; }
+.offer-item .ic { width:21px; height:21px; margin-top:2px; flex:none; }
 
 /* ---------- next (dark) ---------- */
 .next-grid {

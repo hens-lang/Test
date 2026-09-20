@@ -1,3 +1,3 @@
 node_modules/
-build/deck.html
-build/webdeck.html
+build/deck*.html
+build/webdeck*.html

@@ -7,10 +7,13 @@ const path = require('path');
 const { renderSlides, BASE_CSS } = require('./template');
 
 const ROOT = path.resolve(__dirname, '..');
-const data = JSON.parse(fs.readFileSync(path.join(ROOT, 'content', 'slides.json'), 'utf8'));
+const contentFile = process.argv[2] || 'slides.json';
+const data = JSON.parse(fs.readFileSync(path.join(ROOT, 'content', contentFile), 'utf8'));
 const total = data.slides.length;
+const webTitle = data.meta.webTitle || 'LINK. x Techmetric3d';
+const docLabel = data.meta.footerLeft.replace(/^LINK\.\s*·\s*/, '').toUpperCase();
 
-const html = `<title>LINK. x Techmetric3d</title>
+const html = `<title>${webTitle}</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,600&display=swap">
 <style>
 ${BASE_CSS}
@@ -84,7 +87,7 @@ body {
 <div class="viewer" id="viewer">
   <header class="bar">
     <div class="brand">LINK<span class="dot">.</span></div>
-    <div class="doc">KENNISMAKING TECHMETRIC3D</div>
+    <div class="doc">${docLabel}</div>
   </header>
   <main class="stagewrap" id="stagewrap">
     <div class="scaler" id="scaler">
@@ -188,6 +191,6 @@ ${renderSlides(data)}
 </script>
 `;
 
-const out = path.join(ROOT, 'build', 'webdeck.html');
+const out = path.join(ROOT, 'build', data.meta.slug ? `webdeck-${data.meta.slug}.html` : 'webdeck.html');
 fs.writeFileSync(out, html);
 console.log('Webdeck geschreven:', out, Math.round(html.length / 1024) + ' KB');

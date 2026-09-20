@@ -9,7 +9,8 @@ const sharp = require('sharp');
 const { ICONS } = require('./template');
 
 const ROOT = path.resolve(__dirname, '..');
-const data = JSON.parse(fs.readFileSync(path.join(ROOT, 'content', 'slides.json'), 'utf8'));
+const contentFile = process.argv[2] || 'slides.json';
+const data = JSON.parse(fs.readFileSync(path.join(ROOT, 'content', contentFile), 'utf8'));
 
 // px (1920x1080) naar inch (13.333x7.5)
 const F = 13.3333 / 1920;
@@ -98,6 +99,7 @@ async function main() {
     icons[n] = await iconPng(n, '#38b6ff');
   }
   const checkWhite = await iconPng('checkSmall', '#38b6ff');
+  const checkDark = await iconPng('checkSmall', '#0d1420');
 
   const pres = new pptxgen();
   pres.defineLayout({ name: 'WIDE', width: 13.3333, height: 7.5 });
@@ -374,6 +376,63 @@ async function main() {
         slide.addText(c.text, {
           x: p(x + 148), y: p(y + 96), w: p(w - 210), h: p(110), isTextBox: true, margin: 0,
           fontFace: SANS, fontSize: 10.5, color: C.muted, lineSpacingMultiple: 1.35, valign: 'top',
+        });
+      });
+    }
+
+    if (s.type === 'offer') {
+      const w = 414, gap = 24, y = 388, h = 372;
+      const darkInk = '0D1420';
+      s.cards.forEach((c, n) => {
+        const x = 96 + n * (w + gap);
+        const hl = !!c.highlight;
+        card(slide, x, y, w, h, C.darkCard, hl ? { color: C.accent, width: 1.2 } : { color: C.darkBorder, width: 0.75 });
+        slide.addShape('ellipse', {
+          x: p(x + 34), y: p(y + 36), w: p(46), h: p(46),
+          fill: { type: 'none' }, line: { color: C.accent, width: 1.2 },
+        });
+        slide.addText(String(n + 1), {
+          x: p(x + 34), y: p(y + 36), w: p(46), h: p(46), isTextBox: true, margin: 0,
+          fontFace: SANS, bold: true, fontSize: 10, color: C.accent, align: 'center', valign: 'middle',
+        });
+        slide.addText(c.title, {
+          x: p(x + 34), y: p(y + 106), w: p(w - 68), h: p(64), isTextBox: true, margin: 0,
+          fontFace: SANS, bold: true, fontSize: 11.5, color: hl ? C.accent : C.darkText, valign: 'top', lineSpacingMultiple: 1.15,
+        });
+        slide.addText(c.text, {
+          x: p(x + 34), y: p(y + 178), w: p(w - 68), h: p(170), isTextBox: true, margin: 0,
+          fontFace: SANS, fontSize: 8.75, color: C.darkMuted, lineSpacingMultiple: 1.3, valign: 'top',
+        });
+      });
+      // prijsbalk
+      const by = 800, bh = 162;
+      slide.addShape('roundRect', {
+        x: p(96), y: p(by), w: p(1728), h: p(bh), rectRadius: RADIUS,
+        fill: { color: C.accent }, line: { type: 'none' },
+      });
+      slide.addText(s.bar.label.toUpperCase(), {
+        x: p(144), y: p(by + 26), w: p(300), h: p(26), isTextBox: true, margin: 0,
+        fontFace: SANS, bold: true, fontSize: 8, color: darkInk, charSpacing: 2, valign: 'middle',
+      });
+      slide.addText(s.bar.price, {
+        x: p(144), y: p(by + 52), w: p(300), h: p(64), isTextBox: true, margin: 0,
+        fontFace: SANS, bold: true, fontSize: 29, color: darkInk, valign: 'middle',
+      });
+      slide.addText(s.bar.note, {
+        x: p(144), y: p(by + 118), w: p(320), h: p(26), isTextBox: true, margin: 0,
+        fontFace: SANS, bold: true, fontSize: 8, color: darkInk, valign: 'middle',
+      });
+      slide.addShape('line', {
+        x: p(500), y: p(by + 28), w: 0, h: p(bh - 56),
+        line: { color: darkInk, width: 0.75, transparency: 60 },
+      });
+      s.bar.items.forEach((it, n) => {
+        const ix = 556 + (n % 2) * 600;
+        const iy = by + 26 + Math.floor(n / 2) * 40;
+        slide.addImage({ data: checkDark, x: p(ix), y: p(iy + 5), w: p(20), h: p(20) });
+        slide.addText(it, {
+          x: p(ix + 32), y: p(iy), w: p(560), h: p(34), isTextBox: true, margin: 0,
+          fontFace: SANS, bold: true, fontSize: 9, color: darkInk, valign: 'middle',
         });
       });
     }
