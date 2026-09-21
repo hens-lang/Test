@@ -459,7 +459,7 @@ async function main() {
     }
 
     if (s.type === 'offer') {
-      const w = 414, gap = 24, y = 388, h = 372;
+      const w = 414, gap = 24, y = s.bar ? 388 : 440, h = s.bar ? 372 : 360;
       const darkInk = '0D1420';
       s.cards.forEach((c, n) => {
         const x = 96 + n * (w + gap);
@@ -482,6 +482,18 @@ async function main() {
           fontFace: SANS, fontSize: 8.75, color: C.darkMuted, lineSpacingMultiple: 1.3, valign: 'top',
         });
       });
+      if (!s.bar) {
+        if (s.closing) {
+          slide.addShape('ellipse', {
+            x: p(96), y: p(922), w: p(12), h: p(12), fill: { color: C.accent }, line: { type: 'none' },
+          });
+          slide.addText(s.closing, {
+            x: p(126), y: p(900), w: p(1560), h: p(56), isTextBox: true, margin: 0,
+            fontFace: SANS, bold: true, fontSize: 12, color: C.darkText, valign: 'middle',
+          });
+        }
+        continue;
+      }
       // prijsbalk
       const by = 800, bh = 162;
       slide.addShape('roundRect', {

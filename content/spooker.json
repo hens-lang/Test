@@ -270,6 +270,44 @@
       "closing": "Zo beslis je over het vervolg met je eigen cijfers in de hand."
     },
     {
+      "id": "vervolg",
+      "type": "offer",
+      "theme": "dark",
+      "eyebrow": "Hoe we verder gaan",
+      "title": [
+        {
+          "t": "Jullie kopen geen uren, maar "
+        },
+        {
+          "t": "afspraken",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "title": "Vaste bezetting",
+          "text": "Jullie kiezen hoeveel dagdelen per week we voor jullie bellen. Hoe meer bezetting, hoe scherper het tarief, want dan draait een vaste beller vol op jullie verhaal."
+        },
+        {
+          "title": "Vast target",
+          "text": "Aan die bezetting hangt een vast aantal gekwalificeerde afspraken per werkperiode. Dat getal komt uit jullie eigen pilot, niet uit een aanname."
+        },
+        {
+          "title": "Onder target bellen we door",
+          "text": "Staat het aantal aan het eind van de werkperiode niet, dan bellen we door zonder extra kosten tot het er wel staat."
+        },
+        {
+          "title": "Boven target delen we mee",
+          "text": "Komen er meer afspraken uit dan afgesproken, dan spreken we daar vooraf een bonus voor af. Zo blijft doorpakken voor ons allebei interessant.",
+          "highlight": true
+        }
+      ],
+      "closing": "Elke drie werkperiodes herijken we het target samen. Verandert de markt of de doelgroep, dan verandert het getal mee."
+    },
+    {
       "id": "nodig",
       "type": "needs",
       "theme": "light",

@@ -292,7 +292,7 @@ function slideNext(s) {
 function slideOffer(s) {
   return `
   <div class="head">${eyebrow(s.eyebrow)}${title(s.title)}</div>
-  <div class="offer-cards">
+  <div class="offer-cards${s.bar ? '' : ' offer-cards-tall'}">
     ${s.cards
       .map(
         (c, i) => `
@@ -304,7 +304,9 @@ function slideOffer(s) {
       )
       .join('')}
   </div>
-  <div class="offer-bar">
+  ${
+    s.bar
+      ? `<div class="offer-bar">
     <div class="offer-price">
       <div class="offer-label">${esc(s.bar.label)}</div>
       <div class="offer-amount">${esc(s.bar.price)}</div>
@@ -315,7 +317,11 @@ function slideOffer(s) {
         .map((it) => `<div class="offer-item">${icon('checkSmall')}<span>${esc(it)}</span></div>`)
         .join('')}
     </div>
-  </div>`;
+  </div>`
+      : s.closing
+      ? `<p class="closing">${esc(s.closing)}</p>`
+      : ''
+  }`;
 }
 
 function slidePlan(s) {
@@ -577,6 +583,7 @@ h1.title { font-size:104px; letter-spacing:-0.03em; }
   position:absolute; left:var(--m); right:var(--m); top:388px; height:372px;
   display:grid; grid-template-columns:repeat(4,1fr); gap:24px;
 }
+.offer-cards-tall { top:440px; height:360px; }
 .offer-card { padding:36px 34px; display:flex; flex-direction:column; }
 .num-badge {
   width:46px; height:46px; border-radius:50%; flex:none;
