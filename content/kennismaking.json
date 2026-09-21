@@ -289,11 +289,11 @@
         },
         {
           "title": "Vaste bezetting, vast aantal",
-          "text": "Jullie kiezen hoeveel dagdelen per week we bellen. Met de ratio uit de pilot ligt daarmee ook vast hoeveel afspraken er per werkperiode staan."
+          "text": "Jullie kiezen hoeveel dagdelen per week we bellen. Daar hangt een vast aantal afspraken aan en wij trekken de tijd uit die daarvoor nodig is."
         },
         {
-          "title": "Onder target bellen we door",
-          "text": "Staat het aantal aan het eind van de werkperiode niet, dan bellen we door zonder extra kosten tot het er wel staat."
+          "title": "Boven target is voor jullie",
+          "text": "Zijn we eerder klaar dan gepland, dan bellen we de tijd gewoon vol. Wat er dan nog bij komt is voor jullie, zonder extra factuur."
         },
         {
           "title": "Succesfee bij omzet",
@@ -301,7 +301,7 @@
           "highlight": true
         }
       ],
-      "closing": "Elke drie werkperiodes herijken we het target samen. Verandert de markt of de doelgroep, dan verandert het getal mee."
+      "closing": "Het target komt uit jullie eigen cijfers, dus dat halen we. Zo niet, dan halen we het de volgende werkperiode in."
     },
     {
       "id": "nodig",
