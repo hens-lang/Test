@@ -288,20 +288,20 @@
       ],
       "cards": [
         {
-          "title": "Vaste bezetting",
-          "text": "Jullie kiezen hoeveel dagdelen per week we voor jullie bellen. Hoe meer bezetting, hoe scherper het tarief, want dan draait een vaste beller vol op jullie verhaal."
+          "title": "Wat een afspraak kost",
+          "text": "Uit de pilot blijkt hoeveel tijd er in één gekwalificeerde afspraak zit. Daarmee weten we hoeveel afspraken per dagdeel realistisch zijn en wat een afspraak dus kost."
         },
         {
-          "title": "Vast target",
-          "text": "Aan die bezetting hangt een vast aantal gekwalificeerde afspraken per werkperiode. Dat getal komt uit jullie eigen pilot, niet uit een aanname."
+          "title": "Vaste bezetting, vast aantal",
+          "text": "Jullie kiezen hoeveel dagdelen per week we bellen. Met de ratio uit de pilot ligt daarmee ook vast hoeveel afspraken er per werkperiode staan."
         },
         {
           "title": "Onder target bellen we door",
           "text": "Staat het aantal aan het eind van de werkperiode niet, dan bellen we door zonder extra kosten tot het er wel staat."
         },
         {
-          "title": "Boven target delen we mee",
-          "text": "Komen er meer afspraken uit dan afgesproken, dan spreken we daar vooraf een bonus voor af. Zo blijft doorpakken voor ons allebei interessant.",
+          "title": "Succesfee bij omzet",
+          "text": "Wordt een afspraak een opdracht, dan spreken we daar vooraf een succesfee over af. Wij verdienen pas extra als het jullie ook echt omzet oplevert.",
           "highlight": true
         }
       ],
