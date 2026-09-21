@@ -70,7 +70,31 @@ function coverArt() {
 
 /* ---------- slide-templates ---------- */
 
-function slideCover(s) {
+function partnerLockup(meta) {
+  const p = meta.partner;
+  if (!p) return '';
+  let inner;
+  if (p.logo) {
+    const fs = require('fs');
+    const path = require('path');
+    const file = path.resolve(__dirname, '..', p.logo);
+    if (fs.existsSync(file)) {
+      const ext = path.extname(file).slice(1).toLowerCase();
+      const mime = ext === 'svg' ? 'image/svg+xml' : `image/${ext === 'jpg' ? 'jpeg' : ext}`;
+      const b64 = fs.readFileSync(file).toString('base64');
+      inner = `<img src="data:${mime};base64,${b64}" alt="${esc(p.name)}">`;
+    }
+  }
+  if (!inner) inner = `<span class="partner-name">${esc(p.name)}</span>`;
+  return `
+  <div class="partner-lockup">
+    <span class="lockup-link">LINK<span class="dot">.</span></span>
+    <span class="lockup-x">×</span>
+    <span class="partner-chip">${inner}</span>
+  </div>`;
+}
+
+function slideCover(s, meta) {
   return `
   <div class="glow"></div>
   ${coverArt()}
@@ -78,6 +102,7 @@ function slideCover(s) {
     ${eyebrow(s.eyebrow)}
     ${title(s.title, 'h1')}
     <p class="cover-sub">${esc(s.sub)}</p>
+    ${partnerLockup(meta)}
   </div>`;
 }
 
@@ -331,7 +356,7 @@ function renderSlides(data) {
   const total = data.slides.length;
   return data.slides
     .map((s, i) => {
-      const body = RENDERERS[s.type](s);
+      const body = RENDERERS[s.type](s, data.meta);
       return `<section class="slide theme-${s.theme} slide-${s.type}" id="slide-${i + 1}">
         ${logo()}
         ${body}
@@ -414,6 +439,18 @@ h2.title { font-size:64px; max-width:1520px; }
 .cover-body { position:absolute; left:var(--m); top:340px; max-width:1450px; }
 h1.title { font-size:104px; letter-spacing:-0.03em; }
 .cover-sub { font-size:28px; line-height:1.55; color:#bdc3ce; margin-top:44px; max-width:1050px; font-weight:400; }
+
+
+.partner-lockup { display:flex; align-items:center; gap:24px; margin-top:56px; }
+.lockup-link { font-size:34px; font-weight:800; letter-spacing:-0.02em; color:var(--dark-text); }
+.lockup-link .dot { color:var(--accent); }
+.lockup-x { font-size:26px; color:#8a90a0; font-weight:500; }
+.partner-chip {
+  background:var(--card); border-radius:14px; padding:14px 28px;
+  display:flex; align-items:center; min-height:64px;
+}
+.partner-chip img { height:40px; width:auto; max-width:260px; display:block; }
+.partner-name { font-size:30px; font-weight:800; letter-spacing:-0.02em; color:var(--ink); }
 
 /* ---------- about ---------- */
 .about-grid {

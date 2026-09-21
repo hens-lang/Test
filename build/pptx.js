@@ -153,6 +153,43 @@ async function main() {
         x: p(96), y: p(742), w: p(1050), h: p(120), isTextBox: true, margin: 0,
         fontFace: SANS, fontSize: 14, color: 'BDC3CE', lineSpacingMultiple: 1.35, valign: 'top',
       });
+      if (data.meta.partner) {
+        const pn = data.meta.partner;
+        const ly = 900;
+        slide.addText(
+          [
+            { text: 'LINK', options: { color: C.darkText } },
+            { text: '.', options: { color: C.accent } },
+          ],
+          { x: p(96), y: p(ly), w: p(130), h: p(64), isTextBox: true, margin: 0, fontFace: SANS, bold: true, fontSize: 17, valign: 'middle' }
+        );
+        slide.addText('×', {
+          x: p(232), y: p(ly), w: p(44), h: p(64), isTextBox: true, margin: 0,
+          fontFace: SANS, fontSize: 13, color: '8A90A0', align: 'center', valign: 'middle',
+        });
+        let logoBuf = null, logoW = 0;
+        if (pn.logo) {
+          const lf = path.resolve(ROOT, pn.logo);
+          if (fs.existsSync(lf)) {
+            const meta = await sharp(lf).metadata();
+            logoW = Math.min(260, 40 * (meta.width / meta.height));
+            logoBuf = 'image/png;base64,' + (await sharp(lf).png().toBuffer()).toString('base64');
+          }
+        }
+        const chipW = logoBuf ? logoW + 56 : 220;
+        slide.addShape('roundRect', {
+          x: p(292), y: p(ly), w: p(chipW), h: p(64), rectRadius: p(14),
+          fill: { color: C.card }, line: { type: 'none' },
+        });
+        if (logoBuf) {
+          slide.addImage({ data: logoBuf, x: p(292 + 28), y: p(ly + 12), w: p(logoW), h: p(40) });
+        } else {
+          slide.addText(pn.name, {
+            x: p(292), y: p(ly), w: p(chipW), h: p(64), isTextBox: true, margin: 0,
+            fontFace: SANS, bold: true, fontSize: 15, color: C.ink, align: 'center', valign: 'middle',
+          });
+        }
+      }
       continue;
     }
 

@@ -4,7 +4,11 @@
     "footerLeft": "LINK. · Kennismaking Sparely",
     "webTitle": "LINK. x Sparely",
     "slug": "sparely",
-    "logoText": "LINK"
+    "logoText": "LINK",
+    "partner": {
+      "name": "Sparely",
+      "logo": "assets/sparely-logo.png"
+    }
   },
   "slides": [
     {
