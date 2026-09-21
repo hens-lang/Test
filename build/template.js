@@ -82,7 +82,7 @@ function partnerLockup(meta) {
       const ext = path.extname(file).slice(1).toLowerCase();
       const mime = ext === 'svg' ? 'image/svg+xml' : `image/${ext === 'jpg' ? 'jpeg' : ext}`;
       const b64 = fs.readFileSync(file).toString('base64');
-      inner = `<img src="data:${mime};base64,${b64}" alt="${esc(p.name)}">`;
+      inner = `<img src="data:${mime};base64,${b64}" alt="${esc(p.name)}"><span class="partner-name">${esc(p.name)}</span>`;
     }
   }
   if (!inner) inner = `<span class="partner-name">${esc(p.name)}</span>`;
@@ -447,7 +447,7 @@ h1.title { font-size:104px; letter-spacing:-0.03em; }
 .lockup-x { font-size:26px; color:#8a90a0; font-weight:500; }
 .partner-chip {
   background:var(--card); border-radius:14px; padding:14px 28px;
-  display:flex; align-items:center; min-height:64px;
+  display:flex; align-items:center; gap:16px; min-height:64px;
 }
 .partner-chip img { height:40px; width:auto; max-width:260px; display:block; }
 .partner-name { font-size:30px; font-weight:800; letter-spacing:-0.02em; color:var(--ink); }

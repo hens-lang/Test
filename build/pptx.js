@@ -176,13 +176,18 @@ async function main() {
             logoBuf = 'image/png;base64,' + (await sharp(lf).png().toBuffer()).toString('base64');
           }
         }
-        const chipW = logoBuf ? logoW + 56 : 220;
+        const nameW = pn.name.length * 34;
+        const chipW = logoBuf ? 28 + logoW + 16 + nameW + 28 : 220;
         slide.addShape('roundRect', {
           x: p(292), y: p(ly), w: p(chipW), h: p(64), rectRadius: p(14),
           fill: { color: C.card }, line: { type: 'none' },
         });
         if (logoBuf) {
           slide.addImage({ data: logoBuf, x: p(292 + 28), y: p(ly + 12), w: p(logoW), h: p(40) });
+          slide.addText(pn.name, {
+            x: p(292 + 28 + logoW + 16), y: p(ly), w: p(nameW), h: p(64), isTextBox: true, margin: 0,
+            fontFace: SANS, bold: true, fontSize: 15, color: C.ink, align: 'left', valign: 'middle',
+          });
         } else {
           slide.addText(pn.name, {
             x: p(292), y: p(ly), w: p(chipW), h: p(64), isTextBox: true, margin: 0,
