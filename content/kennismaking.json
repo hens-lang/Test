@@ -233,39 +233,6 @@
       }
     },
     {
-      "id": "napilot",
-      "type": "plan",
-      "theme": "light",
-      "eyebrow": "Na de pilot",
-      "title": [
-        {
-          "t": "Daarna weet je precies wat "
-        },
-        {
-          "t": "werkt",
-          "accent": true
-        },
-        {
-          "t": "."
-        }
-      ],
-      "steps": [
-        {
-          "title": "Meten",
-          "text": "Na de pilot weet je wat tien afspraken opleveren: hoe de gesprekken gingen, wat eruit kwam en hoeveel klanten je eruit haalt."
-        },
-        {
-          "title": "Rekenen",
-          "text": "Dan weet je ook hoeveel afspraken je nodig hebt voor één nieuwe klant. Niet geschat, maar gewoon geteld."
-        },
-        {
-          "title": "Plannen",
-          "text": "Jij zegt hoeveel nieuwe klanten je per vier weken wilt. Wij rekenen terug hoeveel afspraken daarvoor nodig zijn en richten de samenwerking daarop in."
-        }
-      ],
-      "closing": "Zo beslis je over het vervolg met je eigen cijfers in de hand."
-    },
-    {
       "id": "vervolg",
       "type": "offer",
       "theme": "dark",
@@ -284,12 +251,12 @@
       ],
       "cards": [
         {
-          "title": "Wat een afspraak kost",
-          "text": "Uit de pilot blijkt hoeveel tijd er in één gekwalificeerde afspraak zit. Daarmee weten we hoeveel afspraken per dagdeel realistisch zijn en wat een afspraak dus kost."
+          "title": "Wat we dan weten",
+          "text": "Uit de pilot blijkt hoeveel tijd er in één gekwalificeerde afspraak zit en hoeveel afspraken er nodig zijn voor één nieuwe klant. Niet geschat, gewoon geteld."
         },
         {
-          "title": "Vaste bezetting, vast aantal",
-          "text": "Jullie kiezen hoeveel dagdelen per week we bellen. Daar hangt een vast aantal afspraken aan en wij trekken de tijd uit die daarvoor nodig is."
+          "title": "Van doel naar bezetting",
+          "text": "Jullie zeggen hoeveel nieuwe klanten je per periode wilt. Wij rekenen terug hoeveel afspraken daarvoor nodig zijn en trekken daar de tijd voor uit."
         },
         {
           "title": "Boven target is voor jullie",
