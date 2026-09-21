@@ -1,0 +1,404 @@
+{
+  "meta": {
+    "title": "LINK. kennismaking Spooker Technologies",
+    "footerLeft": "LINK. · Kennismaking Spooker Technologies",
+    "webTitle": "LINK. x Spooker",
+    "slug": "spooker",
+    "logoText": "LINK",
+    "partner": {
+      "name": "Spooker Technologies",
+      "logo": "assets/spooker-logo.png"
+    }
+  },
+  "slides": [
+    {
+      "id": "cover",
+      "type": "cover",
+      "theme": "dark",
+      "eyebrow": "Voor Spooker Technologies · september 2026",
+      "title": [
+        {
+          "t": "Structureel "
+        },
+        {
+          "t": "nieuwe klanten",
+          "accent": true
+        },
+        {
+          "t": " aan tafel."
+        }
+      ],
+      "sub": "Wat LINK. voor Spooker kan betekenen: structureel aan tafel bij bedrijven die bij het Spooker-platform passen, en na twaalf weken een plan op basis van echte cijfers."
+    },
+    {
+      "id": "wie",
+      "type": "about",
+      "theme": "light",
+      "eyebrow": "Wie wij zijn",
+      "title": [
+        {
+          "t": "Bellen is een "
+        },
+        {
+          "t": "vak",
+          "accent": true
+        },
+        {
+          "t": ". Wij doen niets anders."
+        }
+      ],
+      "paragraphs": [
+        "LINK. is de vaste acquisitiepartner van B2B-bedrijven. Wij bellen dagelijks namens onze klanten en leveren gekwalificeerde afspraken op. Geen lijstjes met namen, maar gesprekken in jullie agenda met een beslisser die weet waarom hij aan tafel zit.",
+        "We werken voor bedrijven met een sterke B2B-propositie, in uiteenlopende branches. Geen bureau op afstand, maar een partner die elke week met je schakelt."
+      ],
+      "stats": [
+        {
+          "value": "1",
+          "label": "vast aanspreekpunt",
+          "detail": "Eén persoon die jullie campagne kent, van script tot rapportage."
+        },
+        {
+          "value": "4",
+          "label": "weken per werkperiode",
+          "detail": "Vaste rapportage en vaste evaluatiemomenten, elke werkperiode opnieuw."
+        }
+      ]
+    },
+    {
+      "id": "wat",
+      "type": "services",
+      "theme": "light",
+      "eyebrow": "Wat wij doen",
+      "title": [
+        {
+          "t": "Eén team dat belt, opvolgt en "
+        },
+        {
+          "t": "afspraken levert",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "icon": "phone",
+          "title": "Cold calling",
+          "text": "Ervaren B2B-bellers die het gesprek voeren met de beslisser. Eigen belsysteem, een regionaal telefoonnummer op jullie naam en elk gesprek vastgelegd met notities."
+        },
+        {
+          "icon": "target",
+          "title": "Data en doelgroep",
+          "text": "Wij bouwen de bellijst op basis van jullie ideale klant: branche, grootte, regio en functie. Bestaande relaties en uitsluitingen halen we er vooraf uit."
+        },
+        {
+          "icon": "repeat",
+          "title": "Opvolging",
+          "text": "Terugbelafspraken komen echt terug in de bellijst en warme leads dragen we direct aan jullie over, met de reden en de context erbij."
+        },
+        {
+          "icon": "calendar",
+          "title": "Gekwalificeerde afspraken",
+          "text": "Het resultaat waar we op sturen. Een afspraak staat pas als het bedrijf past, de interesse echt is en de juiste persoon aan tafel zit.",
+          "highlight": true
+        }
+      ]
+    },
+    {
+      "id": "hoe",
+      "type": "process",
+      "theme": "dark",
+      "eyebrow": "Hoe een samenwerking loopt",
+      "title": [
+        {
+          "t": "Van kick-off naar "
+        },
+        {
+          "t": "afspraken",
+          "accent": true
+        },
+        {
+          "t": " in de agenda."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Kick-off",
+          "text": "Samen scherp: doelgroep, beslisser, propositie, bezwaren en wat een goede afspraak voor jullie is. Wij schrijven het belscript, jullie keuren goed."
+        },
+        {
+          "title": "Belstart",
+          "text": "Vanaf de eerste maandag na de kick-off bellen we dagelijks. Elke afspraak krijgt een bevestigingsmail naar de prospect en een overdracht met context naar jullie."
+        },
+        {
+          "title": "Wekelijkse rapportage",
+          "text": "Elke week een rapport met contactpogingen, gesproken bedrijven, warme uitkomsten, terugbelafspraken en geplande afspraken, plus wat we terughoren uit de markt."
+        },
+        {
+          "title": "Bijsturen",
+          "text": "Om de week evalueren we samen: klopt de doelgroep, klopt de kwaliteit van de afspraken en wat scherpen we aan."
+        }
+      ],
+      "deliverables": {
+        "title": "Wat jullie ontvangen",
+        "items": [
+          "Afspraak in de agenda met bedrijfsinfo, contactpersoon en aanleiding",
+          "Bevestiging naar de prospect uit jullie naam",
+          "Wekelijks rapport in PDF plus alle gespreksnotities",
+          "Een vast aanspreekpunt"
+        ]
+      }
+    },
+    {
+      "id": "kwalificatie",
+      "type": "qualification",
+      "theme": "light",
+      "eyebrow": "Wat wij een gekwalificeerde afspraak noemen",
+      "title": [
+        {
+          "t": "Geen afspraak om de afspraak. "
+        },
+        {
+          "t": "Drie eisen",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "icon": "building",
+          "title": "Fit",
+          "text": "Het bedrijf past: branche, omvang en situatie voldoen aan de criteria uit de kick-off."
+        },
+        {
+          "icon": "spark",
+          "title": "Interesse",
+          "text": "De prospect heeft een concrete aanleiding of vraag en neemt bewust de tijd. Wij leggen de aanleiding vast in de overdracht."
+        },
+        {
+          "icon": "usercheck",
+          "title": "Beslisser",
+          "text": "De afspraak staat met iemand die over de aankoop gaat of daar direct invloed op heeft."
+        }
+      ],
+      "closing": "Valt een afspraak buiten deze eisen, dan telt hij niet mee. Zo blijft het aantal eerlijk en de kwaliteit hoog."
+    },
+    {
+      "id": "pilot",
+      "type": "offer",
+      "theme": "dark",
+      "eyebrow": "De standaardpilot",
+      "title": [
+        {
+          "t": "Twaalf weken om het te "
+        },
+        {
+          "t": "bewijzen",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "title": "Kick-off en belscript",
+          "text": "Samen scherp wat we gaan vertellen en bij wie. Wij schrijven het belscript, jullie keuren het goed."
+        },
+        {
+          "title": "Bellijst op maat",
+          "text": "Wij bouwen de bellijst op jullie ideale klant: bedrijven waar het Spooker-platform past, op branche, grootte, regio en functie. Bestaande relaties gaan er vooraf uit."
+        },
+        {
+          "title": "Twaalf weken bellen",
+          "text": "Elke werkdag bellen met een regionaal nummer op jullie naam. Elke week een rapportage, om de week evaluatie. Gaat het makkelijker of juist moeizamer, dan zitten we eerder om tafel en schakelen we direct."
+        },
+        {
+          "title": "Tien gekwalificeerde afspraken",
+          "text": "Elke afspraak voldoet aan drie eisen: het bedrijf past, de interesse is echt en de juiste persoon zit aan tafel.",
+          "highlight": true
+        }
+      ],
+      "bar": {
+        "label": "Pilot",
+        "price": "€ 4.950",
+        "note": "excl. btw, alles inbegrepen",
+        "items": [
+          "Kick-off en belscript",
+          "Bellijst op jullie ideale klant",
+          "Volledige inrichting van belsysteem en nummer",
+          "Twaalf weken elke werkdag bellen",
+          "Rapportage elke week, evaluatie om de week",
+          "Tien gekwalificeerde afspraken"
+        ]
+      }
+    },
+    {
+      "id": "napilot",
+      "type": "plan",
+      "theme": "light",
+      "eyebrow": "Na de pilot",
+      "title": [
+        {
+          "t": "Daarna weet je precies wat "
+        },
+        {
+          "t": "werkt",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Meten",
+          "text": "Na de pilot weet je wat tien afspraken opleveren: hoe de gesprekken gingen, wat eruit kwam en hoeveel klanten je eruit haalt."
+        },
+        {
+          "title": "Rekenen",
+          "text": "Dan weet je ook hoeveel afspraken je nodig hebt voor één nieuwe klant. Niet geschat, maar gewoon geteld."
+        },
+        {
+          "title": "Plannen",
+          "text": "Jij zegt hoeveel nieuwe klanten je per vier weken wilt. Wij rekenen terug hoeveel afspraken daarvoor nodig zijn en richten de samenwerking daarop in."
+        }
+      ],
+      "closing": "Zo beslis je over het vervolg met je eigen cijfers in de hand."
+    },
+    {
+      "id": "nodig",
+      "type": "needs",
+      "theme": "light",
+      "eyebrow": "Wat we van jullie nodig hebben",
+      "title": [
+        {
+          "t": "Een halve dag van jullie, dan "
+        },
+        {
+          "t": "draaien wij",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "icon": "users",
+          "title": "Kick-off sessie",
+          "text": "Anderhalf tot twee uur met de beslisser en degene die de afspraken gaat voeren."
+        },
+        {
+          "icon": "listx",
+          "title": "Uitsluitlijst",
+          "text": "Bestaande klanten, lopende gesprekken en bedrijven die we niet mogen benaderen."
+        },
+        {
+          "icon": "check",
+          "title": "Goedkeuring belscript",
+          "text": "Wij schrijven, jullie lezen mee en keuren goed."
+        },
+        {
+          "icon": "repeat",
+          "title": "Opvolging van afspraken",
+          "text": "Eén vaste persoon bij Spooker die de afspraken voert en ons kort laat weten hoe ze verliepen."
+        }
+      ]
+    },
+    {
+      "id": "spelregels",
+      "type": "rules",
+      "theme": "light",
+      "eyebrow": "Spelregels",
+      "title": [
+        {
+          "t": "Transparant en zonder "
+        },
+        {
+          "t": "kleine lettertjes",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "rules": [
+        {
+          "title": "Niet-exclusief",
+          "text": "Jullie zitten nergens aan vast en houden alle vrijheid."
+        },
+        {
+          "title": "Bestaande relaties blijven van jullie",
+          "text": "Uitsluitlijst vooraf, die bedrijven benaderen wij niet."
+        },
+        {
+          "title": "Werkperiodes van 4 weken",
+          "text": "Vooraf gefactureerd, per werkperiode."
+        },
+        {
+          "title": "Wekelijkse rapportage",
+          "text": "Elke week zicht op wat er gebeurd is en wat het opleverde."
+        },
+        {
+          "title": "Jullie naam, onze uitvoering",
+          "text": "Regionaal nummer en jullie stijl, wij voeren uit."
+        },
+        {
+          "title": "Gegevens veilig",
+          "text": "Vastgelegd in een verwerkersovereenkomst."
+        },
+        {
+          "title": "Evaluatie om de week",
+          "text": "Bij twijfel om tafel en bijsturen."
+        },
+        {
+          "title": "Alles op papier",
+          "text": "Vastgelegd in een korte samenwerkingsovereenkomst."
+        }
+      ]
+    },
+    {
+      "id": "volgende",
+      "type": "next",
+      "theme": "dark",
+      "eyebrow": "Volgende stap",
+      "title": [
+        {
+          "t": "Akkoord op de pilot? Dan plannen we de "
+        },
+        {
+          "t": "kick-off",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Akkoord",
+          "text": "Jullie geven akkoord op het pilotvoorstel."
+        },
+        {
+          "title": "Overeenkomsten",
+          "text": "LINK. stuurt de samenwerkingsovereenkomst en de verwerkersovereenkomst."
+        },
+        {
+          "title": "Kick-off",
+          "text": "We plannen de kick-off en de belstart."
+        }
+      ],
+      "contact": {
+        "name": "Hens Boer",
+        "role": "Eigenaar LINK.",
+        "email": "hens@linkgrp.nl",
+        "site": "linkgrp.nl",
+        "address": "Flemingweg 8, Alphen aan den Rijn"
+      }
+    }
+  ]
+}

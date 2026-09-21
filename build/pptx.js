@@ -176,7 +176,7 @@ async function main() {
             logoBuf = 'image/png;base64,' + (await sharp(lf).png().toBuffer()).toString('base64');
           }
         }
-        const nameW = pn.name.length * 34;
+        const nameW = pn.name.length * 17 + 24;
         const chipW = logoBuf ? 28 + logoW + 16 + nameW + 28 : 220;
         slide.addShape('roundRect', {
           x: p(292), y: p(ly), w: p(chipW), h: p(64), rectRadius: p(14),
