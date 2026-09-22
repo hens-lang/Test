@@ -418,7 +418,7 @@ body { font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased; }
   font-size:19px; font-weight:600; margin-bottom:28px;
 }
 .title { font-weight:800; letter-spacing:-0.025em; line-height:1.12; }
-h2.title { font-size:64px; max-width:1520px; }
+h2.title { font-size:64px; max-width:1520px; text-wrap:balance; }
 .acc { font-family:'Playfair Display', serif; font-style:italic; font-weight:600; letter-spacing:0; }
 
 .head { position:absolute; top:190px; left:var(--m); right:var(--m); }
