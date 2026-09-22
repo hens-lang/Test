@@ -6,7 +6,9 @@
     "slug": "portrelo",
     "logoText": "LINK",
     "partner": {
-      "name": "Portrelo"
+      "name": "Portrelo",
+      "logo": "assets/portrelo-logo.png",
+      "wordmark": true
     }
   },
   "slides": [
@@ -27,7 +29,7 @@
           "t": " aan tafel."
         }
       ],
-      "sub": "Wat LINK. voor Portrelo kan betekenen: in de maanden voor de lancering ontdekken wie op dit product zit te wachten en wat de markt ervan vindt, zodat er in januari al afspraken staan."
+      "sub": "Wat LINK. voor Portrelo kan betekenen: in de maanden voor de lancering aan tafel bij communicatieteams, zorginstellingen en gemeenten, zodat er in januari al demo's in de agenda staan."
     },
     {
       "id": "wie",
@@ -209,7 +211,7 @@
         },
         {
           "title": "Bellijst op maat",
-          "text": "Wij bouwen de bellijst op jullie ideale klant: branche, grootte, regio en functie. Bestaande relaties en uitsluitingen gaan er vooraf uit."
+          "text": "Wij bouwen de bellijst op jullie ideale klant: communicatieteams, zorginstellingen en gemeenten die beeld publiceren en toestemming aantoonbaar moeten vastleggen."
         },
         {
           "title": "Twaalf weken bellen",
@@ -227,7 +229,7 @@
         "note": "excl. btw, alles inbegrepen",
         "items": [
           "Kick-off en belscript",
-          "Bellijst op jullie ideale klant",
+          "Bellijst met communicatie, zorg en overheid",
           "Volledige inrichting van belsysteem en nummer",
           "Twaalf weken elke werkdag bellen",
           "Rapportage elke week, evaluatie om de week",
