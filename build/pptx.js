@@ -167,27 +167,32 @@ async function main() {
           x: p(232), y: p(ly), w: p(44), h: p(64), isTextBox: true, margin: 0,
           fontFace: SANS, fontSize: 13, color: '8A90A0', align: 'center', valign: 'middle',
         });
-        let logoBuf = null, logoW = 0;
+        let logoBuf = null, logoW = 0, logoH = 40;
         if (pn.logo) {
           const lf = path.resolve(ROOT, pn.logo);
           if (fs.existsSync(lf)) {
             const meta = await sharp(lf).metadata();
-            logoW = Math.min(260, 40 * (meta.width / meta.height));
+            const ratio = meta.width / meta.height;
+            logoH = 40;
+            logoW = logoH * ratio;
+            if (logoW > 300) { logoW = 300; logoH = logoW / ratio; }
             logoBuf = 'image/png;base64,' + (await sharp(lf).png().toBuffer()).toString('base64');
           }
         }
-        const nameW = pn.name.length * 17 + 24;
-        const chipW = logoBuf ? 28 + logoW + 16 + nameW + 28 : 220;
+        const nameW = pn.wordmark ? 0 : pn.name.length * 17 + 24;
+        const chipW = logoBuf ? 28 + logoW + (nameW ? 16 + nameW : 0) + 28 : 220;
         slide.addShape('roundRect', {
           x: p(292), y: p(ly), w: p(chipW), h: p(64), rectRadius: p(14),
           fill: { color: C.card }, line: { type: 'none' },
         });
         if (logoBuf) {
-          slide.addImage({ data: logoBuf, x: p(292 + 28), y: p(ly + 12), w: p(logoW), h: p(40) });
-          slide.addText(pn.name, {
-            x: p(292 + 28 + logoW + 16), y: p(ly), w: p(nameW), h: p(64), isTextBox: true, margin: 0,
-            fontFace: SANS, bold: true, fontSize: 15, color: C.ink, align: 'left', valign: 'middle',
-          });
+          slide.addImage({ data: logoBuf, x: p(292 + 28), y: p(ly + (64 - logoH) / 2), w: p(logoW), h: p(logoH) });
+          if (nameW) {
+            slide.addText(pn.name, {
+              x: p(292 + 28 + logoW + 16), y: p(ly), w: p(nameW), h: p(64), isTextBox: true, margin: 0,
+              fontFace: SANS, bold: true, fontSize: 15, color: C.ink, align: 'left', valign: 'middle',
+            });
+          }
         } else {
           slide.addText(pn.name, {
             x: p(292), y: p(ly), w: p(chipW), h: p(64), isTextBox: true, margin: 0,
