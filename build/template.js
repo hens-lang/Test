@@ -90,7 +90,7 @@ function partnerLockup(meta) {
   <div class="partner-lockup">
     <span class="lockup-link">LINK<span class="dot">.</span></span>
     <span class="lockup-x">×</span>
-    <span class="partner-chip">${inner}</span>
+    <span class="partner-chip${p.solid ? ' bare' : ''}">${inner}</span>
   </div>`;
 }
 
@@ -455,8 +455,10 @@ h1.title { font-size:104px; letter-spacing:-0.03em; }
   background:var(--card); border-radius:14px; padding:14px 28px;
   display:flex; align-items:center; gap:16px; min-height:64px;
 }
-.partner-chip img { max-height:40px; max-width:300px; width:auto; height:auto; display:block; }
+.partner-chip img { max-height:40px; max-width:300px; width:auto; height:auto; display:block; border-radius:6px; }
 .partner-name { font-size:30px; font-weight:800; letter-spacing:-0.02em; color:var(--ink); }
+.partner-chip.bare { background:none; padding:0; }
+.partner-chip.bare img { max-height:68px; max-width:320px; border-radius:10px; }
 
 /* ---------- about ---------- */
 .about-grid {

@@ -6,7 +6,10 @@
     "slug": "mannenvan80",
     "logoText": "LINK",
     "partner": {
-      "name": "Mannen van 80"
+      "name": "Mannen van 80",
+      "logo": "assets/mannenvan80-logo.png",
+      "wordmark": true,
+      "solid": true
     }
   },
   "slides": [

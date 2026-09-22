@@ -180,6 +180,13 @@ async function main() {
           }
         }
         const nameW = pn.wordmark ? 0 : pn.name.length * 17 + 24;
+        if (pn.solid && logoBuf) {
+          // eigen achtergrondkleur: geen chip eronder, logo op volle hoogte
+          logoH = 68;
+          logoW = logoH * (await sharp(path.resolve(ROOT, pn.logo)).metadata().then((m) => m.width / m.height));
+          slide.addImage({ data: logoBuf, x: p(292), y: p(ly - 2), w: p(logoW), h: p(logoH) });
+          continue;
+        }
         const chipW = logoBuf ? 28 + logoW + (nameW ? 16 + nameW : 0) + 28 : 220;
         slide.addShape('roundRect', {
           x: p(292), y: p(ly), w: p(chipW), h: p(64), rectRadius: p(14),
