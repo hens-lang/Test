@@ -16,7 +16,7 @@
       "id": "cover",
       "type": "cover",
       "theme": "dark",
-      "eyebrow": "Voor MostWare Next · september 2026",
+      "eyebrow": "Voor Maurice · MostWare Next · september 2026",
       "title": [
         {
           "t": "Structureel "
@@ -29,7 +29,7 @@
           "t": " aan tafel."
         }
       ],
-      "sub": "Wat LINK. voor MostWare Next kan betekenen: structureel gesprekken met bedrijven die nog niet weten wat jullie te bieden hebben, en na twaalf weken een plan op basis van echte cijfers."
+      "sub": "We bellen al voor HeadsUp. Voor MostWare Next stellen we onze nieuwe pilot voor: een vast aantal gekwalificeerde afspraken, elke week cijfers en na twaalf weken een onderbouwd plan."
     },
     {
       "id": "wie",
@@ -50,7 +50,7 @@
       ],
       "paragraphs": [
         "LINK. is de vaste acquisitiepartner van B2B-bedrijven. Wij bellen dagelijks namens onze klanten en leveren gekwalificeerde afspraken op. Geen lijstjes met namen, maar gesprekken in jullie agenda met een beslisser die weet waarom hij aan tafel zit.",
-        "We werken voor bedrijven met een sterke B2B-propositie, in uiteenlopende branches. Geen bureau op afstand, maar een partner die elke week met je schakelt."
+        "Voor HeadsUp bellen we al. Geen bureau op afstand, maar een partner die elke week met je schakelt."
       ],
       "stats": [
         {
@@ -191,7 +191,7 @@
       "id": "pilot",
       "type": "offer",
       "theme": "dark",
-      "eyebrow": "De standaardpilot",
+      "eyebrow": "De nieuwe pilot",
       "title": [
         {
           "t": "Twaalf weken om het te "
@@ -296,7 +296,7 @@
         {
           "icon": "users",
           "title": "Kick-off sessie",
-          "text": "Anderhalf tot twee uur met de beslisser en degene die de afspraken gaat voeren."
+          "text": "Anderhalf tot twee uur met Maurice en degene die de afspraken gaat voeren."
         },
         {
           "icon": "listx",
@@ -387,7 +387,7 @@
       "steps": [
         {
           "title": "Akkoord",
-          "text": "Jullie geven akkoord op het pilotvoorstel."
+          "text": "Maurice geeft akkoord op het pilotvoorstel."
         },
         {
           "title": "Overeenkomsten",
