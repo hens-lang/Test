@@ -121,19 +121,43 @@
   });
   $$("[data-founder-name]").forEach((el) => (el.textContent = F.firstName));
 
-  /* ---------- Zo werkt het: vier punten die linken ---------- */
-  $$("[data-method]").forEach((ol) => {
-    ol.innerHTML = '<span class="chain-line" aria-hidden="true"><i></i></span>' + D.method.map((m, i) => {
-      const last = i === D.method.length - 1;
-      return `
-      <li style="--i:${i}">
-        <span class="chain-dot${last ? " big" : ""}" aria-hidden="true"></span>
-        <span class="m-phase">Fase ${String(i + 1).padStart(2, "0")}${m.name === "Pilot" && D.pilotLabel ? ` · ${esc(D.pilotLabel)}` : ""}</span>
-        <h3>${esc(m.name)}${last ? '<span class="dot">.</span>' : ""}</h3>
-        <p>${esc(m.text)}</p>
+  /* ---------- Zo werkt het: blauwe scroll-sectie ---------- */
+  $$("[data-flow]").forEach((sec) => {
+    const M = D.method, track = $("[data-flow-track]", sec), stage = $("[data-flow-stage]", sec);
+    track.innerHTML = '<span class="f-line" aria-hidden="true"><i></i></span>' + M.map((m, i) =>
+      `<button type="button" data-i="${i}"><span class="f-dot" aria-hidden="true"></span>${esc(m.name)}</button>`).join("");
+    stage.innerHTML = M.map((m, i) => `
+      <article class="flow-panel${i ? "" : " active"}">
+        <div class="flow-num" aria-hidden="true">${String(i + 1).padStart(2, "0")}</div>
+        <div>
+          <span class="m-phase">Fase ${String(i + 1).padStart(2, "0")}${m.name === "Pilot" && D.pilotLabel ? ` · ${esc(D.pilotLabel)}` : ""}</span>
+          <h3>${esc(m.name)}${i === M.length - 1 ? '<span class="dot">.</span>' : ""}</h3>
+          <p>${esc(m.text)}</p>
+        </div>
         ${m.gets ? `<ul class="m-gets">${m.gets.map((g) => `<li>${esc(g)}</li>`).join("")}</ul>` : ""}
-      </li>`;
-    }).join("");
+      </article>`).join("");
+    const pin = $(".flow-pin", sec), fill = $(".f-line i", track), btns = $$("button", track), panels = $$(".flow-panel", stage);
+    const wide = matchMedia("(min-width: 960px)");
+    let cur = -1;
+    const set = (idx, p) => {
+      fill.style.width = (p * 100) + "%";
+      btns.forEach((b, i) => { b.classList.toggle("done", i < idx); b.classList.toggle("active", i === idx); });
+      if (idx !== cur) { panels.forEach((pn, i) => pn.classList.toggle("active", i === idx)); cur = idx; }
+    };
+    const tick = () => {
+      if (!sec.classList.contains("pinned")) return;
+      const r = pin.getBoundingClientRect(), total = pin.offsetHeight - innerHeight;
+      const p = Math.min(1, Math.max(0, -r.top / total));
+      set(Math.min(M.length - 1, Math.floor(p * M.length)), p);
+    };
+    const mode = () => { sec.classList.toggle("pinned", wide.matches && !reduced); tick(); };
+    btns.forEach((b) => b.addEventListener("click", () => {
+      const i = +b.dataset.i, total = pin.offsetHeight - innerHeight;
+      scrollTo({ top: pin.getBoundingClientRect().top + scrollY + total * ((i + 0.5) / M.length), behavior: reduced ? "auto" : "smooth" });
+    }));
+    wide.addEventListener("change", mode);
+    addEventListener("scroll", tick, { passive: true }); addEventListener("resize", tick);
+    mode();
   });
   $$("[data-facts]").forEach((box) => {
     const fill = (t) => esc(t).replace("{responseShort}", esc(C.responseShort));
