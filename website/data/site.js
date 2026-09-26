@@ -142,8 +142,8 @@ window.LINK = {
   // Voorbeelden voor de kaart in de hero (illustratief, geen echte partners).
   liveCard: [
     ["Kennismaking ingepland", "Installatietechniek", "Beslisser", "Directeur-eigenaar"],
-    ["Warme lead overgedragen", "Zakelijke dienstverlening", "Moment", "Na de zomer"],
+    ["Afspraak ingepland", "Zakelijke dienstverlening", "Beslisser", "Commercieel directeur"],
     ["Kennismaking ingepland", "Maakindustrie · 50-100 medewerkers", "Beslisser", "Operationeel directeur"],
-    ["Terugbelafspraak", "Horeca & kantoren", "Reden", "Contract loopt af in Q1"]
+    ["Afspraak ingepland", "Horeca & kantoren", "Beslisser", "Eigenaar"]
   ]
 };
