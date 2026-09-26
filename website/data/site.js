@@ -1,8 +1,8 @@
 /*
  * LINK. | centrale databron van linkgrp.nl
  *
- * Eén bestand, één waarheid. Navigatie, contactgegevens, team, formulier,
- * resultaatcodes en de voorbeeldrapportage worden allemaal hieruit gelezen.
+ * Eén bestand, één waarheid. Navigatie, contactgegevens, oprichter, foto's,
+ * formulier en werkmethode worden allemaal hieruit gelezen.
  * Pas je hier iets aan (telefoonnummer, portaal-URL, foto), dan klopt het
  * op elke pagina tegelijk.
  *
@@ -10,7 +10,6 @@
  *  - Drive > Website > "Huisstijl"            (zwart #000000, blauw #38b6ff, Open Sans)
  *  - Drive > Website > "Website Teksten Opzet" (alle copy)
  *  - Drive > Website > "LINK. LOGO's.zip"      (assets/img/logo-*.png)
- *  - Rapportage-pijplijn (funnel.py)           (resultaatcodes + funnel-definities)
  */
 window.LINK = {
   brand: {
@@ -24,8 +23,7 @@ window.LINK = {
     phone: "(0172) 27 10 08",
     phoneHref: "+31172271008",
     web: "www.linkgrp.nl",
-    region: "Zuid-Holland & Noord-Holland",
-    // Klantportaal (leads, afspraken, rapportages). Vul de echte URL in;
+    // Partnerportaal (leads, afspraken, updates). Vul de echte URL in;
     // zolang dit leeg is, verbergt de site de portaal-knop.
     portalUrl: "",
     form: {
@@ -56,7 +54,7 @@ window.LINK = {
     name: "Hens Boer",
     firstName: "Hens",
     role: "Oprichter LINK.",
-    quote: "Drie jaar lang heb ik dagelijks deuren aangebeld en mensen gebeld die mij niet verwachten, met een product waar zij niet op zitten te wachten. Je leert snel wat werkt en wat niet. Deze ervaring zet ik nu in voor onze opdrachtgevers."
+    quote: "Drie jaar lang heb ik dagelijks deuren aangebeld en mensen gebeld die mij niet verwachten, met een product waar zij niet op zitten te wachten. Je leert snel wat werkt en wat niet. Deze ervaring zet ik nu in voor onze partners."
   },
 
   // Alle foto's van de site. Elke pagina verwijst naar een sleutel
@@ -74,60 +72,23 @@ window.LINK = {
     avatar:  { src: "assets/img/hens/hens-avatar", widths: [160, 320], alt: "Hens Boer" },
     koffie:  { src: "assets/img/hens/hens-koffie", widths: [600, 1000], alt: "Hens Boer drinkt koffie uit een blauw kopje" },
     // Namen, notities, URL en bladwijzers op het scherm zijn onleesbaar gemaakt (AVG).
-    portaal: { src: "assets/img/hens/hens-portaal", widths: [800, 1400], alt: "Het LINK. klantportaal op een laptop" }
+    portaal: { src: "assets/img/hens/hens-portaal", widths: [800, 1400], alt: "Het LINK. partnerportaal op een laptop" }
   },
 
-  steps: [
-    "We verdiepen ons in het bedrijf van onze opdrachtgever.",
-    "We bepalen samen het groeidoel.",
-    "We bepalen samen een doelgroep.",
-    "We stellen een prospectlijst samen.",
-    "De juiste beslisser bereiken via persoonlijke en gerichte outreach.",
-    "Interesse polsen en kansen kwalificeren.",
-    "De afspraak inplannen. Daarna is het aan jou."
+  // Het traject met een partner. Bewust alleen de mijlpalen: hoe we het
+  // doen, laten we zien in een kennismaking, niet op de website.
+  method: [
+    { name: "Kick-off", text: "Jouw bedrijf, jouw markt en jouw groeidoel. Scherp op tafel." },
+    { name: "Eerste belmoment", text: "Jouw verhaal voor het eerst in de markt. Persoonlijk en goed voorbereid." },
+    { name: "Eerste meeting", text: "Jij aan tafel bij een gekwalificeerde prospect." },
+    { name: "Structurele stroom", text: "Een vaste stroom gekwalificeerde prospects. Week na week." }
   ],
 
-  // Identiek aan de rapportage-pijplijn (funnel.py). Wat een prospect hier
-  // ziet, is precies wat een opdrachtgever elke week in zijn rapportage leest.
-  resultCodes: [
-    { code: 100, label: "Afspraak", group: "warm" },
-    { code: 101, label: "Overdracht", group: "warm" },
-    { code: 500, label: "Terugbelafspraak", group: "warm" },
-    { code: 200, label: "Geen interesse", group: "gesproken" },
-    { code: 201, label: "Al voorzien", group: "gesproken" },
-    { code: 202, label: "Niet passend", group: "gesproken" },
-    { code: 501, label: "Informatiemail", group: "vervolg" },
-    { code: 502, label: "Terugbelverzoek", group: "vervolg" },
-    { code: 300, label: "Onjuist nummer", group: "onbereikt" },
-    { code: 400, label: "Geen gehoor", group: "onbereikt" },
-    { code: 401, label: "Voicemail", group: "onbereikt" },
-    { code: 402, label: "Bezet", group: "onbereikt" }
-  ],
-
-  funnel: {
-    warm: [100, 101, 500],
-    spoken: [100, 101, 200, 201, 202, 500]
-  },
-
-  // Voorbeeldweek (fictief) om het rapportageformat te laten zien.
-  // Per code: aantal belregels en aantal unieke bedrijven. De site bouwt
-  // hier losse belregels van en rekent ze door met dezelfde funnel-logica.
-  demoWeek: {
-    label: "Voorbeeldweek",
-    week: 38,
-    rows: [
-      { code: 400, rows: 150, companies: 112 },
-      { code: 401, rows: 60, companies: 51 },
-      { code: 402, rows: 12, companies: 12 },
-      { code: 300, rows: 20, companies: 20 },
-      { code: 200, rows: 70, companies: 68 },
-      { code: 201, rows: 30, companies: 30 },
-      { code: 202, rows: 18, companies: 18 },
-      { code: 500, rows: 14, companies: 14 },
-      { code: 501, rows: 20, companies: 20 },
-      { code: 502, rows: 8, companies: 8 },
-      { code: 101, rows: 4, companies: 4 },
-      { code: 100, rows: 6, companies: 6 }
-    ]
-  }
+  // Voorbeelden voor de kaart in de hero (illustratief, geen echte partners).
+  liveCard: [
+    ["Kennismaking ingepland", "Installatietechniek", "Beslisser", "Directeur-eigenaar"],
+    ["Warme lead overgedragen", "Zakelijke dienstverlening", "Moment", "Na de zomer"],
+    ["Kennismaking ingepland", "Maakindustrie · 50-100 medewerkers", "Beslisser", "Operationeel directeur"],
+    ["Terugbelafspraak", "Horeca & kantoren", "Reden", "Contract loopt af in Q1"]
+  ]
 };

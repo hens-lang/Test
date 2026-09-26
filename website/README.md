@@ -6,26 +6,25 @@ Een statische website zonder build-stap en zonder libraries: HTML, CSS en één 
 
 ```
 data/site.js  ──►  assets/js/main.js  ──►  alle pagina's
-(één waarheid)      (leest en rendert)       header, footer, team, stappen,
-                                             resultaatcodes, rapportage-preview,
-                                             contactgegevens, formulier
+(één waarheid)      (leest en rendert)       header, footer, oprichter, foto's,
+                                             werkmethode, contactgegevens,
+                                             formulier
 ```
 
 | Wat | Waar aanpassen | Waar het verschijnt |
 |---|---|---|
-| E-mail, telefoon, regio | `data/site.js > contact` | header (mobiel), footer, contactpagina, CTA's, JSON-LD* |
+| E-mail, telefoon | `data/site.js > contact` | header (mobiel), footer, contactpagina, CTA's, JSON-LD* |
 | Menu | `data/site.js > nav` | header, mobiel menu, footer |
 | Oprichter + quote | `data/site.js > founder` | home, ons verhaal, contact |
 | Alle foto's | `data/site.js > photos` | elke pagina |
-| De 7 stappen | `data/site.js > steps` | home, diensten |
-| Resultaatcodes + funnel | `data/site.js > resultCodes / funnel` | home, diensten, waarom LINK. |
-| Voorbeeldrapportage | `data/site.js > demoWeek` | rapportage-preview (wordt doorgerekend) |
-| Klantportaal-knop | `data/site.js > contact.portalUrl` | header, mobiel menu, footer |
+| Werkmethode (4 mijlpalen) | `data/site.js > method` | home, diensten |
+| Voorbeelden in de hero-kaart | `data/site.js > liveCard` | home |
+| Partnerportaal-knop | `data/site.js > contact.portalUrl` | header, mobiel menu, footer |
 | Contactformulier-koppeling | `data/site.js > contact.form` | contactpagina |
 
 \* Het JSON-LD-blok in `index.html` (voor Google) staat statisch in de HTML. Pas het telefoonnummer daar ook aan als het verandert.
 
-**Resultaatcodes en funnel komen 1-op-1 uit de rapportage-pijplijn (`funnel.py`).** Dezelfde codes (100 t/m 502), dezelfde definities van "gesproken" (100, 101, 200, 201, 202, 500) en "warm" (100, 101, 500), en ook hier telt elk bedrijf één keer. Wat een prospect op de site ziet, is dus precies wat een opdrachtgever elke vrijdag in de rapportage leest.
+**Wat bewust niet op de site staat.** De werkmethode staat er alleen als traject (kick-off, eerste belmoment, eerste meeting, structurele stroom). Hoe LINK. dat doet, en ook de resultaatcodes en het rapportageformat, blijft voor de kennismaking. Die staan dus ook niet in de code, zodat niemand ze uit de broncode kan halen.
 
 ## Bronnen
 
@@ -37,7 +36,7 @@ data/site.js  ──►  assets/js/main.js  ──►  alle pagina's
 ## Nog in te vullen voor livegang
 
 1. **Foto's** staan in `assets/img/hens/` (uit Drive > Website > wetransfer-map, bijgesneden, gecomprimeerd en zonder EXIF/GPS). Welke foto waar staat, regel je in `data/site.js > photos`. Een lege `src` laat het fotovak netjes verdwijnen. Op de portaalfoto zijn namen, notities, URL en bladwijzers onleesbaar gemaakt.
-2. **Klantportaal-URL** in `contact.portalUrl`. Zolang dit veld leeg is, blijft de knop verborgen.
+2. **Partnerportaal-URL** in `contact.portalUrl`. Zolang dit veld leeg is, blijft de knop verborgen.
 3. **Contactformulier.** Zonder koppeling opent het formulier een ingevulde e-mail naar info@linkgrp.nl. Wil je het formulier aan een Google Form koppelen (zoals besproken in de website-evaluatie), vul dan `contact.form.endpoint` in met de `formResponse`-URL en zet bij `fields` de `entry.xxxx`-ID's.
 4. **Controleer** e-mail en telefoonnummer. Die komen uit de *Website Teksten Opzet*.
 
@@ -54,7 +53,7 @@ data/site.js  ──►  assets/js/main.js  ──►  alle pagina's
 ```
 website/
 ├── index.html          Home
-├── diensten.html       Telefonische acquisitie + mail outreach
+├── diensten.html       Telefonische acquisitie + business development
 ├── ons-verhaal.html    Hens, waarom LINK. bestaat
 ├── waarom-link.html    Transparantie · Eerlijkheid · Lange termijn
 ├── contact.html        Formulier + gegevens

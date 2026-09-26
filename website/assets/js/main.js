@@ -20,7 +20,7 @@
 
   /* ---------- Header + mobiel menu ---------- */
   const navLinks = D.nav.map((n) => `<a href="${n.href}"${n.href === page ? ' aria-current="page"' : ""}>${esc(n.label)}</a>`).join("");
-  const portal = C.portalUrl ? `<a class="portal-link" href="${esc(C.portalUrl)}">Klantportaal</a>` : "";
+  const portal = C.portalUrl ? `<a class="portal-link" href="${esc(C.portalUrl)}">Partnerportaal</a>` : "";
   const header = document.createElement("header");
   header.className = "site-header";
   header.innerHTML = `
@@ -33,7 +33,7 @@
     </div>`;
   const mm = document.createElement("div");
   mm.className = "mobile-menu"; mm.id = "mm";
-  mm.innerHTML = `<nav aria-label="Mobiel menu">${navLinks}${C.portalUrl ? `<a href="${esc(C.portalUrl)}">Klantportaal</a>` : ""}</nav>
+  mm.innerHTML = `<nav aria-label="Mobiel menu">${navLinks}${C.portalUrl ? `<a href="${esc(C.portalUrl)}">Partnerportaal</a>` : ""}</nav>
     <div class="mm-meta"><a href="mailto:${C.email}">${C.email}</a><a href="tel:${C.phoneHref}">${C.phone}</a></div>`;
   document.body.prepend(mm);
   document.body.prepend(header);
@@ -63,11 +63,10 @@
     <div class="wrap">
       <div class="top">
         <div><img src="assets/img/logo-wit.png" alt="LINK." width="420" height="131" loading="lazy"><p class="tag">${esc(D.brand.tagline)}</p></div>
-        <div><h4>Menu</h4><ul>${D.nav.map((n) => `<li><a href="${n.href}">${esc(n.label)}</a></li>`).join("")}${C.portalUrl ? `<li><a href="${esc(C.portalUrl)}">Klantportaal</a></li>` : ""}</ul></div>
+        <div><h4>Menu</h4><ul>${D.nav.map((n) => `<li><a href="${n.href}">${esc(n.label)}</a></li>`).join("")}${C.portalUrl ? `<li><a href="${esc(C.portalUrl)}">Partnerportaal</a></li>` : ""}</ul></div>
         <div><h4>Contact</h4><ul>
           <li><a href="mailto:${C.email}">${C.email}</a></li>
-          <li><a href="tel:${C.phoneHref}">${C.phone}</a></li>
-          <li>${esc(C.region)}</li></ul></div>
+          <li><a href="tel:${C.phoneHref}">${C.phone}</a></li></ul></div>
       </div>
       <div class="giant" aria-hidden="true">LINK<span>.</span></div>
       <div class="bottom"><span>© ${new Date().getFullYear()} LINK. Alle rechten voorbehouden.</span><span>Jouw succes is ons succes.</span></div>
@@ -79,13 +78,11 @@
     const k = el.dataset.c;
     if (k === "email") { el.textContent = C.email; if (el.tagName === "A") el.href = `mailto:${C.email}`; }
     if (k === "phone") { el.textContent = C.phone; if (el.tagName === "A") el.href = `tel:${C.phoneHref}`; }
-    if (k === "region") el.textContent = C.region;
   });
   $$("[data-details]").forEach((ul) => {
     ul.innerHTML = `
       <li><a href="mailto:${C.email}">${ico.mail}${C.email}</a></li>
-      <li><a href="tel:${C.phoneHref}">${ico.phone}${C.phone}</a></li>
-      <li><span>${ico.pin}${esc(C.region)}</span></li>`;
+      <li><a href="tel:${C.phoneHref}">${ico.phone}${C.phone}</a></li>`;
   });
 
   /* ---------- Foto's (allemaal uit D.photos) ---------- */
@@ -123,109 +120,16 @@
   });
   $$("[data-founder-name]").forEach((el) => (el.textContent = F.firstName));
 
-  /* ---------- Stappen ---------- */
-  $$("[data-steps]").forEach((ol) => {
-    ol.innerHTML = '<span class="progress" aria-hidden="true"></span>' +
-      D.steps.map((s, i) => `<li><span class="n">${String(i + 1).padStart(2, "0")}</span><p>${esc(s)}</p></li>`).join("");
-    const bar = $(".progress", ol), items = $$("li", ol);
-    const tick = () => {
-      const mid = innerHeight * 0.6;
-      let last = -1;
-      items.forEach((li, i) => { const on = li.getBoundingClientRect().top < mid; li.classList.toggle("on", on); if (on) last = i; });
-      const top = items[0].offsetTop + 14;
-      const end = last < 0 ? top : items[last].offsetTop + 38;
-      bar.style.height = Math.max(0, end - top) + "px";
-    };
-    if (reduced) { items.forEach((li) => li.classList.add("on")); bar.style.height = "calc(100% - 28px)"; }
-    else { addEventListener("scroll", tick, { passive: true }); addEventListener("resize", tick); tick(); }
+  /* ---------- Werkmethode (alleen mijlpalen) ---------- */
+  $$("[data-method]").forEach((ol) => {
+    ol.innerHTML = '<span class="m-track" aria-hidden="true"><i></i></span>' + D.method.map((m, i) => `
+      <li style="--i:${i}"><span class="m-node" aria-hidden="true"></span>
+        <span class="m-phase">Fase ${String(i + 1).padStart(2, "0")}</span>
+        <h3>${esc(m.name)}${i === D.method.length - 1 ? '<span class="dot">.</span>' : ""}</h3>
+        <p>${esc(m.text)}</p></li>`).join("");
   });
-
-  /* ---------- Funnel (identiek aan funnel.py) ---------- */
-  const funnel = (rows) => {
-    const uniq = (codes) => new Set(rows.filter((r) => codes.includes(r.code)).map((r) => r.bedrijf)).size;
-    return {
-      pogingen: rows.length,
-      gesproken: uniq(D.funnel.spoken),
-      warm: uniq(D.funnel.warm),
-      afspraak: uniq([100]),
-      overdracht: uniq([101]),
-      terugbel: uniq([500]),
-      geenInt: rows.filter((r) => [200, 201, 202].includes(r.code)).length
-    };
-  };
-  const pct = (a, b) => (b ? Math.round((100 * a) / b) : 0);
-  const demoRows = () => {
-    const rows = [];
-    D.demoWeek.rows.forEach((g) => {
-      for (let i = 0; i < g.rows; i++) rows.push({ code: g.code, bedrijf: `${g.code}-${i % g.companies}` });
-    });
-    return rows;
-  };
-
-  $$("[data-report]").forEach((box) => {
-    const f = funnel(demoRows());
-    const kpis = [
-      [f.afspraak + f.overdracht, "Afspraken & overdrachten", true],
-      [f.gesproken, `Bedrijven gesproken`],
-      [f.terugbel, "Terugbelafspraken"],
-      [f.geenInt, "Geen interesse / niet passend"]
-    ];
-    const rowsF = [
-      ["Contactpogingen", f.pogingen, 100],
-      ["Bedrijven gesproken", f.gesproken, pct(f.gesproken, f.pogingen)],
-      ["Warme uitkomst", f.warm, pct(f.warm, f.pogingen)],
-      ["Afspraak", f.afspraak, pct(f.afspraak, f.pogingen), true]
-    ];
-    box.innerHTML = `
-      <div class="r-hero">
-        <div><img src="assets/img/logo-wit.png" alt="" width="420" height="131"><span class="r-pill">${esc(D.demoWeek.label.toUpperCase())}</span>
-        <div class="r-title">Rapportage <i>week ${D.demoWeek.week}</i></div></div>
-        <div class="r-meta">Wekelijkse rapportage<br>Elke vrijdag in je portaal</div>
-      </div>
-      <div class="r-body">
-        <div class="r-lbl">01 · Kerncijfers</div>
-        <div class="kpis">${kpis.map(([n, l, hl]) => `<div class="kpi${hl ? " hl" : ""}"><b data-count="${n}">0</b><span>${esc(l)}</span></div>`).join("")}</div>
-        <div class="r-lbl" style="margin-top:20px">02 · Funnel</div>
-        <div class="frows">${rowsF.map(([l, v, p, blue]) => `<div class="frow${blue ? " blue" : ""}"><span>${l}</span><div class="bar"><i data-w="${Math.max(p, 2)}"></i></div><span class="v">${v}</span><span class="p">${p}%</span></div>`).join("")}</div>
-        <p class="r-note">Fictieve cijfers, echt format. Percentages t.o.v. contactpogingen. Elk bedrijf telt één keer.</p>
-      </div>`;
-    const run = () => {
-      $$(".bar i", box).forEach((i) => (i.style.width = i.dataset.w + "%"));
-      $$("[data-count]", box).forEach((el) => countUp(el, +el.dataset.count));
-    };
-    onView(box, run);
-  });
-
-  $$("[data-codes]").forEach((box) => {
-    const groups = [
-      ["warm", "Warm", "telt als warm én gesproken"],
-      ["gesproken", "Gesproken", "echt gesprek, geen vervolg"],
-      ["vervolg", "Opvolging", "los gerapporteerd"],
-      ["onbereikt", "Niet bereikt", "alleen een contactpoging"]
-    ];
-    box.innerHTML = groups.map(([g, t, n]) => `
-      <div class="code-group"><h4>${t} <small>${n}</small></h4><div class="chips">
-      ${D.resultCodes.filter((c) => c.group === g).map((c) => `<span class="chip${g === "warm" ? " warm" : ""}"><code>${c.code}</code>${esc(c.label)}</span>`).join("")}
-      </div></div>`).join("");
-  });
-
-  function countUp(el, to) {
-    if (reduced) { el.textContent = to; return; }
-    const t0 = performance.now(), dur = 1400;
-    const step = (t) => {
-      const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 4);
-      el.textContent = Math.round(to * e);
-      if (p < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }
 
   /* ---------- Reveal ---------- */
-  function onView(el, fn, opts = { threshold: 0.25 }) {
-    if (!("IntersectionObserver" in window)) return fn();
-    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { fn(); io.disconnect(); } }), opts);
-    io.observe(el);
-  }
   const io = new IntersectionObserver((es) => es.forEach((e) => {
     if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
   }), { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
@@ -326,12 +230,7 @@
   /* ---------- Hero live-kaart ---------- */
   const lc = $("[data-live]");
   if (lc && !reduced) {
-    const items = [
-      ["Kennismaking ingepland", "Installatietechniek · Zuid-Holland", "Beslisser", "Directeur-eigenaar"],
-      ["Warme lead overgedragen", "Zakelijke dienstverlening · Noord-Holland", "Moment", "Na de zomer"],
-      ["Kennismaking ingepland", "Maakindustrie · 50-100 medewerkers", "Beslisser", "Operationeel directeur"],
-      ["Terugbelafspraak", "Horeca & kantoren · Leiden", "Reden", "Contract loopt af in Q1"]
-    ];
+    const items = D.liveCard;
     let i = 0;
     const els = $$(".lc-swap", lc);
     setInterval(() => {
