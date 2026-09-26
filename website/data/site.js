@@ -150,7 +150,7 @@ window.LINK = {
     "Marketing & creatieve bureaus",
     "Facilitaire dienstverlening",
     "Hygiëne & veiligheid",
-    "Duurzaamheid & energie",
+    "Duurzaamheidscertificering",
     "Groothandel & logistiek"
   ],
 
