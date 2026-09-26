@@ -128,7 +128,7 @@ TIERS = '      <div class="tiers" role="group" aria-label="Beldagenstaffel">\n' 
 
       <div class="tier-out" id="tierout" aria-live="polite">
         <div><span class="k">Per 4 weken</span><span class="v" id="t-cost">vanaf {eur(acht['periode'])}</span></div>
-        <div><span class="k">Gesprekspogingen</span><span class="v" id="t-calls">vanaf {dui(acht['pogingen'])}</span></div>
+        <div><span class="k">Gesprekspogingen</span><span class="v" id="t-calls">&plusmn; {dui(acht['pogingen'])}</span></div>
         <div><span class="k">Verwachte leads</span><span class="v" id="t-leads">vanaf &plusmn; {round(acht['leads'])}</span></div>
         <div><span class="k">Waarvan tastings</span><span class="v" id="t-tast">&plusmn; {round(acht['tastings'])}</span></div>
         <div><span class="k">Prijs per lead</span><span class="v" id="t-lead">{eur(acht['per_lead'])}</span></div>
@@ -153,7 +153,7 @@ VERGELIJK = f'''      <div class="vs">
           <h3>{eur(500)} per beldag, verder niets</h3>
           <dl>
             <div class="r"><span>Kosten per 4 weken</span><b>{eur(acht['periode'])}</b></div>
-            <div class="r"><span>Gesprekspogingen</span><b>{dui(acht['pogingen'])}</b></div>
+            <div class="r"><span>Gesprekspogingen</span><b>&plusmn; {dui(acht['pogingen'])}</b></div>
             <div class="r"><span>Verwachte leads</span><b>&plusmn; {round(acht['leads'])}</b></div>
             <div class="r"><span>Waarvan tastings</span><b>&plusmn; {round(acht['tastings'])}</b></div>
             <div class="r"><span>Prijs per lead</span><b>{eur(acht['per_lead'])}</b></div>
@@ -167,7 +167,7 @@ VERGELIJK = f'''      <div class="vs">
         </div>
         <div class="barrow">
           <div class="k">Voorstel</div>
-          <div class="track"><div class="fill b" style="width:100%"><b>{dui(acht['pogingen'])} gesprekken per 4 weken</b></div></div>
+          <div class="track"><div class="fill b" style="width:100%"><b>&plusmn; {dui(acht['pogingen'])} gesprekken per 4 weken</b></div></div>
         </div>
       </div>
       '''
@@ -210,7 +210,7 @@ tpl = (ROOT / 'build' / 'moyee-brew.tpl.html').read_text(encoding='utf-8')
 js = ',\n    '.join(
     "{cost:'%s', calls:'%s', leads:'%s', tast:'%s', per:'%s'}" % (
         eur(t['periode']) if n != 8 else 'vanaf ' + eur(t['periode']),
-        dui(t['pogingen']) if n != 8 else 'vanaf ' + dui(t['pogingen']),
+        '&plusmn; ' + dui(t['pogingen']),
         ('&plusmn; %d' % round(t['leads'])) if n != 8 else 'vanaf &plusmn; %d' % round(t['leads']),
         '&plusmn; %d' % round(t['tastings']),
         eur(t['per_lead']),

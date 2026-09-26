@@ -402,7 +402,7 @@
           "highlight": true
         }
       ],
-      "closing": "Een beldag is minimaal 100 gesprekspogingen. Bij 23,2 leads per duizend pogingen, het cijfer over 2.629 gesprekken voor Moyee, komt dat neer op 2,3 leads per beldag. Minimaal vier beldagen per periode, prijzen excl. btw."
+      "closing": "De aantallen zijn een indicatie, gebaseerd op 23,2 gekwalificeerde leads per duizend gesprekspogingen over 2.629 gesprekken voor Moyee, bij ongeveer 100 pogingen per beldag. Minimaal vier beldagen per periode, prijzen excl. btw."
     },
     {
       "id": "vergelijking",
@@ -455,7 +455,7 @@
             },
             {
               "key": "Gesprekspogingen",
-              "value": "800"
+              "value": "± 800"
             },
             {
               "key": "Verwachte leads",

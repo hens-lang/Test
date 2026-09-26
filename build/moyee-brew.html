@@ -625,13 +625,13 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
 
       <div class="tier-out" id="tierout" aria-live="polite">
         <div><span class="k">Per 4 weken</span><span class="v" id="t-cost">vanaf &euro; 4.000</span></div>
-        <div><span class="k">Gesprekspogingen</span><span class="v" id="t-calls">vanaf 800</span></div>
+        <div><span class="k">Gesprekspogingen</span><span class="v" id="t-calls">&plusmn; 800</span></div>
         <div><span class="k">Verwachte leads</span><span class="v" id="t-leads">vanaf &plusmn; 19</span></div>
         <div><span class="k">Waarvan tastings</span><span class="v" id="t-tast">&plusmn; 7</span></div>
         <div><span class="k">Prijs per lead</span><span class="v" id="t-lead">&euro; 215</span></div>
       </div>
       
-      <p class="fine">Een beldag is minimaal 100 gesprekspogingen. Over 2.629 gesprekken voor Moyee komen er 23,2 gekwalificeerde leads uit duizend pogingen, oftewel 2,3 leads en 0,9 tasting per beldag. Minimaal vier beldagen per periode, prijzen excl. btw.</p>
+      <p class="fine">De aantallen zijn een indicatie, gebaseerd op 23,2 gekwalificeerde leads per duizend gesprekspogingen over 2.629 gesprekken voor Moyee, bij ongeveer 100 pogingen per beldag. Dat is 2,3 leads en 0,9 tasting per beldag. Minimaal vier beldagen per periode, prijzen excl. btw.</p>
     </section>
 
     <section id="vergelijking">
@@ -654,7 +654,7 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
           <h3>&euro; 500 per beldag, verder niets</h3>
           <dl>
             <div class="r"><span>Kosten per 4 weken</span><b>&euro; 4.000</b></div>
-            <div class="r"><span>Gesprekspogingen</span><b>800</b></div>
+            <div class="r"><span>Gesprekspogingen</span><b>&plusmn; 800</b></div>
             <div class="r"><span>Verwachte leads</span><b>&plusmn; 19</b></div>
             <div class="r"><span>Waarvan tastings</span><b>&plusmn; 7</b></div>
             <div class="r"><span>Prijs per lead</span><b>&euro; 215</b></div>
@@ -668,7 +668,7 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
         </div>
         <div class="barrow">
           <div class="k">Voorstel</div>
-          <div class="track"><div class="fill b" style="width:100%"><b>800 gesprekken per 4 weken</b></div></div>
+          <div class="track"><div class="fill b" style="width:100%"><b>&plusmn; 800 gesprekken per 4 weken</b></div></div>
         </div>
       </div>
       
@@ -942,9 +942,9 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
 
   /* ---- staffel ---- */
   var TIERS = [
-    {cost:'&euro; 2.400', calls:'400', leads:'&plusmn; 9', tast:'&plusmn; 4', per:'&euro; 259'},
-    {cost:'&euro; 2.750 tot &euro; 3.850', calls:'500 tot 700', leads:'&plusmn; 12 tot 16', tast:'&plusmn; 5', per:'&euro; 237'},
-    {cost:'vanaf &euro; 4.000', calls:'vanaf 800', leads:'vanaf &plusmn; 19', tast:'&plusmn; 7', per:'&euro; 215'}
+    {cost:'&euro; 2.400', calls:'&plusmn; 400', leads:'&plusmn; 9', tast:'&plusmn; 4', per:'&euro; 259'},
+    {cost:'&euro; 2.750 tot &euro; 3.850', calls:'&plusmn; 600', leads:'&plusmn; 12 tot 16', tast:'&plusmn; 5', per:'&euro; 237'},
+    {cost:'vanaf &euro; 4.000', calls:'&plusmn; 800', leads:'vanaf &plusmn; 19', tast:'&plusmn; 7', per:'&euro; 215'}
   ];
   var btns = [].slice.call(document.querySelectorAll('.tier'));
   function pick(i){

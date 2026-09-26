@@ -100,8 +100,8 @@ st['rows'] = [
      'note': 'ons advies', 'highlight': True},
 ]
 st['closing'] = (
-    f"Een beldag is minimaal {norm} gesprekspogingen. Bij {nl(res['leads_per_1000'])} leads per duizend pogingen, "
-    f"het cijfer over {dui(vol['pogingen'])} gesprekken voor Moyee, komt dat neer op {nl(lpb)} leads per beldag. "
+    f"De aantallen zijn een indicatie, gebaseerd op {nl(res['leads_per_1000'])} gekwalificeerde leads per duizend "
+    f"gesprekspogingen over {dui(vol['pogingen'])} gesprekken voor Moyee, bij ongeveer {norm} pogingen per beldag. "
     'Minimaal vier beldagen per periode, prijzen excl. btw.'
 )
 
@@ -123,7 +123,7 @@ v['columns'][1].update({
     'head': f"{eur(500)} per beldag, verder niets",
     'rows': [
         {'key': 'Kosten per 4 weken', 'value': eur(acht['periode'])},
-        {'key': 'Gesprekspogingen', 'value': dui(acht['pogingen'])},
+        {'key': 'Gesprekspogingen', 'value': f"± {dui(acht['pogingen'])}"},
         {'key': 'Verwachte leads', 'value': f"± {round(acht['leads'])}"},
         {'key': 'Prijs per lead', 'value': eur(acht['per_lead'])},
     ],
