@@ -735,6 +735,17 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
   var i = 0;
   tot.textContent = slides.length;
 
+  /* --- meeschalen met grote schermen (zoals PowerPoint) --- */
+  /* basisontwerp is 1440x810; op grotere schermen zoomt alles proportioneel mee */
+  var Z = 1;
+  function fitScale(){
+    var z = Math.min(window.innerWidth / 1440, window.innerHeight / 810);
+    Z = Math.max(1, Math.min(z, 2.8));
+    if('zoom' in deck.style) deck.style.zoom = Z; else Z = 1;
+  }
+  fitScale();
+  window.addEventListener('resize', fitScale);
+
   /* --- letter-voor-letter titels --- */
   document.querySelectorAll('.chars').forEach(function(el){
     var txt = el.textContent;
@@ -880,8 +891,8 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
   var glow = document.getElementById('glow');
   if(fine && !reduced){
     document.addEventListener('pointermove', function(e){
-      glow.style.left = e.clientX + 'px';
-      glow.style.top = e.clientY + 'px';
+      glow.style.left = (e.clientX / Z) + 'px';
+      glow.style.top = (e.clientY / Z) + 'px';
     });
   } else { glow.remove(); }
 
@@ -895,8 +906,8 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
     function resize(){
       W = cv.width = window.innerWidth * devicePixelRatio;
       H = cv.height = window.innerHeight * devicePixelRatio;
-      cv.style.width = window.innerWidth + 'px';
-      cv.style.height = window.innerHeight + 'px';
+      cv.style.width = (window.innerWidth / Z) + 'px';
+      cv.style.height = (window.innerHeight / Z) + 'px';
     }
     resize();
     window.addEventListener('resize', resize);
