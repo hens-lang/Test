@@ -263,7 +263,7 @@ def main():
         "/* Gegenereerd door tools/build-verhalen.py. Niet met de hand aanpassen. */\n"
         "window.LINK_VERHALEN = " + json.dumps(lst, ensure_ascii=False, indent=2) + ";\n")
 
-    pages = [("", "1.0"), ("diensten.html", "0.9"), ("ons-verhaal.html", "0.8"), ("waarom-link.html", "0.8"),
+    pages = [("", "1.0"), ("diensten.html", "0.9"), ("over-link.html", "0.8"),
              ("verhalen.html", "0.8"), ("contact.html", "0.9")]
     pages += [(v["url"], "0.7") for v in items if v["status"] == "live"]
     sm = ['<?xml version="1.0" encoding="UTF-8"?>',

@@ -45,10 +45,8 @@ window.LINK = {
   },
 
   nav: [
-    { href: "index.html", label: "Home" },
     { href: "diensten.html", label: "Diensten" },
-    { href: "ons-verhaal.html", label: "Ons verhaal" },
-    { href: "waarom-link.html", label: "Waarom LINK." },
+    { href: "over-link.html", label: "Over LINK." },
     { href: "verhalen.html", label: "Verhalen" },
     { href: "contact.html", label: "Contact" }
   ],
@@ -101,7 +99,7 @@ window.LINK = {
     },
     {
       name: "Structurele stroom",
-      text: "Na de pilot bouwen we door naar een vaste stroom gekwalificeerde prospects. Zonder lange contracten.",
+      text: "Na de pilot bouwen we door naar een vaste stroom gekwalificeerde prospects. Week na week.",
       gets: ["Voorspelbare groei", "Eén vast aanspreekpunt"]
     }
   ],
@@ -122,7 +120,7 @@ window.LINK = {
       title: "Groei, zonder dat jij zelf de telefoon pakt.",
       points: [
         { h: "Bewezen werkmethode", p: "Van kick-off tot een structurele stroom nieuwe klanten. Getest in de praktijk, niet op papier." },
-        { h: "Laag risico", p: "Je start met een pilot en zit nergens lang aan vast. Wij verdienen onze plek elke maand opnieuw." },
+        { h: "Een gerichte start", p: "Je start met een pilot waarin we samen je propositie aanscherpen. Zo bouwen we vanaf dag één aan resultaat." },
         { h: "Voorspelbare instroom", p: "Week na week gesprekken met bedrijven die jij als klant wilt hebben." },
         { h: "Korte lijnen", p: "Eén vast aanspreekpunt in een klein en hecht team. Je hebt binnen {response} een reactie." }
       ]
@@ -170,8 +168,6 @@ window.LINK = {
       a: "Een pilot is bij ons geen proef om te kijken of het werkt. Het is een gerichte start: we scherpen samen jouw propositie aan voor de markt. Staat die scherp, dan weten we dat het werkt met onze manier van bellen. Je hoort elke week waar we staan, en in de kennismaking geven we je een concreet beeld voor jouw markt." },
     { q: "Wat kost het?",
       a: "Dat hangt af van je doelgroep en je ambitie. In de kennismaking maken we het concreet. Je start altijd met een pilot, waarin we samen de basis leggen voor een structurele stroom nieuwe klanten." },
-    { q: "Zitten we lang aan jullie vast?",
-      a: "Nee. Na de pilot kies je zelf of je doorgaat. We verdienen onze plek elke maand opnieuw." },
     { q: "Hoe houden we zicht op de voortgang?",
       a: "Via je eigen partnerportaal, met alle leads, afspraken en updates op één plek. Elke week een update, en heb je een vraag, dan heb je binnen {response} een reactie." },
     { q: "Voor welke bedrijven werken jullie?",

@@ -15,7 +15,7 @@ data/site.js  ──►  assets/js/main.js  ──►  alle pagina's
 |---|---|---|
 | E-mail, telefoon | `data/site.js > contact` | header (mobiel), footer, contactpagina, CTA's, JSON-LD* |
 | Menu | `data/site.js > nav` | header, mobiel menu, footer |
-| Oprichter + quote | `data/site.js > founder` | home, ons verhaal, contact |
+| Oprichter + quote | `data/site.js > founder` | over LINK., contact |
 | Alle foto's | `data/site.js > photos` | elke pagina |
 | Zo werkt het: 4 fases met foto, glaskaartjes en "wat je krijgt" | `data/site.js > method` (+ `pilotLabel`) | home, diensten |
 | Voorbeelden in de hero-kaart | `data/site.js > liveCard` | home |
@@ -72,8 +72,10 @@ Elk verhaal is een tekstbestand in `content/verhalen/`. Zo voeg je er een toe:
 website/
 ├── index.html          Home
 ├── diensten.html       Telefonische acquisitie + business development
-├── ons-verhaal.html    Hens, waarom LINK. bestaat
-├── waarom-link.html    Transparantie · Eerlijkheid · Lange termijn
+├── over-link.html      Over LINK.: Hens, waarom partners voor LINK. kiezen
+├── ons-verhaal.html    (doorverwijzing naar over-link.html)
+├── waarom-link.html    (doorverwijzing naar over-link.html#waarom)
+├── verhalen.html       Overzicht verhalen (gegenereerd)
 ├── contact.html        Formulier + gegevens
 ├── 404.html
 ├── data/site.js        ← centrale databron

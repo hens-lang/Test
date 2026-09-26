@@ -293,7 +293,7 @@
   if (cv) {
     const ctx = cv.getContext("2d");
     let W, H, dpr, nodes = [], me, links = [], mouse = { x: -999, y: -999 };
-    const N = () => Math.round(Math.min(90, (W * H) / 16000));
+    const N = () => Math.round(Math.min(48, (W * H) / 30000));
     const resize = () => {
       dpr = Math.min(2, devicePixelRatio || 1);
       W = cv.clientWidth; H = cv.clientHeight;
@@ -332,7 +332,7 @@
         }
         const dm = Math.hypot(n.x - mouse.x, n.y - mouse.y);
         if (dm < 150) {
-          ctx.strokeStyle = `rgba(56,182,255,${0.5 * (1 - dm / 150)})`;
+          ctx.strokeStyle = `rgba(56,182,255,${0.3 * (1 - dm / 150)})`;
           ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(mouse.x, mouse.y); ctx.lineTo(n.x, n.y); ctx.stroke();
         }
       }
@@ -341,15 +341,15 @@
         l.t = Math.min(1, l.t + 0.012);
         const e = 1 - Math.pow(1 - l.t, 3);
         const x = me.x + (l.n.x - me.x) * e, y = me.y + (l.n.y - me.y) * e;
-        ctx.strokeStyle = "rgba(0,0,0,.55)"; ctx.lineWidth = 1.2;
+        ctx.strokeStyle = "rgba(0,0,0,.22)"; ctx.lineWidth = 1;
         ctx.beginPath(); ctx.moveTo(me.x, me.y); ctx.lineTo(x, y); ctx.stroke();
         if (l.t >= 1) l.n.won = Math.min(1, l.n.won + 0.04);
       }
-      if (links.length > 7) { const old = links.shift(); old.n.won = 0; }
+      if (links.length > 4) { const old = links.shift(); old.n.won = 0; }
       for (const n of nodes) {
         const won = n.won;
-        ctx.fillStyle = won ? `rgba(56,182,255,${0.4 + 0.6 * won})` : "rgba(20,24,30,.28)";
-        ctx.beginPath(); ctx.arc(n.x, n.y, n.r + won * 3.5, 0, 7); ctx.fill();
+        ctx.fillStyle = won ? `rgba(56,182,255,${0.35 + 0.5 * won})` : "rgba(20,24,30,.14)";
+        ctx.beginPath(); ctx.arc(n.x, n.y, n.r * 0.8 + won * 2.5, 0, 7); ctx.fill();
         if (won) { ctx.strokeStyle = `rgba(56,182,255,${0.25 * won})`; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(n.x, n.y, n.r + 8, 0, 7); ctx.stroke(); }
       }
       // jij
@@ -359,7 +359,7 @@
         ctx.fillStyle = "#000"; ctx.beginPath(); ctx.arc(me.x, me.y, 9, 0, 7); ctx.fill();
       }
       
-      if (!reduced && t - last > 2600) { pick(); last = t; }
+      if (!reduced && t - last > 3600) { pick(); last = t; }
       if (!reduced) requestAnimationFrame(draw);
     };
     if (reduced) { for (let i = 0; i < 5; i++) pick(); links.forEach((l) => { l.t = 1; l.n.won = 1; }); draw(0); }
