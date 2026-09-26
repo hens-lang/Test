@@ -185,7 +185,7 @@ h1{
 /* ---------- cijfers ---------- */
 .specs{
   margin-top:44px; display:grid; gap:2px;
-  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(262px,1fr));
   background:var(--line); border:1px solid var(--line); border-radius:16px; overflow:hidden;
 }
 .spec{background:var(--card); padding:32px 28px 28px; display:flex; flex-direction:column; gap:10px}
@@ -327,8 +327,13 @@ table.data tbody tr{border-top:1px solid var(--line)}
 table.data tbody tr:first-child{border-top:none}
 table.data tr.part th, table.data tr.part td{color:var(--accent)}
 table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
-.tier-out{grid-template-columns:repeat(auto-fit,minmax(132px,1fr)); gap:18px}
-.tier-out .v{font-size:22px; white-space:nowrap}
+.tier-out{grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px 28px}
+.vs-3{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.vs-3 .col{padding:26px 24px}
+.vs-3 .col h3{font-size:19px}
+.vs-3 .col .r span{font-size:15px}
+.vs-3 .col .r b{font-size:17px}
+.tier-out .v{font-size:23px}
 
 @media (max-width:559px){ .rail-meta{display:none} }
 @media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important} }
@@ -416,7 +421,7 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
     </section>
 
     <section id="cijfers">
-      <p class="eyebrow">Negentien weken Moyee in cijfers</p>
+      <p class="eyebrow">Wat er tot nu toe gebeld is</p>
       <h2>Geen gevoel, maar <em>gemeten</em>.</h2>
       <p class="lede">Alles hieronder komt uit de belexport over {{PERIODE_LANG}}. Het is de basis onder het voorstel verderop.</p>
 {{SPECS}}
@@ -522,8 +527,8 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
     </section>
 
     <section id="vergelijking">
-      <p class="eyebrow">Wat dit voor jullie betekent</p>
-      <h2>Meer beldagen, en toch een lagere prijs <em>per lead</em>.</h2>
+      <p class="eyebrow">Opschalen</p>
+      <h2>Twee keer zoveel kan nu al. <em>Drie keer</em> ook.</h2>
 {{VERGELIJK}}
       <p class="fine">{{VERGELIJK_SLOT}}</p>
     </section>

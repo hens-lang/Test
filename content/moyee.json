@@ -393,13 +393,11 @@
         },
         {
           "cells": [
-            "8 beldagen of meer",
+            "8 tot 12 beldagen",
             "€ 500",
-            "vanaf € 4.000",
-            "vanaf ± 19 leads"
-          ],
-          "note": "ons advies",
-          "highlight": true
+            "€ 4.000 tot € 6.000",
+            "± 19 tot 28 leads"
+          ]
         }
       ],
       "closing": "De aantallen zijn een indicatie, gebaseerd op 23,2 gekwalificeerde leads per duizend gesprekspogingen over 2.629 gesprekken voor Moyee, bij ongeveer 100 pogingen per beldag. Minimaal vier beldagen per periode, prijzen excl. btw."
@@ -408,22 +406,22 @@
       "id": "vergelijking",
       "type": "compare",
       "theme": "light",
-      "eyebrow": "Wat dit voor jullie betekent",
+      "eyebrow": "Opschalen",
       "title": [
         {
-          "t": "Bijna twee keer zoveel gesprekken, voor "
+          "t": "Twee keer zoveel kan nu al. "
         },
         {
-          "t": "dezelfde prijs",
+          "t": "Drie keer",
           "accent": true
         },
         {
-          "t": " per lead."
+          "t": " ook."
         }
       ],
       "columns": [
         {
-          "tag": "Nu · ± 4,1 beldagen",
+          "tag": "Nu",
           "head": "€ 1.500 per maand plus € 150 per tasting",
           "rows": [
             {
@@ -439,15 +437,18 @@
               "value": "± 10"
             },
             {
+              "key": "Waarvan tastings",
+              "value": "± 4"
+            },
+            {
               "key": "Prijs per lead",
               "value": "± € 212"
             }
           ]
         },
         {
-          "tag": "Voorstel · acht beldagen",
-          "head": "€ 500 per beldag, verder niets",
-          "highlight": true,
+          "tag": "Twee keer",
+          "head": "8 beldagen per 4 weken",
           "rows": [
             {
               "key": "Kosten per 4 weken",
@@ -462,13 +463,44 @@
               "value": "± 19"
             },
             {
+              "key": "Waarvan tastings",
+              "value": "± 7"
+            },
+            {
               "key": "Prijs per lead",
               "value": "€ 215"
             }
           ]
+        },
+        {
+          "tag": "Drie keer",
+          "head": "12 beldagen per 4 weken",
+          "highlight": true,
+          "rows": [
+            {
+              "key": "Kosten per 4 weken",
+              "value": "€ 6.000"
+            },
+            {
+              "key": "Gesprekspogingen",
+              "value": "± 1.200"
+            },
+            {
+              "key": "Verwachte leads",
+              "value": "± 28"
+            },
+            {
+              "key": "Waarvan tastings",
+              "value": "± 10"
+            },
+            {
+              "key": "Prijs per lead",
+              "value": "€ 216"
+            }
+          ]
         }
       ],
-      "closing": "Acht beldagen is 93 procent meer gesprekken dan we nu per periode voeren, tegen vrijwel dezelfde prijs per lead. En jullie weten vooraf wat een periode kost, in plaats van achteraf."
+      "closing": "De bezetting en de bellijst liggen er al. Verdubbelen kan vanaf de eerstvolgende periode, verdriedubbelen ook, en de prijs per lead blijft rond € 215."
     },
     {
       "id": "target",
@@ -584,7 +616,7 @@
         },
         {
           "title": "Aantal beldagen kiezen",
-          "text": "Jullie kiezen hoeveel beldagen per vier weken. Ons advies is acht."
+          "text": "Jullie kiezen hoeveel beldagen per vier weken. Verdubbelen of verdriedubbelen kan allebei direct."
         },
         {
           "title": "Start eerste periode",

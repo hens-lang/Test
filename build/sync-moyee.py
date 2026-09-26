@@ -92,12 +92,11 @@ st['columns'] = ['Beldagen per 4 weken', 'Prijs per beldag', 'Per 4 weken', 'Ver
 tier = {r['beldagen']: r for r in S['staffel']}
 per_dag = res['leads_per_1000'] * norm / 1000
 st['rows'] = [
-    {'cells': ['4 beldagen', eur(600), eur(2400), f"± {round(tier[4]['leads'])} leads"]},
+    {'cells': ['4 beldagen', eur(600), eur(2400), f'± {round(4*per_dag)} leads']},
     {'cells': ['5 tot 7 beldagen', eur(550), f'{eur(2750)} tot {eur(3850)}',
                f'± {round(5*per_dag)} tot {round(7*per_dag)} leads']},
-    {'cells': ['8 beldagen of meer', eur(500), f'vanaf {eur(4000)}',
-               f"vanaf ± {round(tier[8]['leads'])} leads"],
-     'note': 'ons advies', 'highlight': True},
+    {'cells': ['8 tot 12 beldagen', eur(500), f'{eur(4000)} tot {eur(6000)}',
+               f'± {round(8*per_dag)} tot {round(12*per_dag)} leads']},
 ]
 st['closing'] = (
     f"De aantallen zijn een indicatie, gebaseerd op {nl(res['leads_per_1000'])} gekwalificeerde leads per duizend "
@@ -105,43 +104,46 @@ st['closing'] = (
     'Minimaal vier beldagen per periode, prijzen excl. btw.'
 )
 
-# ---------- 10 vergelijking ----------
+# ---------- 10 opschalen ----------
 v = by_id['vergelijking']
-v['columns'][0].update({
-    'tag': f"Nu · ± {nl(hui['beldagen_per_periode'])} beldagen",
-    'head': f'{eur(VAST)} per maand plus {eur(TASTINGFEE)} per gekwalificeerde tasting',
-    'rows': [
+twee, drie = tier[8], dict(tier[8])
+drie = {'beldagen': 12, 'periode': 12 * 500, 'pogingen': 12 * norm,
+        'leads': 12 * per_dag, 'tastings': 12 * res['tastings_per_1000'] * norm / 1000,
+        'per_lead': round(12 * 500 / (12 * per_dag))}
+v['eyebrow'] = 'Opschalen'
+v['title'] = [{'t': 'Twee keer zoveel kan nu al. '}, {'t': 'Drie keer', 'accent': True}, {'t': ' ook.'}]
+v['columns'] = [
+    {'tag': 'Nu', 'head': f"± {nl(hui['beldagen_per_periode'])} beldagen per 4 weken",
+     'rows': [
         {'key': 'Kosten per 4 weken', 'value': f'± {eur(nu_kosten)}'},
         {'key': 'Gesprekspogingen', 'value': f"± {dui(hui['pogingen_per_periode'])}"},
         {'key': 'Verwachte leads', 'value': f"± {round(hui['leads_per_periode'])}"},
+        {'key': 'Waarvan tastings', 'value': f"± {round(hui['tastings_per_periode'])}"},
         {'key': 'Prijs per lead', 'value': f'± {eur(nu_per_lead)}'},
-    ],
-})
-acht = next(x for x in S['staffel'] if x['beldagen'] == 8)
-v['columns'][1].update({
-    'tag': 'Voorstel · acht beldagen',
-    'head': f"{eur(500)} per beldag, verder niets",
-    'rows': [
-        {'key': 'Kosten per 4 weken', 'value': eur(acht['periode'])},
-        {'key': 'Gesprekspogingen', 'value': f"± {dui(acht['pogingen'])}"},
-        {'key': 'Verwachte leads', 'value': f"± {round(acht['leads'])}"},
-        {'key': 'Prijs per lead', 'value': eur(acht['per_lead'])},
-    ],
-})
-groei = (acht['pogingen'] / hui['pogingen_per_periode'] - 1) * 100
+     ]},
+    {'tag': 'Twee keer', 'head': '8 beldagen per 4 weken',
+     'rows': [
+        {'key': 'Kosten per 4 weken', 'value': eur(twee['periode'])},
+        {'key': 'Gesprekspogingen', 'value': f"± {dui(twee['pogingen'])}"},
+        {'key': 'Verwachte leads', 'value': f"± {round(twee['leads'])}"},
+        {'key': 'Waarvan tastings', 'value': f"± {round(twee['tastings'])}"},
+        {'key': 'Prijs per lead', 'value': eur(twee['per_lead'])},
+     ]},
+    {'tag': 'Drie keer', 'head': '12 beldagen per 4 weken', 'highlight': True,
+     'rows': [
+        {'key': 'Kosten per 4 weken', 'value': eur(drie['periode'])},
+        {'key': 'Gesprekspogingen', 'value': f"± {dui(drie['pogingen'])}"},
+        {'key': 'Verwachte leads', 'value': f"± {round(drie['leads'])}"},
+        {'key': 'Waarvan tastings', 'value': f"± {round(drie['tastings'])}"},
+        {'key': 'Prijs per lead', 'value': eur(drie['per_lead'])},
+     ]},
+]
+acht = twee
+groei = round((acht['pogingen'] / hui['pogingen_per_periode'] - 1) * 100)
 verschil = acht['per_lead'] - nu_per_lead
-if verschil < -5:
-    prijszin = 'en de prijs per lead gaat omlaag'
-elif verschil <= 5:
-    prijszin = 'tegen vrijwel dezelfde prijs per lead'
-else:
-    prijszin = f'tegen {eur(verschil)} meer per lead'
-v['title'] = ([{'t': 'Bijna twee keer zoveel gesprekken, voor '}, {'t': 'dezelfde prijs', 'accent': True}, {'t': ' per lead.'}]
-              if verschil <= 5 else
-              [{'t': 'Meer beldagen, en toch een lagere prijs '}, {'t': 'per lead', 'accent': True}, {'t': '.'}])
 v['closing'] = (
-    f"Acht beldagen is {round(groei)} procent meer gesprekken dan we nu per periode voeren, "
-    f"{prijszin}. En jullie weten vooraf wat een periode kost, in plaats van achteraf."
+    f"De bezetting en de bellijst liggen er al. Verdubbelen kan vanaf de eerstvolgende periode, "
+    f"verdriedubbelen ook, en de prijs per lead blijft rond {eur(acht['per_lead'])}."
 )
 
 # ---------- pijplijn (nieuw, vóór de staffel) ----------
@@ -186,6 +188,10 @@ by_id['bekendheid']['cards'][0]['text'] = (
     f'Dat is nog maar een fractie van de markt, en elk gesprek is ook een moment waarop iemand de naam Moyee hoort.'
 )
 by_id['vergelijking']['columns'][0]['head'] = f'{eur(VAST)} per maand plus {eur(TASTINGFEE)} per tasting'
+
+by_id['volgende']['steps'][1]['text'] = (
+    'Jullie kiezen hoeveel beldagen per vier weken. Verdubbelen of verdriedubbelen kan allebei direct.'
+)
 
 DECK.write_text(json.dumps(d, ensure_ascii=False, indent=2), encoding='utf-8')
 print(f'{DECK} bijgewerkt, {len(d["slides"])} slides')

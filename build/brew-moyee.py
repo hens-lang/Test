@@ -112,7 +112,7 @@ def cup(fill_top, fill_h):
 TIERS_BTN = [
     (0, '4 beldagen', 600, 'per beldag', 80, 28, False),
     (1, '5 tot 7 beldagen', 550, 'per beldag', 55, 53, False),
-    (2, '8 beldagen of meer', 500, 'per beldag &middot; ons advies', 34, 74, True),
+    (2, '8 tot 12 beldagen', 500, 'per beldag', 34, 74, True),
 ]
 TIERS = '      <div class="tiers" role="group" aria-label="Beldagenstaffel">\n' + '\n'.join(
     f'''        <button class="tier" type="button" aria-pressed="{'true' if on else 'false'}" data-tier="{i}">
@@ -127,47 +127,64 @@ TIERS = '      <div class="tiers" role="group" aria-label="Beldagenstaffel">\n' 
       </div>
 
       <div class="tier-out" id="tierout" aria-live="polite">
-        <div><span class="k">Per 4 weken</span><span class="v" id="t-cost">vanaf {eur(acht['periode'])}</span></div>
-        <div><span class="k">Gesprekspogingen</span><span class="v" id="t-calls">&plusmn; {dui(acht['pogingen'])}</span></div>
-        <div><span class="k">Verwachte leads</span><span class="v" id="t-leads">vanaf &plusmn; {round(acht['leads'])}</span></div>
-        <div><span class="k">Waarvan tastings</span><span class="v" id="t-tast">&plusmn; {round(acht['tastings'])}</span></div>
+        <div><span class="k">Per 4 weken</span><span class="v" id="t-cost">{eur(4000)} tot {eur(6000)}</span></div>
+        <div><span class="k">Gesprekspogingen</span><span class="v" id="t-calls">&plusmn; {dui(800)} tot {dui(1200)}</span></div>
+        <div><span class="k">Verwachte leads</span><span class="v" id="t-leads">&plusmn; {round(acht['leads'])} tot {round(12*res['leads_per_1000']*norm/1000)}</span></div>
+        <div><span class="k">Waarvan tastings</span><span class="v" id="t-tast">&plusmn; {round(acht['tastings'])} tot {round(12*res['tastings_per_1000']*norm/1000)}</span></div>
         <div><span class="k">Prijs per lead</span><span class="v" id="t-lead">{eur(acht['per_lead'])}</span></div>
       </div>
       '''
 
 vier, zes = tier[4], tier[6]
-VERGELIJK = f'''      <div class="vs">
-        <div class="col now">
-          <div class="tag">Nu &middot; &plusmn; {nl(hui['beldagen_per_periode'])} beldagen</div>
-          <h3>{eur(VAST)} per maand plus {eur(TASTINGFEE)} per tasting</h3>
-          <dl>
-            <div class="r"><span>Kosten per 4 weken</span><b>&plusmn; {eur(nu_kosten)}</b></div>
-            <div class="r"><span>Gesprekspogingen</span><b>&plusmn; {dui(hui['pogingen_per_periode'])}</b></div>
-            <div class="r"><span>Verwachte leads</span><b>&plusmn; {round(hui['leads_per_periode'])}</b></div>
-            <div class="r"><span>Waarvan tastings</span><b>&plusmn; {round(hui['tastings_per_periode'])}</b></div>
-            <div class="r"><span>Prijs per lead</span><b>&plusmn; {eur(nu_per_lead)}</b></div>
-          </dl>
-        </div>
-        <div class="col new">
-          <div class="tag">Voorstel &middot; acht beldagen</div>
-          <h3>{eur(500)} per beldag, verder niets</h3>
-          <dl>
-            <div class="r"><span>Kosten per 4 weken</span><b>{eur(acht['periode'])}</b></div>
-            <div class="r"><span>Gesprekspogingen</span><b>&plusmn; {dui(acht['pogingen'])}</b></div>
-            <div class="r"><span>Verwachte leads</span><b>&plusmn; {round(acht['leads'])}</b></div>
-            <div class="r"><span>Waarvan tastings</span><b>&plusmn; {round(acht['tastings'])}</b></div>
-            <div class="r"><span>Prijs per lead</span><b>{eur(acht['per_lead'])}</b></div>
-          </dl>
-        </div>
+per_dag = res['leads_per_1000'] * norm / 1000
+tast_dag = res['tastings_per_1000'] * norm / 1000
+drie = {'periode': 12 * 500, 'pogingen': 12 * norm, 'leads': 12 * per_dag,
+        'tastings': 12 * tast_dag, 'per_lead': round(12 * 500 / (12 * per_dag))}
+
+
+def kolom(tag, head, rows, hl=False):
+    r = '\n'.join(f'            <div class="r"><span>{k}</span><b>{v}</b></div>' for k, v in rows)
+    return (f'        <div class="col{" new" if hl else " now"}">\n'
+            f'          <div class="tag">{tag}</div>\n'
+            f'          <h3>{head}</h3>\n          <dl>\n{r}\n          </dl>\n        </div>')
+
+
+VERGELIJK = '      <div class="vs vs-3">\n' + '\n'.join([
+    kolom('Nu', f"&plusmn; {nl(hui['beldagen_per_periode'])} beldagen per 4 weken", [
+        ('Kosten per 4 weken', f'&plusmn; {eur(nu_kosten)}'),
+        ('Gesprekspogingen', f"&plusmn; {dui(hui['pogingen_per_periode'])}"),
+        ('Verwachte leads', f"&plusmn; {round(hui['leads_per_periode'])}"),
+        ('Waarvan tastings', f"&plusmn; {round(hui['tastings_per_periode'])}"),
+        ('Prijs per lead', f'&plusmn; {eur(nu_per_lead)}'),
+    ]),
+    kolom('Twee keer', '8 beldagen per 4 weken', [
+        ('Kosten per 4 weken', eur(acht['periode'])),
+        ('Gesprekspogingen', f"&plusmn; {dui(acht['pogingen'])}"),
+        ('Verwachte leads', f"&plusmn; {round(acht['leads'])}"),
+        ('Waarvan tastings', f"&plusmn; {round(acht['tastings'])}"),
+        ('Prijs per lead', eur(acht['per_lead'])),
+    ]),
+    kolom('Drie keer', '12 beldagen per 4 weken', [
+        ('Kosten per 4 weken', eur(drie['periode'])),
+        ('Gesprekspogingen', f"&plusmn; {dui(drie['pogingen'])}"),
+        ('Verwachte leads', f"&plusmn; {round(drie['leads'])}"),
+        ('Waarvan tastings', f"&plusmn; {round(drie['tastings'])}"),
+        ('Prijs per lead', eur(drie['per_lead'])),
+    ], hl=True),
+]) + f'''
       </div>
       <div class="bars">
         <div class="barrow">
           <div class="k">Nu</div>
-          <div class="track"><div class="fill a" style="width:{hui['pogingen_per_periode']/acht['pogingen']*100:.1f}%"><b>&plusmn; {dui(hui['pogingen_per_periode'])} gesprekken</b></div></div>
+          <div class="track"><div class="fill a" style="width:{hui['pogingen_per_periode']/drie['pogingen']*100:.1f}%"><b>&plusmn; {dui(hui['pogingen_per_periode'])}</b></div></div>
         </div>
         <div class="barrow">
-          <div class="k">Voorstel</div>
-          <div class="track"><div class="fill b" style="width:100%"><b>&plusmn; {dui(acht['pogingen'])} gesprekken per 4 weken</b></div></div>
+          <div class="k">Twee keer</div>
+          <div class="track"><div class="fill a" style="width:{acht['pogingen']/drie['pogingen']*100:.1f}%"><b>&plusmn; {dui(acht['pogingen'])} gesprekken</b></div></div>
+        </div>
+        <div class="barrow">
+          <div class="k">Drie keer</div>
+          <div class="track"><div class="fill b" style="width:100%"><b>&plusmn; {dui(drie['pogingen'])} gesprekken per 4 weken</b></div></div>
         </div>
       </div>
       '''
@@ -178,8 +195,9 @@ elif verschil <= 5:
     slotzin = f'tegen vrijwel dezelfde prijs per lead, {eur(nu_per_lead)} nu tegen {eur(acht["per_lead"])} straks'
 else:
     slotzin = f'tegen {eur(verschil)} meer per lead'
-VERGELIJK_SLOT = (f'Acht beldagen is {groei} procent meer gesprekken dan we nu per periode voeren, {slotzin}. '
-                  f'En jullie weten vooraf wat een periode kost, in plaats van achteraf opgeteld.')
+VERGELIJK_SLOT = ('De bezetting en de bellijst liggen er al. Verdubbelen kan vanaf de eerstvolgende periode, '
+                  f"verdriedubbelen ook, en de prijs per lead blijft rond {eur(acht['per_lead'])}. "
+                  f'Dat is {groei} procent meer gesprekken dan nu, {slotzin}.')
 
 logo = 'data:image/png;base64,' + base64.b64encode((ROOT / 'assets' / 'moyee-logo-web.png').read_bytes()).decode()
 
@@ -209,10 +227,10 @@ tpl = (ROOT / 'build' / 'moyee-brew.tpl.html').read_text(encoding='utf-8')
 # staffelknoppen in de JS met dezelfde cijfers
 js = ',\n    '.join(
     "{cost:'%s', calls:'%s', leads:'%s', tast:'%s', per:'%s'}" % (
-        eur(t['periode']) if n != 8 else 'vanaf ' + eur(t['periode']),
-        '&plusmn; ' + dui(t['pogingen']),
-        ('&plusmn; %d' % round(t['leads'])) if n != 8 else 'vanaf &plusmn; %d' % round(t['leads']),
-        '&plusmn; %d' % round(t['tastings']),
+        eur(t['periode']) if n != 8 else eur(4000) + ' tot ' + eur(6000),
+        ('&plusmn; ' + dui(t['pogingen'])) if n != 8 else '&plusmn; %s tot %s' % (dui(800), dui(1200)),
+        ('&plusmn; %d' % round(t['leads'])) if n != 8 else '&plusmn; %d tot %d' % (round(t['leads']), round(12*per_dag)),
+        ('&plusmn; %d' % round(t['tastings'])) if n != 8 else '&plusmn; %d tot %d' % (round(t['tastings']), round(12*tast_dag)),
         eur(t['per_lead']),
     ) for n, t in ((4, vier), (6, zes), (8, acht))
 )

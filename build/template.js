@@ -384,9 +384,10 @@ function slideTiers(s) {
 }
 
 function slideCompare(s) {
+  const n = s.columns.length;
   return `
   <div class="head">${eyebrow(s.eyebrow)}${title(s.title)}</div>
-  <div class="compare-grid">
+  <div class="compare-grid cols-${n}" style="grid-template-columns:repeat(${n},1fr)">
     ${s.columns
       .map(
         (col) => `
@@ -738,6 +739,12 @@ h1.title { font-size:104px; letter-spacing:-0.03em; }
   position:absolute; left:var(--m); right:var(--m); top:392px; height:436px;
   display:grid; grid-template-columns:1fr 1fr; gap:32px;
 }
+.compare-grid.cols-3 { gap:24px; }
+.cols-3 .cmp-card { padding:36px 34px; }
+.cols-3 .cmp-head { font-size:25px; }
+.cols-3 .cmp-row { padding:15px 0; gap:16px; }
+.cols-3 .cmp-key { font-size:18px; }
+.cols-3 .cmp-val { font-size:23px; }
 .cmp-card { padding:40px 48px; }
 .cmp-tag {
   font-size:16px; font-weight:700; text-transform:uppercase; letter-spacing:0.18em;

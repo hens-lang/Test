@@ -185,7 +185,7 @@ h1{
 /* ---------- cijfers ---------- */
 .specs{
   margin-top:44px; display:grid; gap:2px;
-  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(262px,1fr));
   background:var(--line); border:1px solid var(--line); border-radius:16px; overflow:hidden;
 }
 .spec{background:var(--card); padding:32px 28px 28px; display:flex; flex-direction:column; gap:10px}
@@ -327,8 +327,13 @@ table.data tbody tr{border-top:1px solid var(--line)}
 table.data tbody tr:first-child{border-top:none}
 table.data tr.part th, table.data tr.part td{color:var(--accent)}
 table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
-.tier-out{grid-template-columns:repeat(auto-fit,minmax(132px,1fr)); gap:18px}
-.tier-out .v{font-size:22px; white-space:nowrap}
+.tier-out{grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px 28px}
+.vs-3{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.vs-3 .col{padding:26px 24px}
+.vs-3 .col h3{font-size:19px}
+.vs-3 .col .r span{font-size:15px}
+.vs-3 .col .r b{font-size:17px}
+.tier-out .v{font-size:23px}
 
 @media (max-width:559px){ .rail-meta{display:none} }
 @media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important} }
@@ -416,7 +421,7 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
     </section>
 
     <section id="cijfers">
-      <p class="eyebrow">Negentien weken Moyee in cijfers</p>
+      <p class="eyebrow">Wat er tot nu toe gebeld is</p>
       <h2>Geen gevoel, maar <em>gemeten</em>.</h2>
       <p class="lede">Alles hieronder komt uit de belexport over maart tot en met september 2026. Het is de basis onder het voorstel verderop.</p>
       <div class="specs">
@@ -616,18 +621,18 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
         <button class="tier" type="button" aria-pressed="true" data-tier="2">
           <svg class="cup" viewBox="0 0 100 120" aria-hidden="true"><rect x="18" y="34" width="64" height="74" fill="url(#brewgrad)" clip-path="url(#cupclip-s)"></rect><use href="#cupshape"></use></svg>
           <div>
-            <div class="days">8 beldagen of meer</div>
+            <div class="days">8 tot 12 beldagen</div>
             <div class="price">&euro; 500</div>
-            <div class="per">per beldag &middot; ons advies</div>
+            <div class="per">per beldag</div>
           </div>
         </button>
       </div>
 
       <div class="tier-out" id="tierout" aria-live="polite">
-        <div><span class="k">Per 4 weken</span><span class="v" id="t-cost">vanaf &euro; 4.000</span></div>
-        <div><span class="k">Gesprekspogingen</span><span class="v" id="t-calls">&plusmn; 800</span></div>
-        <div><span class="k">Verwachte leads</span><span class="v" id="t-leads">vanaf &plusmn; 19</span></div>
-        <div><span class="k">Waarvan tastings</span><span class="v" id="t-tast">&plusmn; 7</span></div>
+        <div><span class="k">Per 4 weken</span><span class="v" id="t-cost">&euro; 4.000 tot &euro; 6.000</span></div>
+        <div><span class="k">Gesprekspogingen</span><span class="v" id="t-calls">&plusmn; 800 tot 1.200</span></div>
+        <div><span class="k">Verwachte leads</span><span class="v" id="t-leads">&plusmn; 19 tot 28</span></div>
+        <div><span class="k">Waarvan tastings</span><span class="v" id="t-tast">&plusmn; 7 tot 10</span></div>
         <div><span class="k">Prijs per lead</span><span class="v" id="t-lead">&euro; 215</span></div>
       </div>
       
@@ -635,12 +640,12 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
     </section>
 
     <section id="vergelijking">
-      <p class="eyebrow">Wat dit voor jullie betekent</p>
-      <h2>Meer beldagen, en toch een lagere prijs <em>per lead</em>.</h2>
-      <div class="vs">
+      <p class="eyebrow">Opschalen</p>
+      <h2>Twee keer zoveel kan nu al. <em>Drie keer</em> ook.</h2>
+      <div class="vs vs-3">
         <div class="col now">
-          <div class="tag">Nu &middot; &plusmn; 4,1 beldagen</div>
-          <h3>&euro; 1.500 per maand plus &euro; 150 per tasting</h3>
+          <div class="tag">Nu</div>
+          <h3>&plusmn; 4,1 beldagen per 4 weken</h3>
           <dl>
             <div class="r"><span>Kosten per 4 weken</span><b>&plusmn; &euro; 2.040</b></div>
             <div class="r"><span>Gesprekspogingen</span><b>&plusmn; 414</b></div>
@@ -649,9 +654,9 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
             <div class="r"><span>Prijs per lead</span><b>&plusmn; &euro; 212</b></div>
           </dl>
         </div>
-        <div class="col new">
-          <div class="tag">Voorstel &middot; acht beldagen</div>
-          <h3>&euro; 500 per beldag, verder niets</h3>
+        <div class="col now">
+          <div class="tag">Twee keer</div>
+          <h3>8 beldagen per 4 weken</h3>
           <dl>
             <div class="r"><span>Kosten per 4 weken</span><b>&euro; 4.000</b></div>
             <div class="r"><span>Gesprekspogingen</span><b>&plusmn; 800</b></div>
@@ -660,19 +665,34 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
             <div class="r"><span>Prijs per lead</span><b>&euro; 215</b></div>
           </dl>
         </div>
+        <div class="col new">
+          <div class="tag">Drie keer</div>
+          <h3>12 beldagen per 4 weken</h3>
+          <dl>
+            <div class="r"><span>Kosten per 4 weken</span><b>&euro; 6.000</b></div>
+            <div class="r"><span>Gesprekspogingen</span><b>&plusmn; 1.200</b></div>
+            <div class="r"><span>Verwachte leads</span><b>&plusmn; 28</b></div>
+            <div class="r"><span>Waarvan tastings</span><b>&plusmn; 10</b></div>
+            <div class="r"><span>Prijs per lead</span><b>&euro; 216</b></div>
+          </dl>
+        </div>
       </div>
       <div class="bars">
         <div class="barrow">
           <div class="k">Nu</div>
-          <div class="track"><div class="fill a" style="width:51.7%"><b>&plusmn; 414 gesprekken</b></div></div>
+          <div class="track"><div class="fill a" style="width:34.5%"><b>&plusmn; 414</b></div></div>
         </div>
         <div class="barrow">
-          <div class="k">Voorstel</div>
-          <div class="track"><div class="fill b" style="width:100%"><b>&plusmn; 800 gesprekken per 4 weken</b></div></div>
+          <div class="k">Twee keer</div>
+          <div class="track"><div class="fill a" style="width:66.7%"><b>&plusmn; 800 gesprekken</b></div></div>
+        </div>
+        <div class="barrow">
+          <div class="k">Drie keer</div>
+          <div class="track"><div class="fill b" style="width:100%"><b>&plusmn; 1.200 gesprekken per 4 weken</b></div></div>
         </div>
       </div>
       
-      <p class="fine">Acht beldagen is 93 procent meer gesprekken dan we nu per periode voeren, tegen vrijwel dezelfde prijs per lead, &euro; 212 nu tegen &euro; 215 straks. En jullie weten vooraf wat een periode kost, in plaats van achteraf opgeteld.</p>
+      <p class="fine">De bezetting en de bellijst liggen er al. Verdubbelen kan vanaf de eerstvolgende periode, verdriedubbelen ook, en de prijs per lead blijft rond &euro; 215. Dat is 93 procent meer gesprekken dan nu, tegen vrijwel dezelfde prijs per lead, &euro; 212 nu tegen &euro; 215 straks.</p>
     </section>
 
     <section id="afspraken">
@@ -944,7 +964,7 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
   var TIERS = [
     {cost:'&euro; 2.400', calls:'&plusmn; 400', leads:'&plusmn; 9', tast:'&plusmn; 4', per:'&euro; 259'},
     {cost:'&euro; 2.750 tot &euro; 3.850', calls:'&plusmn; 600', leads:'&plusmn; 12 tot 16', tast:'&plusmn; 5', per:'&euro; 237'},
-    {cost:'vanaf &euro; 4.000', calls:'&plusmn; 800', leads:'vanaf &plusmn; 19', tast:'&plusmn; 7', per:'&euro; 215'}
+    {cost:'&euro; 4.000 tot &euro; 6.000', calls:'&plusmn; 800 tot 1.200', leads:'&plusmn; 19 tot 28', tast:'&plusmn; 7 tot 10', per:'&euro; 215'}
   ];
   var btns = [].slice.call(document.querySelectorAll('.tier'));
   function pick(i){

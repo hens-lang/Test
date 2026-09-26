@@ -624,34 +624,37 @@ async function main() {
     }
 
     if (s.type === 'compare') {
-      const w = 848, gap = 32, y = 392, h = 436;
+      const n = s.columns.length;
+      const gap = n > 2 ? 24 : 32;
+      const w = (1728 - gap * (n - 1)) / n, y = 392, h = 436;
+      const fs = n > 2 ? { head: 12.5, key: 9.5, val: 11.5, pad: 34 } : { head: 15, key: 11, val: 13.5, pad: 52 };
       s.columns.forEach((col, n) => {
         const x = 96 + n * (w + gap);
         const hl = !!col.highlight;
         card(slide, x, y, w, h, hl ? '000000' : C.card);
         slide.addText(col.tag.toUpperCase(), {
-          x: p(x + 52), y: p(y + 44), w: p(w - 104), h: p(30), isTextBox: true, margin: 0,
+          x: p(x + fs.pad), y: p(y + 40), w: p(w - fs.pad * 2), h: p(30), isTextBox: true, margin: 0,
           fontFace: SANS, bold: true, fontSize: 8, color: hl ? C.accent : C.muted, charSpacing: 1.8, valign: 'middle',
         });
         slide.addText(col.head, {
-          x: p(x + 52), y: p(y + 78), w: p(w - 104), h: p(52), isTextBox: true, margin: 0,
-          fontFace: SANS, bold: true, fontSize: 15, color: hl ? C.darkText : C.ink, valign: 'middle',
+          x: p(x + fs.pad), y: p(y + 74), w: p(w - fs.pad * 2), h: p(56), isTextBox: true, margin: 0,
+          fontFace: SANS, bold: true, fontSize: fs.head, color: hl ? C.darkText : C.ink, valign: 'middle', lineSpacingMultiple: 1.15,
         });
         col.rows.forEach((r, m) => {
-          const ry = y + 140 + m * 66;
+          const ry = y + 140 + m * 64;
           if (m > 0) {
             slide.addShape('line', {
-              x: p(x + 52), y: p(ry), w: p(w - 104), h: 0,
+              x: p(x + fs.pad), y: p(ry), w: p(w - fs.pad * 2), h: 0,
               line: { color: hl ? C.darkBorder : 'D8D2C4', width: 0.75 },
             });
           }
           slide.addText(r.key, {
-            x: p(x + 52), y: p(ry), w: p(w - 300), h: p(66), isTextBox: true, margin: 0,
-            fontFace: SANS, fontSize: 11, color: hl ? C.darkMuted : C.muted, valign: 'middle',
+            x: p(x + fs.pad), y: p(ry), w: p(w - fs.pad - 120), h: p(64), isTextBox: true, margin: 0,
+            fontFace: SANS, fontSize: fs.key, color: hl ? C.darkMuted : C.muted, valign: 'middle',
           });
           slide.addText(r.value, {
-            x: p(x + w - 248), y: p(ry), w: p(196), h: p(66), isTextBox: true, margin: 0,
-            fontFace: SANS, bold: true, fontSize: 13.5, color: hl ? C.accent : C.ink, align: 'right', valign: 'middle',
+            x: p(x + w - fs.pad - 130), y: p(ry), w: p(130), h: p(64), isTextBox: true, margin: 0,
+            fontFace: SANS, bold: true, fontSize: fs.val, color: hl ? C.accent : C.ink, align: 'right', valign: 'middle',
           });
         });
       });
