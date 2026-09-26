@@ -148,7 +148,6 @@ window.LINK = {
     "Cybersecurity",
     "Zakelijke dienstverlening",
     "Marketing & creatieve bureaus",
-    "Werving & selectie",
     "Facilitaire dienstverlening",
     "Hygiëne & veiligheid",
     "Duurzaamheid & energie",
