@@ -379,6 +379,44 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
 .vs-3 .col .r b{font-size:17px}
 .tier-out .v{font-size:23px}
 
+/* ---------- koffievisuals ---------- */
+.viz{margin:52px 0 0; padding:0; display:flex; flex-direction:column; align-items:center; gap:22px}
+.viz svg{width:100%; max-width:700px; height:auto; display:block; overflow:visible}
+.viz figcaption{
+  font-size:14.5px; line-height:1.55; color:var(--mid); max-width:62ch; text-align:center;
+}
+.viz-beans svg{max-width:470px}
+.beans-viz{overflow:visible}
+.funnel .fn-v{
+  font-family:var(--sans); font-size:19px; font-weight:800; fill:var(--cream);
+  letter-spacing:-.02em; font-variant-numeric:tabular-nums;
+}
+.funnel .fn-l{
+  font-family:var(--sans); font-size:12px; font-weight:700; fill:var(--mid);
+  letter-spacing:.18em; text-transform:uppercase;
+}
+.funnel .fn-d{
+  font-family:var(--sans); font-size:17px; font-weight:700; fill:var(--cream); letter-spacing:-.01em;
+}
+
+.sbars{margin-top:38px; display:flex; flex-direction:column; gap:2px;
+  border:1px solid var(--edge); border-radius:20px; overflow:hidden; background:var(--edge);
+  box-shadow:var(--lift), 0 30px 70px -44px rgba(0,0,0,.9)}
+.sbar{
+  background:linear-gradient(180deg,#1e2434,var(--card)); padding:22px 30px;
+  display:grid; grid-template-columns:230px minmax(0,1fr) 84px; gap:8px 24px; align-items:center;
+}
+.sbar-k{font-size:17px; font-weight:600}
+.sbar-t{height:10px; border-radius:5px; background:rgba(255,255,255,.07); overflow:hidden}
+.sbar-f{height:100%; border-radius:5px; background:var(--accent)}
+.sbar-v{font-size:21px; font-weight:800; text-align:right; font-variant-numeric:tabular-nums; letter-spacing:-.02em}
+.sbar-n{grid-column:1; font-size:14px; color:var(--mid); margin-top:-4px}
+@media (max-width:640px){
+  .sbar{grid-template-columns:minmax(0,1fr) 78px}
+  .sbar-k{grid-column:1/-1}
+  .sbar-n{grid-column:1/-1}
+}
+
 @media (max-width:559px){ .rail-meta{display:none} }
 @media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important} }
 </style>
@@ -502,6 +540,21 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
           <div class="note">Het kengetal waar het hele voorstel op rust. Niet geschat, maar geteld.</div>
         </div>
       </div>
+      <figure class="viz">
+        <svg class="funnel" viewBox="0 0 720 428" role="img"
+     aria-label="Van 2.629 gesprekspogingen naar 23 ingeplande tastings">
+  <path d="M150,48 L570,48 L394,276 L326,276 Z"
+        fill="rgba(255,255,255,.02)" stroke="rgba(242,239,230,.22)" stroke-width="2"/>
+  <line x1="134" y1="48" x2="586" y2="48"
+        stroke="rgba(242,239,230,.22)" stroke-width="2" stroke-linecap="round"/>
+  <path d="M326,276 L345,308 L375,308 L394,276 Z"
+        fill="rgba(255,255,255,.02)" stroke="rgba(242,239,230,.22)" stroke-width="2"/>
+  <text class="fn-l" x="360" y="80" text-anchor="middle">gesprekspogingen</text><rect x="192.0" y="94" width="336.0" height="38" rx="7" fill="url(#brewgrad)"/><text class="fn-v" x="360" y="120" text-anchor="middle">2.629</text>
+  <text class="fn-l" x="360" y="172" text-anchor="middle">bedrijven gesproken</text><rect x="266.1" y="186" width="187.9" height="38" rx="7" fill="url(#brewgrad)"/><text class="fn-v" x="360" y="212" text-anchor="middle">1.470</text>
+  <path d="M360,331 C372,345 371,360 360,360 C349,360 348,345 360,331 Z" fill="#38b6ff"/><text class="fn-d" x="392" y="355">61 gekwalificeerde leads</text><path d="M360,393 C372,407 371,422 360,422 C349,422 348,407 360,393 Z" fill="#38b6ff"/><text class="fn-d" x="392" y="417">23 tastings ingepland</text>
+</svg>
+        <figcaption>De twee balken staan op schaal ten opzichte van elkaar. De druppels zijn symbolen: uit 2.629 pogingen komen 61 leads en 23 tastings.</figcaption>
+      </figure>
     </section>
 
     <section id="werk">
@@ -616,7 +669,8 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
           <div class="note">En dat is een fractie van de markt. Er kan hier nog jaren op gebeld worden.</div>
         </div>
       </div>
-      <p class="fine">Elke periode die we bellen groeit deze lijst mee. Opschalen betekent dus ook sneller terug bij de bedrijven die er al in zitten.</p>
+      <div class="sbars"><div class="sbar"><div class="sbar-k">Warme contacten open</div><div class="sbar-t"><div class="sbar-f" style="width:10.3%"></div></div><div class="sbar-v">217</div><div class="sbar-n">terugbellen of opvolgen</div></div><div class="sbar"><div class="sbar-k">Zitten aan een contract</div><div class="sbar-t"><div class="sbar-f" style="width:11.2%"></div></div><div class="sbar-v">235</div><div class="sbar-n">komen later terug</div></div><div class="sbar"><div class="sbar-k">Nog niet bereikt</div><div class="sbar-t"><div class="sbar-f" style="width:17.7%"></div></div><div class="sbar-v">372</div><div class="sbar-n">volledige winst nog open</div></div></div>
+      <p class="fine">De balken staan op schaal ten opzichte van de 2.100 benaderde bedrijven. Elke periode die we bellen groeit deze lijst mee. Opschalen betekent dus ook sneller terug bij de bedrijven die er al in zitten.</p>
     </section>
 
     <section id="wanneer">
@@ -758,8 +812,8 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
         </div>
         <div class="spec hi">
           <div class="fig">1 op 29</div>
-          <div class="unit">leads wordt klant</div>
-          <div class="note">Meer is er niet nodig om het bellen terug te verdienen. Alles daarboven is winst.</div>
+          <div class="unit">leads is genoeg</div>
+          <div class="note">Meer hoeft er niet klant te worden om het bellen terug te verdienen. In de praktijk ligt dat aandeel hoger, en alles daarboven is winst.</div>
         </div>
         <div class="spec">
           <div class="fig">23</div>
@@ -767,6 +821,10 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
           <div class="note">Uit de periode die achter ons ligt. Elke tasting die klant wordt, telt vanaf dat moment mee.</div>
         </div>
       </div>
+      <figure class="viz viz-beans">
+        <svg class="beans-viz" viewBox="0 0 418 146" role="img" aria-label="29 bonen, waarvan 1 gevuld"><g transform="translate(20,23) rotate(-16)"><ellipse rx="11.5" ry="16" fill="#38b6ff" stroke="#38b6ff" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="#0d1420" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(62,23) rotate(-7)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(104,23) rotate(2)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(146,23) rotate(11)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(188,23) rotate(-12)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(230,23) rotate(-3)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(272,23) rotate(6)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(314,23) rotate(15)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(356,23) rotate(-8)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(398,23) rotate(1)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(20,73) rotate(10)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(62,73) rotate(-13)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(104,73) rotate(-4)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(146,73) rotate(5)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(188,73) rotate(14)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(230,73) rotate(-9)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(272,73) rotate(0)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(314,73) rotate(9)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(356,73) rotate(-14)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(398,73) rotate(-5)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(20,123) rotate(4)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(62,123) rotate(13)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(104,123) rotate(-10)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(146,123) rotate(-1)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(188,123) rotate(8)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(230,123) rotate(-15)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(272,123) rotate(-6)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(314,123) rotate(3)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(356,123) rotate(12)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g></svg>
+        <figcaption>Eén op 29 leads is genoeg om het bellen terug te verdienen. In de praktijk worden het er meer.</figcaption>
+      </figure>
       <p class="fine">En het stopt niet na een jaar. Een klant die blijft bestellen levert die omzet elk jaar opnieuw op, zonder dat er nieuwe acquisitiekosten tegenover staan.</p>
     </section>
 

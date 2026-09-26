@@ -379,6 +379,44 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
 .vs-3 .col .r b{font-size:17px}
 .tier-out .v{font-size:23px}
 
+/* ---------- koffievisuals ---------- */
+.viz{margin:52px 0 0; padding:0; display:flex; flex-direction:column; align-items:center; gap:22px}
+.viz svg{width:100%; max-width:700px; height:auto; display:block; overflow:visible}
+.viz figcaption{
+  font-size:14.5px; line-height:1.55; color:var(--mid); max-width:62ch; text-align:center;
+}
+.viz-beans svg{max-width:470px}
+.beans-viz{overflow:visible}
+.funnel .fn-v{
+  font-family:var(--sans); font-size:19px; font-weight:800; fill:var(--cream);
+  letter-spacing:-.02em; font-variant-numeric:tabular-nums;
+}
+.funnel .fn-l{
+  font-family:var(--sans); font-size:12px; font-weight:700; fill:var(--mid);
+  letter-spacing:.18em; text-transform:uppercase;
+}
+.funnel .fn-d{
+  font-family:var(--sans); font-size:17px; font-weight:700; fill:var(--cream); letter-spacing:-.01em;
+}
+
+.sbars{margin-top:38px; display:flex; flex-direction:column; gap:2px;
+  border:1px solid var(--edge); border-radius:20px; overflow:hidden; background:var(--edge);
+  box-shadow:var(--lift), 0 30px 70px -44px rgba(0,0,0,.9)}
+.sbar{
+  background:linear-gradient(180deg,#1e2434,var(--card)); padding:22px 30px;
+  display:grid; grid-template-columns:230px minmax(0,1fr) 84px; gap:8px 24px; align-items:center;
+}
+.sbar-k{font-size:17px; font-weight:600}
+.sbar-t{height:10px; border-radius:5px; background:rgba(255,255,255,.07); overflow:hidden}
+.sbar-f{height:100%; border-radius:5px; background:var(--accent)}
+.sbar-v{font-size:21px; font-weight:800; text-align:right; font-variant-numeric:tabular-nums; letter-spacing:-.02em}
+.sbar-n{grid-column:1; font-size:14px; color:var(--mid); margin-top:-4px}
+@media (max-width:640px){
+  .sbar{grid-template-columns:minmax(0,1fr) 78px}
+  .sbar-k{grid-column:1/-1}
+  .sbar-n{grid-column:1/-1}
+}
+
 @media (max-width:559px){ .rail-meta{display:none} }
 @media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important} }
 </style>

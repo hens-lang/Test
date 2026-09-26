@@ -35,6 +35,76 @@ MAAND_VOL = {3: 'maart', 4: 'april', 5: 'mei', 6: 'juni', 7: 'juli', 8: 'augustu
 m1 = int(per['van'].split('-')[1]); m2 = int(per['tot'].split('-')[1])
 
 
+# ---------- koffie-eigen visuals ----------
+
+BEAN = ('<g transform="translate({x},{y}) rotate({r})">'
+        '<ellipse rx="{rx}" ry="{ry}" fill="{fill}" stroke="{stroke}" stroke-width="1.3"/>'
+        '<path d="M0,-{c} C{b},-{d} {b},{d} 0,{c}" fill="none" stroke="{seam}" stroke-width="1.3" stroke-linecap="round"/>'
+        '</g>')
+
+
+def bean(x, y, r, on):
+    return BEAN.format(x=x, y=y, r=r, rx=11.5, ry=16,
+                       fill='#38b6ff' if on else 'none',
+                       stroke='#38b6ff' if on else 'rgba(242,239,230,.3)',
+                       seam='#0d1420' if on else 'rgba(242,239,230,.3)',
+                       c=12, b=6.4, d=4.6)
+
+
+def bean_chart(total, filled, per_row=10, gap_x=42, gap_y=50):
+    rows = -(-total // per_row)
+    w = (per_row - 1) * gap_x + 40
+    h = (rows - 1) * gap_y + 46
+    out = []
+    for i in range(total):
+        col, row = i % per_row, i // per_row
+        out.append(bean(20 + col * gap_x, 23 + row * gap_y, -16 + (i * 9) % 32, i < filled))
+    return (f'<svg class="beans-viz" viewBox="0 0 {w} {h}" role="img" '
+            f'aria-label="{total} bonen, waarvan {filled} gevuld">' + ''.join(out) + '</svg>')
+
+
+def pour_funnel(pogingen, gesproken, leads, tastings):
+    TOP_HW, BOT_HW, Y0, Y1 = 210, 34, 48, 276
+    scale = 336 / pogingen
+
+    def band(y, value, label, sub):
+        w = max(3, value * scale)
+        return (f'<text class="fn-l" x="360" y="{y - 14}" text-anchor="middle">{sub}</text>'
+                f'<rect x="{360 - w/2:.1f}" y="{y}" width="{w:.1f}" height="38" rx="7" fill="url(#brewgrad)"/>'
+                f'<text class="fn-v" x="360" y="{y + 26}" text-anchor="middle">{label}</text>')
+
+    drops = ''
+    for n, (val, lbl) in enumerate([(leads, f'{leads} gekwalificeerde leads'),
+                                    (tastings, f'{tastings} tastings ingepland')]):
+        cy = 348 + n * 62
+        drops += (f'<path d="M360,{cy - 17} C372,{cy - 3} 371,{cy + 12} 360,{cy + 12} '
+                  f'C349,{cy + 12} 348,{cy - 3} 360,{cy - 17} Z" fill="#38b6ff"/>'
+                  f'<text class="fn-d" x="392" y="{cy + 7}">{lbl}</text>')
+
+    return f'''<svg class="funnel" viewBox="0 0 720 428" role="img"
+     aria-label="Van {dui(pogingen)} gesprekspogingen naar {tastings} ingeplande tastings">
+  <path d="M{360 - TOP_HW},{Y0} L{360 + TOP_HW},{Y0} L{360 + BOT_HW},{Y1} L{360 - BOT_HW},{Y1} Z"
+        fill="rgba(255,255,255,.02)" stroke="rgba(242,239,230,.22)" stroke-width="2"/>
+  <line x1="{360 - TOP_HW - 16}" y1="{Y0}" x2="{360 + TOP_HW + 16}" y2="{Y0}"
+        stroke="rgba(242,239,230,.22)" stroke-width="2" stroke-linecap="round"/>
+  <path d="M{360 - BOT_HW},{Y1} L{360 - 15},308 L{360 + 15},308 L{360 + BOT_HW},{Y1} Z"
+        fill="rgba(255,255,255,.02)" stroke="rgba(242,239,230,.22)" stroke-width="2"/>
+  {band(94, pogingen, dui(pogingen), 'gesprekspogingen')}
+  {band(186, gesproken, dui(gesproken), 'bedrijven gesproken')}
+  {drops}
+</svg>'''
+
+
+def bars_to_scale(items, total):
+    rows = []
+    for label, value, note in items:
+        rows.append(
+            f'<div class="sbar"><div class="sbar-k">{label}</div>'
+            f'<div class="sbar-t"><div class="sbar-f" style="width:{value / total * 100:.1f}%"></div></div>'
+            f'<div class="sbar-v">{dui(value)}</div><div class="sbar-n">{note}</div></div>')
+    return '<div class="sbars">' + ''.join(rows) + '</div>'
+
+
 def spec(value, unit, label, hi=False):
     return (f'        <div class="spec{" hi" if hi else ""}">\n'
             f'          <div class="fig">{value}</div>\n'
@@ -62,7 +132,10 @@ SPECS = '      <div class="specs s6">\n' + '\n'.join([
     spec(f'<span data-count="{res["leads_per_1000"]}" data-dec="1">{nl(res["leads_per_1000"])}</span>',
          'leads per 1.000 pogingen',
          'Het kengetal waar het hele voorstel op rust. Niet geschat, maar geteld.'),
-]) + '\n      </div>'
+]) + '\n      </div>\n' + f'''      <figure class="viz">
+        {pour_funnel(vol['pogingen'], vol['gesproken'], res['leads'], res['tastings'])}
+        <figcaption>De twee balken staan op schaal ten opzichte van elkaar. De druppels zijn symbolen: uit {dui(vol['pogingen'])} pogingen komen {res['leads']} leads en {res['tastings']} tastings.</figcaption>
+      </figure>'''
 
 PIJPLIJN = f'''    <section id="pijplijn">
       <p class="eyebrow">Wat er nog klaarstaat</p>
@@ -74,7 +147,12 @@ PIJPLIJN = f'''    <section id="pijplijn">
 {spec(f'<span data-count="{pij["nooit_bereikt"]}">{pij["nooit_bereikt"]}</span>', "nog niet bereikt", "Wel benaderd, nog geen gesprek gehad. Daar staat de volledige winst nog open.")}
 {spec(f'<span data-count="{vol["bedrijven"]}" data-sep="1">{dui(vol["bedrijven"])}</span>', "bedrijven in de database", "En dat is een fractie van de markt. Er kan hier nog jaren op gebeld worden.", hi=True)}
       </div>
-      <p class="fine">Elke periode die we bellen groeit deze lijst mee. Opschalen betekent dus ook sneller terug bij de bedrijven die er al in zitten.</p>
+      {bars_to_scale([
+        ('Warme contacten open', pij['open_warm'], 'terugbellen of opvolgen'),
+        ('Zitten aan een contract', pij['al_voorzien'], 'komen later terug'),
+        ('Nog niet bereikt', pij['nooit_bereikt'], 'volledige winst nog open'),
+      ], vol['bedrijven'])}
+      <p class="fine">De balken staan op schaal ten opzichte van de {dui(vol['bedrijven'])} benaderde bedrijven. Elke periode die we bellen groeit deze lijst mee. Opschalen betekent dus ook sneller terug bij de bedrijven die er al in zitten.</p>
     </section>'''
 
 WAARDE = f'''    <section id="waarde">
@@ -84,9 +162,13 @@ WAARDE = f'''    <section id="waarde">
       <div class="specs s4">
 {spec(f"{kl['kg_per_jaar']} kg", "koffie per jaar", "Het verbruik van dat ene kantoor, elk jaar opnieuw.")}
 {spec(eur(kl['omzet_per_jaar']), "omzet per jaar", f"Alleen de koffie, tegen {eur(kl['prijs_per_kilo'])} per kilo. Cross- en upsell zitten er nog niet in.")}
-{spec(f"1 op {kl['leads_per_klant']}", "leads wordt klant", "Meer is er niet nodig om het bellen terug te verdienen. Alles daarboven is winst.", hi=True)}
+{spec(f"1 op {kl['leads_per_klant']}", "leads is genoeg", "Meer hoeft er niet klant te worden om het bellen terug te verdienen. In de praktijk ligt dat aandeel hoger, en alles daarboven is winst.", hi=True)}
 {spec(str(res['tastings']), "tastings staan er al", "Uit de periode die achter ons ligt. Elke tasting die klant wordt, telt vanaf dat moment mee.")}
       </div>
+      <figure class="viz viz-beans">
+        {bean_chart(kl['leads_per_klant'], 1)}
+        <figcaption>Eén op {kl['leads_per_klant']} leads is genoeg om het bellen terug te verdienen. In de praktijk worden het er meer.</figcaption>
+      </figure>
       <p class="fine">En het stopt niet na een jaar. Een klant die blijft bestellen levert die omzet elk jaar opnieuw op, zonder dat er nieuwe acquisitiekosten tegenover staan.</p>
     </section>'''
 
