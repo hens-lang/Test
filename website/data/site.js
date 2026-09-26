@@ -72,6 +72,10 @@ window.LINK = {
     avatar:  { src: "assets/img/hens/hens-avatar", widths: [160, 320], alt: "Hens Boer" },
     koffie:  { src: "assets/img/hens/hens-koffie", widths: [600, 1000], alt: "Hens Boer drinkt koffie uit een blauw kopje" },
     // Namen, notities, URL en bladwijzers op het scherm zijn onleesbaar gemaakt (AVG).
+    faseKickoff:  { src: "assets/img/hens/hens-fase-kickoff", widths: [600, 1000], alt: "Hens Boer tijdens een kick-off met notitieboek" },
+    fasePilot:    { src: "assets/img/hens/hens-fase-pilot", widths: [600, 1000], alt: "Hens Boer aan de telefoon" },
+    faseMeetings: { src: "assets/img/hens/hens-fase-meetings", widths: [600, 1000], alt: "Hens Boer in de haven" },
+    faseStroom:   { src: "assets/img/hens/hens-fase-stroom", widths: [600, 1000], alt: "Hens Boer belt geconcentreerd" },
     portaal: { src: "assets/img/hens/hens-portaal", widths: [800, 1400], alt: "Het LINK. partnerportaal op een laptop" }
   },
 
@@ -83,22 +87,30 @@ window.LINK = {
     {
       name: "Kick-off",
       text: "We leren jouw bedrijf, propositie en markt kennen. Samen bepalen we het ideale klantprofiel en wat succes voor jou is.",
-      gets: ["Een scherp ideaal klantprofiel", "Heldere afspraken over succes"]
+      gets: ["Een scherp ideaal klantprofiel", "Heldere afspraken over succes"],
+      photo: "faseKickoff",
+      stats: [{ n: "1", l: "vast aanspreekpunt" }]
     },
     {
       name: "Pilot",
       text: "We gaan de markt in, persoonlijk aan de telefoon en met jouw verhaal. Wat we horen, vertalen we naar scherpere keuzes in doelgroep en propositie.",
-      gets: ["Gesprekken met beslissers", "Marktinzichten en business development", "Elke week een update"]
+      gets: ["Gesprekken met beslissers", "Marktinzichten en business development", "Elke week een update"],
+      photo: "fasePilot",
+      caption: "Persoonlijk aan de telefoon. Met jouw verhaal."
     },
     {
       name: "Eerste meetings",
       text: "Jij zit aan tafel bij gekwalificeerde prospects. Wij sturen bij op basis van wat werkt.",
-      gets: ["Afspraken in jouw agenda", "Leads met de context van het gesprek"]
+      gets: ["Afspraken in jouw agenda", "Leads met de context van het gesprek"],
+      photo: "faseMeetings",
+      caption: "Jij aan tafel bij de juiste beslisser."
     },
     {
       name: "Structurele stroom",
       text: "Na de pilot bouwen we door naar een vaste stroom gekwalificeerde prospects. Zonder lange contracten.",
-      gets: ["Voorspelbare groei", "Eén vast aanspreekpunt"]
+      gets: ["Voorspelbare groei", "Eén vast aanspreekpunt"],
+      photo: "faseStroom",
+      stats: [{ n: "0", l: "lange contracten" }, { n: "52×", l: "per jaar een update" }]
     }
   ],
 

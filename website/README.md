@@ -17,7 +17,7 @@ data/site.js  ──►  assets/js/main.js  ──►  alle pagina's
 | Menu | `data/site.js > nav` | header, mobiel menu, footer |
 | Oprichter + quote | `data/site.js > founder` | home, ons verhaal, contact |
 | Alle foto's | `data/site.js > photos` | elke pagina |
-| Werkmethode (4 mijlpalen) | `data/site.js > method` | home, diensten |
+| Zo werkt het: 4 fases met foto, glaskaartjes en "wat je krijgt" | `data/site.js > method` (+ `pilotLabel`) | home, diensten |
 | Voorbeelden in de hero-kaart | `data/site.js > liveCard` | home |
 | Partnerportaal-knop | `data/site.js > contact.portalUrl` | header, mobiel menu, footer |
 | Contactformulier-koppeling | `data/site.js > contact.form` | contactpagina |

@@ -285,30 +285,50 @@ section { position: relative; }
 .dark .pillar .num { color: #6b7280; }
 
 /* ---------- Werkmethode (mijlpalen) ---------- */
-.method-head { display: grid; gap: 28px; margin-bottom: clamp(56px, 7vw, 100px); }
-@media (min-width: 960px) { .method-head { grid-template-columns: 1.2fr 1fr; align-items: end; } }
-.method { list-style: none; margin: 0; padding: 0; position: relative; display: grid; gap: 40px; }
-@media (min-width: 900px) { .method { grid-template-columns: repeat(4, 1fr); gap: 0; } }
-.method .m-track { position: absolute; left: 13px; top: 14px; bottom: 14px; width: 2px; background: var(--grey-2); }
-.method .m-track i { position: absolute; inset: 0 0 auto 0; height: 0; background: var(--blue); transition: height 2.4s var(--ease) .2s, width 2.4s var(--ease) .2s; }
-.method.in .m-track i { height: 100%; }
-@media (min-width: 900px) {
-  .method .m-track { left: 14px; right: 14px; top: 13px; bottom: auto; width: auto; height: 2px; }
-  .method .m-track i { inset: 0 auto 0 0; width: 0; height: 100%; }
-  .method.in .m-track i { width: 100%; height: 100%; }
+.method-head { display: grid; justify-items: center; text-align: center; gap: 24px; margin: 0 auto clamp(64px, 8vw, 120px); max-width: 900px; }
+.method-head .lead { max-width: 52ch; margin: 0 auto; }
+.method-head h2 { text-wrap: balance; }
+.timeline { list-style: none; margin: 0; padding: 0; position: relative; display: grid; gap: clamp(56px, 8vw, 120px); }
+.tl-line { position: absolute; top: 0; bottom: 0; left: 23px; width: 2px; background: var(--grey-2); border-radius: 2px; }
+.tl-line i { position: absolute; left: 0; right: 0; top: 0; height: 0; border-radius: 2px; background: linear-gradient(180deg, var(--blue), #0a7fc4); transition: height .25s linear; }
+.tl-item { position: relative; display: grid; gap: 28px; padding-left: 72px; align-items: center; }
+.tl-num {
+  position: absolute; left: 0; top: 0; width: 48px; height: 48px; border-radius: 50%;
+  display: grid; place-items: center; background: #fff; box-shadow: inset 0 0 0 2px var(--grey-2);
+  font-family: var(--font-head); font-weight: 800; font-size: 18px; color: var(--grey-5);
+  transition: background .5s var(--ease), color .5s, box-shadow .5s;
 }
-.method > li { position: relative; padding-left: 52px; }
-@media (min-width: 900px) { .method > li { padding: 58px 32px 0 0; } }
-.method .m-node { position: absolute; left: 4px; top: 4px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 2px var(--grey-2); transition: background .5s, box-shadow .5s; transition-delay: calc(.35s + var(--i) * .55s); }
-.method.in .m-node { background: var(--blue); box-shadow: 0 0 0 6px rgba(56,182,255,.16); }
-.method > li:last-child .m-node { width: 30px; height: 30px; left: -1px; top: -1px; }
-.method.in > li:last-child .m-node { animation: pulse 2.4s infinite 2.6s; }
-.method .m-phase { display: block; font-family: var(--font-head); font-weight: 700; font-size: 12.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--grey-5); margin-bottom: 10px; }
-.method h3 { font-size: clamp(24px, 2.3vw, 32px); letter-spacing: -.035em; margin-bottom: 12px; }
-.method p { margin: 0; color: var(--grey-7); font-size: 16px; max-width: 30ch; }
-.m-gets { list-style: none; margin: 22px 0 0; padding: 18px 0 0; border-top: 1px solid var(--line); display: grid; gap: 9px; max-width: 30ch; }
-.m-gets li { position: relative; padding-left: 20px; font-size: 14.5px; font-weight: 600; color: #000; line-height: 1.4; }
+.tl-item.on .tl-num { background: var(--blue); color: #000; box-shadow: 0 0 0 8px rgba(56,182,255,.16); }
+.tl-text h3 { font-size: clamp(28px, 3vw, 44px); letter-spacing: -.04em; margin-bottom: 14px; }
+.tl-text p { color: var(--grey-7); font-size: 17.5px; margin: 0; max-width: 44ch; }
+.tl-photo { position: relative; margin: 0; border-radius: 28px; overflow: hidden; aspect-ratio: 1 / 1; max-width: 100%; background: var(--mist); }
+.tl-photo img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.06); transition: transform 1.6s var(--ease); }
+.tl-photo.in img { transform: scale(1); }
+.glass {
+  background: rgba(20, 24, 30, .42); color: #fff; border: 1px solid rgba(255,255,255,.18);
+  backdrop-filter: blur(16px) saturate(1.3); -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  border-radius: 18px; padding: 18px 20px;
+}
+.glass-stats { position: absolute; left: 18px; right: 18px; bottom: 18px; display: flex; flex-wrap: wrap; gap: 12px; }
+.glass-stats .glass { flex: 1 1 140px; max-width: 220px; }
+.glass b { display: block; font-family: var(--font-head); font-weight: 800; font-size: clamp(34px, 3.4vw, 48px); line-height: 1; letter-spacing: -.04em; color: var(--blue); }
+.glass span { display: block; margin-top: 8px; font-family: var(--font-head); font-weight: 600; font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.88); }
+.glass-cap { position: absolute; left: 18px; right: 18px; bottom: 18px; text-align: center; font-size: 16px; font-weight: 600; }
+@media (min-width: 960px) {
+  .tl-line { left: 50%; margin-left: -1px; }
+  .tl-item { grid-template-columns: 1fr 1fr; gap: 0 160px; padding-left: 0; }
+  .tl-num { left: 50%; top: 50%; margin: -32px 0 0 -32px; width: 64px; height: 64px; font-size: 22px; }
+  .tl-item:nth-child(odd) .tl-text { order: 2; }
+  .tl-item:nth-child(even) .tl-text { text-align: right; justify-self: end; }
+  .tl-item:nth-child(even) .tl-text p, .tl-item:nth-child(even) .m-gets { margin-left: auto; }
+  .tl-item:nth-child(even) .m-gets li { padding: 0 20px 0 0; }
+  .tl-item:nth-child(even) .m-gets li::before { left: auto; right: 0; }
+  .tl-item:nth-child(odd) .tl-photo { order: 1; }
+}
+.m-gets { list-style: none; margin: 24px 0 0; padding: 20px 0 0; border-top: 1px solid var(--line); display: grid; gap: 10px; max-width: 34ch; }
+.m-gets li { position: relative; padding-left: 20px; font-size: 15px; font-weight: 600; color: #000; line-height: 1.4; }
 .m-gets li::before { content: ""; position: absolute; left: 0; top: .5em; width: 7px; height: 7px; border-radius: 50%; background: var(--blue); }
+.m-phase { display: block; font-family: var(--font-head); font-weight: 700; font-size: 12.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--blue-deep); margin-bottom: 12px; }
 .method-foot { margin-top: clamp(56px, 7vw, 90px); padding-top: 34px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center; justify-content: space-between; }
 .method-foot p { margin: 0; max-width: 52ch; color: var(--grey-7); }
 
@@ -351,6 +371,29 @@ section { position: relative; }
 .fact b { display: block; font-family: var(--font-head); font-weight: 800; font-size: clamp(54px, 6.4vw, 96px); letter-spacing: -.06em; line-height: .9; color: #000; }
 .fact b i { font-style: normal; color: var(--blue); }
 .fact span { display: block; margin-top: 16px; font-size: 15.5px; color: var(--grey-7); line-height: 1.45; max-width: 22ch; }
+
+/* ---------- Herkenbaar? ---------- */
+.pill { display: inline-block; padding: 7px 14px; border-radius: 999px; background: var(--blue); color: #000; font-family: var(--font-head); font-weight: 800; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+.blue { color: var(--blue); }
+.pains-sec { background: var(--mist); }
+.pains-head { display: grid; justify-items: center; text-align: center; gap: 24px; max-width: 900px; margin: 0 auto clamp(56px, 7vw, 96px); }
+.pains-head h2 { text-wrap: balance; }
+.pains-head .lead { max-width: 48ch; margin: 0 auto; }
+.pains { display: grid; gap: 20px; }
+@media (min-width: 900px) { .pains { grid-template-columns: repeat(3, 1fr); } }
+.pain { background: #fff; border-radius: 24px; padding: clamp(28px, 3vw, 40px); box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 24px 50px -30px rgba(10,60,100,.25); display: flex; flex-direction: column; gap: 14px; }
+.pain-top { display: flex; align-items: center; gap: 18px; margin-bottom: 6px; }
+.pain-ico { flex: none; width: 56px; height: 56px; border-radius: 16px; background: var(--blue); color: #000; display: grid; place-items: center; }
+.pain-ico svg { width: 26px; height: 26px; }
+.pain h3 { font-size: 20px; letter-spacing: -.02em; line-height: 1.2; }
+.pain p { margin: 0; color: var(--grey-5); font-size: 17px; }
+.pain strong { font-family: var(--font-head); font-weight: 800; font-size: 18px; line-height: 1.35; letter-spacing: -.015em; color: #000; }
+
+/* ---------- Maak kennis met Hens ---------- */
+.meet-grid { display: grid; gap: clamp(40px, 6vw, 90px); align-items: center; }
+@media (min-width: 960px) { .meet-grid { grid-template-columns: 1fr 1fr; } }
+.meet h2 { font-size: clamp(44px, 5.4vw, 84px); letter-spacing: -.05em; line-height: .95; margin: 26px 0 30px; }
+.meet .lead { max-width: 40ch; }
 
 /* ---------- Oprichter ---------- */
 .founder { display: grid; gap: clamp(36px, 6vw, 90px); align-items: center; }

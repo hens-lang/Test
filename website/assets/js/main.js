@@ -120,14 +120,38 @@
   });
   $$("[data-founder-name]").forEach((el) => (el.textContent = F.firstName));
 
-  /* ---------- Werkmethode (alleen mijlpalen) ---------- */
+  /* ---------- Zo werkt het: tijdlijn (alleen mijlpalen) ---------- */
   $$("[data-method]").forEach((ol) => {
-    ol.innerHTML = '<span class="m-track" aria-hidden="true"><i></i></span>' + D.method.map((m, i) => `
-      <li style="--i:${i}"><span class="m-node" aria-hidden="true"></span>
-        <span class="m-phase">Fase ${String(i + 1).padStart(2, "0")}${m.name === "Pilot" && D.pilotLabel ? ` · ${esc(D.pilotLabel)}` : ""}</span>
-        <h3>${esc(m.name)}${i === D.method.length - 1 ? '<span class="dot">.</span>' : ""}</h3>
-        <p>${esc(m.text)}</p>
-        ${m.gets ? `<ul class="m-gets">${m.gets.map((g) => `<li>${esc(g)}</li>`).join("")}</ul>` : ""}</li>`).join("");
+    ol.innerHTML = '<span class="tl-line" aria-hidden="true"><i></i></span>' + D.method.map((m, i) => {
+      const last = i === D.method.length - 1;
+      const glass = m.stats
+        ? `<div class="glass-stats">${m.stats.map((st) => `<div class="glass"><b>${esc(st.n)}</b><span>${esc(st.l)}</span></div>`).join("")}</div>`
+        : m.caption ? `<div class="glass glass-cap">${esc(m.caption)}</div>` : "";
+      return `
+      <li class="tl-item">
+        <div class="tl-text reveal">
+          <span class="m-phase">Fase ${String(i + 1).padStart(2, "0")}${m.name === "Pilot" && D.pilotLabel ? ` · ${esc(D.pilotLabel)}` : ""}</span>
+          <h3>${esc(m.name)}${last ? '<span class="dot">.</span>' : ""}</h3>
+          <p>${esc(m.text)}</p>
+          ${m.gets ? `<ul class="m-gets">${m.gets.map((g) => `<li>${esc(g)}</li>`).join("")}</ul>` : ""}
+        </div>
+        <span class="tl-num" aria-hidden="true">${i + 1}</span>
+        <figure class="tl-photo reveal">${imgTag(m.photo) || ""}${glass}</figure>
+      </li>`;
+    }).join("");
+    const fill = $(".tl-line i", ol), items = $$(".tl-item", ol);
+    const tick = () => {
+      const mid = innerHeight * 0.55, top = ol.getBoundingClientRect().top;
+      let h = 0;
+      items.forEach((li) => {
+        const n = $(".tl-num", li).getBoundingClientRect();
+        const on = n.top < mid; li.classList.toggle("on", on);
+        if (on) h = n.top + n.height / 2 - top;
+      });
+      fill.style.height = Math.max(0, h) + "px";
+    };
+    if (reduced) { items.forEach((li) => li.classList.add("on")); fill.style.height = "100%"; }
+    else { addEventListener("scroll", tick, { passive: true }); addEventListener("resize", tick); tick(); }
   });
 
   /* ---------- Reveal ---------- */
