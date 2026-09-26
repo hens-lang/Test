@@ -139,6 +139,43 @@ window.LINK = {
     }
   ],
 
+  // Markten waar LINK. thuis is, afgeleid van de huidige partners (zonder namen).
+  sectors: [
+    "Installatietechniek",
+    "Elektrotechniek",
+    "Maakindustrie",
+    "IT & software",
+    "Cybersecurity",
+    "Zakelijke dienstverlening",
+    "Marketing & creatieve bureaus",
+    "Werving & selectie",
+    "Facilitaire dienstverlening",
+    "Hygiëne & plaagdierbeheersing",
+    "Duurzaamheid & energie",
+    "Groothandel & logistiek"
+  ],
+
+  // Veelgestelde vragen van beslissers. Voedt ook de FAQ-structured data voor Google.
+  // {response} = contact.responseTime.
+  faq: [
+    { q: "Wie belt er namens ons?",
+      a: "Ons eigen, kleine team. Geen callcenter en geen doorverkochte uren. We bellen met jouw verhaal, voorbereid op jouw markt en doelgroep. Hoe we ons voorstellen, stemmen we in de kick-off met je af." },
+    { q: "Wat als we al een salesteam hebben?",
+      a: "Dan zorgen wij dat hun agenda gevuld raakt. Wij voeren de eerste gesprekken met beslissers en plannen de afspraak. Jouw team doet daarna waar het goed in is: verkopen." },
+    { q: "Hoe bepalen jullie wie onze ideale klant is?",
+      a: "Samen, tijdens de kick-off. We kijken naar je beste klanten, je propositie en je groeidoel. Daarna sturen we bij op basis van wat we in de gesprekken horen, tot we precies bij de juiste bedrijven zitten." },
+    { q: "Hoe snel zien we resultaat?",
+      a: "Dat hangt af van je markt en je propositie. In de pilot zie je snel of het werkt, want je krijgt elke week een eerlijke update. In de kennismaking geven we je een concreet beeld voor jouw markt." },
+    { q: "Wat kost het?",
+      a: "Dat hangt af van je doelgroep en je ambitie. In de kennismaking maken we het concreet. Je start altijd met een pilot, zodat je eerst ziet wat het oplevert." },
+    { q: "Zitten we lang aan jullie vast?",
+      a: "Nee. Na de pilot kies je zelf of je doorgaat. We verdienen onze plek elke maand opnieuw." },
+    { q: "Hoe houden we zicht op de voortgang?",
+      a: "Via je eigen partnerportaal, met alle leads, afspraken en updates op één plek. Elke week een update, en heb je een vraag, dan heb je binnen {response} een reactie." },
+    { q: "Voor welke bedrijven werken jullie?",
+      a: "Voor B2B bedrijven met een sterk product of een sterke dienst die structureel aan tafel willen bij nieuwe klanten. Past het niet, dan zeggen we dat eerlijk. Liever een eerlijk nee vooraf dan een moeizame samenwerking achteraf." }
+  ],
+
   // Voorbeelden voor de kaart in de hero (illustratief, geen echte partners).
   liveCard: [
     ["Kennismaking ingepland", "Installatietechniek", "Beslisser", "Directeur-eigenaar"],

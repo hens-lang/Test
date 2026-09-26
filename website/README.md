@@ -19,6 +19,10 @@ data/site.js  ──►  assets/js/main.js  ──►  alle pagina's
 | Alle foto's | `data/site.js > photos` | elke pagina |
 | Zo werkt het: 4 fases met foto, glaskaartjes en "wat je krijgt" | `data/site.js > method` (+ `pilotLabel`) | home, diensten |
 | Voorbeelden in de hero-kaart | `data/site.js > liveCard` | home |
+| Voor beslissers (eigenaar / sales) | `data/site.js > audiences` | home |
+| Markten (woordmuur) | `data/site.js > sectors` | home |
+| Veelgestelde vragen + Google FAQ-data | `data/site.js > faq` | home, diensten |
+| Reactietijd | `data/site.js > contact.responseTime` | chip, contact, FAQ, waarden, feiten |
 | Partnerportaal-knop | `data/site.js > contact.portalUrl` | header, mobiel menu, footer |
 | Contactformulier-koppeling | `data/site.js > contact.form` | contactpagina |
 

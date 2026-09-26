@@ -403,6 +403,52 @@ section { position: relative; }
 .s-answer b { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--blue); transform: translateY(-2px); }
 .strike.in .s-answer { opacity: 1; transform: none; }
 
+/* ---------- Sectoren: woordmuur ---------- */
+.sectors-head { display: grid; gap: 24px; margin-bottom: clamp(40px, 5vw, 70px); }
+@media (min-width: 960px) { .sectors-head { grid-template-columns: 1.2fr 1fr; align-items: end; } }
+.sector-wall { list-style: none; margin: 0; padding: clamp(28px, 3vw, 40px) 0 0; border-top: 2px solid #000; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 0; }
+.sector-wall li {
+  font-family: var(--font-head); font-weight: 800; font-size: clamp(26px, 3.6vw, 54px); letter-spacing: -.045em; line-height: 1.15;
+  color: #c9ced5; cursor: default; transition: color .35s var(--ease);
+  opacity: 0; transform: translateY(14px);
+}
+.sector-wall.in li { opacity: 1; transform: none; transition: color .35s var(--ease), opacity .7s var(--ease) calc(var(--i) * .05s), transform .7s var(--ease) calc(var(--i) * .05s); }
+.sector-wall li:nth-child(3n+1) { color: #000; }
+.sector-wall li:hover { color: var(--blue); }
+.sector-wall li:not(:last-child)::after { content: ""; display: inline-block; width: .2em; height: .2em; margin: 0 .42em; border-radius: 50%; background: var(--blue); vertical-align: .12em; }
+.sectors-note { margin-top: 30px; color: var(--grey-5); font-size: 15.5px; }
+@media (prefers-reduced-motion: reduce) { .sector-wall li { opacity: 1; transform: none; } }
+
+/* ---------- Voor wie wij niet zijn ---------- */
+.notfor-grid { display: grid; gap: clamp(32px, 5vw, 90px); align-items: start; }
+@media (min-width: 960px) { .notfor-grid { grid-template-columns: .9fr 1.1fr; } }
+.notfor h2 { font-size: clamp(40px, 5.4vw, 80px); text-wrap: balance; }
+.notfor h2 em { font-style: normal; position: relative; white-space: nowrap; }
+.notfor h2 em::after { content: ""; position: absolute; left: 0; right: 0; bottom: .06em; height: .09em; background: var(--blue); border-radius: 2px; }
+.notfor-list { list-style: none; margin: 0; padding: 0; border-top: 2px solid #000; }
+.notfor-list li { display: flex; gap: 20px; align-items: flex-start; padding: 26px 0; border-bottom: 1px solid var(--line); font-family: var(--font-head); font-weight: 700; font-size: clamp(19px, 1.8vw, 25px); letter-spacing: -.02em; line-height: 1.3; color: #000; }
+.nf-x { flex: none; width: 36px; height: 36px; border-radius: 50%; background: #000; color: #fff; display: grid; place-items: center; margin-top: -2px; }
+.nf-x svg { width: 16px; height: 16px; }
+.notfor-close { margin: 30px 0 0; color: var(--grey-7); font-size: 17px; display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: baseline; }
+
+/* ---------- Veelgestelde vragen ---------- */
+.faq-grid { display: grid; gap: clamp(36px, 5vw, 80px); }
+@media (min-width: 960px) { .faq-grid { grid-template-columns: .8fr 1.2fr; } .faq-side { position: sticky; top: 130px; align-self: start; } }
+.faq-side h2 { font-size: clamp(36px, 4.4vw, 62px); text-wrap: balance; }
+.faq-side .lead { margin-top: 24px; }
+.faq-list { border-top: 2px solid #000; }
+.faq-item { border-bottom: 1px solid var(--line); }
+.faq-item summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 26px 0; font-family: var(--font-head); font-weight: 700; font-size: clamp(18px, 1.6vw, 22px); letter-spacing: -.02em; line-height: 1.3; color: #000; transition: color .3s; }
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary:hover { color: var(--blue-deep); }
+.faq-item summary i { position: relative; flex: none; width: 38px; height: 38px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--line); transition: background .4s var(--ease), box-shadow .4s, transform .5s var(--ease); }
+.faq-item summary i::before, .faq-item summary i::after { content: ""; position: absolute; left: 50%; top: 50%; width: 14px; height: 2px; margin: -1px 0 0 -7px; background: #000; border-radius: 2px; transition: transform .5s var(--ease); }
+.faq-item summary i::after { transform: rotate(90deg); }
+.faq-item[open] summary i { background: var(--blue); box-shadow: none; transform: rotate(180deg); }
+.faq-item[open] summary i::after { transform: rotate(0); }
+.faq-a { padding: 0 64px 28px 0; }
+.faq-a p { margin: 0; color: var(--grey-7); font-size: 17px; max-width: 60ch; animation: audIn .5s var(--ease) both; }
+
 /* ---------- Direct contact ---------- */
 .meet { background: var(--mist); }
 .meet-grid { display: grid; gap: clamp(36px, 6vw, 100px); align-items: center; }

@@ -208,6 +208,28 @@
     addEventListener("resize", () => place(tabs.find((t) => t.getAttribute("aria-selected") === "true")));
   });
 
+  /* ---------- Sectoren (woordmuur) ---------- */
+  $$("[data-sectors]").forEach((ul) => {
+    ul.innerHTML = D.sectors.map((s, i) => `<li style="--i:${i}">${esc(s)}</li>`).join("");
+  });
+
+  /* ---------- Veelgestelde vragen ---------- */
+  const faqText = (t) => t.replace("{response}", C.responseTime);
+  $$("[data-faq]").forEach((box) => {
+    box.innerHTML = D.faq.map((f, i) => `
+      <details class="faq-item"${i === 0 ? " open" : ""}>
+        <summary><span>${esc(f.q)}</span><i aria-hidden="true"></i></summary>
+        <div class="faq-a"><p>${esc(faqText(f.a))}</p></div>
+      </details>`).join("");
+  });
+  if ($("[data-faq]") && !$("#faq-ld")) {
+    const ld = document.createElement("script");
+    ld.type = "application/ld+json"; ld.id = "faq-ld";
+    ld.textContent = JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage",
+      mainEntity: D.faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: faqText(f.a) } })) });
+    document.head.append(ld);
+  }
+
   /* ---------- Zwevende chip: reactietijd ---------- */
   if (!/contact\.html$/.test(page)) {
     const chip = document.createElement("a");
