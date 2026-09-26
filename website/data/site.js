@@ -23,6 +23,9 @@ window.LINK = {
     phone: "(0172) 27 10 08",
     phoneHref: "+31172271008",
     web: "www.linkgrp.nl",
+    // Reactietijd: komt terug in de zwevende chip, contactpagina en waarden.
+    responseTime: "3 minuten",
+    responseShort: "3 min",
     // Partnerportaal (leads, afspraken, updates). Vul de echte URL in;
     // zolang dit leeg is, verbergt de site de portaal-knop.
     portalUrl: "",
@@ -72,10 +75,6 @@ window.LINK = {
     avatar:  { src: "assets/img/hens/hens-avatar", widths: [160, 320], alt: "Hens Boer" },
     koffie:  { src: "assets/img/hens/hens-koffie", widths: [600, 1000], alt: "Hens Boer drinkt koffie uit een blauw kopje" },
     // Namen, notities, URL en bladwijzers op het scherm zijn onleesbaar gemaakt (AVG).
-    faseKickoff:  { src: "assets/img/hens/hens-fase-kickoff", widths: [600, 1000], alt: "Hens Boer tijdens een kick-off met notitieboek" },
-    fasePilot:    { src: "assets/img/hens/hens-fase-pilot", widths: [600, 1000], alt: "Hens Boer aan de telefoon" },
-    faseMeetings: { src: "assets/img/hens/hens-fase-meetings", widths: [600, 1000], alt: "Hens Boer in de haven" },
-    faseStroom:   { src: "assets/img/hens/hens-fase-stroom", widths: [600, 1000], alt: "Hens Boer belt geconcentreerd" },
     portaal: { src: "assets/img/hens/hens-portaal", widths: [800, 1400], alt: "Het LINK. partnerportaal op een laptop" }
   },
 
@@ -87,30 +86,56 @@ window.LINK = {
     {
       name: "Kick-off",
       text: "We leren jouw bedrijf, propositie en markt kennen. Samen bepalen we het ideale klantprofiel en wat succes voor jou is.",
-      gets: ["Een scherp ideaal klantprofiel", "Heldere afspraken over succes"],
-      photo: "faseKickoff",
-      stats: [{ n: "1", l: "vast aanspreekpunt" }]
+      gets: ["Een scherp ideaal klantprofiel", "Heldere afspraken over succes"]
     },
     {
       name: "Pilot",
       text: "We gaan de markt in, persoonlijk aan de telefoon en met jouw verhaal. Wat we horen, vertalen we naar scherpere keuzes in doelgroep en propositie.",
-      gets: ["Gesprekken met beslissers", "Marktinzichten en business development", "Elke week een update"],
-      photo: "fasePilot",
-      caption: "Persoonlijk aan de telefoon. Met jouw verhaal."
+      gets: ["Gesprekken met beslissers", "Marktinzichten en business development", "Elke week een update"]
     },
     {
       name: "Eerste meetings",
       text: "Jij zit aan tafel bij gekwalificeerde prospects. Wij sturen bij op basis van wat werkt.",
-      gets: ["Afspraken in jouw agenda", "Leads met de context van het gesprek"],
-      photo: "faseMeetings",
-      caption: "Jij aan tafel bij de juiste beslisser."
+      gets: ["Afspraken in jouw agenda", "Leads met de context van het gesprek"]
     },
     {
       name: "Structurele stroom",
       text: "Na de pilot bouwen we door naar een vaste stroom gekwalificeerde prospects. Zonder lange contracten.",
-      gets: ["Voorspelbare groei", "Eén vast aanspreekpunt"],
-      photo: "faseStroom",
-      stats: [{ n: "0", l: "lange contracten" }, { n: "52×", l: "per jaar een update" }]
+      gets: ["Voorspelbare groei", "Eén vast aanspreekpunt"]
+    }
+  ],
+
+  // Feitenstrook onder "Zo werkt het". {response} = contact.responseTime.
+  facts: [
+    { n: "1", l: "vast aanspreekpunt" },
+    { n: "0", l: "lange contracten" },
+    { n: "{responseShort}", l: "reactietijd" },
+    { n: "52×", l: "per jaar een update" }
+  ],
+
+  // Voor beslissers: wat eigenaren en salesverantwoordelijken belangrijk vinden.
+  audiences: [
+    {
+      id: "eigenaar",
+      label: "Ik ben eigenaar",
+      title: "Groei, zonder dat jij zelf de telefoon pakt.",
+      points: [
+        { h: "Bewezen werkmethode", p: "Van kick-off tot een structurele stroom nieuwe klanten. Getest in de praktijk, niet op papier." },
+        { h: "Laag risico", p: "Je start met een pilot en zit nergens lang aan vast. Wij verdienen onze plek elke maand opnieuw." },
+        { h: "Voorspelbare instroom", p: "Week na week gesprekken met bedrijven die jij als klant wilt hebben." },
+        { h: "Korte lijnen", p: "Eén vast aanspreekpunt in een klein en hecht team. Je hebt binnen {response} een reactie." }
+      ]
+    },
+    {
+      id: "sales",
+      label: "Ik ben salesverantwoordelijk",
+      title: "Een gevulde agenda met de juiste beslissers.",
+      points: [
+        { h: "Gekwalificeerde gesprekken", p: "Geen koude namen, maar beslissers die passen bij jouw ideale klantprofiel." },
+        { h: "Grip en inzicht", p: "Leads, afspraken en updates in je partnerportaal. Elke week weet je waar je staat." },
+        { h: "Scherpere propositie", p: "Wat we in de markt horen, vertalen we naar concrete verbeterpunten voor jouw pitch." },
+        { h: "Snel bijsturen", p: "Werkt iets niet? Dan schakelen we direct door, en zeggen we het eerlijk." }
+      ]
     }
   ],
 

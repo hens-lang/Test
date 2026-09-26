@@ -77,6 +77,7 @@
   $$("[data-c]").forEach((el) => {
     const k = el.dataset.c;
     if (k === "email") { el.textContent = C.email; if (el.tagName === "A") el.href = `mailto:${C.email}`; }
+    if (k === "response") el.textContent = C.responseTime;
     if (k === "phone") { el.textContent = C.phone; if (el.tagName === "A") el.href = `tel:${C.phoneHref}`; }
   });
   $$("[data-details]").forEach((ul) => {
@@ -120,39 +121,65 @@
   });
   $$("[data-founder-name]").forEach((el) => (el.textContent = F.firstName));
 
-  /* ---------- Zo werkt het: tijdlijn (alleen mijlpalen) ---------- */
+  /* ---------- Zo werkt het: vier punten die linken ---------- */
   $$("[data-method]").forEach((ol) => {
-    ol.innerHTML = '<span class="tl-line" aria-hidden="true"><i></i></span>' + D.method.map((m, i) => {
+    ol.innerHTML = '<span class="chain-line" aria-hidden="true"><i></i></span>' + D.method.map((m, i) => {
       const last = i === D.method.length - 1;
-      const glass = m.stats
-        ? `<div class="glass-stats">${m.stats.map((st) => `<div class="glass"><b>${esc(st.n)}</b><span>${esc(st.l)}</span></div>`).join("")}</div>`
-        : m.caption ? `<div class="glass glass-cap">${esc(m.caption)}</div>` : "";
       return `
-      <li class="tl-item">
-        <div class="tl-text reveal">
-          <span class="m-phase">Fase ${String(i + 1).padStart(2, "0")}${m.name === "Pilot" && D.pilotLabel ? ` · ${esc(D.pilotLabel)}` : ""}</span>
-          <h3>${esc(m.name)}${last ? '<span class="dot">.</span>' : ""}</h3>
-          <p>${esc(m.text)}</p>
-          ${m.gets ? `<ul class="m-gets">${m.gets.map((g) => `<li>${esc(g)}</li>`).join("")}</ul>` : ""}
-        </div>
-        <span class="tl-num" aria-hidden="true">${i + 1}</span>
-        <figure class="tl-photo reveal">${imgTag(m.photo) || ""}${glass}</figure>
+      <li style="--i:${i}">
+        <span class="chain-dot${last ? " big" : ""}" aria-hidden="true"></span>
+        <span class="m-phase">Fase ${String(i + 1).padStart(2, "0")}${m.name === "Pilot" && D.pilotLabel ? ` · ${esc(D.pilotLabel)}` : ""}</span>
+        <h3>${esc(m.name)}${last ? '<span class="dot">.</span>' : ""}</h3>
+        <p>${esc(m.text)}</p>
+        ${m.gets ? `<ul class="m-gets">${m.gets.map((g) => `<li>${esc(g)}</li>`).join("")}</ul>` : ""}
       </li>`;
     }).join("");
-    const fill = $(".tl-line i", ol), items = $$(".tl-item", ol);
-    const tick = () => {
-      const mid = innerHeight * 0.55, top = ol.getBoundingClientRect().top;
-      let h = 0;
-      items.forEach((li) => {
-        const n = $(".tl-num", li).getBoundingClientRect();
-        const on = n.top < mid; li.classList.toggle("on", on);
-        if (on) h = n.top + n.height / 2 - top;
-      });
-      fill.style.height = Math.max(0, h) + "px";
-    };
-    if (reduced) { items.forEach((li) => li.classList.add("on")); fill.style.height = "100%"; }
-    else { addEventListener("scroll", tick, { passive: true }); addEventListener("resize", tick); tick(); }
   });
+  $$("[data-facts]").forEach((box) => {
+    const fill = (t) => esc(t).replace("{responseShort}", esc(C.responseShort));
+    box.innerHTML = D.facts.map((f) => `<div><b>${fill(f.n)}</b><span>${esc(f.l)}</span></div>`).join("");
+  });
+
+  /* ---------- Voor beslissers (schakelaar per rol) ---------- */
+  $$("[data-audiences]").forEach((box) => {
+    const A = D.audiences;
+    const fill = (t) => esc(t).replace("{response}", esc(C.responseTime));
+    box.innerHTML = `
+      <div class="aud-tabs" role="tablist" aria-label="Kies je rol">${A.map((a, i) =>
+        `<button role="tab" id="tab-${a.id}" aria-controls="pane-${a.id}" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}">${esc(a.label)}</button>`).join("")}<span class="aud-pill" aria-hidden="true"></span></div>
+      ${A.map((a, i) => `
+      <div class="aud-pane" role="tabpanel" id="pane-${a.id}" aria-labelledby="tab-${a.id}"${i ? " hidden" : ""}>
+        <h3 class="aud-title">${esc(a.title)}</h3>
+        <div class="aud-grid">${a.points.map((p, k) => `
+          <div class="aud-point" style="--k:${k}"><span class="aud-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span>
+            <div><h4>${esc(p.h)}</h4><p>${fill(p.p)}</p></div></div>`).join("")}
+        </div>
+      </div>`).join("")}`;
+    const tabs = $$('[role="tab"]', box), pill = $(".aud-pill", box);
+    const place = (t) => { pill.style.width = t.offsetWidth + "px"; pill.style.transform = `translateX(${t.offsetLeft - 6}px)`; };
+    const select = (t) => {
+      tabs.forEach((x) => { const on = x === t; x.setAttribute("aria-selected", on); x.tabIndex = on ? 0 : -1; $("#" + x.getAttribute("aria-controls")).hidden = !on; });
+      place(t);
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener("click", () => select(t));
+      t.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight" || e.key === "ArrowLeft") { const n = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length]; n.focus(); select(n); }
+      });
+    });
+    requestAnimationFrame(() => place(tabs[0]));
+    addEventListener("resize", () => place(tabs.find((t) => t.getAttribute("aria-selected") === "true")));
+  });
+
+  /* ---------- Zwevende chip: reactietijd ---------- */
+  if (!/contact\.html$/.test(page)) {
+    const chip = document.createElement("a");
+    chip.className = "speed-chip"; chip.href = "contact.html";
+    chip.innerHTML = `<b aria-hidden="true"></b><span>Reactie binnen <strong>${esc(C.responseTime)}</strong></span>`;
+    document.body.append(chip);
+    const show = () => chip.classList.toggle("on", scrollY > innerHeight * 0.8 && scrollY + innerHeight < document.body.scrollHeight - 500);
+    addEventListener("scroll", show, { passive: true }); show();
+  }
 
   /* ---------- Reveal ---------- */
   const io = new IntersectionObserver((es) => es.forEach((e) => {
