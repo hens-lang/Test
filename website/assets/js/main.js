@@ -7,7 +7,7 @@
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const page = (location.pathname.split("/").pop() || "index.html").replace(/^$/, "index.html");
+  const page = (() => { const p = location.pathname.split("/").pop() || "index.html"; return /^verhaal-/.test(p) ? "verhalen.html" : p; })();
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const arrow = '<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
   const ico = {
@@ -211,6 +211,26 @@
   /* ---------- Sectoren (woordmuur) ---------- */
   $$("[data-sectors]").forEach((ul) => {
     ul.innerHTML = D.sectors.map((s, i) => `<li style="--i:${i}">${esc(s)}</li>`).join("");
+  });
+
+  /* ---------- Verhalen: kaarten + filters ---------- */
+  const V = window.LINK_VERHALEN || [];
+  const vCard = (v) => `<a class="v-card" href="${esc(v.url)}" data-type="${esc(v.type)}">
+      <span class="v-type">${esc(v.type)}${v.status !== "live" ? '<span class="v-badge">Concept</span>' : ""}</span>
+      <h3>${esc(v.title)}</h3><p>${esc(v.excerpt)}</p>
+      <span class="v-meta">${esc(v.date_nl)} · ${v.read} min lezen</span></a>`;
+  $$("[data-verhalen]").forEach((box) => {
+    const n = +box.dataset.verhalen || 3;
+    if (!V.length) { const s = box.closest("section"); if (s) s.remove(); return; }
+    box.innerHTML = V.slice(0, n).map(vCard).join("");
+  });
+  $$(".v-filters").forEach((f) => {
+    const list = $("[data-v-list]");
+    $$(".v-chip", f).forEach((b) => b.addEventListener("click", () => {
+      $$(".v-chip", f).forEach((x) => x.setAttribute("aria-pressed", x === b));
+      const t = b.dataset.filter;
+      $$(".v-card", list).forEach((c) => { c.hidden = t !== "*" && c.dataset.type !== t; });
+    }));
   });
 
   /* ---------- Veelgestelde vragen ---------- */

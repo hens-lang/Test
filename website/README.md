@@ -21,7 +21,8 @@ data/site.js  ──►  assets/js/main.js  ──►  alle pagina's
 | Voorbeelden in de hero-kaart | `data/site.js > liveCard` | home |
 | Voor beslissers (eigenaar / sales) | `data/site.js > audiences` | home |
 | Markten (woordmuur) | `data/site.js > sectors` | home |
-| Veelgestelde vragen + Google FAQ-data | `data/site.js > faq` | home, diensten |
+| Veelgestelde vragen + Google FAQ-data | `data/site.js > faq` | diensten |
+| Verhalen | `content/verhalen/*.md` → `tools/build-verhalen.py` | verhalen, home (3 kaarten) |
 | Reactietijd | `data/site.js > contact.responseTime` | chip, contact, FAQ, waarden, feiten |
 | Partnerportaal-knop | `data/site.js > contact.portalUrl` | header, mobiel menu, footer |
 | Contactformulier-koppeling | `data/site.js > contact.form` | contactpagina |
@@ -29,6 +30,19 @@ data/site.js  ──►  assets/js/main.js  ──►  alle pagina's
 \* Het JSON-LD-blok in `index.html` (voor Google) staat statisch in de HTML. Pas het telefoonnummer daar ook aan als het verandert.
 
 **Wat bewust niet op de site staat.** De werkmethode staat er alleen als traject (kick-off, eerste belmoment, eerste meeting, structurele stroom). Hoe LINK. dat doet, en ook de resultaatcodes en het rapportageformat, blijft voor de kennismaking. Die staan dus ook niet in de code, zodat niemand ze uit de broncode kan halen.
+
+## Verhalen (blog)
+
+Elk verhaal is een tekstbestand in `content/verhalen/`. Zo voeg je er een toe:
+
+1. Kopieer een bestaand bestand, bijvoorbeeld `een-pilot-is-geen-proef.md`. De bestandsnaam wordt het webadres.
+2. Pas het kopje aan: `title`, `type` (Partnerverhaal, Uit de praktijk of Visie), `date`, `author`, `excerpt` en `status`.
+3. Schrijf de tekst. `## Kop` maakt een tussenkop, `- ` een opsomming en `> ` een uitgelichte quote.
+4. Draai `python3 tools/build-verhalen.py`. Het script maakt de pagina, werkt het overzicht, de homepage en de sitemap bij.
+
+**Status.** `concept` krijgt een zichtbaar label en `noindex`, en gaat niet in de sitemap. Zet het op `live` zodra je akkoord bent. Voor de echte site draai je `python3 tools/build-verhalen.py --live`: dan gaan concepten helemaal niet mee.
+
+**Afspraak.** Klantnamen en cijfers alleen met toestemming van de partner. Nooit de werkwijze zelf uitleggen, alleen wat het oplevert.
 
 ## Bronnen
 

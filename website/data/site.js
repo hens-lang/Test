@@ -49,6 +49,7 @@ window.LINK = {
     { href: "diensten.html", label: "Diensten" },
     { href: "ons-verhaal.html", label: "Ons verhaal" },
     { href: "waarom-link.html", label: "Waarom LINK." },
+    { href: "verhalen.html", label: "Verhalen" },
     { href: "contact.html", label: "Contact" }
   ],
 
