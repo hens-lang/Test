@@ -40,7 +40,7 @@
     <div class="wrap">
       <a class="logo" href="index.html" aria-label="LINK. home"><img src="assets/img/logo-zwart.png" alt="LINK." width="420" height="131"></a>
       <nav class="nav" aria-label="Hoofdmenu">${navLinks}</nav>
-      <div class="nav-cta">${portal}<a class="btn" href="contact.html">Kop koffie? ${arrow}</a>
+      <div class="nav-cta">${portal}<a class="btn" href="contact.html">Plan een kennismaking ${arrow}</a>
         <button class="burger" aria-label="Menu openen" aria-expanded="false" aria-controls="mm"><span></span><span></span></button>
       </div>
     </div>`;

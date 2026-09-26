@@ -14,7 +14,7 @@
 window.LINK = {
   brand: {
     name: "LINK.",
-    tagline: "Dè partner van B2B bedrijven.",
+    tagline: "Dé partner van B2B-bedrijven.",
     colors: { black: "#000000", blue: "#38b6ff" }
   },
 
@@ -175,7 +175,7 @@ window.LINK = {
     { q: "Hoe houden we zicht op de voortgang?",
       a: "Via je eigen partnerportaal, met alle leads, afspraken en updates op één plek. Elke week een update, en heb je een vraag, dan heb je binnen {response} een reactie." },
     { q: "Voor welke bedrijven werken jullie?",
-      a: "Voor B2B bedrijven met een sterk product of een sterke dienst die structureel aan tafel willen bij nieuwe klanten. Past het niet, dan zeggen we dat eerlijk. Liever een eerlijk nee vooraf dan een moeizame samenwerking achteraf." }
+      a: "Voor B2B-bedrijven met een sterk product of een sterke dienst die structureel aan tafel willen bij nieuwe klanten. Past het niet, dan zeggen we dat eerlijk. Liever een eerlijk nee vooraf dan een moeizame samenwerking achteraf." }
   ],
 
   // Voorbeelden voor de kaart in de hero (illustratief, geen echte partners).

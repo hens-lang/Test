@@ -66,8 +66,8 @@ h3 { font-size: clamp(22px, 2.1vw, 28px); letter-spacing: -.025em; line-height: 
 p { margin: 0 0 1.1em; }
 .lead { font-size: clamp(18px, 1.55vw, 22px); line-height: 1.6; color: var(--grey-7); max-width: 40ch; }
 .muted { color: var(--grey-5); }
-.soft { color: #b9bec6; }
-.dark .soft { color: #5d636c; }
+.soft { color: #8a919b; }
+.dark .soft { color: #7b828c; }
 .dark .lead { color: #a9b0b9; }
 
 .dot { color: var(--blue); }
@@ -294,7 +294,7 @@ section { position: relative; }
 .flow .eyebrow { color: #000; }
 .flow .eyebrow::before { background: #000; box-shadow: 0 0 0 4px rgba(0,0,0,.12); }
 .flow h2 { color: #000; }
-.flow .soft { color: rgba(0,0,0,.38); }
+.flow .soft { color: rgba(0,0,0,.5); }
 .flow .dot { color: #fff; }
 .flow-sticky { padding: clamp(96px, 12vw, 150px) 0 40px; }
 .flow-head { margin-bottom: clamp(40px, 5vw, 64px); }
@@ -784,4 +784,10 @@ h1.reveal.in, h2.reveal.in { transform: none; clip-path: inset(-10% -5% -20% -5%
 @media (prefers-reduced-motion: reduce) {
   h1.reveal, h2.reveal, .photo-frame.reveal, .meet-photo.reveal, .hero-photo.reveal, .founder-photo.reveal { clip-path: none; transform: none; }
   .intro { display: none; }
+}
+
+/* Menu: eerder naar hamburger, zodat de knop nooit tegen het menu aan komt */
+@media (max-width: 1080px) {
+  .nav, .nav-cta .btn, .portal-link { display: none; }
+  .burger { display: block; }
 }
