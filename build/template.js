@@ -90,7 +90,7 @@ function partnerLockup(meta) {
   <div class="partner-lockup">
     <span class="lockup-link">LINK<span class="dot">.</span></span>
     <span class="lockup-x">×</span>
-    <span class="partner-chip${p.solid ? ' bare' : ''}">${inner}</span>
+    <span class="partner-chip${p.solid ? ' bare' : ''}${p.square ? ' square' : ''}">${inner}</span>
   </div>`;
 }
 
@@ -246,7 +246,7 @@ function slideNeeds(s) {
     ${s.cards
       .map(
         (c) => `
-    <div class="card need-card">
+    <div class="card need-card${c.highlight ? ' need-highlight' : ''}">
       <div class="icon-badge">${icon(c.icon)}</div>
       <div>
         <h3>${esc(c.title)}</h3>
@@ -344,6 +344,67 @@ function slidePlan(s) {
   <p class="closing">${esc(s.closing)}</p>`;
 }
 
+function slideFigures(s) {
+  return `
+  <div class="head">${eyebrow(s.eyebrow)}${title(s.title)}</div>
+  <div class="cards-4 figure-cards">
+    ${s.cards
+      .map(
+        (c) => `
+    <div class="card fig-card${c.highlight ? ' fig-highlight' : ''}">
+      <div class="fig-value">${esc(c.value)}</div>
+      <div class="fig-unit">${esc(c.unit)}</div>
+      <div class="fig-label">${esc(c.label)}</div>
+    </div>`
+      )
+      .join('')}
+  </div>
+  ${s.closing ? `<p class="closing">${esc(s.closing)}</p>` : ''}`;
+}
+
+function slideTiers(s) {
+  const cols = s.columns;
+  return `
+  <div class="head">${eyebrow(s.eyebrow)}${title(s.title)}</div>
+  <div class="tier-wrap">
+    <div class="tier-row tier-head">
+      ${cols.map((c) => `<span>${esc(c)}</span>`).join('')}
+    </div>
+    ${s.rows
+      .map(
+        (r) => `
+    <div class="tier-row${r.highlight ? ' tier-highlight' : ''}">
+      <span class="tier-first">${esc(r.cells[0])}${r.note ? `<em>${esc(r.note)}</em>` : ''}</span>
+      ${r.cells.slice(1).map((c) => `<span>${esc(c)}</span>`).join('')}
+    </div>`
+      )
+      .join('')}
+  </div>
+  ${s.closing ? `<p class="closing">${esc(s.closing)}</p>` : ''}`;
+}
+
+function slideCompare(s) {
+  return `
+  <div class="head">${eyebrow(s.eyebrow)}${title(s.title)}</div>
+  <div class="compare-grid">
+    ${s.columns
+      .map(
+        (col) => `
+    <div class="card cmp-card${col.highlight ? ' cmp-highlight' : ''}">
+      <div class="cmp-tag">${esc(col.tag)}</div>
+      <div class="cmp-head">${esc(col.head)}</div>
+      <div class="cmp-rows">
+        ${col.rows
+          .map((r) => `<div class="cmp-row"><span class="cmp-key">${esc(r.key)}</span><span class="cmp-val">${esc(r.value)}</span></div>`)
+          .join('')}
+      </div>
+    </div>`
+      )
+      .join('')}
+  </div>
+  ${s.closing ? `<p class="closing">${esc(s.closing)}</p>` : ''}`;
+}
+
 const RENDERERS = {
   offer: slideOffer,
   plan: slidePlan,
@@ -356,6 +417,9 @@ const RENDERERS = {
   pilot: slidePilot,
   needs: slideNeeds,
   next: slideNext,
+  figures: slideFigures,
+  tiers: slideTiers,
+  compare: slideCompare,
 };
 
 function renderSlides(data) {
@@ -459,6 +523,8 @@ h1.title { font-size:104px; letter-spacing:-0.03em; }
 .partner-name { font-size:30px; font-weight:800; letter-spacing:-0.02em; color:var(--ink); }
 .partner-chip.bare { background:none; padding:0; }
 .partner-chip.bare img { max-height:68px; max-width:320px; border-radius:10px; }
+.partner-chip.bare.square img { max-height:104px; max-width:104px; border-radius:22px; }
+.theme-dark .partner-chip.bare .partner-name { color:var(--dark-text); }
 
 /* ---------- about ---------- */
 .about-grid {
@@ -570,6 +636,9 @@ h1.title { font-size:104px; letter-spacing:-0.03em; }
 .need-card .icon-badge { margin-bottom:0; }
 .need-card h3 { font-size:29px; font-weight:700; letter-spacing:-0.015em; margin-bottom:12px; }
 .need-card p { font-size:21px; line-height:1.55; color:var(--muted); max-width:640px; }
+.need-highlight { background:var(--black); color:#f2efe6; }
+.need-highlight p { color:#c2c8d2; }
+.need-highlight .icon-badge { background:rgba(56,182,255,0.18); }
 
 /* ---------- plan (licht stappenpad) ---------- */
 .plan-row {
@@ -627,7 +696,69 @@ h1.title { font-size:104px; letter-spacing:-0.03em; }
 .contact-role { font-size:21px; color:var(--accent); font-weight:600; margin-top:8px; }
 .contact-lines { margin-top:40px; display:flex; flex-direction:column; gap:16px; }
 .contact-lines div { font-size:22px; color:var(--dark-muted); }
+
+/* ---------- figures (cijfers, licht) ---------- */
+.figure-cards { top:430px; bottom:auto; height:350px; }
+.fig-card { padding:42px 38px; display:flex; flex-direction:column; }
+.fig-value { font-size:72px; font-weight:800; letter-spacing:-0.035em; line-height:1; color:var(--ink); }
+.fig-unit { font-size:18px; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:0.11em; margin-top:16px; }
+.fig-label { font-size:19px; line-height:1.5; color:var(--muted); margin-top:auto; padding-top:20px; }
+.fig-highlight { background:var(--black); }
+.fig-highlight .fig-value { color:var(--accent); }
+.fig-highlight .fig-label { color:#c2c8d2; }
+
+/* ---------- tiers (staffel, donker) ---------- */
+.tier-wrap {
+  position:absolute; left:var(--m); right:var(--m); top:420px;
+  border:1px solid var(--dark-border); border-radius:16px; overflow:hidden;
+}
+.tier-row {
+  display:grid; grid-template-columns:1.25fr 1fr 1fr 1.15fr;
+  align-items:center; gap:32px; padding:26px 44px;
+  border-top:1px solid var(--dark-border);
+}
+.tier-row:first-child { border-top:none; }
+.tier-row span { font-size:25px; font-weight:600; letter-spacing:-0.01em; }
+.tier-head { background:rgba(255,255,255,0.045); }
+.tier-head span {
+  font-size:16px; font-weight:700; text-transform:uppercase;
+  letter-spacing:0.16em; color:#c2c8d2;
+}
+.tier-first { display:flex; align-items:baseline; gap:14px; }
+.tier-first em {
+  font-family:'Playfair Display', serif; font-style:italic; font-weight:600;
+  font-size:20px; letter-spacing:0; color:var(--accent);
+}
+.tier-highlight { background:rgba(56,182,255,0.11); }
+.tier-highlight span { font-weight:800; color:var(--dark-text); }
+.tier-highlight .tier-first em { color:var(--accent); }
+
+/* ---------- compare (nu vs nieuw) ---------- */
+.compare-grid {
+  position:absolute; left:var(--m); right:var(--m); top:422px;
+  display:grid; grid-template-columns:1fr 1fr; gap:32px;
+}
+.cmp-card { padding:48px 52px; }
+.cmp-tag {
+  font-size:16px; font-weight:700; text-transform:uppercase; letter-spacing:0.18em;
+  color:var(--muted);
+}
+.cmp-head { font-size:30px; font-weight:800; letter-spacing:-0.02em; margin-top:10px; }
+.cmp-rows { margin-top:32px; display:flex; flex-direction:column; }
+.cmp-row {
+  display:flex; justify-content:space-between; align-items:baseline; gap:32px;
+  padding:20px 0; border-top:1px solid rgba(28,34,48,0.14);
+}
+.cmp-row:first-child { border-top:none; padding-top:0; }
+.cmp-key { font-size:21px; color:var(--muted); }
+.cmp-val { font-size:26px; font-weight:800; letter-spacing:-0.02em; text-align:right; }
+.cmp-highlight { background:var(--black); color:#f2efe6; }
+.cmp-highlight .cmp-tag { color:var(--accent); }
+.cmp-highlight .cmp-row { border-top-color:rgba(242,239,230,0.16); }
+.cmp-highlight .cmp-key { color:#c2c8d2; }
+.cmp-highlight .cmp-val { color:var(--accent); }
 `;
+
 
 function buildHtml(data, { fontBase = '../node_modules' } = {}) {
   return `<!DOCTYPE html>

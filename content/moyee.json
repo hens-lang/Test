@@ -1,0 +1,569 @@
+{
+  "meta": {
+    "title": "LINK. voorstel Moyee Coffee",
+    "footerLeft": "LINK. · Moyee Coffee",
+    "webTitle": "LINK. x Moyee Coffee",
+    "slug": "moyee",
+    "logoText": "LINK",
+    "partner": {
+      "name": "Moyee Coffee",
+      "logo": "assets/moyee-logo.png",
+      "solid": true,
+      "square": true
+    }
+  },
+  "slides": [
+    {
+      "id": "cover",
+      "type": "cover",
+      "theme": "dark",
+      "eyebrow": "Voor Moyee Coffee · september 2026",
+      "title": [
+        {
+          "t": "Van losse weken naar een "
+        },
+        {
+          "t": "vast ritme",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "sub": "Wat negentien weken bellen voor Moyee heeft opgeleverd, hoe wij werken en het voorstel om vanaf nu met vaste beldagen per vier weken te draaien."
+    },
+    {
+      "id": "wie",
+      "type": "about",
+      "theme": "light",
+      "eyebrow": "Wie wij zijn",
+      "title": [
+        {
+          "t": "Bellen is een "
+        },
+        {
+          "t": "vak",
+          "accent": true
+        },
+        {
+          "t": ". Wij doen niets anders."
+        }
+      ],
+      "paragraphs": [
+        "LINK. is de vaste acquisitiepartner van B2B-bedrijven. Wij bellen dagelijks namens onze klanten en leveren gekwalificeerde leads op. Geen lijstjes met namen, maar bedrijven die een tasting inplannen of direct willen bestellen, met de aanleiding erbij.",
+        "Voor Moyee bellen we sinds mei. In die tijd hebben we geleerd welke bedrijven openstaan voor een gesprek, welke ingang werkt en wanneer de juiste persoon bereikbaar is. Die kennis zit nu in de bellijst en in het script."
+      ],
+      "stats": [
+        {
+          "value": "1",
+          "label": "vast aanspreekpunt",
+          "detail": "Eén persoon die jullie campagne kent, van bellijst tot rapportage."
+        },
+        {
+          "value": "19",
+          "label": "weken samen onderweg",
+          "detail": "Mei tot en met september 2026, elke week gebeld en elke week teruggekoppeld."
+        }
+      ]
+    },
+    {
+      "id": "wat",
+      "type": "services",
+      "theme": "light",
+      "eyebrow": "Wat wij doen",
+      "title": [
+        {
+          "t": "Eén team dat belt, opvolgt en "
+        },
+        {
+          "t": "leads levert",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "icon": "phone",
+          "title": "Cold calling",
+          "text": "Ervaren B2B-bellers die het gesprek voeren met de beslisser. Eigen belsysteem, een nummer op jullie naam en elk gesprek vastgelegd met notities."
+        },
+        {
+          "icon": "target",
+          "title": "Data en doelgroep",
+          "text": "Wij bouwen de bellijst op jullie ideale klant: branche, grootte, regio en functie. Bestaande relaties en lopende trajecten gaan er vooraf uit."
+        },
+        {
+          "icon": "repeat",
+          "title": "Opvolging",
+          "text": "Terugbelafspraken komen echt terug in de bellijst en warme leads dragen we direct over, met de reden en de context erbij."
+        },
+        {
+          "icon": "calendar",
+          "title": "Gekwalificeerde leads",
+          "text": "Het resultaat waar we op sturen. Een tasting in de agenda of een bedrijf dat wil bestellen, met de juiste persoon en een echte aanleiding.",
+          "highlight": true
+        }
+      ]
+    },
+    {
+      "id": "hoe",
+      "type": "process",
+      "theme": "dark",
+      "eyebrow": "Hoe een werkperiode loopt",
+      "title": [
+        {
+          "t": "Vier weken, van bellijst naar "
+        },
+        {
+          "t": "leads",
+          "accent": true
+        },
+        {
+          "t": " in de opvolging."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Bellijst en planning",
+          "text": "Voor elke periode zetten we de bellijst klaar en plannen we de beldagen op de dagen die in jullie eigen cijfers het beste scoren."
+        },
+        {
+          "title": "Beldagen",
+          "text": "Op een beldag bellen we een volle dag door met een nummer op jullie naam. Elke tasting krijgt een bevestiging naar de prospect, elke bestellead gaat met context naar jullie toe."
+        },
+        {
+          "title": "Wekelijkse rapportage",
+          "text": "Elke week een rapport met gebelde contacten, bereikbaarheid, geplande tastings, bedrijven die willen bestellen en terugbelafspraken, plus wat we terughoren uit de markt."
+        },
+        {
+          "title": "Evalueren en bijsturen",
+          "text": "Om de week kijken we samen naar de cijfers: klopt de doelgroep, klopt de kwaliteit van de afspraken en wat scherpen we aan."
+        }
+      ],
+      "deliverables": {
+        "title": "Wat jullie ontvangen",
+        "items": [
+          "Elke lead met bedrijfsinfo, contactpersoon en aanleiding",
+          "Bevestiging van de tasting naar de prospect uit naam van Moyee",
+          "Wekelijks rapport plus alle gespreksnotities",
+          "Een vast aanspreekpunt en een vaste beller"
+        ]
+      }
+    },
+    {
+      "id": "cijfers",
+      "type": "figures",
+      "theme": "light",
+      "eyebrow": "Negentien weken Moyee in cijfers",
+      "title": [
+        {
+          "t": "Geen gevoel, maar "
+        },
+        {
+          "t": "gemeten",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "value": "45",
+          "unit": "gekwalificeerde leads",
+          "label": "Opgeleverd tussen mei en september 2026, over negentien weken bellen."
+        },
+        {
+          "value": "1.572",
+          "unit": "gebelde contacten",
+          "label": "Bedrijven die we in die periode aan de lijn hebben geprobeerd te krijgen."
+        },
+        {
+          "value": "38%",
+          "unit": "bereikbaarheid",
+          "label": "Van de gebelde contacten kregen we de juiste persoon daadwerkelijk te spreken."
+        },
+        {
+          "value": "2,4",
+          "unit": "leads per beldag",
+          "label": "Gemiddeld over negentien weken, bij één beldag per week. Dit getal is de basis onder het voorstel.",
+          "highlight": true
+        }
+      ],
+      "closing": "Gemiddeld één tasting per beldag. De overige leads willen bestellen en hoeven alleen nog opgevolgd te worden."
+    },
+    {
+      "id": "dagen",
+      "type": "offer",
+      "theme": "dark",
+      "eyebrow": "Bellen op de juiste momenten",
+      "title": [
+        {
+          "t": "Niet harder bellen, maar op de "
+        },
+        {
+          "t": "juiste dagen",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "title": "Alles is geteld",
+          "text": "Van elk gesprek leggen we vast wanneer het gevoerd is en wat het opleverde. Per dag, per dagdeel en per soort bedrijf."
+        },
+        {
+          "title": "Wanneer zit de beslisser er",
+          "text": "Uit negentien weken Moyee-data halen we op welke dagen en dagdelen we de beslisser ook daadwerkelijk aan de lijn krijgen."
+        },
+        {
+          "title": "Beldagen op de beste dagen",
+          "text": "We plannen de beldagen niet op de dagen die ons uitkomen, maar op de dagen die in jullie cijfers het hoogste scoren."
+        },
+        {
+          "title": "Elke periode scherper",
+          "text": "Elke werkperiode levert nieuwe data op. De indeling van de beldagen past zich daarop aan, zonder dat de prijs verandert.",
+          "highlight": true
+        }
+      ],
+      "closing": "De concrete dagen en dagdelen lopen we maandag samen door, met de cijfers erbij."
+    },
+    {
+      "id": "kwalificatie",
+      "type": "qualification",
+      "theme": "light",
+      "eyebrow": "Wat wij een gekwalificeerde lead noemen",
+      "title": [
+        {
+          "t": "Geen lead om de lead. "
+        },
+        {
+          "t": "Drie eisen",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "icon": "building",
+          "title": "Fit",
+          "text": "Het bedrijf past: branche, omvang en situatie voldoen aan de criteria die we samen hebben vastgelegd."
+        },
+        {
+          "icon": "spark",
+          "title": "Interesse",
+          "text": "De prospect wil een tasting of wil bestellen. Er is een concrete aanleiding en die leggen wij vast in de overdracht."
+        },
+        {
+          "icon": "usercheck",
+          "title": "Beslisser",
+          "text": "De lead staat op naam van iemand die over de koffie gaat of daar direct invloed op heeft."
+        }
+      ],
+      "closing": "Valt een lead buiten deze eisen, dan telt hij niet mee. Zo blijft het aantal eerlijk en de kwaliteit hoog."
+    },
+    {
+      "id": "bekendheid",
+      "type": "needs",
+      "theme": "light",
+      "eyebrow": "Naast de leads",
+      "title": [
+        {
+          "t": "Elke beldag zet de naam "
+        },
+        {
+          "t": "Moyee",
+          "accent": true
+        },
+        {
+          "t": " in de markt."
+        }
+      ],
+      "cards": [
+        {
+          "icon": "users",
+          "title": "Bereik dat blijft staan",
+          "text": "In negentien weken hebben we 1.572 bedrijven gebeld. Elk van die gesprekken is ook een moment waarop iemand hoort wat Moyee doet."
+        },
+        {
+          "icon": "spark",
+          "title": "Een verhaal dat blijft hangen",
+          "text": "Koffie uit een eerlijke keten is geen standaard product. Dat onthouden mensen, ook als het nu niet uitkomt."
+        },
+        {
+          "icon": "repeat",
+          "title": "Een nee van nu is later een ja",
+          "text": "Bedrijven die nu geen ruimte hebben, weten wel wie jullie zijn. Komt er later een moment, dan is de naam er al."
+        },
+        {
+          "icon": "calendar",
+          "title": "De tasting als opening",
+          "text": "Gemiddeld één tasting per beldag. Dat is het moment waarop Moyee zichzelf verkoopt, en Puck doet ze straks zelf.",
+          "highlight": true
+        }
+      ]
+    },
+    {
+      "id": "staffel",
+      "type": "tiers",
+      "theme": "dark",
+      "eyebrow": "Het voorstel",
+      "title": [
+        {
+          "t": "Vaste beldagen per vier weken, "
+        },
+        {
+          "t": "één dagprijs",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "columns": [
+        "Beldagen per 4 weken",
+        "Prijs per beldag",
+        "Per 4 weken",
+        "Verwachte leads"
+      ],
+      "rows": [
+        {
+          "cells": [
+            "4 beldagen",
+            "€ 600",
+            "€ 2.400",
+            "± 10 leads"
+          ]
+        },
+        {
+          "cells": [
+            "6 beldagen",
+            "€ 550",
+            "€ 3.300",
+            "± 14 leads"
+          ]
+        },
+        {
+          "cells": [
+            "8 beldagen",
+            "€ 500",
+            "€ 4.000",
+            "± 19 leads"
+          ],
+          "note": "ons advies",
+          "highlight": true
+        },
+        {
+          "cells": [
+            "10 of meer",
+            "€ 475",
+            "vanaf € 4.750",
+            "in overleg"
+          ]
+        }
+      ],
+      "closing": "Gerekend met 2,4 gekwalificeerde leads per beldag, het gemiddelde over negentien weken Moyee. Daarvan is er gemiddeld één per beldag een tasting. Minimaal vier beldagen per periode, prijzen excl. btw."
+    },
+    {
+      "id": "vergelijking",
+      "type": "compare",
+      "theme": "light",
+      "eyebrow": "Wat dit voor jullie betekent",
+      "title": [
+        {
+          "t": "Meer beldagen, en toch een lagere prijs "
+        },
+        {
+          "t": "per lead",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "columns": [
+        {
+          "tag": "Nu",
+          "head": "€ 1.500 per maand plus € 150 per lead",
+          "rows": [
+            {
+              "key": "Beldagen per 4 weken",
+              "value": "4"
+            },
+            {
+              "key": "Kosten per 4 weken",
+              "value": "€ 2.940"
+            },
+            {
+              "key": "Verwachte leads",
+              "value": "± 10"
+            },
+            {
+              "key": "Prijs per lead",
+              "value": "€ 306"
+            }
+          ]
+        },
+        {
+          "tag": "Voorstel",
+          "head": "Acht beldagen per 4 weken, één vaste dagprijs",
+          "highlight": true,
+          "rows": [
+            {
+              "key": "Beldagen per 4 weken",
+              "value": "8"
+            },
+            {
+              "key": "Kosten per 4 weken",
+              "value": "€ 4.000"
+            },
+            {
+              "key": "Verwachte leads",
+              "value": "± 19"
+            },
+            {
+              "key": "Prijs per lead",
+              "value": "€ 208"
+            }
+          ]
+        }
+      ],
+      "closing": "Ook bij vier beldagen gaan jullie erop vooruit: € 2.400 in plaats van € 2.940, bij hetzelfde aantal leads."
+    },
+    {
+      "id": "target",
+      "type": "offer",
+      "theme": "dark",
+      "eyebrow": "Afspraken over het resultaat",
+      "title": [
+        {
+          "t": "Wat als het "
+        },
+        {
+          "t": "meer of minder",
+          "accent": true
+        },
+        {
+          "t": " is."
+        }
+      ],
+      "cards": [
+        {
+          "title": "Onder de verwachting",
+          "text": "Halen we het verwachte aantal leads in een periode niet, dan halen we de ontbrekende leads in de volgende werkperiode in. Zonder extra kosten."
+        },
+        {
+          "title": "Boven de verwachting",
+          "text": "Loopt het harder, dan bellen we de beldagen gewoon vol. Wat er extra uit komt is voor jullie, zonder extra factuur."
+        },
+        {
+          "title": "Op- en afschalen per periode",
+          "text": "Elke vier weken kiezen jullie opnieuw hoeveel beldagen je afneemt. Groeit de vraag, dan schalen we mee op."
+        },
+        {
+          "title": "Geen kosten per lead meer",
+          "text": "De dagprijs is alles. Er komt geen bedrag per lead meer bovenop, dus jullie weten vooraf precies wat een periode kost.",
+          "highlight": true
+        }
+      ],
+      "closing": "De verwachting komt uit jullie eigen cijfers, dus we sturen op iets dat we al waargemaakt hebben."
+    },
+    {
+      "id": "spelregels",
+      "type": "rules",
+      "theme": "light",
+      "eyebrow": "Spelregels",
+      "title": [
+        {
+          "t": "Transparant en zonder "
+        },
+        {
+          "t": "kleine lettertjes",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "rules": [
+        {
+          "title": "Werkperiodes van 4 weken",
+          "text": "Vooraf gefactureerd, per werkperiode."
+        },
+        {
+          "title": "Niet-exclusief",
+          "text": "Jullie zitten nergens aan vast en houden alle vrijheid."
+        },
+        {
+          "title": "Bestaande relaties blijven van jullie",
+          "text": "Uitsluitlijst vooraf, die bedrijven benaderen wij niet."
+        },
+        {
+          "title": "Wekelijkse rapportage",
+          "text": "Elke week zicht op wat er gebeld is en wat het opleverde."
+        },
+        {
+          "title": "Eén vast aanspreekpunt",
+          "text": "Bij LINK. en bij Moyee, zodat er niets tussen wal en schip valt."
+        },
+        {
+          "title": "Terugkoppeling op de leads",
+          "text": "Kort laten weten wat een tasting of een bestellead opleverde, dat maakt de volgende beter."
+        },
+        {
+          "title": "Jullie naam, onze uitvoering",
+          "text": "Nummer op jullie naam en jullie stijl, wij voeren uit."
+        },
+        {
+          "title": "Gegevens veilig",
+          "text": "Vastgelegd in een verwerkersovereenkomst."
+        }
+      ]
+    },
+    {
+      "id": "volgende",
+      "type": "next",
+      "theme": "dark",
+      "eyebrow": "Volgende stap",
+      "title": [
+        {
+          "t": "Akkoord op het model? Dan start de eerste "
+        },
+        {
+          "t": "werkperiode",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Puck aan boord",
+          "text": "We lopen samen de werkwijze door, zodat Puck weet wat er uit een beldag komt: de tastings die zij voert en de bestelleads die zij opvolgt."
+        },
+        {
+          "title": "Aantal beldagen kiezen",
+          "text": "Jullie kiezen hoeveel beldagen per vier weken. Ons advies is acht."
+        },
+        {
+          "title": "Start eerste periode",
+          "text": "We zetten de bellijst klaar, plannen de beldagen op de beste dagen en gaan van start."
+        }
+      ],
+      "contact": {
+        "name": "Hens Boer",
+        "role": "Eigenaar LINK.",
+        "email": "hens@linkgrp.nl",
+        "site": "linkgrp.nl",
+        "address": "Flemingweg 8, Alphen aan den Rijn"
+      }
+    }
+  ]
+}

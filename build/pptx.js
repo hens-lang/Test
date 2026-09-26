@@ -182,9 +182,15 @@ async function main() {
         const nameW = pn.wordmark ? 0 : pn.name.length * 17 + 24;
         if (pn.solid && logoBuf) {
           // eigen achtergrondkleur: geen chip eronder, logo op volle hoogte
-          logoH = 68;
+          logoH = pn.square ? 104 : 68;
           logoW = logoH * (await sharp(path.resolve(ROOT, pn.logo)).metadata().then((m) => m.width / m.height));
-          slide.addImage({ data: logoBuf, x: p(292), y: p(ly - 2), w: p(logoW), h: p(logoH) });
+          slide.addImage({ data: logoBuf, x: p(292), y: p(ly + (64 - logoH) / 2), w: p(logoW), h: p(logoH) });
+          if (nameW) {
+            slide.addText(pn.name, {
+              x: p(292 + logoW + 24), y: p(ly), w: p(nameW), h: p(64), isTextBox: true, margin: 0,
+              fontFace: SANS, bold: true, fontSize: 15, color: C.darkText, align: 'left', valign: 'middle',
+            });
+          }
           continue;
         }
         const chipW = logoBuf ? 28 + logoW + (nameW ? 16 + nameW : 0) + 28 : 220;
@@ -417,7 +423,8 @@ async function main() {
       s.cards.forEach((c, n) => {
         const x = 96 + (n % 2) * (w + gap);
         const y = y0 + Math.floor(n / 2) * (h + gap);
-        card(slide, x, y, w, h, C.card);
+        const hl = !!c.highlight;
+        card(slide, x, y, w, h, hl ? '000000' : C.card);
         slide.addShape('roundRect', {
           x: p(x + 52), y: p(y + 48), w: p(60), h: p(60), rectRadius: p(14),
           fill: { color: C.badgeLight }, line: { type: 'none' },
@@ -425,11 +432,11 @@ async function main() {
         slide.addImage({ data: icons[c.icon], x: p(x + 67), y: p(y + 63), w: p(30), h: p(30) });
         slide.addText(c.title, {
           x: p(x + 148), y: p(y + 44), w: p(w - 200), h: p(44), isTextBox: true, margin: 0,
-          fontFace: SANS, bold: true, fontSize: 14.5, color: C.ink, valign: 'middle',
+          fontFace: SANS, bold: true, fontSize: 14.5, color: hl ? C.darkText : C.ink, valign: 'middle',
         });
         slide.addText(c.text, {
           x: p(x + 148), y: p(y + 96), w: p(w - 210), h: p(110), isTextBox: true, margin: 0,
-          fontFace: SANS, fontSize: 10.5, color: C.muted, lineSpacingMultiple: 1.35, valign: 'top',
+          fontFace: SANS, fontSize: 10.5, color: hl ? C.darkMuted : C.muted, lineSpacingMultiple: 1.35, valign: 'top',
         });
       });
     }
@@ -537,6 +544,126 @@ async function main() {
           fontFace: SANS, bold: true, fontSize: 9, color: darkInk, valign: 'middle',
         });
       });
+    }
+
+    if (s.type === 'figures') {
+      const w = 414, gap = 24, y = 430, h = 350;
+      s.cards.forEach((c, n) => {
+        const x = 96 + n * (w + gap);
+        const hl = !!c.highlight;
+        card(slide, x, y, w, h, hl ? '000000' : C.card);
+        slide.addText(c.value, {
+          x: p(x + 38), y: p(y + 42), w: p(w - 76), h: p(80), isTextBox: true, margin: 0,
+          fontFace: SANS, bold: true, fontSize: 36, color: hl ? C.accent : C.ink, valign: 'middle',
+        });
+        slide.addText(c.unit.toUpperCase(), {
+          x: p(x + 38), y: p(y + 130), w: p(w - 76), h: p(34), isTextBox: true, margin: 0,
+          fontFace: SANS, bold: true, fontSize: 9, color: C.accent, charSpacing: 1.2, valign: 'middle',
+        });
+        slide.addText(c.label, {
+          x: p(x + 38), y: p(y + 196), w: p(w - 76), h: p(140), isTextBox: true, margin: 0,
+          fontFace: SANS, fontSize: 9.5, color: hl ? C.darkMuted : C.muted, lineSpacingMultiple: 1.35, valign: 'top',
+        });
+      });
+      if (s.closing) {
+        slide.addShape('ellipse', {
+          x: p(96), y: p(922), w: p(12), h: p(12), fill: { color: C.accent }, line: { type: 'none' },
+        });
+        slide.addText(s.closing, {
+          x: p(126), y: p(900), w: p(1560), h: p(56), isTextBox: true, margin: 0,
+          fontFace: SANS, bold: true, fontSize: 12, color: C.ink, valign: 'middle',
+        });
+      }
+    }
+
+    if (s.type === 'tiers') {
+      const x0 = 96, tw = 1728, y0 = 420, rowH = 83, headH = 74;
+      const colX = [44, 516, 900, 1280];
+      const colW = [460, 370, 370, 400];
+      slide.addShape('roundRect', {
+        x: p(x0), y: p(y0), w: p(tw), h: p(headH + s.rows.length * rowH), rectRadius: RADIUS,
+        fill: { type: 'none' }, line: { color: C.darkBorder, width: 0.75 },
+      });
+      s.columns.forEach((c, n) => {
+        slide.addText(c.toUpperCase(), {
+          x: p(x0 + colX[n]), y: p(y0), w: p(colW[n]), h: p(headH), isTextBox: true, margin: 0,
+          fontFace: SANS, bold: true, fontSize: 8, color: C.darkMuted, charSpacing: 1.6, valign: 'middle',
+        });
+      });
+      s.rows.forEach((r, n) => {
+        const y = y0 + headH + n * rowH;
+        if (r.highlight) {
+          slide.addShape('rect', {
+            x: p(x0 + 1), y: p(y), w: p(tw - 2), h: p(rowH),
+            fill: { color: C.accent, transparency: 89 }, line: { type: 'none' },
+          });
+        }
+        slide.addShape('line', {
+          x: p(x0), y: p(y), w: p(tw), h: 0, line: { color: C.darkBorder, width: 0.75 },
+        });
+        r.cells.forEach((cell, m) => {
+          const runs = [{ text: cell, options: { bold: true, color: C.darkText } }];
+          if (m === 0 && r.note) {
+            runs.push({ text: '   ' + r.note, options: { fontFace: SERIF, italic: true, bold: false, fontSize: 10, color: C.accent } });
+          }
+          slide.addText(runs, {
+            x: p(x0 + colX[m]), y: p(y), w: p(colW[m]), h: p(rowH), isTextBox: true, margin: 0,
+            fontFace: SANS, fontSize: 12.5, valign: 'middle',
+          });
+        });
+      });
+      if (s.closing) {
+        slide.addShape('ellipse', {
+          x: p(96), y: p(922), w: p(12), h: p(12), fill: { color: C.accent }, line: { type: 'none' },
+        });
+        slide.addText(s.closing, {
+          x: p(126), y: p(890), w: p(1560), h: p(76), isTextBox: true, margin: 0,
+          fontFace: SANS, bold: true, fontSize: 12, color: C.darkText, valign: 'middle',
+        });
+      }
+    }
+
+    if (s.type === 'compare') {
+      const w = 848, gap = 32, y = 422, h = 468;
+      s.columns.forEach((col, n) => {
+        const x = 96 + n * (w + gap);
+        const hl = !!col.highlight;
+        card(slide, x, y, w, h, hl ? '000000' : C.card);
+        slide.addText(col.tag.toUpperCase(), {
+          x: p(x + 52), y: p(y + 44), w: p(w - 104), h: p(30), isTextBox: true, margin: 0,
+          fontFace: SANS, bold: true, fontSize: 8, color: hl ? C.accent : C.muted, charSpacing: 1.8, valign: 'middle',
+        });
+        slide.addText(col.head, {
+          x: p(x + 52), y: p(y + 78), w: p(w - 104), h: p(52), isTextBox: true, margin: 0,
+          fontFace: SANS, bold: true, fontSize: 15, color: hl ? C.darkText : C.ink, valign: 'middle',
+        });
+        col.rows.forEach((r, m) => {
+          const ry = y + 148 + m * 74;
+          if (m > 0) {
+            slide.addShape('line', {
+              x: p(x + 52), y: p(ry), w: p(w - 104), h: 0,
+              line: { color: hl ? C.darkBorder : 'D8D2C4', width: 0.75 },
+            });
+          }
+          slide.addText(r.key, {
+            x: p(x + 52), y: p(ry), w: p(w - 300), h: p(74), isTextBox: true, margin: 0,
+            fontFace: SANS, fontSize: 11, color: hl ? C.darkMuted : C.muted, valign: 'middle',
+          });
+          slide.addText(r.value, {
+            x: p(x + w - 248), y: p(ry), w: p(196), h: p(74), isTextBox: true, margin: 0,
+            fontFace: SANS, bold: true, fontSize: 13.5, color: hl ? C.accent : C.ink, align: 'right', valign: 'middle',
+          });
+        });
+      });
+      if (s.closing) {
+        slide.addShape('ellipse', {
+          x: p(96), y: p(922), w: p(12), h: p(12), fill: { color: C.accent }, line: { type: 'none' },
+        });
+        slide.addText(s.closing, {
+          x: p(126), y: p(900), w: p(1560), h: p(56), isTextBox: true, margin: 0,
+          fontFace: SANS, bold: true, fontSize: 12, color: C.ink, valign: 'middle',
+        });
+      }
     }
 
     if (s.type === 'next') {
