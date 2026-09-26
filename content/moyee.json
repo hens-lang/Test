@@ -531,18 +531,18 @@
           "label": "Alleen de koffie, tegen € 20,64 per kilo. Cross- en upsell zitten er nog niet in."
         },
         {
-          "value": "€ 215",
-          "unit": "kost een lead",
-          "label": "Bij acht beldagen per vier weken. Eén klant van dit formaat betaalt er 29 terug."
+          "value": "1 op 29",
+          "unit": "leads wordt klant",
+          "label": "Meer is er niet nodig om het bellen terug te verdienen. Alles daarboven is winst.",
+          "highlight": true
         },
         {
-          "value": "9",
-          "unit": "klanten per jaar",
-          "label": "Zoveel klanten van dit formaat maken een heel jaar bellen terugverdiend, uit ± 242 leads.",
-          "highlight": true
+          "value": "23",
+          "unit": "tastings staan er al",
+          "label": "Uit de periode die achter ons ligt. Elke tasting die klant wordt, telt vanaf dat moment mee."
         }
       ],
-      "closing": "Bij acht beldagen leveren we ongeveer 242 gekwalificeerde leads per jaar op. Worden daar 9 klanten van dit formaat uit, dan staat de investering van € 52.000 quitte en loopt die omzet daarna gewoon door."
+      "closing": "En het stopt niet na een jaar. Een klant die blijft bestellen levert die omzet elk jaar opnieuw op, zonder dat er nieuwe acquisitiekosten tegenover staan."
     },
     {
       "id": "target",

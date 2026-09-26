@@ -161,17 +161,16 @@ waarde = {
         {'value': f"{kl['kg_per_jaar']} kg", 'unit': 'koffie per jaar',
          'label': 'Het verbruik van één kantoor waar we een tasting hebben ingepland. Geen uitschieter, gewoon een normaal kantoor.'},
         {'value': eur(kl['omzet_per_jaar']), 'unit': 'omzet per jaar',
-         'label': f"Alleen de koffie, tegen {eur(kl['prijs_per_kilo']).replace('.', ',')} per kilo. Cross- en upsell zitten er nog niet in."},
-        {'value': eur(acht['per_lead']), 'unit': 'kost een lead',
-         'label': f"Bij acht beldagen per vier weken. Eén klant van dit formaat betaalt er {kl['leads_per_klant']} terug."},
-        {'value': str(math.ceil(kl['klanten_break_even'])), 'unit': 'klanten per jaar',
-         'label': f"Zoveel klanten van dit formaat maken een heel jaar bellen terugverdiend, uit ± {kl['leads_per_jaar']} leads.",
+         'label': f"Alleen de koffie, tegen {eur(kl['prijs_per_kilo'])} per kilo. Cross- en upsell zitten er nog niet in."},
+        {'value': f"1 op {kl['leads_per_klant']}", 'unit': 'leads wordt klant',
+         'label': 'Meer is er niet nodig om het bellen terug te verdienen. Alles daarboven is winst.',
          'highlight': True},
+        {'value': str(res['tastings']), 'unit': 'tastings staan er al',
+         'label': 'Uit de periode die achter ons ligt. Elke tasting die klant wordt, telt vanaf dat moment mee.'},
     ],
     'closing': (
-        f"Bij acht beldagen leveren we ongeveer {kl['leads_per_jaar']} gekwalificeerde leads per jaar op. "
-        f"Worden daar {math.ceil(kl['klanten_break_even'])} klanten van dit formaat uit, dan staat de investering van "
-        f"{eur(kl['investering_per_jaar'])} quitte en loopt die omzet daarna gewoon door."
+        f"En het stopt niet na een jaar. Een klant die blijft bestellen levert die omzet elk jaar opnieuw op, "
+        'zonder dat er nieuwe acquisitiekosten tegenover staan.'
     ),
 }
 d['slides'] = [x for x in d['slides'] if x['id'] != 'waarde']

@@ -17,7 +17,10 @@ norm = S['norm_pogingen_per_beldag']
 tier = {r['beldagen']: r for r in S['staffel']}
 
 dui = lambda n: f'{n:,.0f}'.replace(',', '.')
-eur = lambda n: '&euro; ' + f'{n:,.0f}'.replace(',', '.')
+def eur(n):
+    if n < 100 and n != int(n):
+        return '&euro; ' + f'{n:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')
+    return '&euro; ' + f'{n:,.0f}'.replace(',', '.')
 nl = lambda x: str(x).replace('.', ',')
 
 VAST, TASTINGFEE = 1500, 150
@@ -79,12 +82,12 @@ WAARDE = f'''    <section id="waarde">
       <h2>Eén nieuwe klant betaalt <em>{kl['leads_per_klant']} leads</em> terug.</h2>
       <p class="lede">Bij een van de kantoren waar we een tasting inplanden gaat 300 kilo koffie per jaar doorheen. Dat is geen uitschieter, dat is een normaal kantoor.</p>
       <div class="specs">
-{spec(f"{kl['kg_per_jaar']} kg", "koffie per jaar", "Het verbruik van één kantoor waar we een tasting hebben ingepland. Geen uitschieter, gewoon een normaal kantoor.")}
-{spec(eur(kl['omzet_per_jaar']), "omzet per jaar", f"Alleen de koffie, tegen &euro; {str(kl['prijs_per_kilo']).replace('.', ',')} per kilo. Cross- en upsell zitten er nog niet in.")}
-{spec(eur(acht['per_lead']), "kost een lead", f"Bij acht beldagen per vier weken. Eén klant van dit formaat betaalt er {kl['leads_per_klant']} terug.")}
-{spec(str(math.ceil(kl['klanten_break_even'])), "klanten per jaar", f"Zoveel klanten van dit formaat maken een heel jaar bellen terugverdiend, uit &plusmn; {kl['leads_per_jaar']} leads.", hi=True)}
+{spec(f"{kl['kg_per_jaar']} kg", "koffie per jaar", "Het verbruik van dat ene kantoor, elk jaar opnieuw.")}
+{spec(eur(kl['omzet_per_jaar']), "omzet per jaar", f"Alleen de koffie, tegen {eur(kl['prijs_per_kilo'])} per kilo. Cross- en upsell zitten er nog niet in.")}
+{spec(f"1 op {kl['leads_per_klant']}", "leads wordt klant", "Meer is er niet nodig om het bellen terug te verdienen. Alles daarboven is winst.", hi=True)}
+{spec(str(res['tastings']), "tastings staan er al", "Uit de periode die achter ons ligt. Elke tasting die klant wordt, telt vanaf dat moment mee.")}
       </div>
-      <p class="fine">Bij acht beldagen leveren we ongeveer {kl['leads_per_jaar']} gekwalificeerde leads per jaar op. Worden daar {math.ceil(kl['klanten_break_even'])} klanten van dit formaat uit, dan staat de investering van {eur(kl['investering_per_jaar'])} quitte en loopt die omzet daarna gewoon door.</p>
+      <p class="fine">En het stopt niet na een jaar. Een klant die blijft bestellen levert die omzet elk jaar opnieuw op, zonder dat er nieuwe acquisitiekosten tegenover staan.</p>
     </section>'''
 
 rows = []
