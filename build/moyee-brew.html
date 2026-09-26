@@ -383,9 +383,33 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
 .viz{margin:56px 0 0; padding:0; display:flex; flex-direction:column; gap:26px}
 .viz svg{width:100%; height:auto; display:block; overflow:visible}
 .viz figcaption{font-size:14.5px; line-height:1.6; color:var(--mid); max-width:68ch}
-.viz-beans{align-items:center}
-.viz-beans svg{max-width:470px}
-.viz-beans figcaption{text-align:center}
+.ladder{
+  display:flex; flex-direction:column; gap:2px; border:1px solid var(--edge);
+  border-radius:20px; overflow:hidden; background:var(--edge);
+  box-shadow:var(--lift), 0 30px 70px -44px rgba(0,0,0,.9);
+}
+.lad{
+  background:linear-gradient(180deg,#1e2434,var(--card)); padding:26px 30px;
+  display:grid; grid-template-columns:120px minmax(0,1fr) auto; gap:6px 26px; align-items:center;
+}
+.lad:last-child{background:linear-gradient(180deg,#0d1119,#05070b)}
+.lad-k{font-size:17px; font-weight:700; letter-spacing:-.01em}
+.lad-c{display:flex; flex-wrap:wrap; gap:8px}
+.lad-u{display:block; opacity:0; transform:translateY(6px) scale(.8);
+  animation:pop .5s cubic-bezier(.2,1.4,.4,1) forwards; animation-delay:calc(var(--i) * .07s + .2s)}
+@keyframes pop{to{opacity:1; transform:none}}
+.viz .lad-cup, .lad-cup{width:26px; height:26px; display:block; flex:none; fill:none; stroke:var(--accent);
+  stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round}
+.lad-v{font-size:26px; font-weight:800; letter-spacing:-.03em; text-align:right;
+  font-variant-numeric:tabular-nums}
+.lad:last-child .lad-v{color:var(--accent)}
+.lad-n{grid-column:3; text-align:right; font-size:13px; color:var(--mid); margin-top:-4px}
+@media (max-width:640px){
+  .lad{grid-template-columns:minmax(0,1fr) auto}
+  .lad-c{grid-column:1/-1; order:3}
+  .lad-n{grid-column:1/-1; text-align:left}
+}
+@media (prefers-reduced-motion:reduce){ .lad-u{opacity:1; transform:none; animation:none} }
 
 .pourwrap{
   display:grid; grid-template-columns:344px minmax(0,1fr); gap:clamp(32px,5vw,72px);
@@ -397,7 +421,21 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
   box-shadow:var(--lift), 0 34px 80px -46px rgba(0,0,0,.95);
 }
 @media (max-width:760px){ .pourwrap{grid-template-columns:minmax(0,1fr); justify-items:center} }
+.pourcol{display:flex; flex-direction:column; align-items:center; gap:20px; width:100%}
 .pour{max-width:344px}
+
+.brew-out{
+  display:flex; align-items:center; gap:14px; width:100%; max-width:344px;
+  padding:14px 18px; border-radius:14px;
+  background:rgba(56,182,255,.09); border:1px solid rgba(56,182,255,.32);
+  opacity:0; transform:translateY(12px);
+  transition:opacity .7s ease 3.5s, transform .7s cubic-bezier(.2,.8,.3,1) 3.5s;
+}
+.is-brewing .brew-out{opacity:1; transform:none}
+.brew-out .bo-cup{width:26px; height:26px; flex:none; fill:none;
+  stroke:var(--accent); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round}
+.brew-out span{display:flex; flex-direction:column; font-size:13.5px; color:var(--mid); line-height:1.35}
+.brew-out b{font-size:15.5px; font-weight:700; color:var(--cream); letter-spacing:-.01em}
 .pour{max-width:344px}
 .pour .ln{stroke:rgba(242,239,230,.3); stroke-width:2}
 .pour .mdisp{
@@ -415,11 +453,32 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
 .is-brewing .pour .crema{opacity:.95}
 
 .stream{stroke-dasharray:12 10; stroke-dashoffset:0; opacity:0}
-.is-brewing .stream{opacity:1; animation:stream .5s linear infinite}
-.is-brewing .stream.s2{animation-delay:.12s}
+.is-brewing .stream{animation:streamRun 3.2s linear .4s forwards, stream .5s linear .4s 5.6 both}
+.is-brewing .stream.s2{animation-delay:.52s, .52s}
 @keyframes stream{to{stroke-dashoffset:-22}}
-.pour .fill{transform-box:fill-box; transform-origin:bottom; transform:scaleY(0); transition:transform 2.6s cubic-bezier(.25,.8,.3,1) .2s}
+@keyframes streamRun{0%{opacity:0}6%{opacity:1}88%{opacity:1}100%{opacity:0}}
+
+.pour .fill{transform-box:fill-box; transform-origin:bottom; transform:scaleY(0);
+  transition:transform 2.7s cubic-bezier(.3,.7,.35,1) .5s}
 .is-brewing .pour .fill{transform:scaleY(1)}
+
+.pour .steamc path{
+  fill:none; stroke:rgba(242,239,230,.34); stroke-width:1.8; stroke-linecap:round;
+  opacity:0;
+}
+.is-brewing .pour .steamc path{animation:rise 3.6s ease-in-out 3.3s infinite}
+.is-brewing .pour .steamc path:nth-child(2){animation-delay:3.8s}
+.is-brewing .pour .steamc path:nth-child(3){animation-delay:4.3s}
+@keyframes rise{
+  0%{opacity:0; transform:translateY(6px) scaleY(.7)}
+  35%{opacity:.6}
+  100%{opacity:0; transform:translateY(-14px) scaleY(1.15)}
+}
+.pour .steamc path{transform-box:fill-box; transform-origin:bottom}
+
+.pour .mglow{opacity:0}
+.is-brewing .pour .mglow{animation:mglow 1.6s ease-out .1s 1 forwards}
+@keyframes mglow{0%{opacity:0}30%{opacity:.5}100%{opacity:.14}}
 
 .pstages{display:flex; flex-direction:column; gap:4px; width:100%}
 .pst{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px 20px; align-items:baseline; padding:18px 0; border-top:1px solid var(--edge)}
@@ -431,15 +490,26 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
 .pst-f{height:100%; border-radius:4px; background:linear-gradient(90deg,#4a2716,#8a5330); transform-origin:left; transform:scaleX(0); transition:transform 1.6s cubic-bezier(.25,.8,.3,1)}
 .pst.out .pst-f{background:var(--accent)}
 .is-brewing .pst-f{transform:scaleX(1)}
-.pst:nth-child(2) .pst-f{transition-delay:.18s}
-.pst:nth-child(3) .pst-f{transition-delay:.36s}
-.pst:nth-child(4) .pst-f{transition-delay:.54s}
+.pst-f{transition-duration:1.1s}
+.pst:nth-child(1) .pst-f{transition-delay:.5s}
+.pst:nth-child(2) .pst-f{transition-delay:1.15s}
+.pst:nth-child(3) .pst-f{transition-delay:1.8s}
+.pst:nth-child(4) .pst-f{transition-delay:2.45s}
+.pst-v{opacity:.25; transition:opacity .5s ease}
+.is-brewing .pst-v{opacity:1}
+.is-brewing .pst:nth-child(1) .pst-v{transition-delay:.5s}
+.is-brewing .pst:nth-child(2) .pst-v{transition-delay:1.15s}
+.is-brewing .pst:nth-child(3) .pst-v{transition-delay:1.8s}
+.is-brewing .pst:nth-child(4) .pst-v{transition-delay:2.45s}
 
 @media (prefers-reduced-motion:reduce){
   .pour .fill{transform:scaleY(1)}
   .pour .crema{opacity:.95}
   .stream{opacity:1}
   .pst-f{transform:scaleX(1)}
+  .pst-v{opacity:1}
+  .brew-out{opacity:1; transform:none}
+  .pour .steamc path{opacity:.4}
 }
 
 .sbars{margin-top:38px; display:flex; flex-direction:column; gap:2px;
@@ -584,7 +654,7 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
         </div>
       </div>
       <figure class="viz viz-pour">
-        <div class="pourwrap"><svg class="pour" viewBox="0 0 360 400" role="img"
+        <div class="pourwrap"><div class="pourcol"><svg class="pour" viewBox="0 0 360 400" role="img"
      aria-label="Een volautomaat die koffie zet: de gesprekken gaan erin, de leads komen eruit">
   <defs>
     <linearGradient id="machineBody" x1="0" y1="0" x2="1" y2="1">
@@ -605,7 +675,7 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
 
   <rect x="90" y="56" width="112" height="54" rx="11" fill="url(#screenGlow)"
         stroke="rgba(56,182,255,.4)" stroke-width="1.6"/>
-  <text class="mdisp" x="146" y="84">2.629</text>
+  <text class="mdisp" x="146" y="84" data-brewcount="2629">0</text>
   <text class="msub" x="146" y="100">gesprekken</text>
 
   <g class="mbtn">
@@ -643,9 +713,15 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
   <path class="ln" d="M134,264 L226,264" fill="none" stroke-linecap="round"/>
   <path class="ln" d="M220,272 Q243,278 240,291 Q238,302 214,301" fill="none"/>
 
+  <g class="steamc">
+    <path d="M152,258 C144,244 158,238 150,224"/>
+    <path d="M180,256 C172,242 186,236 178,220"/>
+    <path d="M208,258 C200,244 214,238 206,224"/>
+  </g>
+
   <rect x="112" y="316" width="136" height="9" rx="4" fill="#1a2030"
         stroke="rgba(242,239,230,.2)" stroke-width="1.6"/>
-</svg><div class="pstages"><div class="pst"><div class="pst-k">Gesprekspogingen</div><div class="pst-v">2.629</div><div class="pst-t"><div class="pst-f" style="width:100.00%"></div></div></div><div class="pst"><div class="pst-k">Bedrijven gesproken</div><div class="pst-v">1.470</div><div class="pst-t"><div class="pst-f" style="width:55.91%"></div></div></div><div class="pst out"><div class="pst-k">Gekwalificeerde leads</div><div class="pst-v">61</div><div class="pst-t"><div class="pst-f" style="width:2.32%"></div></div></div><div class="pst out"><div class="pst-k">Tastings ingepland</div><div class="pst-v">23</div><div class="pst-t"><div class="pst-f" style="width:0.87%"></div></div></div></div></div>
+</svg><div class="brew-out"><svg viewBox="0 0 24 24" aria-hidden="true" class="bo-cup"><path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/><path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/><path d="M2.6,6 L20.4,6"/></svg><span><b>Tasting ingepland</b>23 keer in deze periode</span></div></div><div class="pstages"><div class="pst"><div class="pst-k">Gesprekspogingen</div><div class="pst-v">2.629</div><div class="pst-t"><div class="pst-f" style="width:100.00%"></div></div></div><div class="pst"><div class="pst-k">Bedrijven gesproken</div><div class="pst-v">1.470</div><div class="pst-t"><div class="pst-f" style="width:55.91%"></div></div></div><div class="pst out"><div class="pst-k">Gekwalificeerde leads</div><div class="pst-v">61</div><div class="pst-t"><div class="pst-f" style="width:2.32%"></div></div></div><div class="pst out"><div class="pst-k">Tastings ingepland</div><div class="pst-v">23</div><div class="pst-t"><div class="pst-f" style="width:0.87%"></div></div></div></div></div>
         <figcaption>Alle vier de balken staan op schaal ten opzichte van de 2.629 gesprekspogingen. Zo klein is de laatste stap, en precies daar zit het werk.</figcaption>
       </figure>
     </section>
@@ -889,36 +965,35 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
     </section>
 
     <section id="waarde">
-      <p class="eyebrow">Wat er tegenover staat</p>
-      <h2>Eén nieuwe klant betaalt <em>29 leads</em> terug.</h2>
-      <p class="lede">Bij een van de kantoren waar we een tasting inplanden gaat 300 kilo koffie per jaar doorheen. Dat is geen uitschieter, dat is een normaal kantoor.</p>
+      <p class="eyebrow">Wat een klant oplevert</p>
+      <h2>Elke tasting is een kans op een klant die <em>jaren blijft</em>.</h2>
+      <p class="lede">Bij een van de kantoren waar we een tasting inplanden gaat 300 kilo koffie per jaar doorheen. Dat is &euro; 6.193 aan omzet, alleen aan koffie. Geen uitschieter, gewoon een normaal kantoor.</p>
       <div class="specs s4">
         <div class="spec">
           <div class="fig">300 kg</div>
           <div class="unit">koffie per jaar</div>
-          <div class="note">Het verbruik van dat ene kantoor, elk jaar opnieuw.</div>
-        </div>
-        <div class="spec">
-          <div class="fig">&euro; 6.193</div>
-          <div class="unit">omzet per jaar</div>
-          <div class="note">Alleen de koffie, tegen &euro; 20,64 per kilo. Cross- en upsell zitten er nog niet in.</div>
+          <div class="note">Het verbruik van dat ene kantoor. Cross- en upsell zitten daar nog niet in.</div>
         </div>
         <div class="spec hi">
-          <div class="fig">1 op 29</div>
-          <div class="unit">leads is genoeg</div>
-          <div class="note">Meer hoeft er niet klant te worden om het bellen terug te verdienen. In de praktijk ligt dat aandeel hoger, en alles daarboven is winst.</div>
+          <div class="fig">&euro; 6.193</div>
+          <div class="unit">per klant per jaar</div>
+          <div class="note">Tegen &euro; 20,64 per kilo. En dat komt elk jaar opnieuw binnen zolang ze bestellen.</div>
         </div>
         <div class="spec">
           <div class="fig">23</div>
           <div class="unit">tastings staan er al</div>
           <div class="note">Uit de periode die achter ons ligt. Elke tasting die klant wordt, telt vanaf dat moment mee.</div>
         </div>
+        <div class="spec">
+          <div class="fig">&plusmn; 7</div>
+          <div class="unit">tastings per periode</div>
+          <div class="note">Bij acht beldagen. Meer beldagen betekent meer tastings, en dus meer kansen op zo'n klant.</div>
+        </div>
       </div>
-      <figure class="viz viz-beans">
-        <svg class="beans-viz" viewBox="0 0 418 146" role="img" aria-label="29 bonen, waarvan 1 gevuld"><g transform="translate(20,23) rotate(-16)"><ellipse rx="11.5" ry="16" fill="#38b6ff" stroke="#38b6ff" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="#0d1420" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(62,23) rotate(-7)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(104,23) rotate(2)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(146,23) rotate(11)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(188,23) rotate(-12)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(230,23) rotate(-3)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(272,23) rotate(6)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(314,23) rotate(15)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(356,23) rotate(-8)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(398,23) rotate(1)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(20,73) rotate(10)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(62,73) rotate(-13)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(104,73) rotate(-4)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(146,73) rotate(5)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(188,73) rotate(14)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(230,73) rotate(-9)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(272,73) rotate(0)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(314,73) rotate(9)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(356,73) rotate(-14)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(398,73) rotate(-5)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(20,123) rotate(4)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(62,123) rotate(13)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(104,123) rotate(-10)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(146,123) rotate(-1)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(188,123) rotate(8)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(230,123) rotate(-15)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(272,123) rotate(-6)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(314,123) rotate(3)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g><g transform="translate(356,123) rotate(12)"><ellipse rx="11.5" ry="16" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3"/><path d="M0,-12 C6.4,-4.6 6.4,4.6 0,12" fill="none" stroke="rgba(242,239,230,.3)" stroke-width="1.3" stroke-linecap="round"/></g></svg>
-        <figcaption>Eén op 29 leads is genoeg om het bellen terug te verdienen. In de praktijk worden het er meer.</figcaption>
+      <figure class="viz viz-ladder">
+        <div class="ladder"><div class="lad"><div class="lad-k">1 klant</div><div class="lad-c"><span class="lad-u" style="--i:0"><svg viewBox="0 0 24 24" class="lad-cup" aria-hidden="true"><path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/><path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/><path d="M2.6,6 L20.4,6"/></svg></span></div><div class="lad-v">&euro; 6.193</div><div class="lad-n">per jaar, alleen de koffie</div></div><div class="lad"><div class="lad-k">5 klanten</div><div class="lad-c"><span class="lad-u" style="--i:0"><svg viewBox="0 0 24 24" class="lad-cup" aria-hidden="true"><path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/><path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/><path d="M2.6,6 L20.4,6"/></svg></span><span class="lad-u" style="--i:1"><svg viewBox="0 0 24 24" class="lad-cup" aria-hidden="true"><path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/><path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/><path d="M2.6,6 L20.4,6"/></svg></span><span class="lad-u" style="--i:2"><svg viewBox="0 0 24 24" class="lad-cup" aria-hidden="true"><path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/><path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/><path d="M2.6,6 L20.4,6"/></svg></span><span class="lad-u" style="--i:3"><svg viewBox="0 0 24 24" class="lad-cup" aria-hidden="true"><path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/><path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/><path d="M2.6,6 L20.4,6"/></svg></span><span class="lad-u" style="--i:4"><svg viewBox="0 0 24 24" class="lad-cup" aria-hidden="true"><path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/><path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/><path d="M2.6,6 L20.4,6"/></svg></span></div><div class="lad-v">&euro; 30.964</div><div class="lad-n">per jaar, alleen de koffie</div></div><div class="lad"><div class="lad-k">10 klanten</div><div class="lad-c"><span class="lad-u" style="--i:0"><svg viewBox="0 0 24 24" class="lad-cup" aria-hidden="true"><path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/><path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/><path d="M2.6,6 L20.4,6"/></svg></span><span class="lad-u" style="--i:1"><svg viewBox="0 0 24 24" class="lad-cup" aria-hidden="true"><path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/><path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/><path d="M2.6,6 L20.4,6"/></svg></span><span class="lad-u" style="--i:2"><svg viewBox="0 0 24 24" class="lad-cup" aria-hidden="true"><path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/><path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/><path d="M2.6,6 L20.4,6"/></svg></span><span class="lad-u" style="--i:3"><svg viewBox="0 0 24 24" class="lad-cup" aria-hidden="true"><path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/><path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/><path d="M2.6,6 L20.4,6"/></svg></span><span class="lad-u" style="--i:4"><svg viewBox="0 0 24 24" class="lad-cup" aria-hidden="true"><path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/><path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/><path d="M2.6,6 L20.4,6"/></svg></span><span class="lad-u" style="--i:5"><svg viewBox="0 0 24 24" class="lad-cup" aria-hidden="true"><path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/><path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/><path d="M2.6,6 L20.4,6"/></svg></span><span class="lad-u" style="--i:6"><svg viewBox="0 0 24 24" class="lad-cup" aria-hidden="true"><path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/><path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/><path d="M2.6,6 L20.4,6"/></svg></span><span class="lad-u" style="--i:7"><svg viewBox="0 0 24 24" class="lad-cup" aria-hidden="true"><path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/><path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/><path d="M2.6,6 L20.4,6"/></svg></span><span class="lad-u" style="--i:8"><svg viewBox="0 0 24 24" class="lad-cup" aria-hidden="true"><path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/><path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/><path d="M2.6,6 L20.4,6"/></svg></span><span class="lad-u" style="--i:9"><svg viewBox="0 0 24 24" class="lad-cup" aria-hidden="true"><path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/><path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/><path d="M2.6,6 L20.4,6"/></svg></span></div><div class="lad-v">&euro; 61.928</div><div class="lad-n">per jaar, alleen de koffie</div></div></div>
+        <figcaption>Daarom sturen we op zoveel mogelijk tastings. Een klant die blijft bestellen telt niet één keer mee, maar elk jaar opnieuw.</figcaption>
       </figure>
-      <p class="fine">En het stopt niet na een jaar. Een klant die blijft bestellen levert die omzet elk jaar opnieuw op, zonder dat er nieuwe acquisitiekosten tegenover staan.</p>
     </section>
 
     <section id="afspraken">
@@ -1152,6 +1227,27 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
       pio.observe(pour);
     } else {
       pour.classList.add('is-brewing');
+    }
+    var disp = pour.querySelector('[data-brewcount]');
+    if (disp){
+      var to = parseInt(disp.getAttribute('data-brewcount'), 10);
+      if (reduce){ disp.textContent = fmt(to, 0, '1'); }
+      else {
+        var run = function(){
+          var t0d = null;
+          (function step(ts){
+            if (t0d === null) t0d = ts;
+            var pr = Math.min(1, (ts - t0d) / 1900);
+            disp.textContent = fmt(to * (1 - Math.pow(1 - pr, 3)), 0, '1');
+            if (pr < 1) requestAnimationFrame(step);
+          })(performance.now());
+        };
+        var seen = false;
+        var dio = new IntersectionObserver(function(es){
+          es.forEach(function(e){ if (e.isIntersecting && !seen){ seen = true; setTimeout(run, 250); } });
+        }, {threshold: 0.2});
+        dio.observe(pour);
+      }
     }
   }
 

@@ -51,16 +51,23 @@ def bean(x, y, r, on):
                        c=12, b=6.4, d=4.6)
 
 
-def bean_chart(total, filled, per_row=10, gap_x=42, gap_y=50):
-    rows = -(-total // per_row)
-    w = (per_row - 1) * gap_x + 40
-    h = (rows - 1) * gap_y + 46
-    out = []
-    for i in range(total):
-        col, row = i % per_row, i // per_row
-        out.append(bean(20 + col * gap_x, 23 + row * gap_y, -16 + (i * 9) % 32, i < filled))
-    return (f'<svg class="beans-viz" viewBox="0 0 {w} {h}" role="img" '
-            f'aria-label="{total} bonen, waarvan {filled} gevuld">' + ''.join(out) + '</svg>')
+CUP = ('<svg viewBox="0 0 24 24" class="lad-cup" aria-hidden="true">'
+       '<path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/>'
+       '<path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/>'
+       '<path d="M2.6,6 L20.4,6"/></svg>')
+
+
+def cups_ladder(omzet, steps=(1, 5, 10)):
+    rows = []
+    for n in steps:
+        cups = ''.join(f'<span class="lad-u" style="--i:{i}">{CUP}</span>' for i in range(n))
+        rows.append(
+            f'<div class="lad">'
+            f'<div class="lad-k">{n} klant{"" if n == 1 else "en"}</div>'
+            f'<div class="lad-c">{cups}</div>'
+            f'<div class="lad-v">{eur(omzet * n)}</div>'
+            f'<div class="lad-n">per jaar, alleen de koffie</div></div>')
+    return '<div class="ladder">' + ''.join(rows) + '</div>'
 
 
 def pour_funnel(pogingen, gesproken, leads, tastings):
@@ -99,7 +106,7 @@ def pour_funnel(pogingen, gesproken, leads, tastings):
 
   <rect x="90" y="56" width="112" height="54" rx="11" fill="url(#screenGlow)"
         stroke="rgba(56,182,255,.4)" stroke-width="1.6"/>
-  <text class="mdisp" x="146" y="84">{dui(pogingen)}</text>
+  <text class="mdisp" x="146" y="84" data-brewcount="{pogingen}">0</text>
   <text class="msub" x="146" y="100">gesprekken</text>
 
   <g class="mbtn">
@@ -137,10 +144,22 @@ def pour_funnel(pogingen, gesproken, leads, tastings):
   <path class="ln" d="M134,264 L226,264" fill="none" stroke-linecap="round"/>
   <path class="ln" d="M220,272 Q243,278 240,291 Q238,302 214,301" fill="none"/>
 
+  <g class="steamc">
+    <path d="M152,258 C144,244 158,238 150,224"/>
+    <path d="M180,256 C172,242 186,236 178,220"/>
+    <path d="M208,258 C200,244 214,238 206,224"/>
+  </g>
+
   <rect x="112" y="316" width="136" height="9" rx="4" fill="#1a2030"
         stroke="rgba(242,239,230,.2)" stroke-width="1.6"/>
 </svg>'''
-    return f'<div class="pourwrap">{art}<div class="pstages">{rows}</div></div>'
+    out = (f'<div class="brew-out">'
+           f'<svg viewBox="0 0 24 24" aria-hidden="true" class="bo-cup">'
+           f'<path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/>'
+           f'<path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/>'
+           f'<path d="M2.6,6 L20.4,6"/></svg>'
+           f'<span><b>Tasting ingepland</b>{tastings} keer in deze periode</span></div>')
+    return f'<div class="pourwrap"><div class="pourcol">{art}{out}</div><div class="pstages">{rows}</div></div>'
 
 
 def bars_to_scale(items, total):
@@ -204,20 +223,19 @@ PIJPLIJN = f'''    <section id="pijplijn">
     </section>'''
 
 WAARDE = f'''    <section id="waarde">
-      <p class="eyebrow">Wat er tegenover staat</p>
-      <h2>Eén nieuwe klant betaalt <em>{kl['leads_per_klant']} leads</em> terug.</h2>
-      <p class="lede">Bij een van de kantoren waar we een tasting inplanden gaat 300 kilo koffie per jaar doorheen. Dat is geen uitschieter, dat is een normaal kantoor.</p>
+      <p class="eyebrow">Wat een klant oplevert</p>
+      <h2>Elke tasting is een kans op een klant die <em>jaren blijft</em>.</h2>
+      <p class="lede">Bij een van de kantoren waar we een tasting inplanden gaat 300 kilo koffie per jaar doorheen. Dat is {eur(kl['omzet_per_jaar'])} aan omzet, alleen aan koffie. Geen uitschieter, gewoon een normaal kantoor.</p>
       <div class="specs s4">
-{spec(f"{kl['kg_per_jaar']} kg", "koffie per jaar", "Het verbruik van dat ene kantoor, elk jaar opnieuw.")}
-{spec(eur(kl['omzet_per_jaar']), "omzet per jaar", f"Alleen de koffie, tegen {eur(kl['prijs_per_kilo'])} per kilo. Cross- en upsell zitten er nog niet in.")}
-{spec(f"1 op {kl['leads_per_klant']}", "leads is genoeg", "Meer hoeft er niet klant te worden om het bellen terug te verdienen. In de praktijk ligt dat aandeel hoger, en alles daarboven is winst.", hi=True)}
+{spec(f"{kl['kg_per_jaar']} kg", "koffie per jaar", "Het verbruik van dat ene kantoor. Cross- en upsell zitten daar nog niet in.")}
+{spec(eur(kl['omzet_per_jaar']), "per klant per jaar", f"Tegen {eur(kl['prijs_per_kilo'])} per kilo. En dat komt elk jaar opnieuw binnen zolang ze bestellen.", hi=True)}
 {spec(str(res['tastings']), "tastings staan er al", "Uit de periode die achter ons ligt. Elke tasting die klant wordt, telt vanaf dat moment mee.")}
+{spec(f"&plusmn; {round(acht['tastings'])}", "tastings per periode", "Bij acht beldagen. Meer beldagen betekent meer tastings, en dus meer kansen op zo'n klant.")}
       </div>
-      <figure class="viz viz-beans">
-        {bean_chart(kl['leads_per_klant'], 1)}
-        <figcaption>Eén op {kl['leads_per_klant']} leads is genoeg om het bellen terug te verdienen. In de praktijk worden het er meer.</figcaption>
+      <figure class="viz viz-ladder">
+        {cups_ladder(kl['omzet_per_jaar'])}
+        <figcaption>Daarom sturen we op zoveel mogelijk tastings. Een klant die blijft bestellen telt niet één keer mee, maar elk jaar opnieuw.</figcaption>
       </figure>
-      <p class="fine">En het stopt niet na een jaar. Een klant die blijft bestellen levert die omzet elk jaar opnieuw op, zonder dat er nieuwe acquisitiekosten tegenover staan.</p>
     </section>'''
 
 rows = []

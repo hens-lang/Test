@@ -153,24 +153,24 @@ v['closing'] = (
 # ---------- wat een klant oplevert (nieuw, na het opschalen) ----------
 waarde = {
     'id': 'waarde', 'type': 'figures', 'theme': 'light',
-    'eyebrow': 'Wat er tegenover staat',
-    'title': [{'t': 'Eén nieuwe klant betaalt '},
-              {'t': f"{kl['leads_per_klant']} leads", 'accent': True},
-              {'t': ' terug.'}],
+    'eyebrow': 'Wat een klant oplevert',
+    'title': [{'t': 'Elke tasting is een kans op een klant die '},
+              {'t': 'jaren blijft', 'accent': True},
+              {'t': '.'}],
     'cards': [
         {'value': f"{kl['kg_per_jaar']} kg", 'unit': 'koffie per jaar',
          'label': 'Het verbruik van één kantoor waar we een tasting hebben ingepland. Geen uitschieter, gewoon een normaal kantoor.'},
-        {'value': eur(kl['omzet_per_jaar']), 'unit': 'omzet per jaar',
-         'label': f"Alleen de koffie, tegen {eur(kl['prijs_per_kilo'])} per kilo. Cross- en upsell zitten er nog niet in."},
-        {'value': f"1 op {kl['leads_per_klant']}", 'unit': 'leads is genoeg',
-         'label': 'Meer hoeft er niet klant te worden om het bellen terug te verdienen. In de praktijk ligt dat aandeel hoger, en alles daarboven is winst.',
+        {'value': eur(kl['omzet_per_jaar']), 'unit': 'per klant per jaar',
+         'label': f"Alleen de koffie, tegen {eur(kl['prijs_per_kilo'])} per kilo. Dat komt elk jaar opnieuw binnen zolang ze bestellen.",
          'highlight': True},
-        {'value': str(res['tastings']), 'unit': 'tastings staan er al',
-         'label': 'Uit de periode die achter ons ligt. Elke tasting die klant wordt, telt vanaf dat moment mee.'},
+        {'value': eur(kl['omzet_per_jaar'] * 5), 'unit': 'bij vijf zulke klanten',
+         'label': 'En cross- en upsell zitten daar nog niet in. Hoe meer tastings, hoe meer kans op zulke kantoren.'},
+        {'value': f"± {round(acht['tastings'])}", 'unit': 'tastings per periode',
+         'label': 'Bij acht beldagen. Meer beldagen betekent meer tastings, en dus meer kansen.'},
     ],
     'closing': (
-        f"En het stopt niet na een jaar. Een klant die blijft bestellen levert die omzet elk jaar opnieuw op, "
-        'zonder dat er nieuwe acquisitiekosten tegenover staan.'
+        'Daarom sturen we op zoveel mogelijk tastings. Een klant die blijft bestellen '
+        'telt niet één keer mee, maar elk jaar opnieuw.'
     ),
 }
 d['slides'] = [x for x in d['slides'] if x['id'] != 'waarde']
