@@ -120,7 +120,6 @@ p { margin: 0 0 1.1em; }
 }
 .site-header .wrap { display: flex; align-items: center; justify-content: space-between; height: 84px; }
 .site-header.is-scrolled { background: rgba(255,255,255,.82); backdrop-filter: saturate(1.6) blur(16px); -webkit-backdrop-filter: saturate(1.6) blur(16px); box-shadow: 0 1px 0 var(--line); }
-.site-header.is-hidden { transform: translateY(-100%); }
 .logo { display: inline-flex; align-items: center; }
 .logo img { height: 30px; width: auto; }
 .nav { display: flex; align-items: center; gap: 6px; }

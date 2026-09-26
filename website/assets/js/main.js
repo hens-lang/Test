@@ -60,12 +60,9 @@
   $$("a", mm).forEach((a) => a.addEventListener("click", () => document.documentElement.classList.remove("menu-open")));
   addEventListener("keydown", (e) => { if (e.key === "Escape") document.documentElement.classList.remove("menu-open"); });
 
-  let lastY = 0;
   const onScroll = () => {
     const y = scrollY;
     header.classList.toggle("is-scrolled", y > 20);
-    header.classList.toggle("is-hidden", y > 400 && y > lastY && !document.documentElement.classList.contains("menu-open"));
-    lastY = y;
   };
   addEventListener("scroll", onScroll, { passive: true }); onScroll();
 
