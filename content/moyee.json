@@ -30,7 +30,7 @@
           "t": "."
         }
       ],
-      "sub": "Wat negentien weken bellen voor Moyee heeft opgeleverd, hoe wij werken en het voorstel om vanaf nu met vaste beldagen per vier weken te draaien."
+      "sub": "Wat bijna zes maanden bellen voor Moyee heeft opgeleverd, hoe wij werken en het voorstel om vanaf nu met vaste beldagen per vier weken te draaien."
     },
     {
       "id": "wie",
@@ -51,7 +51,7 @@
       ],
       "paragraphs": [
         "LINK. is de vaste acquisitiepartner van B2B-bedrijven. Wij bellen dagelijks namens onze klanten en leveren gekwalificeerde leads op. Geen lijstjes met namen, maar bedrijven die een tasting inplannen of direct willen bestellen, met de aanleiding erbij.",
-        "Voor Moyee bellen we sinds mei. In die tijd hebben we geleerd welke bedrijven openstaan voor een gesprek, welke ingang werkt en wanneer de juiste persoon bereikbaar is. Die kennis zit nu in de bellijst en in het script."
+        "Voor Moyee bellen we sinds eind maart. In die tijd hebben we geleerd welke bedrijven openstaan voor een gesprek, welke ingang werkt en wanneer de juiste persoon bereikbaar is. Die kennis zit nu in de bellijst en in het script."
       ],
       "stats": [
         {
@@ -60,9 +60,9 @@
           "detail": "Eén persoon die jullie campagne kent, van bellijst tot rapportage."
         },
         {
-          "value": "19",
+          "value": "25",
           "label": "weken samen onderweg",
-          "detail": "Mei tot en met september 2026, elke week gebeld en elke week teruggekoppeld."
+          "detail": "Van eind maart tot en met september 2026, elke week gebeld en elke week teruggekoppeld."
         }
       ]
     },
@@ -156,7 +156,7 @@
       "id": "cijfers",
       "type": "figures",
       "theme": "light",
-      "eyebrow": "Negentien weken Moyee in cijfers",
+      "eyebrow": "Wat er tot nu toe gebeld is",
       "title": [
         {
           "t": "Geen gevoel, maar "
@@ -171,28 +171,28 @@
       ],
       "cards": [
         {
-          "value": "45",
+          "value": "2.629",
+          "unit": "gesprekspogingen",
+          "label": "Tussen maart en september 2026, verdeeld over 24 volle beldagen."
+        },
+        {
+          "value": "1.470",
+          "unit": "bedrijven gesproken",
+          "label": "Van de 2.100 benaderde bedrijven kregen we bij zeven op de tien de juiste persoon aan de lijn."
+        },
+        {
+          "value": "61",
           "unit": "gekwalificeerde leads",
-          "label": "Opgeleverd tussen mei en september 2026, over negentien weken bellen."
+          "label": "16 tastingafspraken en 45 bedrijven die wilden proeven of bestellen."
         },
         {
-          "value": "1.572",
-          "unit": "gebelde contacten",
-          "label": "Bedrijven die we in die periode aan de lijn hebben geprobeerd te krijgen."
-        },
-        {
-          "value": "38%",
-          "unit": "bereikbaarheid",
-          "label": "Van de gebelde contacten kregen we de juiste persoon daadwerkelijk te spreken."
-        },
-        {
-          "value": "2,4",
-          "unit": "leads per beldag",
-          "label": "Gemiddeld over negentien weken, bij één beldag per week. Dit getal is de basis onder het voorstel.",
+          "value": "23",
+          "unit": "tastings ingepland",
+          "label": "Waarvan er 7 onder de overdrachten stonden. Samen 0,9 tasting per beldag.",
           "highlight": true
         }
       ],
-      "closing": "Gemiddeld één tasting per beldag. De overige leads willen bestellen en hoeven alleen nog opgevolgd te worden."
+      "closing": "Uit die 2.629 pogingen komt het kengetal waar het voorstel op rust: 23,2 gekwalificeerde leads per duizend gesprekspogingen."
     },
     {
       "id": "dagen",
@@ -214,23 +214,23 @@
       "cards": [
         {
           "title": "Alles is geteld",
-          "text": "Van elk gesprek leggen we vast wanneer het gevoerd is en wat het opleverde. Per dag, per dagdeel en per soort bedrijf."
+          "text": "Van elke van de 2.629 pogingen ligt vast wanneer hij gevoerd is en wat hij opleverde. Per dag, per dagdeel en per soort bedrijf."
         },
         {
-          "title": "Wanneer zit de beslisser er",
-          "text": "Uit negentien weken Moyee-data halen we op welke dagen en dagdelen we de beslisser ook daadwerkelijk aan de lijn krijgen."
+          "title": "'s Ochtends zit de beslisser er",
+          "text": "Tussen 8 en 12 uur krijgen we 71,9 procent van de gebelde bedrijven te spreken. Na 15 uur zakt dat naar 54,2 procent."
         },
         {
-          "title": "Beldagen op de beste dagen",
-          "text": "We plannen de beldagen niet op de dagen die ons uitkomen, maar op de dagen die in jullie cijfers het hoogste scoren."
+          "title": "Ook de dag maakt verschil",
+          "text": "Woensdag levert de hoogste bereikbaarheid op met 71,8 procent, donderdag de laagste met 57,2 procent."
         },
         {
-          "title": "Elke periode scherper",
-          "text": "Elke werkperiode levert nieuwe data op. De indeling van de beldagen past zich daarop aan, zonder dat de prijs verandert.",
+          "title": "Beldagen op de beste momenten",
+          "text": "We plannen de beldagen op de dagen en dagdelen die in jullie eigen cijfers het hoogste scoren, en na elke periode kijken we of dat nog klopt.",
           "highlight": true
         }
       ],
-      "closing": "De concrete dagen en dagdelen lopen we maandag samen door, met de cijfers erbij."
+      "closing": "Per duizend pogingen levert de ochtend 26,2 leads op en het eind van de middag 15,1. Daar plannen we op."
     },
     {
       "id": "kwalificatie",
@@ -289,7 +289,7 @@
         {
           "icon": "users",
           "title": "Bereik dat blijft staan",
-          "text": "In negentien weken hebben we 1.572 bedrijven gebeld. Dat is nog maar een fractie van de markt, dus we kunnen hier nog lang op doorbellen."
+          "text": "In een half jaar hebben we 2.100 bedrijven benaderd en 2.629 keer gebeld. Dat is nog maar een fractie van de markt, en elk gesprek is ook een moment waarop iemand de naam Moyee hoort."
         },
         {
           "icon": "spark",
@@ -308,6 +308,48 @@
           "highlight": true
         }
       ]
+    },
+    {
+      "id": "pijplijn",
+      "type": "figures",
+      "theme": "light",
+      "eyebrow": "Wat er nog klaarstaat",
+      "title": [
+        {
+          "t": "De pijplijn is nog lang niet "
+        },
+        {
+          "t": "leeg",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "value": "217",
+          "unit": "warme contacten open",
+          "label": "148 terugbelafspraken en 68 bedrijven die informatie kregen."
+        },
+        {
+          "value": "235",
+          "unit": "zitten aan een contract",
+          "label": "Die zijn nu voorzien, maar hun contract loopt een keer af. Wij houden ze vast."
+        },
+        {
+          "value": "372",
+          "unit": "nog niet bereikt",
+          "label": "Wel benaderd, nog geen contact gehad. Daar is nog volledige winst te halen."
+        },
+        {
+          "value": "2.100",
+          "unit": "bedrijven benaderd",
+          "label": "En dat is nog maar een fractie van de markt. Er kan hier nog jaren op gebeld worden.",
+          "highlight": true
+        }
+      ],
+      "closing": "Elke periode die we bellen groeit deze lijst mee. Opschalen betekent dus ook sneller terug bij de bedrijven die er al in zitten."
     },
     {
       "id": "staffel",
@@ -338,7 +380,7 @@
             "4 beldagen",
             "€ 600",
             "€ 2.400",
-            "± 10 leads"
+            "± 9 leads"
           ]
         },
         {
@@ -346,7 +388,7 @@
             "5 tot 7 beldagen",
             "€ 550",
             "€ 2.750 tot € 3.850",
-            "± 12 tot 17 leads"
+            "± 12 tot 16 leads"
           ]
         },
         {
@@ -360,7 +402,7 @@
           "highlight": true
         }
       ],
-      "closing": "Gerekend met 2,4 gekwalificeerde leads per beldag, het gemiddelde over negentien weken Moyee. Daarvan is er gemiddeld één per beldag een tasting. Minimaal vier beldagen per periode, prijzen excl. btw."
+      "closing": "Een beldag is minimaal 100 gesprekspogingen. Bij 23,2 leads per duizend pogingen, het cijfer over 2.629 gesprekken voor Moyee, komt dat neer op 2,3 leads per beldag. Minimaal vier beldagen per periode, prijzen excl. btw."
     },
     {
       "id": "vergelijking",
@@ -369,28 +411,28 @@
       "eyebrow": "Wat dit voor jullie betekent",
       "title": [
         {
-          "t": "Meer beldagen, en toch een lagere prijs "
+          "t": "Bijna twee keer zoveel gesprekken, voor "
         },
         {
-          "t": "per lead",
+          "t": "dezelfde prijs",
           "accent": true
         },
         {
-          "t": "."
+          "t": " per lead."
         }
       ],
       "columns": [
         {
-          "tag": "Nu · vier beldagen",
+          "tag": "Nu · ± 4,1 beldagen",
           "head": "€ 1.500 per maand plus € 150 per tasting",
           "rows": [
             {
               "key": "Kosten per 4 weken",
-              "value": "± € 2.400"
+              "value": "± € 2.040"
             },
             {
-              "key": "Waarvan tastingfees",
-              "value": "± € 900"
+              "key": "Gesprekspogingen",
+              "value": "± 414"
             },
             {
               "key": "Verwachte leads",
@@ -398,7 +440,7 @@
             },
             {
               "key": "Prijs per lead",
-              "value": "± € 250"
+              "value": "± € 212"
             }
           ]
         },
@@ -412,8 +454,8 @@
               "value": "€ 4.000"
             },
             {
-              "key": "Waarvan tastingfees",
-              "value": "€ 0"
+              "key": "Gesprekspogingen",
+              "value": "800"
             },
             {
               "key": "Verwachte leads",
@@ -421,12 +463,12 @@
             },
             {
               "key": "Prijs per lead",
-              "value": "€ 208"
+              "value": "€ 215"
             }
           ]
         }
       ],
-      "closing": "Bij vier beldagen betalen jullie ongeveer hetzelfde als nu, vanaf vijf beldagen zakt de prijs per lead."
+      "closing": "Acht beldagen is 93 procent meer gesprekken dan we nu per periode voeren, tegen vrijwel dezelfde prijs per lead. En jullie weten vooraf wat een periode kost, in plaats van achteraf."
     },
     {
       "id": "target",

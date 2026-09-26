@@ -624,7 +624,7 @@ async function main() {
     }
 
     if (s.type === 'compare') {
-      const w = 848, gap = 32, y = 400, h = 460;
+      const w = 848, gap = 32, y = 392, h = 436;
       s.columns.forEach((col, n) => {
         const x = 96 + n * (w + gap);
         const hl = !!col.highlight;
@@ -638,7 +638,7 @@ async function main() {
           fontFace: SANS, bold: true, fontSize: 15, color: hl ? C.darkText : C.ink, valign: 'middle',
         });
         col.rows.forEach((r, m) => {
-          const ry = y + 148 + m * 74;
+          const ry = y + 140 + m * 66;
           if (m > 0) {
             slide.addShape('line', {
               x: p(x + 52), y: p(ry), w: p(w - 104), h: 0,
@@ -646,11 +646,11 @@ async function main() {
             });
           }
           slide.addText(r.key, {
-            x: p(x + 52), y: p(ry), w: p(w - 300), h: p(74), isTextBox: true, margin: 0,
+            x: p(x + 52), y: p(ry), w: p(w - 300), h: p(66), isTextBox: true, margin: 0,
             fontFace: SANS, fontSize: 11, color: hl ? C.darkMuted : C.muted, valign: 'middle',
           });
           slide.addText(r.value, {
-            x: p(x + w - 248), y: p(ry), w: p(196), h: p(74), isTextBox: true, margin: 0,
+            x: p(x + w - 248), y: p(ry), w: p(196), h: p(66), isTextBox: true, margin: 0,
             fontFace: SANS, bold: true, fontSize: 13.5, color: hl ? C.accent : C.ink, align: 'right', valign: 'middle',
           });
         });

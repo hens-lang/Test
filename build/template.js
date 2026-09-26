@@ -735,19 +735,19 @@ h1.title { font-size:104px; letter-spacing:-0.03em; }
 
 /* ---------- compare (nu vs nieuw) ---------- */
 .compare-grid {
-  position:absolute; left:var(--m); right:var(--m); top:400px; height:460px;
+  position:absolute; left:var(--m); right:var(--m); top:392px; height:436px;
   display:grid; grid-template-columns:1fr 1fr; gap:32px;
 }
-.cmp-card { padding:48px 52px; }
+.cmp-card { padding:40px 48px; }
 .cmp-tag {
   font-size:16px; font-weight:700; text-transform:uppercase; letter-spacing:0.18em;
   color:var(--muted);
 }
 .cmp-head { font-size:30px; font-weight:800; letter-spacing:-0.02em; margin-top:10px; }
-.cmp-rows { margin-top:32px; display:flex; flex-direction:column; }
+.cmp-rows { margin-top:26px; display:flex; flex-direction:column; }
 .cmp-row {
   display:flex; justify-content:space-between; align-items:baseline; gap:32px;
-  padding:20px 0; border-top:1px solid rgba(28,34,48,0.14);
+  padding:17px 0; border-top:1px solid rgba(28,34,48,0.14);
 }
 .cmp-row:first-child { border-top:none; padding-top:0; }
 .cmp-key { font-size:21px; color:var(--muted); }

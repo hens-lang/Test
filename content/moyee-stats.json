@@ -1,0 +1,193 @@
+{
+  "bron": "moyee-export.xls",
+  "periode": {
+    "van": "2026-03-30",
+    "tot": "2026-09-24",
+    "weken": 25.4,
+    "periodes": 6.36
+  },
+  "volume": {
+    "pogingen": 2629,
+    "bedrijven": 2100,
+    "gesproken": 1470,
+    "bereikbaarheid": 55.9,
+    "dagen_actief": 87,
+    "volle_beldagen": 24,
+    "pogingen_per_beldag": 87,
+    "drukste_dag": 181
+  },
+  "resultaat": {
+    "leads": 61,
+    "afspraken": 16,
+    "overdrachten": 45,
+    "tastings": 23,
+    "tastings_onder_101": 7,
+    "leads_per_1000": 23.2,
+    "tastings_per_1000": 8.7,
+    "leads_per_beldag": 2.3,
+    "tastings_per_beldag": 0.9
+  },
+  "pijplijn": {
+    "open_warm": 217,
+    "al_voorzien": 235,
+    "nooit_bereikt": 372,
+    "terugbelafspraak": 148,
+    "infomail": 68
+  },
+  "norm_pogingen_per_beldag": 100,
+  "huidig": {
+    "pogingen_per_periode": 414,
+    "beldagen_per_periode": 4.1,
+    "leads_per_periode": 9.6,
+    "tastings_per_periode": 3.6
+  },
+  "staffel": [
+    {
+      "beldagen": 4,
+      "dagprijs": 600,
+      "periode": 2400,
+      "pogingen": 400,
+      "leads": 9.3,
+      "leads_afgerond": 9,
+      "tastings": 3.5,
+      "per_lead": 259
+    },
+    {
+      "beldagen": 6,
+      "dagprijs": 550,
+      "periode": 3300,
+      "pogingen": 600,
+      "leads": 13.9,
+      "leads_afgerond": 13,
+      "tastings": 5.2,
+      "per_lead": 237
+    },
+    {
+      "beldagen": 8,
+      "dagprijs": 500,
+      "periode": 4000,
+      "pogingen": 800,
+      "leads": 18.6,
+      "leads_afgerond": 18,
+      "tastings": 7.0,
+      "per_lead": 215
+    },
+    {
+      "beldagen": 10,
+      "dagprijs": 500,
+      "periode": 5000,
+      "pogingen": 1000,
+      "leads": 23.2,
+      "leads_afgerond": 23,
+      "tastings": 8.7,
+      "per_lead": 215
+    }
+  ],
+  "weekdagen": [
+    {
+      "dag": "maandag",
+      "pogingen": 561,
+      "bereik": 67.2,
+      "leads": 6,
+      "leads_per_1000": 10.7
+    },
+    {
+      "dag": "dinsdag",
+      "pogingen": 1006,
+      "bereik": 66.2,
+      "leads": 26,
+      "leads_per_1000": 25.8
+    },
+    {
+      "dag": "woensdag",
+      "pogingen": 323,
+      "bereik": 71.8,
+      "leads": 10,
+      "leads_per_1000": 31.0
+    },
+    {
+      "dag": "donderdag",
+      "pogingen": 586,
+      "bereik": 57.2,
+      "leads": 12,
+      "leads_per_1000": 20.5
+    },
+    {
+      "dag": "vrijdag",
+      "pogingen": 152,
+      "bereik": 68.4,
+      "leads": 7,
+      "leads_per_1000": 46.1
+    }
+  ],
+  "dagdelen": [
+    {
+      "deel": "ochtend",
+      "van": 8,
+      "tot": 12,
+      "pogingen": 1107,
+      "bereik": 71.9,
+      "leads_per_1000": 26.2
+    },
+    {
+      "deel": "middag",
+      "van": 12,
+      "tot": 15,
+      "pogingen": 991,
+      "bereik": 63.7,
+      "leads_per_1000": 24.2
+    },
+    {
+      "deel": "eind van de middag",
+      "van": 15,
+      "tot": 19,
+      "pogingen": 531,
+      "bereik": 54.2,
+      "leads_per_1000": 15.1
+    }
+  ],
+  "maanden": [
+    {
+      "maand": "2026-03",
+      "pogingen": 72,
+      "beldagen": 1,
+      "leads": 0
+    },
+    {
+      "maand": "2026-04",
+      "pogingen": 537,
+      "beldagen": 6,
+      "leads": 6
+    },
+    {
+      "maand": "2026-05",
+      "pogingen": 360,
+      "beldagen": 3,
+      "leads": 12
+    },
+    {
+      "maand": "2026-06",
+      "pogingen": 511,
+      "beldagen": 6,
+      "leads": 8
+    },
+    {
+      "maand": "2026-07",
+      "pogingen": 177,
+      "beldagen": 1,
+      "leads": 12
+    },
+    {
+      "maand": "2026-08",
+      "pogingen": 195,
+      "beldagen": 2,
+      "leads": 8
+    },
+    {
+      "maand": "2026-09",
+      "pogingen": 777,
+      "beldagen": 5,
+      "leads": 15
+    }
+  ]
+}
