@@ -714,7 +714,7 @@ h1.title { font-size:104px; letter-spacing:-0.03em; }
 }
 .tier-row {
   display:grid; grid-template-columns:1.25fr 1fr 1fr 1.15fr;
-  align-items:center; gap:32px; padding:26px 44px;
+  align-items:center; gap:32px; padding:34px 44px;
   border-top:1px solid var(--dark-border);
 }
 .tier-row:first-child { border-top:none; }

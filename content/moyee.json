@@ -343,29 +343,21 @@
         },
         {
           "cells": [
-            "6 beldagen",
+            "5 tot 7 beldagen",
             "€ 550",
-            "€ 3.300",
-            "± 14 leads"
+            "€ 2.750 tot € 3.850",
+            "± 12 tot 17 leads"
           ]
         },
         {
           "cells": [
-            "8 beldagen",
+            "8 beldagen of meer",
             "€ 500",
-            "€ 4.000",
-            "± 19 leads"
+            "vanaf € 4.000",
+            "vanaf ± 19 leads"
           ],
           "note": "ons advies",
           "highlight": true
-        },
-        {
-          "cells": [
-            "10 of meer",
-            "€ 475",
-            "vanaf € 4.750",
-            "in overleg"
-          ]
         }
       ],
       "closing": "Gerekend met 2,4 gekwalificeerde leads per beldag, het gemiddelde over negentien weken Moyee. Daarvan is er gemiddeld één per beldag een tasting. Minimaal vier beldagen per periode, prijzen excl. btw."
@@ -434,7 +426,7 @@
           ]
         }
       ],
-      "closing": "Bij vier beldagen betalen jullie ongeveer hetzelfde als nu, vanaf zes beldagen zakt de prijs per lead."
+      "closing": "Bij vier beldagen betalen jullie ongeveer hetzelfde als nu, vanaf vijf beldagen zakt de prijs per lead."
     },
     {
       "id": "target",
