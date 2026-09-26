@@ -420,7 +420,8 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
     linear-gradient(180deg,#1e2434,var(--card));
   box-shadow:var(--lift), 0 34px 80px -46px rgba(0,0,0,.95);
 }
-@media (max-width:760px){ .pourwrap{grid-template-columns:minmax(0,1fr); justify-items:center} }
+@media (max-width:1240px){ .pourwrap{grid-template-columns:262px minmax(0,1fr); gap:34px} .pour{max-width:262px} }
+@media (max-width:760px){ .pourwrap{grid-template-columns:minmax(0,1fr); justify-items:center} .pour{max-width:300px} }
 .pourcol{display:flex; flex-direction:column; align-items:center; gap:20px; width:100%}
 .pour{max-width:344px}
 
@@ -481,12 +482,12 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
 @keyframes mglow{0%{opacity:0}30%{opacity:.5}100%{opacity:.14}}
 
 .pstages{display:flex; flex-direction:column; gap:4px; width:100%}
-.pst{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px 20px; align-items:baseline; padding:18px 0; border-top:1px solid var(--edge)}
+.pst{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:10px 20px; padding:18px 0; border-top:1px solid var(--edge)}
 .pst:first-child{border-top:none}
-.pst-k{font-size:15px; font-weight:600; letter-spacing:.01em}
-.pst-v{font-size:25px; font-weight:800; text-align:right; letter-spacing:-.03em; font-variant-numeric:tabular-nums}
+.pst-k{font-size:clamp(14px,1.15vw,16px); font-weight:600; letter-spacing:.01em; flex:1 1 auto; min-width:0; overflow-wrap:anywhere}
+.pst-v{font-size:clamp(20px,2.1vw,26px); font-weight:800; text-align:right; letter-spacing:-.03em; font-variant-numeric:tabular-nums; flex:0 0 auto}
 .pst.out .pst-v{color:var(--accent)}
-.pst-t{grid-column:1/-1; height:8px; border-radius:4px; background:rgba(255,255,255,.07); overflow:hidden}
+.pst-t{flex:1 0 100%; height:8px; border-radius:4px; background:rgba(255,255,255,.07); overflow:hidden}
 .pst-f{height:100%; border-radius:4px; background:linear-gradient(90deg,#4a2716,#8a5330); transform-origin:left; transform:scaleX(0); transition:transform 1.6s cubic-bezier(.25,.8,.3,1)}
 .pst.out .pst-f{background:var(--accent)}
 .is-brewing .pst-f{transform:scaleX(1)}
