@@ -75,13 +75,31 @@ window.LINK = {
     portaal: { src: "assets/img/hens/hens-portaal", widths: [800, 1400], alt: "Het LINK. partnerportaal op een laptop" }
   },
 
-  // Het traject met een partner. Bewust alleen de mijlpalen: hoe we het
-  // doen, laten we zien in een kennismaking, niet op de website.
+  // Zo werkt het. Helder over wat je per fase krijgt, bewust niet over
+  // hoe we het intern doen: dat laten we zien in een kennismaking.
+  // pilotLabel: vul bijv. "8 weken" in zodra de pilotduur vaststaat.
+  pilotLabel: "",
   method: [
-    { name: "Kick-off", text: "Jouw bedrijf, jouw markt en jouw groeidoel. Scherp op tafel." },
-    { name: "Eerste belmoment", text: "Jouw verhaal voor het eerst in de markt. Persoonlijk en goed voorbereid." },
-    { name: "Eerste meeting", text: "Jij aan tafel bij een gekwalificeerde prospect." },
-    { name: "Structurele stroom", text: "Een vaste stroom gekwalificeerde prospects. Week na week." }
+    {
+      name: "Kick-off",
+      text: "We leren jouw bedrijf, propositie en markt kennen. Samen bepalen we het ideale klantprofiel en wat succes voor jou is.",
+      gets: ["Een scherp ideaal klantprofiel", "Heldere afspraken over succes"]
+    },
+    {
+      name: "Pilot",
+      text: "We gaan de markt in, persoonlijk aan de telefoon en met jouw verhaal. Wat we horen, vertalen we naar scherpere keuzes in doelgroep en propositie.",
+      gets: ["Gesprekken met beslissers", "Marktinzichten en business development", "Elke week een update"]
+    },
+    {
+      name: "Eerste meetings",
+      text: "Jij zit aan tafel bij gekwalificeerde prospects. Wij sturen bij op basis van wat werkt.",
+      gets: ["Afspraken in jouw agenda", "Leads met de context van het gesprek"]
+    },
+    {
+      name: "Structurele stroom",
+      text: "Na de pilot bouwen we door naar een vaste stroom gekwalificeerde prospects. Zonder lange contracten.",
+      gets: ["Voorspelbare groei", "Eén vast aanspreekpunt"]
+    }
   ],
 
   // Voorbeelden voor de kaart in de hero (illustratief, geen echte partners).

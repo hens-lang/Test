@@ -124,9 +124,10 @@
   $$("[data-method]").forEach((ol) => {
     ol.innerHTML = '<span class="m-track" aria-hidden="true"><i></i></span>' + D.method.map((m, i) => `
       <li style="--i:${i}"><span class="m-node" aria-hidden="true"></span>
-        <span class="m-phase">Fase ${String(i + 1).padStart(2, "0")}</span>
+        <span class="m-phase">Fase ${String(i + 1).padStart(2, "0")}${m.name === "Pilot" && D.pilotLabel ? ` · ${esc(D.pilotLabel)}` : ""}</span>
         <h3>${esc(m.name)}${i === D.method.length - 1 ? '<span class="dot">.</span>' : ""}</h3>
-        <p>${esc(m.text)}</p></li>`).join("");
+        <p>${esc(m.text)}</p>
+        ${m.gets ? `<ul class="m-gets">${m.gets.map((g) => `<li>${esc(g)}</li>`).join("")}</ul>` : ""}</li>`).join("");
   });
 
   /* ---------- Reveal ---------- */

@@ -297,15 +297,18 @@ section { position: relative; }
   .method .m-track i { inset: 0 auto 0 0; width: 0; height: 100%; }
   .method.in .m-track i { width: 100%; height: 100%; }
 }
-.method li { position: relative; padding-left: 52px; }
-@media (min-width: 900px) { .method li { padding: 58px 32px 0 0; } }
+.method > li { position: relative; padding-left: 52px; }
+@media (min-width: 900px) { .method > li { padding: 58px 32px 0 0; } }
 .method .m-node { position: absolute; left: 4px; top: 4px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 2px var(--grey-2); transition: background .5s, box-shadow .5s; transition-delay: calc(.35s + var(--i) * .55s); }
 .method.in .m-node { background: var(--blue); box-shadow: 0 0 0 6px rgba(56,182,255,.16); }
-.method li:last-child .m-node { width: 30px; height: 30px; left: -1px; top: -1px; }
-.method.in li:last-child .m-node { animation: pulse 2.4s infinite 2.6s; }
+.method > li:last-child .m-node { width: 30px; height: 30px; left: -1px; top: -1px; }
+.method.in > li:last-child .m-node { animation: pulse 2.4s infinite 2.6s; }
 .method .m-phase { display: block; font-family: var(--font-head); font-weight: 700; font-size: 12.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--grey-5); margin-bottom: 10px; }
 .method h3 { font-size: clamp(24px, 2.3vw, 32px); letter-spacing: -.035em; margin-bottom: 12px; }
-.method p { margin: 0; color: var(--grey-7); font-size: 16.5px; max-width: 26ch; }
+.method p { margin: 0; color: var(--grey-7); font-size: 16px; max-width: 30ch; }
+.m-gets { list-style: none; margin: 22px 0 0; padding: 18px 0 0; border-top: 1px solid var(--line); display: grid; gap: 9px; max-width: 30ch; }
+.m-gets li { position: relative; padding-left: 20px; font-size: 14.5px; font-weight: 600; color: #000; line-height: 1.4; }
+.m-gets li::before { content: ""; position: absolute; left: 0; top: .5em; width: 7px; height: 7px; border-radius: 50%; background: var(--blue); }
 .method-foot { margin-top: clamp(56px, 7vw, 90px); padding-top: 34px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center; justify-content: space-between; }
 .method-foot p { margin: 0; max-width: 52ch; color: var(--grey-7); }
 
