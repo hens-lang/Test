@@ -624,7 +624,7 @@ async function main() {
     }
 
     if (s.type === 'compare') {
-      const w = 848, gap = 32, y = 422, h = 468;
+      const w = 848, gap = 32, y = 400, h = 460;
       s.columns.forEach((col, n) => {
         const x = 96 + n * (w + gap);
         const hl = !!col.highlight;

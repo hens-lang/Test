@@ -735,7 +735,7 @@ h1.title { font-size:104px; letter-spacing:-0.03em; }
 
 /* ---------- compare (nu vs nieuw) ---------- */
 .compare-grid {
-  position:absolute; left:var(--m); right:var(--m); top:422px;
+  position:absolute; left:var(--m); right:var(--m); top:400px; height:460px;
   display:grid; grid-template-columns:1fr 1fr; gap:32px;
 }
 .cmp-card { padding:48px 52px; }

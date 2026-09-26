@@ -289,7 +289,7 @@
         {
           "icon": "users",
           "title": "Bereik dat blijft staan",
-          "text": "In negentien weken hebben we 1.572 bedrijven gebeld. Elk van die gesprekken is ook een moment waarop iemand hoort wat Moyee doet."
+          "text": "In negentien weken hebben we 1.572 bedrijven gebeld. Dat is nog maar een fractie van de markt, dus we kunnen hier nog lang op doorbellen."
         },
         {
           "icon": "spark",
@@ -389,16 +389,16 @@
       ],
       "columns": [
         {
-          "tag": "Nu",
-          "head": "€ 1.500 per maand plus € 150 per lead",
+          "tag": "Nu · vier beldagen",
+          "head": "€ 1.500 per maand plus € 150 per tasting",
           "rows": [
             {
-              "key": "Beldagen per 4 weken",
-              "value": "4"
+              "key": "Kosten per 4 weken",
+              "value": "± € 2.400"
             },
             {
-              "key": "Kosten per 4 weken",
-              "value": "€ 2.940"
+              "key": "Waarvan tastingfees",
+              "value": "± € 900"
             },
             {
               "key": "Verwachte leads",
@@ -406,22 +406,22 @@
             },
             {
               "key": "Prijs per lead",
-              "value": "€ 306"
+              "value": "± € 250"
             }
           ]
         },
         {
-          "tag": "Voorstel",
-          "head": "Acht beldagen per 4 weken, één vaste dagprijs",
+          "tag": "Voorstel · acht beldagen",
+          "head": "€ 500 per beldag, verder niets",
           "highlight": true,
           "rows": [
             {
-              "key": "Beldagen per 4 weken",
-              "value": "8"
-            },
-            {
               "key": "Kosten per 4 weken",
               "value": "€ 4.000"
+            },
+            {
+              "key": "Waarvan tastingfees",
+              "value": "€ 0"
             },
             {
               "key": "Verwachte leads",
@@ -434,7 +434,7 @@
           ]
         }
       ],
-      "closing": "Ook bij vier beldagen gaan jullie erop vooruit: € 2.400 in plaats van € 2.940, bij hetzelfde aantal leads."
+      "closing": "Bij vier beldagen betalen jullie ongeveer hetzelfde als nu, vanaf zes beldagen zakt de prijs per lead."
     },
     {
       "id": "target",
@@ -463,12 +463,12 @@
           "text": "Loopt het harder, dan bellen we de beldagen gewoon vol. Wat er extra uit komt is voor jullie, zonder extra factuur."
         },
         {
-          "title": "Op- en afschalen per periode",
-          "text": "Elke vier weken kiezen jullie opnieuw hoeveel beldagen je afneemt. Groeit de vraag, dan schalen we mee op."
+          "title": "Vastgelegd, opzegbaar met een maand",
+          "text": "We leggen het aantal beldagen vast, zodat wij de capaciteit kunnen reserveren en jullie weten waar je aan toe bent. Opzeggen kan met een maand."
         },
         {
-          "title": "Geen kosten per lead meer",
-          "text": "De dagprijs is alles. Er komt geen bedrag per lead meer bovenop, dus jullie weten vooraf precies wat een periode kost.",
+          "title": "Geen kosten per tasting meer",
+          "text": "De dagprijs is alles. Er komt geen bedrag per tasting meer bovenop, dus jullie weten vooraf precies wat een periode kost.",
           "highlight": true
         }
       ],
@@ -497,8 +497,8 @@
           "text": "Vooraf gefactureerd, per werkperiode."
         },
         {
-          "title": "Niet-exclusief",
-          "text": "Jullie zitten nergens aan vast en houden alle vrijheid."
+          "title": "Opzegtermijn van één maand",
+          "text": "We leggen het aantal beldagen vast, opzeggen kan met een maand."
         },
         {
           "title": "Bestaande relaties blijven van jullie",
