@@ -250,15 +250,6 @@
     document.head.append(ld);
   }
 
-  /* ---------- Zwevende chip: reactietijd ---------- */
-  if (!/contact\.html$/.test(page)) {
-    const chip = document.createElement("a");
-    chip.className = "speed-chip"; chip.href = "contact.html";
-    chip.innerHTML = `<b aria-hidden="true"></b><span>Reactie binnen <strong>${esc(C.responseTime)}</strong></span>`;
-    document.body.append(chip);
-    const show = () => chip.classList.toggle("on", scrollY > innerHeight * 0.8 && scrollY + innerHeight < document.body.scrollHeight - 500);
-    addEventListener("scroll", show, { passive: true }); show();
-  }
 
   /* ---------- Reveal ---------- */
   const io = new IntersectionObserver((es) => es.forEach((e) => {
