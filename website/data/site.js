@@ -145,6 +145,8 @@ window.LINK = {
     "Elektrotechniek",
     "Maakindustrie",
     "IT & software",
+    "SaaS",
+    "AI",
     "Cybersecurity",
     "Zakelijke dienstverlening",
     "Marketing & creatieve bureaus",
