@@ -51,20 +51,31 @@ window.LINK = {
     { href: "contact.html", label: "Contact" }
   ],
 
-  team: [
-    {
-      name: "Hens",
-      role: "Mede-oprichter",
-      photo: "", // bijv. "assets/img/team/hens.jpg"
-      quote: "Drie jaar lang heb ik dagelijks deuren aangebeld en mensen gebeld die mij niet verwachten, met een product waar zij niet op zitten te wachten. Je leert snel wat werkt en wat niet. Deze ervaring zet ik nu in voor onze opdrachtgevers."
-    },
-    {
-      name: "Marnix",
-      role: "Mede-oprichter",
-      photo: "", // bijv. "assets/img/team/marnix.jpg"
-      quote: "Na een aantal jaar ervaring te hebben opgedaan in de groothandelsbranche en logistieke sector wilde ik de commerciële vaardigheden die ik hier heb geleerd gaan inzetten voor meerdere bedrijven. De flexibiliteit en het kwalitatief werken pas ik nu hier toe."
-    }
-  ],
+  // Oprichter. LINK. wordt geleid door Hens Boer.
+  founder: {
+    name: "Hens Boer",
+    firstName: "Hens",
+    role: "Oprichter LINK.",
+    quote: "Drie jaar lang heb ik dagelijks deuren aangebeld en mensen gebeld die mij niet verwachten, met een product waar zij niet op zitten te wachten. Je leert snel wat werkt en wat niet. Deze ervaring zet ik nu in voor onze opdrachtgevers."
+  },
+
+  // Alle foto's van de site. Elke pagina verwijst naar een sleutel
+  // (bijv. data-photo="haven"); de site bouwt zelf de juiste formaten.
+  // Bestanden staan in assets/img/hens/ als <src>-<breedte>.jpg.
+  // Laat src leeg ("") en het fotovak verdwijnt netjes van de pagina.
+  photos: {
+    hero:    { src: "assets/img/hens/hens-hero", widths: [600, 1000, 1400], alt: "Hens Boer van LINK. aan de telefoon" },
+    bellen:  { src: "assets/img/hens/hens-bellen", widths: [600, 1000], alt: "Hens Boer belt lachend in de haven" },
+    held:    { src: "assets/img/hens/hens-held", widths: [600, 1000], alt: "Hens Boer, oprichter van LINK." },
+    portret: { src: "assets/img/hens/hens-portret", widths: [600, 1000], alt: "Portret van Hens Boer" },
+    waarom:  { src: "assets/img/hens/hens-waarom", widths: [600, 1000], alt: "Hens Boer kijkt in de camera" },
+    bedrijf: { src: "assets/img/hens/hens-bedrijf", widths: [900, 1600, 2200], alt: "Hens Boer op een bedrijventerrein" },
+    notitie: { src: "assets/img/hens/hens-notitie", widths: [600, 1000], alt: "Hens Boer maakt aantekeningen in zijn notitieboek" },
+    avatar:  { src: "assets/img/hens/hens-avatar", widths: [160, 320], alt: "Hens Boer" },
+    koffie:  { src: "assets/img/hens/hens-koffie", widths: [600, 1000], alt: "Hens Boer drinkt koffie uit een blauw kopje" },
+    // Namen, notities, URL en bladwijzers op het scherm zijn onleesbaar gemaakt (AVG).
+    portaal: { src: "assets/img/hens/hens-portaal", widths: [800, 1400], alt: "Het LINK. klantportaal op een laptop" }
+  },
 
   steps: [
     "We verdiepen ons in het bedrijf van onze opdrachtgever.",

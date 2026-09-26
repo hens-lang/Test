@@ -15,7 +15,8 @@ data/site.js  ──►  assets/js/main.js  ──►  alle pagina's
 |---|---|---|
 | E-mail, telefoon, regio | `data/site.js > contact` | header (mobiel), footer, contactpagina, CTA's, JSON-LD* |
 | Menu | `data/site.js > nav` | header, mobiel menu, footer |
-| Team + quotes + foto's | `data/site.js > team` | home, ons verhaal |
+| Oprichter + quote | `data/site.js > founder` | home, ons verhaal, contact |
+| Alle foto's | `data/site.js > photos` | elke pagina |
 | De 7 stappen | `data/site.js > steps` | home, diensten |
 | Resultaatcodes + funnel | `data/site.js > resultCodes / funnel` | home, diensten, waarom LINK. |
 | Voorbeeldrapportage | `data/site.js > demoWeek` | rapportage-preview (wordt doorgerekend) |
@@ -35,7 +36,7 @@ data/site.js  ──►  assets/js/main.js  ──►  alle pagina's
 
 ## Nog in te vullen voor livegang
 
-1. **Foto's van Hens en Marnix.** Zet ze in `assets/img/team/` en vul `photo` in `data/site.js` in. Tot die tijd tonen we een monogram met de blauwe punt.
+1. **Foto's** staan in `assets/img/hens/` (uit Drive > Website > wetransfer-map, bijgesneden, gecomprimeerd en zonder EXIF/GPS). Welke foto waar staat, regel je in `data/site.js > photos`. Een lege `src` laat het fotovak netjes verdwijnen. Op de portaalfoto zijn namen, notities, URL en bladwijzers onleesbaar gemaakt.
 2. **Klantportaal-URL** in `contact.portalUrl`. Zolang dit veld leeg is, blijft de knop verborgen.
 3. **Contactformulier.** Zonder koppeling opent het formulier een ingevulde e-mail naar info@linkgrp.nl. Wil je het formulier aan een Google Form koppelen (zoals besproken in de website-evaluatie), vul dan `contact.form.endpoint` in met de `formResponse`-URL en zet bij `fields` de `entry.xxxx`-ID's.
 4. **Controleer** e-mail en telefoonnummer. Die komen uit de *Website Teksten Opzet*.
@@ -54,7 +55,7 @@ data/site.js  ──►  assets/js/main.js  ──►  alle pagina's
 website/
 ├── index.html          Home
 ├── diensten.html       Telefonische acquisitie + mail outreach
-├── ons-verhaal.html    Hens & Marnix, waarom LINK. bestaat
+├── ons-verhaal.html    Hens, waarom LINK. bestaat
 ├── waarom-link.html    Transparantie · Eerlijkheid · Lange termijn
 ├── contact.html        Formulier + gegevens
 ├── 404.html

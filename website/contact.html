@@ -35,6 +35,7 @@
         <p class="lead reveal" style="--d:.1s">Bij wie wil je aan tafel zitten? Wat zijn je groeiambities? Stuur ons een berichtje of bel gewoon. We reageren snel en zonder gedoe.</p>
         <p class="reveal muted" style="max-width:42ch">Als we denken dat het past, plannen we een kennismaking. Als het niet past, zeggen we dat ook gewoon.</p>
         <ul class="details reveal" data-details></ul>
+        <div class="person reveal" data-photo-wrap><img data-photo="avatar" alt="" sizes="64px"><div><strong>Je spreekt <span data-founder-name></span><span class="dot">.</span></strong><span>Direct contact met de oprichter van LINK.</span></div></div>
       </div>
       <div class="form reveal" style="--d:.15s">
         <form id="contact-form" novalidate>
@@ -62,12 +63,15 @@
     </div>
   </section>
 
-  <section class="section cta">
+  <section class="section cta" data-photo-host>
     <div class="orb" aria-hidden="true"></div>
-    <div class="wrap">
-      <p class="eyebrow reveal">Kennismaken</p>
-      <h2 class="reveal">We drinken graag een kop koffie met je<span class="dot">.</span></h2>
-      <p class="reveal">Geen verkoopgesprek. Gewoon kennismaken, eerlijk vertellen wat we kunnen, en kijken of het klopt.</p>
+    <div class="wrap cta-grid">
+      <div>
+        <p class="eyebrow reveal">Kennismaken</p>
+        <h2 class="reveal">We drinken graag een kop koffie met je<span class="dot">.</span></h2>
+        <p class="reveal">Geen verkoopgesprek. Gewoon kennismaken, eerlijk vertellen wat we kunnen, en kijken of het klopt.</p>
+      </div>
+      <figure class="photo-frame reveal" data-photo-wrap><img data-photo="koffie" alt="" sizes="(min-width: 960px) 34vw, 100vw"></figure>
     </div>
   </section>
 

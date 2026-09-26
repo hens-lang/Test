@@ -88,17 +88,40 @@
       <li><span>${ico.pin}${esc(C.region)}</span></li>`;
   });
 
-  /* ---------- Team ---------- */
-  $$("[data-team]").forEach((box) => {
-    box.innerHTML = D.team.map((m, i) => `
-      <article class="member reveal" style="--d:${i * 0.12}s">
-        <div class="photo">${m.photo
-          ? `<img src="${esc(m.photo)}" alt="${esc(m.name)}" loading="lazy">`
-          : `<div class="monogram" aria-hidden="true"><div>${esc(m.name[0])}<span>.</span></div></div>`}</div>
-        <div class="body"><h3>${esc(m.name)}<span class="dot">.</span></h3><p class="role">${esc(m.role)}</p>
-        <blockquote>${esc(m.quote)}</blockquote></div>
-      </article>`).join("");
+  /* ---------- Foto's (allemaal uit D.photos) ---------- */
+  const photoAttrs = (key, sizes = "(min-width: 960px) 50vw, 100vw") => {
+    const p = D.photos && D.photos[key];
+    if (!p || !p.src) return null;
+    const srcset = p.widths.map((w) => `${p.src}-${w}.jpg ${w}w`).join(", ");
+    return { src: `${p.src}-${p.widths[p.widths.length - 1]}.jpg`, srcset, sizes, alt: p.alt };
+  };
+  const imgTag = (key, extra = "") => {
+    const a = photoAttrs(key);
+    return a ? `<img src="${a.src}" srcset="${a.srcset}" sizes="${a.sizes}" alt="${esc(a.alt)}" loading="lazy" decoding="async"${extra}>` : "";
+  };
+
+  /* ---------- Oprichter ---------- */
+  const F = D.founder;
+  $$("[data-founder]").forEach((box) => {
+    const img = imgTag(box.dataset.founder || "bellen");
+    box.innerHTML = `
+      ${img ? `<figure class="founder-photo reveal">${img}<figcaption><b></b>${esc(F.name)} · ${esc(F.role)}</figcaption></figure>` : ""}
+      <div class="founder-body reveal" style="--d:.12s">
+        <blockquote>${esc(F.quote)}</blockquote>
+        <p class="founder-sign"><strong>${esc(F.name)}<span class="dot">.</span></strong><span>${esc(F.role)}</span></p>
+      </div>`;
   });
+
+  $$("img[data-photo]").forEach((img) => {
+    const a = photoAttrs(img.dataset.photo, img.getAttribute("sizes") || undefined);
+    const wrap = img.closest("[data-photo-wrap]") || img;
+    if (!a) { wrap.remove(); return; }
+    img.srcset = a.srcset; img.sizes = a.sizes; img.src = a.src; img.alt = a.alt;
+    img.decoding = "async";
+    const host = img.closest("[data-photo-host]");
+    if (host) host.classList.add("has-photo");
+  });
+  $$("[data-founder-name]").forEach((el) => (el.textContent = F.firstName));
 
   /* ---------- Stappen ---------- */
   $$("[data-steps]").forEach((ol) => {
@@ -233,7 +256,9 @@
       W = cv.clientWidth; H = cv.clientHeight;
       cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const narrow = W < 900;
-      me = { x: narrow ? W * 0.78 : W * 0.68, y: narrow ? H * 0.86 : H * 0.46 };
+      const hp = $("#hero-photo"), cr = cv.getBoundingClientRect();
+      if (hp && !narrow) { const r = hp.getBoundingClientRect(); me = { x: r.left - cr.left, y: r.top - cr.top + r.height * 0.22, hidden: false }; }
+      else me = { x: W * 0.5, y: H + 60, hidden: true }; // mobiel: lijnen komen van onder, geen stip
       nodes = Array.from({ length: N() }, () => ({
         x: Math.random() * W, y: Math.random() * H,
         vx: (Math.random() - 0.5) * 0.12, vy: (Math.random() - 0.5) * 0.12,
@@ -286,9 +311,11 @@
       }
       // jij
       const pulse = reduced ? 0 : (Math.sin(t / 600) + 1) / 2;
-      ctx.fillStyle = "rgba(0,0,0,.06)"; ctx.beginPath(); ctx.arc(me.x, me.y, 22 + pulse * 10, 0, 7); ctx.fill();
-      ctx.fillStyle = "#000"; ctx.beginPath(); ctx.arc(me.x, me.y, 9, 0, 7); ctx.fill();
-      ctx.font = "600 12px Open Sans, Arial"; ctx.fillStyle = "#3b4048"; ctx.fillText("jij", me.x + 16, me.y + 4);
+      if (!me.hidden) {
+        ctx.fillStyle = "rgba(56,182,255,.14)"; ctx.beginPath(); ctx.arc(me.x, me.y, 22 + pulse * 10, 0, 7); ctx.fill();
+        ctx.fillStyle = "#000"; ctx.beginPath(); ctx.arc(me.x, me.y, 9, 0, 7); ctx.fill();
+      }
+      
       if (!reduced && t - last > 2600) { pick(); last = t; }
       if (!reduced) requestAnimationFrame(draw);
     };

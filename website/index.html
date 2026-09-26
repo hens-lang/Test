@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="assets/css/fonts.css">
 <link rel="stylesheet" href="assets/css/style.css">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Organization","name":"LINK.","url":"https://www.linkgrp.nl","logo":"https://www.linkgrp.nl/assets/img/logo-zwart.png","email":"info@linkgrp.nl","telephone":"+31172271008","slogan":"Dè partner van B2B bedrijven.","areaServed":["Zuid-Holland","Noord-Holland","Nederland"],"foundingDate":"2025-12","founder":[{"@type":"Person","name":"Hens Boer"},{"@type":"Person","name":"Marnix"}]}
+{"@context":"https://schema.org","@type":"Organization","name":"LINK.","url":"https://www.linkgrp.nl","logo":"https://www.linkgrp.nl/assets/img/logo-zwart.png","email":"info@linkgrp.nl","telephone":"+31172271008","slogan":"Dè partner van B2B bedrijven.","areaServed":["Zuid-Holland","Noord-Holland","Nederland"],"foundingDate":"2025-12","founder":{"@type":"Person","name":"Hens Boer","jobTitle":"Oprichter"}}
 </script>
 </head>
 <body>
@@ -32,7 +32,8 @@
   <!-- HERO -->
   <section class="hero" aria-labelledby="h-hero">
     <canvas id="net" aria-hidden="true"></canvas>
-    <div class="wrap">
+    <div class="wrap hero-grid">
+      <div class="hero-text">
       <p class="eyebrow reveal">B2B acquisitie · Zuid- &amp; Noord-Holland</p>
       <h1 id="h-hero">
         <span class="split-line"><span>Dè partner</span></span>
@@ -44,13 +45,16 @@
         <a class="btn" href="contact.html">Plan een kop koffie <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         <a class="link-arrow" href="#werkwijze">Zo werken wij</a>
       </div>
-    </div>
-
-    <aside class="live-card" data-live aria-label="Voorbeeld van een resultaat">
+      </div>
+      <figure class="hero-photo reveal" style="--d:.2s" id="hero-photo" data-photo-wrap>
+        <img data-photo="hero" alt="" sizes="(min-width: 960px) 36vw, 90vw" fetchpriority="high" loading="eager">
+        <aside class="live-card" data-live aria-label="Voorbeeld van een resultaat">
       <div class="lc-top"><b></b>Zo ziet een goede week eruit</div>
       <div class="lc-swap"><div class="lc-title">Kennismaking ingepland</div><div class="lc-sub">Installatietechniek · Zuid-Holland</div></div>
       <div class="lc-row lc-swap"><span class="lc-k">Beslisser</span><strong class="lc-v">Directeur-eigenaar</strong></div>
     </aside>
+      </figure>
+    </div>
 
     <div class="hero-meta"><div class="wrap">
       <span>Telefonische acquisitie · Persoonlijke mail outreach</span>
@@ -166,6 +170,7 @@
         <h2 class="reveal">Je weet altijd waar je aan toe bent<span class="dot">.</span></h2>
         <p class="lead reveal" style="margin-top:30px">Elke vrijdag je rapportage in het klantportaal. Elke belpoging krijgt een vaste resultaatcode, elk bedrijf telt één keer. Zo vergelijk je weken eerlijk met elkaar.</p>
         <div class="codes reveal" data-codes></div>
+        <div class="portal-shot" data-photo-wrap><figure class="photo-frame reveal"><img data-photo="portaal" alt="" sizes="(min-width: 1000px) 45vw, 100vw"><figcaption><b></b>Het LINK. klantportaal</figcaption></figure></div>
       </div>
       <div class="report reveal" data-report aria-label="Voorbeeld van een weekrapportage"></div>
     </div>
@@ -177,25 +182,28 @@
       <div class="sec-head split">
         <div>
           <p class="eyebrow reveal">Ons verhaal</p>
-          <h2 class="reveal">Gewoon twee vrienden<span class="dot">.</span> <span class="soft">Die zagen dat het anders kon.</span></h2>
+          <h2 class="reveal">Drie jaar aan de deur<span class="dot">.</span> <span class="soft">Nu aan jouw kant.</span></h2>
         </div>
         <a class="link-arrow reveal" href="ons-verhaal.html">Lees ons verhaal</a>
       </div>
-      <div class="team" data-team></div>
+      <div class="founder" data-founder="bellen"></div>
     </div>
   </section>
 
   <!-- CTA -->
-  <section class="section cta">
+  <section class="section cta" data-photo-host>
     <div class="orb" aria-hidden="true"></div>
-    <div class="wrap">
-      <p class="eyebrow reveal">Kennismaken</p>
-      <h2 class="reveal">We drinken graag een kop koffie met je<span class="dot">.</span></h2>
-      <p class="reveal">Geen verkoopgesprek. Gewoon kennismaken, eerlijk vertellen wat we kunnen, en kijken of het klopt.</p>
-      <div class="actions reveal">
-        <a class="btn btn--light" href="contact.html">Plan een kennismaking <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <a class="tel" data-c="phone" href="#"></a>
+    <div class="wrap cta-grid">
+      <div>
+        <p class="eyebrow reveal">Kennismaken</p>
+        <h2 class="reveal">We drinken graag een kop koffie met je<span class="dot">.</span></h2>
+        <p class="reveal">Geen verkoopgesprek. Gewoon kennismaken, eerlijk vertellen wat we kunnen, en kijken of het klopt.</p>
+          <div class="actions reveal">
+            <a class="btn btn--light" href="contact.html">Plan een kennismaking <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            <a class="tel" data-c="phone" href="#"></a>
+          </div>
       </div>
+      <figure class="photo-frame reveal" data-photo-wrap><img data-photo="koffie" alt="" sizes="(min-width: 960px) 34vw, 100vw"></figure>
     </div>
   </section>
 
