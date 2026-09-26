@@ -18,6 +18,19 @@
   };
   const C = D.contact;
 
+  /* ---------- Intro (eenmaal per bezoek) ---------- */
+  (() => {
+    let seen = false;
+    try { seen = sessionStorage.getItem("link-intro") === "1"; sessionStorage.setItem("link-intro", "1"); } catch (_) { seen = true; }
+    if (seen || reduced) return;
+    const intro = document.createElement("div");
+    intro.className = "intro"; intro.setAttribute("aria-hidden", "true");
+    intro.innerHTML = '<img src="assets/img/logo-wit.png" alt="" width="420" height="131">';
+    document.body.append(intro);
+    setTimeout(() => intro.classList.add("out"), 1100);
+    setTimeout(() => intro.remove(), 2200);
+  })();
+
   /* ---------- Header + mobiel menu ---------- */
   const navLinks = D.nav.map((n) => `<a href="${n.href}"${n.href === page ? ' aria-current="page"' : ""}>${esc(n.label)}</a>`).join("");
   const portal = C.portalUrl ? `<a class="portal-link" href="${esc(C.portalUrl)}">Partnerportaal</a>` : "";
@@ -209,7 +222,15 @@
   const io = new IntersectionObserver((es) => es.forEach((e) => {
     if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
   }), { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
-  $$(".reveal, .split-line, [data-in]").forEach((el) => io.observe(el));
+  // Koppen met masker-onthulling zijn volledig geclipt; observeer daarom hun ouder.
+  const proxy = new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting) { e.target.__heads.forEach((h) => h.classList.add("in")); proxy.unobserve(e.target); }
+  }), { threshold: 0.05, rootMargin: "0px 0px -6% 0px" });
+  $$(".reveal, .split-line, [data-in]").forEach((el) => {
+    if (el.matches("h1.reveal, h2.reveal")) {
+      const p = el.parentElement; (p.__heads = p.__heads || []).push(el); proxy.observe(p);
+    } else io.observe(el);
+  });
 
   /* ---------- Manifest: woord voor woord ---------- */
   $$("[data-words]").forEach((p) => {
@@ -350,15 +371,17 @@
     });
   }
 
-  /* ---------- Cursor + magnetische knoppen ---------- */
+  /* ---------- Cursor (ring + stip) + magnetische knoppen ---------- */
   if (matchMedia("(hover: hover) and (pointer: fine)").matches && !reduced) {
-    const cur = document.createElement("div"); cur.className = "cursor"; document.body.append(cur);
-    let x = 0, y = 0, cx = 0, cy = 0;
-    addEventListener("pointermove", (e) => { x = e.clientX; y = e.clientY; cur.classList.add("on"); });
-    document.addEventListener("pointerleave", () => cur.classList.remove("on"));
-    const loop = () => { cx += (x - cx) * 0.22; cy += (y - cy) * 0.22; cur.style.transform = `translate(${cx}px,${cy}px)`; requestAnimationFrame(loop); };
+    const cur = document.createElement("div"); cur.className = "cursor";
+    const ring = document.createElement("div"); ring.className = "cursor-ring";
+    document.body.append(ring, cur);
+    let x = 0, y = 0, rx = 0, ry = 0;
+    addEventListener("pointermove", (e) => { x = e.clientX; y = e.clientY; cur.classList.add("on"); ring.classList.add("on"); cur.style.transform = `translate(${x}px,${y}px)`; });
+    document.addEventListener("pointerleave", () => { cur.classList.remove("on"); ring.classList.remove("on"); });
+    const loop = () => { rx += (x - rx) * 0.16; ry += (y - ry) * 0.16; ring.style.transform = `translate(${rx}px,${ry}px)`; requestAnimationFrame(loop); };
     loop();
-    document.addEventListener("pointerover", (e) => cur.classList.toggle("big", !!e.target.closest("a, button, .pillar, .service")));
+    document.addEventListener("pointerover", (e) => ring.classList.toggle("big", !!e.target.closest("a, button, .pillar, .service, .flow-track button")));
     $$(".btn").forEach((b) => {
       b.addEventListener("pointermove", (e) => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.18}px, ${(e.clientY - r.top - r.height / 2) * 0.3}px)`; });
       b.addEventListener("pointerleave", () => (b.style.transform = ""));

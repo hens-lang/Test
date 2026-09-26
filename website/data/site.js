@@ -144,6 +144,6 @@ window.LINK = {
     ["Kennismaking ingepland", "Installatietechniek", "Beslisser", "Directeur-eigenaar"],
     ["Afspraak ingepland", "Zakelijke dienstverlening", "Beslisser", "Commercieel directeur"],
     ["Kennismaking ingepland", "Maakindustrie · 50-100 medewerkers", "Beslisser", "Operationeel directeur"],
-    ["Afspraak ingepland", "Horeca & kantoren", "Beslisser", "Eigenaar"]
+    ["Afspraak ingepland", "IT-dienstverlener · 25-50 medewerkers", "Beslisser", "Algemeen directeur"]
   ]
 };

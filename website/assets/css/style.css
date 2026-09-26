@@ -276,8 +276,8 @@ section { position: relative; }
   background: var(--blue); right: 34px; top: 40px; transition: transform .9s var(--ease);
 }
 .pillar:hover { transform: translateY(-6px); }
-.pillar:hover::before { transform: scale(60); }
-.pillar:hover h3, .pillar:hover p, .pillar:hover .num { color: #000; }
+.pillar:hover::before { transform: scale(1.6); }
+.pillar:hover { background: #fff; box-shadow: 0 30px 60px -34px rgba(10,60,100,.35), inset 0 0 0 1px var(--line); }
 .pillar .num { font-family: var(--font-head); font-weight: 700; font-size: 13px; letter-spacing: .14em; color: var(--grey-5); margin-bottom: 64px; transition: color .6s; }
 .pillar h3 { margin-bottom: 14px; }
 .pillar p { margin: 0; color: var(--grey-7); font-size: 16px; transition: color .6s; }
@@ -597,9 +597,6 @@ section { position: relative; }
 .in .split-line > span, .split-line.in > span { transform: none; }
 
 /* Cursor-dot (alleen fijne pointer) */
-.cursor { position: fixed; z-index: 300; left: 0; top: 0; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--blue); pointer-events: none; mix-blend-mode: multiply; transition: width .35s var(--ease), height .35s var(--ease), margin .35s var(--ease), opacity .3s; opacity: 0; }
-.cursor.on { opacity: 1; }
-.cursor.big { width: 56px; height: 56px; margin: -28px 0 0 -28px; background: rgba(56,182,255,.35); }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1100px) and (min-width: 960px) { .hero-photo .live-card { left: -32px; } }
@@ -635,3 +632,65 @@ section { position: relative; }
 .two-col > .photo-frame { max-width: 400px; }
 .photo-band { width: min(100% - 2 * var(--gutter), calc(var(--wrap) - 2 * var(--gutter))); margin: 0 auto; border-radius: 28px; height: clamp(320px, 46vh, 500px); }
 .portal .photo-frame { max-width: 560px; justify-self: end; }
+
+/* ==========================================================================
+   High-end afwerking
+   ========================================================================== */
+
+/* Zwevende navigatie-pil */
+.site-header .wrap { transition: max-width .6s var(--ease), height .6s var(--ease), margin .6s var(--ease), padding .6s var(--ease), background .6s var(--ease), box-shadow .6s var(--ease), border-radius .6s var(--ease); }
+.site-header.is-scrolled { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+@media (min-width: 961px) {
+  .site-header.is-scrolled .wrap {
+    height: 64px; max-width: 1060px; width: calc(100% - 32px); margin-top: 14px; padding: 0 10px 0 26px; border-radius: 999px;
+    background: rgba(255,255,255,.74); backdrop-filter: saturate(1.8) blur(20px); -webkit-backdrop-filter: saturate(1.8) blur(20px);
+    box-shadow: 0 18px 50px -22px rgba(10,30,60,.35), inset 0 0 0 1px rgba(0,0,0,.06);
+  }
+  .site-header.is-scrolled .logo img { height: 24px; }
+  .site-header.is-scrolled .nav-cta .btn { padding: 11px 18px; }
+}
+@media (max-width: 960px) {
+  .site-header.is-scrolled { background: rgba(255,255,255,.8); backdrop-filter: saturate(1.6) blur(16px); -webkit-backdrop-filter: saturate(1.6) blur(16px); box-shadow: 0 1px 0 var(--line); }
+}
+.logo img { transition: height .6s var(--ease); }
+
+/* Panelen: donker en blauw als afgeronde kaarten, met korrel */
+.dark:not(.site-footer), .flow {
+  margin: 14px clamp(8px, 1.1vw, 16px); border-radius: clamp(24px, 2.6vw, 40px); isolation: isolate;
+}
+.dark:not(.site-footer)::after, .flow::after, .cta::after, .hero::after {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; border-radius: inherit; opacity: .07; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.hero::after { opacity: .05; mix-blend-mode: multiply; }
+.dark > .wrap, .flow > .flow-pin, .flow > .flow-after { position: relative; z-index: 1; }
+
+/* Koppen: masker-onthulling */
+h1.reveal, h2.reveal { opacity: 1; transform: translateY(28px); clip-path: inset(0 0 100% 0); transition: clip-path 1.2s var(--ease), transform 1.2s var(--ease); transition-delay: var(--d, 0s); }
+h1.reveal.in, h2.reveal.in { transform: none; clip-path: inset(-10% -5% -20% -5%); }
+
+/* Foto's: openen als venster */
+.photo-frame.reveal, .meet-photo.reveal, .hero-photo.reveal, .founder-photo.reveal {
+  opacity: 1; transform: none; clip-path: inset(10% 10% 10% 10% round 28px); transition: clip-path 1.4s var(--ease); transition-delay: var(--d, 0s);
+}
+.photo-frame.reveal.in, .meet-photo.reveal.in, .founder-photo.reveal.in { clip-path: inset(0 0 0 0 round 0); }
+.hero-photo.reveal.in { clip-path: inset(-60px -120px -80px -120px); }
+
+/* Cursor: ring + stip */
+.cursor, .cursor-ring { position: fixed; z-index: 300; left: 0; top: 0; pointer-events: none; border-radius: 50%; opacity: 0; transition: opacity .3s; }
+.cursor { width: 6px; height: 6px; margin: -3px 0 0 -3px; background: var(--blue); }
+.cursor-ring { width: 38px; height: 38px; margin: -19px 0 0 -19px; box-shadow: inset 0 0 0 1.5px rgba(120,130,140,.55); transition: opacity .3s, width .45s var(--ease), height .45s var(--ease), margin .45s var(--ease), box-shadow .45s var(--ease), background .45s; }
+.cursor.on, .cursor-ring.on { opacity: 1; }
+.cursor-ring.big { width: 70px; height: 70px; margin: -35px 0 0 -35px; box-shadow: inset 0 0 0 1.5px rgba(56,182,255,.9); background: rgba(56,182,255,.08); }
+@media (hover: none), (pointer: coarse) { .cursor, .cursor-ring { display: none; } }
+
+/* Intro */
+.intro { position: fixed; inset: 0; z-index: 500; background: #000; display: grid; place-items: center; transition: transform 1s cubic-bezier(.77,0,.18,1); }
+.intro img { height: 46px; width: auto; opacity: 0; transform: translateY(12px); animation: introLogo .7s var(--ease) .1s forwards; }
+.intro.out { transform: translateY(-100%); }
+@keyframes introLogo { to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  h1.reveal, h2.reveal, .photo-frame.reveal, .meet-photo.reveal, .hero-photo.reveal, .founder-photo.reveal { clip-path: none; transform: none; }
+  .intro { display: none; }
+}
