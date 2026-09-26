@@ -43,7 +43,7 @@ def spec(value, unit, label, hi=False):
             f'        </div>')
 
 
-SPECS = '      <div class="specs">\n' + '\n'.join([
+SPECS = '      <div class="specs s6">\n' + '\n'.join([
     spec(f'<span data-count="{vol["pogingen"]}" data-sep="1">{dui(vol["pogingen"])}</span>',
          'gesprekspogingen',
          f'Verdeeld over {vol["volle_beldagen"]} volle beldagen tussen {MAAND_VOL[m1]} en {MAAND_VOL[m2]} 2026.'),
@@ -68,7 +68,7 @@ PIJPLIJN = f'''    <section id="pijplijn">
       <p class="eyebrow">Wat er nog klaarstaat</p>
       <h2>De pijplijn is nog lang niet <em>leeg</em>.</h2>
       <p class="lede">Elk bedrijf houdt een status. Dit is wat er op dit moment openstaat en waar we zonder nieuwe lijst al verder kunnen.</p>
-      <div class="specs">
+      <div class="specs s4">
 {spec(f'<span data-count="{pij["open_warm"]}">{pij["open_warm"]}</span>', "warme contacten open", f"{pij['terugbelafspraak']} terugbelafspraken en {pij['infomail']} bedrijven die informatie kregen.")}
 {spec(f'<span data-count="{pij["al_voorzien"]}">{pij["al_voorzien"]}</span>', "zitten aan een contract", "Nu voorzien, maar elk contract loopt een keer af. Wij houden ze vast tot dat moment.")}
 {spec(f'<span data-count="{pij["nooit_bereikt"]}">{pij["nooit_bereikt"]}</span>', "nog niet bereikt", "Wel benaderd, nog geen gesprek gehad. Daar staat de volledige winst nog open.")}
@@ -81,7 +81,7 @@ WAARDE = f'''    <section id="waarde">
       <p class="eyebrow">Wat er tegenover staat</p>
       <h2>Eén nieuwe klant betaalt <em>{kl['leads_per_klant']} leads</em> terug.</h2>
       <p class="lede">Bij een van de kantoren waar we een tasting inplanden gaat 300 kilo koffie per jaar doorheen. Dat is geen uitschieter, dat is een normaal kantoor.</p>
-      <div class="specs">
+      <div class="specs s4">
 {spec(f"{kl['kg_per_jaar']} kg", "koffie per jaar", "Het verbruik van dat ene kantoor, elk jaar opnieuw.")}
 {spec(eur(kl['omzet_per_jaar']), "omzet per jaar", f"Alleen de koffie, tegen {eur(kl['prijs_per_kilo'])} per kilo. Cross- en upsell zitten er nog niet in.")}
 {spec(f"1 op {kl['leads_per_klant']}", "leads wordt klant", "Meer is er niet nodig om het bellen terug te verdienen. Alles daarboven is winst.", hi=True)}
@@ -93,10 +93,10 @@ WAARDE = f'''    <section id="waarde">
 rows = []
 for d in S['weekdagen']:
     rows.append(f'''          <tr><th scope="row">{d['dag'].capitalize()}</th>'''
-                f'''<td>{dui(d['pogingen'])}</td><td>{nl(d['bereik'])}%</td><td>{nl(d['leads_per_1000'])}</td></tr>''')
+                f'''<td>{dui(d['pogingen'])}</td><td class="meter"><span class="m"><i style="--v:{d['bereik']}"></i>{nl(d['bereik'])}%</span></td><td>{nl(d['leads_per_1000'])}</td></tr>''')
 for d in S['dagdelen']:
     rows.append(f'''          <tr class="part"><th scope="row">{d['deel'].capitalize()} ({d['van']}&ndash;{d['tot']} uur)</th>'''
-                f'''<td>{dui(d['pogingen'])}</td><td>{nl(d['bereik'])}%</td><td>{nl(d['leads_per_1000'])}</td></tr>''')
+                f'''<td>{dui(d['pogingen'])}</td><td class="meter"><span class="m"><i style="--v:{d['bereik']}"></i>{nl(d['bereik'])}%</span></td><td>{nl(d['leads_per_1000'])}</td></tr>''')
 
 och = next(x for x in S['dagdelen'] if x['deel'] == 'ochtend')
 laat = next(x for x in S['dagdelen'] if x['deel'] == 'eind van de middag')
@@ -105,7 +105,7 @@ slecht = min(S['weekdagen'], key=lambda x: x['bereik'])
 
 WANNEER = f'''    <section id="wanneer">
       <p class="eyebrow">Wanneer we bellen</p>
-      <h2>De beste momenten staan in <em>jullie eigen cijfers</em>.</h2>
+      <h2>De beste momenten staan in <em>jullie cijfers</em>.</h2>
       <p class="lede">Van elke gesprekspoging ligt vast wanneer hij gevoerd is en wat hij opleverde. Zo weten we per dag en per dagdeel waar de beslisser echt zit.</p>
       <div class="tablewrap">
         <table class="data">
