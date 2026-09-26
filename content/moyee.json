@@ -435,14 +435,14 @@
       "eyebrow": "Afspraken over het resultaat",
       "title": [
         {
-          "t": "Wat als het "
+          "t": "Zo houden we elkaar "
         },
         {
-          "t": "meer of minder",
+          "t": "scherp",
           "accent": true
         },
         {
-          "t": " is."
+          "t": "."
         }
       ],
       "cards": [
@@ -459,12 +459,12 @@
           "text": "We leggen het aantal beldagen vast, zodat wij de capaciteit kunnen reserveren en jullie weten waar je aan toe bent. Opzeggen kan met een maand."
         },
         {
-          "title": "Geen kosten per tasting meer",
-          "text": "De dagprijs is alles. Er komt geen bedrag per tasting meer bovenop, dus jullie weten vooraf precies wat een periode kost.",
+          "title": "Succesfee bij klanten die blijven",
+          "text": "Wordt een lead een klant die drie maanden achter elkaar bestelt, dan krijgen wij daar een succesfee over. Zo verdienen wij pas extra als de klant blijft.",
           "highlight": true
         }
       ],
-      "closing": "De verwachting komt uit jullie eigen cijfers, dus we sturen op iets dat we al waargemaakt hebben."
+      "closing": "De verwachting komt uit jullie eigen cijfers, dus we sturen op iets dat we al waargemaakt hebben. Over de hoogte van de succesfee maken we samen een afspraak."
     },
     {
       "id": "spelregels",
