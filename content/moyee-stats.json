@@ -1,5 +1,15 @@
 {
   "bron": "moyee-export.xls",
+  "klantwaarde": {
+    "kg_per_jaar": 300,
+    "omzet_per_jaar": 6192.75,
+    "prijs_per_kilo": 20.64,
+    "periodes_per_jaar": 13,
+    "leads_per_jaar": 242,
+    "investering_per_jaar": 52000,
+    "leads_per_klant": 29,
+    "klanten_break_even": 8.4
+  },
   "periode": {
     "van": "2026-03-30",
     "tot": "2026-09-24",

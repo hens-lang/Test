@@ -503,6 +503,48 @@
       "closing": "De bezetting en de bellijst liggen er al. Verdubbelen kan vanaf de eerstvolgende periode, verdriedubbelen ook, en de prijs per lead blijft rond € 215."
     },
     {
+      "id": "waarde",
+      "type": "figures",
+      "theme": "light",
+      "eyebrow": "Wat er tegenover staat",
+      "title": [
+        {
+          "t": "Eén nieuwe klant betaalt "
+        },
+        {
+          "t": "29 leads",
+          "accent": true
+        },
+        {
+          "t": " terug."
+        }
+      ],
+      "cards": [
+        {
+          "value": "300 kg",
+          "unit": "koffie per jaar",
+          "label": "Het verbruik van één kantoor waar we een tasting hebben ingepland. Geen uitschieter, gewoon een normaal kantoor."
+        },
+        {
+          "value": "€ 6.193",
+          "unit": "omzet per jaar",
+          "label": "Alleen de koffie, tegen € 20,64 per kilo. Cross- en upsell zitten er nog niet in."
+        },
+        {
+          "value": "€ 215",
+          "unit": "kost een lead",
+          "label": "Bij acht beldagen per vier weken. Eén klant van dit formaat betaalt er 29 terug."
+        },
+        {
+          "value": "9",
+          "unit": "klanten per jaar",
+          "label": "Zoveel klanten van dit formaat maken een heel jaar bellen terugverdiend, uit ± 242 leads.",
+          "highlight": true
+        }
+      ],
+      "closing": "Bij acht beldagen leveren we ongeveer 242 gekwalificeerde leads per jaar op. Worden daar 9 klanten van dit formaat uit, dan staat de investering van € 52.000 quitte en loopt die omzet daarna gewoon door."
+    },
+    {
       "id": "target",
       "type": "offer",
       "theme": "dark",

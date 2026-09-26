@@ -39,6 +39,12 @@ TASTINGS_ONDER_101 = {
     'AMS Sourcing B.V.', 'Quintel Intelligence B.V.', 'Contentoo B.V.',
 }
 
+# Wat een klant van dit formaat oplevert. Voorbeeld uit een kantoor waar we een
+# tasting hebben ingepland: 300 kilo koffie per jaar, zakelijk tarief van Moyee.
+KLANT_KG_PER_JAAR = 300
+KLANT_OMZET_PER_JAAR = 6192.75
+PERIODES_PER_JAAR = 13
+
 NL_DAG = ['maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag', 'zondag']
 
 
@@ -140,8 +146,21 @@ def main(path):
             'per_lead': round(dagen_n * prijs / lp),
         })
 
+    acht = next(r for r in staffel if r['beldagen'] == 8)
+    klant = {
+        'kg_per_jaar': KLANT_KG_PER_JAAR,
+        'omzet_per_jaar': KLANT_OMZET_PER_JAAR,
+        'prijs_per_kilo': round(KLANT_OMZET_PER_JAAR / KLANT_KG_PER_JAAR, 2),
+        'periodes_per_jaar': PERIODES_PER_JAAR,
+        'leads_per_jaar': round(acht['leads'] * PERIODES_PER_JAAR),
+        'investering_per_jaar': acht['periode'] * PERIODES_PER_JAAR,
+        'leads_per_klant': round(KLANT_OMZET_PER_JAAR / acht['per_lead']),
+        'klanten_break_even': round(acht['periode'] * PERIODES_PER_JAAR / KLANT_OMZET_PER_JAAR, 1),
+    }
+
     stats = {
         'bron': Path(path).name,
+        'klantwaarde': klant,
         'periode': {'van': str(start), 'tot': str(eind), 'weken': round(weken, 1), 'periodes': round(periodes, 2)},
         'volume': {
             'pogingen': pogingen, 'bedrijven': bedrijven, 'gesproken': gesproken,
@@ -174,7 +193,7 @@ def main(path):
     out = ROOT / 'content' / 'moyee-stats.json'
     out.write_text(json.dumps(stats, ensure_ascii=False, indent=2), encoding='utf-8')
     print(f'{out} geschreven')
-    print(json.dumps({k: stats[k] for k in ('periode', 'volume', 'resultaat', 'pijplijn', 'huidig')},
+    print(json.dumps({k: stats[k] for k in ('periode', 'volume', 'resultaat', 'pijplijn', 'huidig', 'klantwaarde')},
                      ensure_ascii=False, indent=2))
     for r in staffel:
         print(f"  {r['beldagen']:>2} beldagen  EUR {r['dagprijs']}  per 4 wk EUR {r['periode']:>5}  "

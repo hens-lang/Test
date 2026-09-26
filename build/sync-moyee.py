@@ -7,7 +7,7 @@ analyse-moyee.py rekent het door en dit script zet het in de deck.
     python3 build/analyse-moyee.py data/moyee-export.xls
     python3 build/sync-moyee.py
 """
-import json
+import json, math
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -17,8 +17,12 @@ d = json.loads(DECK.read_text(encoding='utf-8'))
 by_id = {s['id']: s for s in d['slides']}
 
 vol, res, pij, hui = S['volume'], S['resultaat'], S['pijplijn'], S['huidig']
+kl = S['klantwaarde']
 norm = S['norm_pogingen_per_beldag']
-eur = lambda n: '€ ' + f'{n:,.0f}'.replace(',', '.')
+def eur(n):
+    if n < 100 and n != int(n):
+        return '€ ' + f'{n:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')
+    return '€ ' + f'{n:,.0f}'.replace(',', '.')
 nl = lambda x: str(x).replace('.', ',')
 dui = lambda n: f'{n:,.0f}'.replace(',', '.')
 
@@ -145,6 +149,34 @@ v['closing'] = (
     f"De bezetting en de bellijst liggen er al. Verdubbelen kan vanaf de eerstvolgende periode, "
     f"verdriedubbelen ook, en de prijs per lead blijft rond {eur(acht['per_lead'])}."
 )
+
+# ---------- wat een klant oplevert (nieuw, na het opschalen) ----------
+waarde = {
+    'id': 'waarde', 'type': 'figures', 'theme': 'light',
+    'eyebrow': 'Wat er tegenover staat',
+    'title': [{'t': 'Eén nieuwe klant betaalt '},
+              {'t': f"{kl['leads_per_klant']} leads", 'accent': True},
+              {'t': ' terug.'}],
+    'cards': [
+        {'value': f"{kl['kg_per_jaar']} kg", 'unit': 'koffie per jaar',
+         'label': 'Het verbruik van één kantoor waar we een tasting hebben ingepland. Geen uitschieter, gewoon een normaal kantoor.'},
+        {'value': eur(kl['omzet_per_jaar']), 'unit': 'omzet per jaar',
+         'label': f"Alleen de koffie, tegen {eur(kl['prijs_per_kilo']).replace('.', ',')} per kilo. Cross- en upsell zitten er nog niet in."},
+        {'value': eur(acht['per_lead']), 'unit': 'kost een lead',
+         'label': f"Bij acht beldagen per vier weken. Eén klant van dit formaat betaalt er {kl['leads_per_klant']} terug."},
+        {'value': str(math.ceil(kl['klanten_break_even'])), 'unit': 'klanten per jaar',
+         'label': f"Zoveel klanten van dit formaat maken een heel jaar bellen terugverdiend, uit ± {kl['leads_per_jaar']} leads.",
+         'highlight': True},
+    ],
+    'closing': (
+        f"Bij acht beldagen leveren we ongeveer {kl['leads_per_jaar']} gekwalificeerde leads per jaar op. "
+        f"Worden daar {math.ceil(kl['klanten_break_even'])} klanten van dit formaat uit, dan staat de investering van "
+        f"{eur(kl['investering_per_jaar'])} quitte en loopt die omzet daarna gewoon door."
+    ),
+}
+d['slides'] = [x for x in d['slides'] if x['id'] != 'waarde']
+idx = next(i for i, x in enumerate(d['slides']) if x['id'] == 'vergelijking') + 1
+d['slides'].insert(idx, waarde)
 
 # ---------- pijplijn (nieuw, vóór de staffel) ----------
 pijl = {

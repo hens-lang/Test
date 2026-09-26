@@ -6,12 +6,13 @@ Dezelfde bron als de deck: één belexport, één analyse, overal dezelfde getal
     python3 build/analyse-moyee.py data/moyee-export.xls
     python3 build/brew-moyee.py
 """
-import json, base64, html
+import json, base64, math
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 S = json.loads((ROOT / 'content' / 'moyee-stats.json').read_text(encoding='utf-8'))
 vol, res, pij, hui, per = S['volume'], S['resultaat'], S['pijplijn'], S['huidig'], S['periode']
+kl = S['klantwaarde']
 norm = S['norm_pogingen_per_beldag']
 tier = {r['beldagen']: r for r in S['staffel']}
 
@@ -71,6 +72,19 @@ PIJPLIJN = f'''    <section id="pijplijn">
 {spec(f'<span data-count="{vol["bedrijven"]}" data-sep="1">{dui(vol["bedrijven"])}</span>', "bedrijven in de database", "En dat is een fractie van de markt. Er kan hier nog jaren op gebeld worden.", hi=True)}
       </div>
       <p class="fine">Elke periode die we bellen groeit deze lijst mee. Opschalen betekent dus ook sneller terug bij de bedrijven die er al in zitten.</p>
+    </section>'''
+
+WAARDE = f'''    <section id="waarde">
+      <p class="eyebrow">Wat er tegenover staat</p>
+      <h2>Eén nieuwe klant betaalt <em>{kl['leads_per_klant']} leads</em> terug.</h2>
+      <p class="lede">Bij een van de kantoren waar we een tasting inplanden gaat 300 kilo koffie per jaar doorheen. Dat is geen uitschieter, dat is een normaal kantoor.</p>
+      <div class="specs">
+{spec(f"{kl['kg_per_jaar']} kg", "koffie per jaar", "Het verbruik van één kantoor waar we een tasting hebben ingepland. Geen uitschieter, gewoon een normaal kantoor.")}
+{spec(eur(kl['omzet_per_jaar']), "omzet per jaar", f"Alleen de koffie, tegen &euro; {str(kl['prijs_per_kilo']).replace('.', ',')} per kilo. Cross- en upsell zitten er nog niet in.")}
+{spec(eur(acht['per_lead']), "kost een lead", f"Bij acht beldagen per vier weken. Eén klant van dit formaat betaalt er {kl['leads_per_klant']} terug.")}
+{spec(str(math.ceil(kl['klanten_break_even'])), "klanten per jaar", f"Zoveel klanten van dit formaat maken een heel jaar bellen terugverdiend, uit &plusmn; {kl['leads_per_jaar']} leads.", hi=True)}
+      </div>
+      <p class="fine">Bij acht beldagen leveren we ongeveer {kl['leads_per_jaar']} gekwalificeerde leads per jaar op. Worden daar {math.ceil(kl['klanten_break_even'])} klanten van dit formaat uit, dan staat de investering van {eur(kl['investering_per_jaar'])} quitte en loopt die omzet daarna gewoon door.</p>
     </section>'''
 
 rows = []
@@ -217,6 +231,7 @@ TOK = {
     'SPECS': SPECS,
     'PIJPLIJN': PIJPLIJN,
     'WANNEER': WANNEER,
+    'WAARDE': WAARDE,
     'TIERS': TIERS,
     'VERGELIJK': VERGELIJK,
     'VERGELIJK_SLOT': VERGELIJK_SLOT,
