@@ -198,7 +198,7 @@ section { position: relative; }
 .hero-meta {
   position: absolute; left: 0; right: 0; bottom: 30px; z-index: 2;
 }
-.hero-meta .wrap { display: flex; justify-content: space-between; align-items: center; gap: 20px; font-size: 13.5px; color: var(--grey-5); }
+.hero-meta .wrap { display: flex; justify-content: flex-end; align-items: center; gap: 20px; font-size: 13.5px; color: var(--grey-5); }
 .scroll-cue { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
 .scroll-cue i { width: 22px; height: 36px; border-radius: 12px; box-shadow: inset 0 0 0 1.5px #9aa1ab; position: relative; }
 .scroll-cue i::after { content: ""; position: absolute; left: 50%; top: 8px; width: 4px; height: 7px; margin-left: -2px; border-radius: 2px; background: var(--blue); animation: cue 2.2s var(--ease) infinite; }
@@ -610,7 +610,6 @@ section { position: relative; }
 }
 @media (max-width: 520px) {
   .hero { padding-top: 120px; }
-  .hero-meta .wrap span:first-child { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
