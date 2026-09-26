@@ -380,23 +380,66 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
 .tier-out .v{font-size:23px}
 
 /* ---------- koffievisuals ---------- */
-.viz{margin:52px 0 0; padding:0; display:flex; flex-direction:column; align-items:center; gap:22px}
-.viz svg{width:100%; max-width:700px; height:auto; display:block; overflow:visible}
-.viz figcaption{
-  font-size:14.5px; line-height:1.55; color:var(--mid); max-width:62ch; text-align:center;
-}
+.viz{margin:56px 0 0; padding:0; display:flex; flex-direction:column; gap:26px}
+.viz svg{width:100%; height:auto; display:block; overflow:visible}
+.viz figcaption{font-size:14.5px; line-height:1.6; color:var(--mid); max-width:68ch}
+.viz-beans{align-items:center}
 .viz-beans svg{max-width:470px}
-.beans-viz{overflow:visible}
-.funnel .fn-v{
-  font-family:var(--sans); font-size:19px; font-weight:800; fill:var(--cream);
-  letter-spacing:-.02em; font-variant-numeric:tabular-nums;
+.viz-beans figcaption{text-align:center}
+
+.pourwrap{
+  display:grid; grid-template-columns:344px minmax(0,1fr); gap:clamp(32px,5vw,72px);
+  align-items:center;
+  border:1px solid var(--edge); border-radius:22px; padding:clamp(28px,4vw,48px);
+  background:
+    radial-gradient(520px 340px at 18% 30%, rgba(56,182,255,.07), transparent 70%),
+    linear-gradient(180deg,#1e2434,var(--card));
+  box-shadow:var(--lift), 0 34px 80px -46px rgba(0,0,0,.95);
 }
-.funnel .fn-l{
-  font-family:var(--sans); font-size:12px; font-weight:700; fill:var(--mid);
-  letter-spacing:.18em; text-transform:uppercase;
+@media (max-width:760px){ .pourwrap{grid-template-columns:minmax(0,1fr); justify-items:center} }
+.pour{max-width:344px}
+.pour{max-width:344px}
+.pour .ln{stroke:rgba(242,239,230,.3); stroke-width:2}
+.pour .mdisp{
+  font-family:var(--sans); font-size:24px; font-weight:800; fill:var(--accent);
+  text-anchor:middle; letter-spacing:-.02em; font-variant-numeric:tabular-nums;
 }
-.funnel .fn-d{
-  font-family:var(--sans); font-size:17px; font-weight:700; fill:var(--cream); letter-spacing:-.01em;
+.pour .msub{
+  font-family:var(--sans); font-size:9px; font-weight:700; fill:rgba(56,182,255,.65);
+  text-anchor:middle; letter-spacing:.2em; text-transform:uppercase;
+}
+.pour .mbtn circle{fill:none; stroke:rgba(242,239,230,.26); stroke-width:1.6}
+.pour .mbtn circle.on{fill:rgba(56,182,255,.22); stroke:var(--accent)}
+.pour .mbeans ellipse{fill:#4a2716; stroke:rgba(242,239,230,.18); stroke-width:1.2}
+.pour .crema{opacity:0; transition:opacity 1.2s ease 1.6s}
+.is-brewing .pour .crema{opacity:.95}
+
+.stream{stroke-dasharray:12 10; stroke-dashoffset:0; opacity:0}
+.is-brewing .stream{opacity:1; animation:stream .5s linear infinite}
+.is-brewing .stream.s2{animation-delay:.12s}
+@keyframes stream{to{stroke-dashoffset:-22}}
+.pour .fill{transform-box:fill-box; transform-origin:bottom; transform:scaleY(0); transition:transform 2.6s cubic-bezier(.25,.8,.3,1) .2s}
+.is-brewing .pour .fill{transform:scaleY(1)}
+
+.pstages{display:flex; flex-direction:column; gap:4px; width:100%}
+.pst{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px 20px; align-items:baseline; padding:18px 0; border-top:1px solid var(--edge)}
+.pst:first-child{border-top:none}
+.pst-k{font-size:15px; font-weight:600; letter-spacing:.01em}
+.pst-v{font-size:25px; font-weight:800; text-align:right; letter-spacing:-.03em; font-variant-numeric:tabular-nums}
+.pst.out .pst-v{color:var(--accent)}
+.pst-t{grid-column:1/-1; height:8px; border-radius:4px; background:rgba(255,255,255,.07); overflow:hidden}
+.pst-f{height:100%; border-radius:4px; background:linear-gradient(90deg,#4a2716,#8a5330); transform-origin:left; transform:scaleX(0); transition:transform 1.6s cubic-bezier(.25,.8,.3,1)}
+.pst.out .pst-f{background:var(--accent)}
+.is-brewing .pst-f{transform:scaleX(1)}
+.pst:nth-child(2) .pst-f{transition-delay:.18s}
+.pst:nth-child(3) .pst-f{transition-delay:.36s}
+.pst:nth-child(4) .pst-f{transition-delay:.54s}
+
+@media (prefers-reduced-motion:reduce){
+  .pour .fill{transform:scaleY(1)}
+  .pour .crema{opacity:.95}
+  .stream{opacity:1}
+  .pst-f{transform:scaleX(1)}
 }
 
 .sbars{margin-top:38px; display:flex; flex-direction:column; gap:2px;
@@ -838,6 +881,19 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
       });
     }, {threshold: 0.4});
     figs.forEach(function(f){ io.observe(f); });
+  }
+
+  /* ---- de filterkoffie start als hij in beeld komt ---- */
+  var pour = document.querySelector('.viz-pour');
+  if (pour){
+    if (!reduce && 'IntersectionObserver' in window){
+      var pio = new IntersectionObserver(function(es){
+        es.forEach(function(e){ if (e.isIntersecting){ pour.classList.add('is-brewing'); pio.unobserve(e.target); } });
+      }, {threshold: 0.25});
+      pio.observe(pour);
+    } else {
+      pour.classList.add('is-brewing');
+    }
   }
 
   /* ---- de zak kantelt mee ---- */

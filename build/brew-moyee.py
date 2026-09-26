@@ -64,35 +64,83 @@ def bean_chart(total, filled, per_row=10, gap_x=42, gap_y=50):
 
 
 def pour_funnel(pogingen, gesproken, leads, tastings):
-    TOP_HW, BOT_HW, Y0, Y1 = 210, 34, 48, 276
-    scale = 336 / pogingen
+    """Een volautomaat die koffie zet, met de cijfers ernaast op schaal."""
+    stages = [
+        ('Gesprekspogingen', pogingen, False),
+        ('Bedrijven gesproken', gesproken, False),
+        ('Gekwalificeerde leads', leads, True),
+        ('Tastings ingepland', tastings, True),
+    ]
+    rows = ''.join(
+        f'<div class="pst{" out" if out else ""}">'
+        f'<div class="pst-k">{label}</div>'
+        f'<div class="pst-v">{dui(value)}</div>'
+        f'<div class="pst-t"><div class="pst-f" style="width:{max(value / pogingen * 100, 0.45):.2f}%"></div></div></div>'
+        for label, value, out in stages)
 
-    def band(y, value, label, sub):
-        w = max(3, value * scale)
-        return (f'<text class="fn-l" x="360" y="{y - 14}" text-anchor="middle">{sub}</text>'
-                f'<rect x="{360 - w/2:.1f}" y="{y}" width="{w:.1f}" height="38" rx="7" fill="url(#brewgrad)"/>'
-                f'<text class="fn-v" x="360" y="{y + 26}" text-anchor="middle">{label}</text>')
+    art = f'''<svg class="pour" viewBox="0 0 360 400" role="img"
+     aria-label="Een volautomaat die koffie zet: de gesprekken gaan erin, de leads komen eruit">
+  <defs>
+    <linearGradient id="machineBody" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#252d3f"/><stop offset="1" stop-color="#12161f"/>
+    </linearGradient>
+    <linearGradient id="screenGlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0d1a26"/><stop offset="1" stop-color="#08101a"/>
+    </linearGradient>
+    <clipPath id="cupClip">
+      <path d="M140,264 L149,300 Q151,308 160,308 L200,308 Q209,308 211,300 L220,264 Z"/>
+    </clipPath>
+  </defs>
 
-    drops = ''
-    for n, (val, lbl) in enumerate([(leads, f'{leads} gekwalificeerde leads'),
-                                    (tastings, f'{tastings} tastings ingepland')]):
-        cy = 348 + n * 62
-        drops += (f'<path d="M360,{cy - 17} C372,{cy - 3} 371,{cy + 12} 360,{cy + 12} '
-                  f'C349,{cy + 12} 348,{cy - 3} 360,{cy - 17} Z" fill="#38b6ff"/>'
-                  f'<text class="fn-d" x="392" y="{cy + 7}">{lbl}</text>')
+  <rect x="58" y="22" width="244" height="326" rx="26" fill="url(#machineBody)"
+        stroke="rgba(242,239,230,.28)" stroke-width="2"/>
+  <rect x="96" y="12" width="168" height="24" rx="12" fill="#1a2030"
+        stroke="rgba(242,239,230,.22)" stroke-width="2"/>
 
-    return f'''<svg class="funnel" viewBox="0 0 720 428" role="img"
-     aria-label="Van {dui(pogingen)} gesprekspogingen naar {tastings} ingeplande tastings">
-  <path d="M{360 - TOP_HW},{Y0} L{360 + TOP_HW},{Y0} L{360 + BOT_HW},{Y1} L{360 - BOT_HW},{Y1} Z"
-        fill="rgba(255,255,255,.02)" stroke="rgba(242,239,230,.22)" stroke-width="2"/>
-  <line x1="{360 - TOP_HW - 16}" y1="{Y0}" x2="{360 + TOP_HW + 16}" y2="{Y0}"
-        stroke="rgba(242,239,230,.22)" stroke-width="2" stroke-linecap="round"/>
-  <path d="M{360 - BOT_HW},{Y1} L{360 - 15},308 L{360 + 15},308 L{360 + BOT_HW},{Y1} Z"
-        fill="rgba(255,255,255,.02)" stroke="rgba(242,239,230,.22)" stroke-width="2"/>
-  {band(94, pogingen, dui(pogingen), 'gesprekspogingen')}
-  {band(186, gesproken, dui(gesproken), 'bedrijven gesproken')}
-  {drops}
+  <rect x="90" y="56" width="112" height="54" rx="11" fill="url(#screenGlow)"
+        stroke="rgba(56,182,255,.4)" stroke-width="1.6"/>
+  <text class="mdisp" x="146" y="84">{dui(pogingen)}</text>
+  <text class="msub" x="146" y="100">gesprekken</text>
+
+  <g class="mbtn">
+    <circle cx="240" cy="66" r="8"/><circle cx="240" cy="90" r="8"/>
+    <circle cx="240" cy="114" r="8" class="on"/>
+  </g>
+
+  <rect x="90" y="128" width="180" height="36" rx="11" fill="#0f141d"
+        stroke="rgba(242,239,230,.18)" stroke-width="1.6"/>
+  <g class="mbeans">
+    <ellipse cx="116" cy="146" rx="7" ry="9.5"/><ellipse cx="142" cy="147" rx="7" ry="9.5"/>
+    <ellipse cx="168" cy="145" rx="7" ry="9.5"/><ellipse cx="194" cy="147" rx="7" ry="9.5"/>
+    <ellipse cx="220" cy="146" rx="7" ry="9.5"/><ellipse cx="246" cy="147" rx="7" ry="9.5"/>
+  </g>
+
+  <rect x="104" y="180" width="152" height="140" rx="12" fill="#090d14"
+        stroke="rgba(242,239,230,.14)" stroke-width="1.6"/>
+  <rect x="136" y="178" width="88" height="38" rx="9" fill="#1a2030"
+        stroke="rgba(242,239,230,.26)" stroke-width="2"/>
+  <rect x="157" y="214" width="11" height="13" rx="3.5" fill="#1a2030"
+        stroke="rgba(242,239,230,.26)" stroke-width="1.6"/>
+  <rect x="192" y="214" width="11" height="13" rx="3.5" fill="#1a2030"
+        stroke="rgba(242,239,230,.26)" stroke-width="1.6"/>
+
+  <line class="stream" x1="162.5" y1="230" x2="162.5" y2="266" stroke="#7a4526"
+        stroke-width="5" stroke-linecap="round"/>
+  <line class="stream s2" x1="197.5" y1="230" x2="197.5" y2="266" stroke="#7a4526"
+        stroke-width="5" stroke-linecap="round"/>
+
+  <g clip-path="url(#cupClip)">
+    <rect class="fill" x="136" y="266" width="88" height="44" fill="url(#brewgrad)"/>
+    <ellipse class="crema" cx="180" cy="268" rx="42" ry="7" fill="#c89464"/>
+  </g>
+  <path class="ln" d="M140,264 L149,300 Q151,308 160,308 L200,308 Q209,308 211,300 L220,264 Z" fill="none"/>
+  <path class="ln" d="M134,264 L226,264" fill="none" stroke-linecap="round"/>
+  <path class="ln" d="M220,272 Q243,278 240,291 Q238,302 214,301" fill="none"/>
+
+  <rect x="112" y="316" width="136" height="9" rx="4" fill="#1a2030"
+        stroke="rgba(242,239,230,.2)" stroke-width="1.6"/>
 </svg>'''
+    return f'<div class="pourwrap">{art}<div class="pstages">{rows}</div></div>'
 
 
 def bars_to_scale(items, total):
@@ -132,9 +180,9 @@ SPECS = '      <div class="specs s6">\n' + '\n'.join([
     spec(f'<span data-count="{res["leads_per_1000"]}" data-dec="1">{nl(res["leads_per_1000"])}</span>',
          'leads per 1.000 pogingen',
          'Het kengetal waar het hele voorstel op rust. Niet geschat, maar geteld.'),
-]) + '\n      </div>\n' + f'''      <figure class="viz">
+]) + '\n      </div>\n' + f'''      <figure class="viz viz-pour">
         {pour_funnel(vol['pogingen'], vol['gesproken'], res['leads'], res['tastings'])}
-        <figcaption>De twee balken staan op schaal ten opzichte van elkaar. De druppels zijn symbolen: uit {dui(vol['pogingen'])} pogingen komen {res['leads']} leads en {res['tastings']} tastings.</figcaption>
+        <figcaption>Alle vier de balken staan op schaal ten opzichte van de {dui(vol['pogingen'])} gesprekspogingen. Zo klein is de laatste stap, en precies daar zit het werk.</figcaption>
       </figure>'''
 
 PIJPLIJN = f'''    <section id="pijplijn">

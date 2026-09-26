@@ -380,23 +380,66 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
 .tier-out .v{font-size:23px}
 
 /* ---------- koffievisuals ---------- */
-.viz{margin:52px 0 0; padding:0; display:flex; flex-direction:column; align-items:center; gap:22px}
-.viz svg{width:100%; max-width:700px; height:auto; display:block; overflow:visible}
-.viz figcaption{
-  font-size:14.5px; line-height:1.55; color:var(--mid); max-width:62ch; text-align:center;
-}
+.viz{margin:56px 0 0; padding:0; display:flex; flex-direction:column; gap:26px}
+.viz svg{width:100%; height:auto; display:block; overflow:visible}
+.viz figcaption{font-size:14.5px; line-height:1.6; color:var(--mid); max-width:68ch}
+.viz-beans{align-items:center}
 .viz-beans svg{max-width:470px}
-.beans-viz{overflow:visible}
-.funnel .fn-v{
-  font-family:var(--sans); font-size:19px; font-weight:800; fill:var(--cream);
-  letter-spacing:-.02em; font-variant-numeric:tabular-nums;
+.viz-beans figcaption{text-align:center}
+
+.pourwrap{
+  display:grid; grid-template-columns:344px minmax(0,1fr); gap:clamp(32px,5vw,72px);
+  align-items:center;
+  border:1px solid var(--edge); border-radius:22px; padding:clamp(28px,4vw,48px);
+  background:
+    radial-gradient(520px 340px at 18% 30%, rgba(56,182,255,.07), transparent 70%),
+    linear-gradient(180deg,#1e2434,var(--card));
+  box-shadow:var(--lift), 0 34px 80px -46px rgba(0,0,0,.95);
 }
-.funnel .fn-l{
-  font-family:var(--sans); font-size:12px; font-weight:700; fill:var(--mid);
-  letter-spacing:.18em; text-transform:uppercase;
+@media (max-width:760px){ .pourwrap{grid-template-columns:minmax(0,1fr); justify-items:center} }
+.pour{max-width:344px}
+.pour{max-width:344px}
+.pour .ln{stroke:rgba(242,239,230,.3); stroke-width:2}
+.pour .mdisp{
+  font-family:var(--sans); font-size:24px; font-weight:800; fill:var(--accent);
+  text-anchor:middle; letter-spacing:-.02em; font-variant-numeric:tabular-nums;
 }
-.funnel .fn-d{
-  font-family:var(--sans); font-size:17px; font-weight:700; fill:var(--cream); letter-spacing:-.01em;
+.pour .msub{
+  font-family:var(--sans); font-size:9px; font-weight:700; fill:rgba(56,182,255,.65);
+  text-anchor:middle; letter-spacing:.2em; text-transform:uppercase;
+}
+.pour .mbtn circle{fill:none; stroke:rgba(242,239,230,.26); stroke-width:1.6}
+.pour .mbtn circle.on{fill:rgba(56,182,255,.22); stroke:var(--accent)}
+.pour .mbeans ellipse{fill:#4a2716; stroke:rgba(242,239,230,.18); stroke-width:1.2}
+.pour .crema{opacity:0; transition:opacity 1.2s ease 1.6s}
+.is-brewing .pour .crema{opacity:.95}
+
+.stream{stroke-dasharray:12 10; stroke-dashoffset:0; opacity:0}
+.is-brewing .stream{opacity:1; animation:stream .5s linear infinite}
+.is-brewing .stream.s2{animation-delay:.12s}
+@keyframes stream{to{stroke-dashoffset:-22}}
+.pour .fill{transform-box:fill-box; transform-origin:bottom; transform:scaleY(0); transition:transform 2.6s cubic-bezier(.25,.8,.3,1) .2s}
+.is-brewing .pour .fill{transform:scaleY(1)}
+
+.pstages{display:flex; flex-direction:column; gap:4px; width:100%}
+.pst{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px 20px; align-items:baseline; padding:18px 0; border-top:1px solid var(--edge)}
+.pst:first-child{border-top:none}
+.pst-k{font-size:15px; font-weight:600; letter-spacing:.01em}
+.pst-v{font-size:25px; font-weight:800; text-align:right; letter-spacing:-.03em; font-variant-numeric:tabular-nums}
+.pst.out .pst-v{color:var(--accent)}
+.pst-t{grid-column:1/-1; height:8px; border-radius:4px; background:rgba(255,255,255,.07); overflow:hidden}
+.pst-f{height:100%; border-radius:4px; background:linear-gradient(90deg,#4a2716,#8a5330); transform-origin:left; transform:scaleX(0); transition:transform 1.6s cubic-bezier(.25,.8,.3,1)}
+.pst.out .pst-f{background:var(--accent)}
+.is-brewing .pst-f{transform:scaleX(1)}
+.pst:nth-child(2) .pst-f{transition-delay:.18s}
+.pst:nth-child(3) .pst-f{transition-delay:.36s}
+.pst:nth-child(4) .pst-f{transition-delay:.54s}
+
+@media (prefers-reduced-motion:reduce){
+  .pour .fill{transform:scaleY(1)}
+  .pour .crema{opacity:.95}
+  .stream{opacity:1}
+  .pst-f{transform:scaleX(1)}
 }
 
 .sbars{margin-top:38px; display:flex; flex-direction:column; gap:2px;
@@ -540,20 +583,70 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
           <div class="note">Het kengetal waar het hele voorstel op rust. Niet geschat, maar geteld.</div>
         </div>
       </div>
-      <figure class="viz">
-        <svg class="funnel" viewBox="0 0 720 428" role="img"
-     aria-label="Van 2.629 gesprekspogingen naar 23 ingeplande tastings">
-  <path d="M150,48 L570,48 L394,276 L326,276 Z"
-        fill="rgba(255,255,255,.02)" stroke="rgba(242,239,230,.22)" stroke-width="2"/>
-  <line x1="134" y1="48" x2="586" y2="48"
-        stroke="rgba(242,239,230,.22)" stroke-width="2" stroke-linecap="round"/>
-  <path d="M326,276 L345,308 L375,308 L394,276 Z"
-        fill="rgba(255,255,255,.02)" stroke="rgba(242,239,230,.22)" stroke-width="2"/>
-  <text class="fn-l" x="360" y="80" text-anchor="middle">gesprekspogingen</text><rect x="192.0" y="94" width="336.0" height="38" rx="7" fill="url(#brewgrad)"/><text class="fn-v" x="360" y="120" text-anchor="middle">2.629</text>
-  <text class="fn-l" x="360" y="172" text-anchor="middle">bedrijven gesproken</text><rect x="266.1" y="186" width="187.9" height="38" rx="7" fill="url(#brewgrad)"/><text class="fn-v" x="360" y="212" text-anchor="middle">1.470</text>
-  <path d="M360,331 C372,345 371,360 360,360 C349,360 348,345 360,331 Z" fill="#38b6ff"/><text class="fn-d" x="392" y="355">61 gekwalificeerde leads</text><path d="M360,393 C372,407 371,422 360,422 C349,422 348,407 360,393 Z" fill="#38b6ff"/><text class="fn-d" x="392" y="417">23 tastings ingepland</text>
-</svg>
-        <figcaption>De twee balken staan op schaal ten opzichte van elkaar. De druppels zijn symbolen: uit 2.629 pogingen komen 61 leads en 23 tastings.</figcaption>
+      <figure class="viz viz-pour">
+        <div class="pourwrap"><svg class="pour" viewBox="0 0 360 400" role="img"
+     aria-label="Een volautomaat die koffie zet: de gesprekken gaan erin, de leads komen eruit">
+  <defs>
+    <linearGradient id="machineBody" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#252d3f"/><stop offset="1" stop-color="#12161f"/>
+    </linearGradient>
+    <linearGradient id="screenGlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0d1a26"/><stop offset="1" stop-color="#08101a"/>
+    </linearGradient>
+    <clipPath id="cupClip">
+      <path d="M140,264 L149,300 Q151,308 160,308 L200,308 Q209,308 211,300 L220,264 Z"/>
+    </clipPath>
+  </defs>
+
+  <rect x="58" y="22" width="244" height="326" rx="26" fill="url(#machineBody)"
+        stroke="rgba(242,239,230,.28)" stroke-width="2"/>
+  <rect x="96" y="12" width="168" height="24" rx="12" fill="#1a2030"
+        stroke="rgba(242,239,230,.22)" stroke-width="2"/>
+
+  <rect x="90" y="56" width="112" height="54" rx="11" fill="url(#screenGlow)"
+        stroke="rgba(56,182,255,.4)" stroke-width="1.6"/>
+  <text class="mdisp" x="146" y="84">2.629</text>
+  <text class="msub" x="146" y="100">gesprekken</text>
+
+  <g class="mbtn">
+    <circle cx="240" cy="66" r="8"/><circle cx="240" cy="90" r="8"/>
+    <circle cx="240" cy="114" r="8" class="on"/>
+  </g>
+
+  <rect x="90" y="128" width="180" height="36" rx="11" fill="#0f141d"
+        stroke="rgba(242,239,230,.18)" stroke-width="1.6"/>
+  <g class="mbeans">
+    <ellipse cx="116" cy="146" rx="7" ry="9.5"/><ellipse cx="142" cy="147" rx="7" ry="9.5"/>
+    <ellipse cx="168" cy="145" rx="7" ry="9.5"/><ellipse cx="194" cy="147" rx="7" ry="9.5"/>
+    <ellipse cx="220" cy="146" rx="7" ry="9.5"/><ellipse cx="246" cy="147" rx="7" ry="9.5"/>
+  </g>
+
+  <rect x="104" y="180" width="152" height="140" rx="12" fill="#090d14"
+        stroke="rgba(242,239,230,.14)" stroke-width="1.6"/>
+  <rect x="136" y="178" width="88" height="38" rx="9" fill="#1a2030"
+        stroke="rgba(242,239,230,.26)" stroke-width="2"/>
+  <rect x="157" y="214" width="11" height="13" rx="3.5" fill="#1a2030"
+        stroke="rgba(242,239,230,.26)" stroke-width="1.6"/>
+  <rect x="192" y="214" width="11" height="13" rx="3.5" fill="#1a2030"
+        stroke="rgba(242,239,230,.26)" stroke-width="1.6"/>
+
+  <line class="stream" x1="162.5" y1="230" x2="162.5" y2="266" stroke="#7a4526"
+        stroke-width="5" stroke-linecap="round"/>
+  <line class="stream s2" x1="197.5" y1="230" x2="197.5" y2="266" stroke="#7a4526"
+        stroke-width="5" stroke-linecap="round"/>
+
+  <g clip-path="url(#cupClip)">
+    <rect class="fill" x="136" y="266" width="88" height="44" fill="url(#brewgrad)"/>
+    <ellipse class="crema" cx="180" cy="268" rx="42" ry="7" fill="#c89464"/>
+  </g>
+  <path class="ln" d="M140,264 L149,300 Q151,308 160,308 L200,308 Q209,308 211,300 L220,264 Z" fill="none"/>
+  <path class="ln" d="M134,264 L226,264" fill="none" stroke-linecap="round"/>
+  <path class="ln" d="M220,272 Q243,278 240,291 Q238,302 214,301" fill="none"/>
+
+  <rect x="112" y="316" width="136" height="9" rx="4" fill="#1a2030"
+        stroke="rgba(242,239,230,.2)" stroke-width="1.6"/>
+</svg><div class="pstages"><div class="pst"><div class="pst-k">Gesprekspogingen</div><div class="pst-v">2.629</div><div class="pst-t"><div class="pst-f" style="width:100.00%"></div></div></div><div class="pst"><div class="pst-k">Bedrijven gesproken</div><div class="pst-v">1.470</div><div class="pst-t"><div class="pst-f" style="width:55.91%"></div></div></div><div class="pst out"><div class="pst-k">Gekwalificeerde leads</div><div class="pst-v">61</div><div class="pst-t"><div class="pst-f" style="width:2.32%"></div></div></div><div class="pst out"><div class="pst-k">Tastings ingepland</div><div class="pst-v">23</div><div class="pst-t"><div class="pst-f" style="width:0.87%"></div></div></div></div></div>
+        <figcaption>Alle vier de balken staan op schaal ten opzichte van de 2.629 gesprekspogingen. Zo klein is de laatste stap, en precies daar zit het werk.</figcaption>
       </figure>
     </section>
 
@@ -1047,6 +1140,19 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
       });
     }, {threshold: 0.4});
     figs.forEach(function(f){ io.observe(f); });
+  }
+
+  /* ---- de filterkoffie start als hij in beeld komt ---- */
+  var pour = document.querySelector('.viz-pour');
+  if (pour){
+    if (!reduce && 'IntersectionObserver' in window){
+      var pio = new IntersectionObserver(function(es){
+        es.forEach(function(e){ if (e.isIntersecting){ pour.classList.add('is-brewing'); pio.unobserve(e.target); } });
+      }, {threshold: 0.25});
+      pio.observe(pour);
+    } else {
+      pour.classList.add('is-brewing');
+    }
   }
 
   /* ---- de zak kantelt mee ---- */
