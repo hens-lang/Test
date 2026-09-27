@@ -51,6 +51,10 @@ window.LINK = {
     }
   },
 
+  // Apollo website-tracking: laadt alleen na toestemming via de cookiemelding.
+  // Leeg laten = geen tracking en geen cookiemelding.
+  tracking: { apolloAppId: "695040eaae2147001516e8ad" },
+
   nav: [
     { href: "diensten.html", label: "Diensten" },
     { href: "over-link.html", label: "Over LINK." },

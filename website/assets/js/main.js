@@ -119,7 +119,7 @@
           <li><a href="${esc(C.linkedin)}" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
       </div>
       <div class="giant" aria-hidden="true">LINK<span>.</span></div>
-      <div class="bottom"><span>© ${new Date().getFullYear()} LINK. · KvK ${esc(C.kvk)}</span><span>Jouw succes is ons succes.</span></div>
+      <div class="bottom"><span>© ${new Date().getFullYear()} LINK. · KvK ${esc(C.kvk)} · <a href="privacy.html">Privacyverklaring</a>${D.tracking && D.tracking.apolloAppId ? ' · <a href="#" data-consent-open>Cookie-instellingen</a>' : ""}</span><span>Jouw succes is ons succes.</span></div>
     </div>`;
   document.body.append(footer);
 
@@ -128,6 +128,42 @@
     const fo = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { g.classList.add("drop"); fo.disconnect(); } }), { threshold: 0.4 });
     fo.observe(g);
   }
+
+  $$("[data-privacy-contact]").forEach((ul) => {
+    ul.innerHTML = `<li>LINK.</li><li>${esc(C.address.street)}, ${esc(C.address.zip)} ${esc(C.address.city)}</li>
+      <li>KvK ${esc(C.kvk)}</li><li><a href="mailto:${C.email}">${C.email}</a> · <a href="tel:${C.phoneHref}">${C.phone}</a></li>`;
+  });
+
+  /* ---------- Cookies: Apollo alleen na toestemming ---------- */
+  (() => {
+    const T = D.tracking || {};
+    if (!T.apolloAppId) return;
+    const KEY = "link-consent";
+    const get = () => { try { return localStorage.getItem(KEY); } catch (_) { return null; } };
+    const set = (v) => { try { localStorage.setItem(KEY, v); } catch (_) {} };
+    let loaded = false;
+    const loadApollo = () => {
+      if (loaded) return; loaded = true;
+      const s = document.createElement("script");
+      s.src = "https://assets.apollo.io/micro/website-tracker/tracker.iife.js?nocache=" + Math.random().toString(36).substring(7);
+      s.async = true; s.defer = true;
+      s.onload = () => { try { window.trackingFunctions.onLoad({ appId: T.apolloAppId }); } catch (_) {} };
+      document.head.appendChild(s);
+    };
+    const bar = document.createElement("div");
+    bar.className = "consent"; bar.setAttribute("role", "dialog"); bar.setAttribute("aria-label", "Cookie-instellingen"); bar.hidden = true;
+    bar.innerHTML = `<p><strong>Cookies<span class="dot">.</span></strong> We gebruiken analytische cookies om te zien welke bedrijven onze site bezoeken. Alleen met jouw toestemming. <a href="privacy.html#cookies">Meer weten</a></p>
+      <div class="consent-actions"><button type="button" class="c-no">Alleen noodzakelijk</button><button type="button" class="c-yes">Akkoord</button></div>`;
+    document.body.append(bar);
+    const show = () => { bar.hidden = false; requestAnimationFrame(() => bar.classList.add("on")); };
+    const hide = () => { bar.classList.remove("on"); setTimeout(() => (bar.hidden = true), 400); };
+    $(".c-yes", bar).addEventListener("click", () => { set("yes"); hide(); loadApollo(); });
+    $(".c-no", bar).addEventListener("click", () => { set("no"); hide(); });
+    const c = get();
+    if (c === "yes") loadApollo();
+    else if (c !== "no") setTimeout(show, 1600);
+    $$("[data-consent-open]").forEach((b) => b.addEventListener("click", (e) => { e.preventDefault(); show(); }));
+  })();
 
   /* ---------- Kennismaking plannen ---------- */
   if (C.bookingUrl) {

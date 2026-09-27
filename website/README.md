@@ -25,6 +25,7 @@ data/site.js  ──►  assets/js/main.js  ──►  alle pagina's
 | Verhalen | `content/verhalen/*.md` → `tools/build-verhalen.py` | verhalen, home (3 kaarten) |
 | Reactietijd | `data/site.js > contact.responseTime` | chip, contact, FAQ, waarden, feiten |
 | Kennismaking plannen (agenda-link) | `data/site.js > contact.bookingUrl` | alle "Plan een kennismaking"-knoppen, contact |
+| Apollo-tracking (na toestemming) | `data/site.js > tracking.apolloAppId` | cookiemelding, alle pagina's |
 | Partnerportaal-knop | `data/site.js > contact.portalUrl` | header, mobiel menu, footer |
 | Contactformulier-koppeling | `data/site.js > contact.form` | contactpagina |
 
@@ -55,7 +56,7 @@ Later uitbreiden? De teksten staan in `content/verhalen/`. Voeg een bestand toe 
 ## Techniek
 
 - **Snel:** geen frameworks, fonts zelf gehost (`assets/fonts`, alleen Latin), afbeeldingen klein.
-- **AVG:** geen Google Fonts-verzoeken, geen trackers en geen cookies. Voeg je later Analytics toe, zet er dan ook een cookiemelding bij.
+- **AVG:** geen Google Fonts-verzoeken. Apollo-websitetracking laadt pas na toestemming via de cookiemelding. Privacyverklaring op `privacy.html`.
 - **Toegankelijk:** semantische HTML, skip-link, focusstijlen, labels bij formuliervelden. `prefers-reduced-motion` zet alle animaties uit.
 - **SEO:** unieke titels en beschrijvingen per pagina, canonical-tags, Open Graph, `sitemap.xml`, `robots.txt`, Organization-schema.
 - **Responsive:** getest op 360, 390, 768, 1024 en 1440 px zonder horizontaal scrollen.
