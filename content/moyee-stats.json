@@ -159,45 +159,100 @@
   "maanden": [
     {
       "maand": "2026-03",
+      "kort": "mrt",
       "pogingen": 72,
+      "gesproken": 46,
+      "bereik": 63.9,
       "beldagen": 1,
-      "leads": 0
+      "dagen_actief": 2,
+      "leads": 0,
+      "deels": true
     },
     {
       "maand": "2026-04",
+      "kort": "apr",
       "pogingen": 537,
+      "gesproken": 337,
+      "bereik": 62.8,
       "beldagen": 6,
-      "leads": 6
+      "dagen_actief": 18,
+      "leads": 6,
+      "deels": false
     },
     {
       "maand": "2026-05",
+      "kort": "mei",
       "pogingen": 360,
+      "gesproken": 291,
+      "bereik": 80.8,
       "beldagen": 3,
-      "leads": 12
+      "dagen_actief": 15,
+      "leads": 12,
+      "deels": false
     },
     {
       "maand": "2026-06",
+      "kort": "jun",
       "pogingen": 511,
+      "gesproken": 410,
+      "bereik": 80.2,
       "beldagen": 6,
-      "leads": 8
+      "dagen_actief": 20,
+      "leads": 8,
+      "deels": false
     },
     {
       "maand": "2026-07",
+      "kort": "jul",
       "pogingen": 177,
+      "gesproken": 127,
+      "bereik": 71.8,
       "beldagen": 1,
-      "leads": 12
+      "dagen_actief": 15,
+      "leads": 12,
+      "deels": false
     },
     {
       "maand": "2026-08",
+      "kort": "aug",
       "pogingen": 195,
+      "gesproken": 134,
+      "bereik": 68.7,
       "beldagen": 2,
-      "leads": 8
+      "dagen_actief": 9,
+      "leads": 8,
+      "deels": false
     },
     {
       "maand": "2026-09",
+      "kort": "sep",
+      "pogingen": 777,
+      "gesproken": 370,
+      "bereik": 47.6,
+      "beldagen": 5,
+      "dagen_actief": 8,
+      "leads": 15,
+      "deels": false
+    }
+  ],
+  "seizoen": {
+    "voorjaar": {
+      "label": "April tot en met juni",
+      "pogingen": 1480,
+      "beldagen": 16,
+      "leads": 26
+    },
+    "zomer": {
+      "label": "Juli en augustus",
+      "pogingen": 372,
+      "beldagen": 3,
+      "leads": 20
+    },
+    "najaar": {
+      "label": "September",
       "pogingen": 777,
       "beldagen": 5,
       "leads": 15
     }
-  ]
+  }
 }

@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent
 S = json.loads((ROOT / 'content' / 'moyee-stats.json').read_text(encoding='utf-8'))
 vol, res, pij, hui, per = S['volume'], S['resultaat'], S['pijplijn'], S['huidig'], S['periode']
 kl = S['klantwaarde']
+sep = next(m for m in S['maanden'] if m['kort'] == 'sep')
 norm = S['norm_pogingen_per_beldag']
 tier = {r['beldagen']: r for r in S['staffel']}
 
@@ -55,6 +56,37 @@ CUP = ('<svg viewBox="0 0 24 24" class="lad-cup" aria-hidden="true">'
        '<path d="M4,6 L5.6,17 Q5.9,20 8.4,20 L14.6,20 Q17.1,20 17.4,17 L19,6 Z"/>'
        '<path d="M19,9 Q22.6,9.8 22.2,13 Q21.9,15.8 18.4,16"/>'
        '<path d="M2.6,6 L20.4,6"/></svg>')
+
+
+def season_chart(maanden):
+    n = len(maanden)
+    maxp = max(m['pogingen'] for m in maanden)
+    maxl = max(m['leads'] for m in maanden)
+
+    def cols(key, top, fmt=str):
+        out = []
+        for i, m in enumerate(maanden):
+            cls = ' on' if m['kort'] == 'sep' else (' zomer' if m['kort'] in ('jul', 'aug') else '')
+            h = (m[key] / top * 100) if (top and m[key]) else 0
+            if h:
+                h = max(h, 3)
+            out.append(f'<div class="sea-col{cls}" style="--i:{i}">'
+                       f'<span class="sea-v">{fmt(m[key])}</span>'
+                       f'<i style="--h:{h:.1f}%"></i></div>')
+        return f'<div class="sea-grid" style="--n:{n}">' + ''.join(out) + '</div>'
+
+    labels = ''.join(f'<span>{m["kort"]}{"*" if m["deels"] else ""}</span>' for m in maanden)
+    return f'''<div class="season">
+      <div class="sea-row">
+        <div class="sea-h">Gesprekspogingen per maand</div>
+        {cols('pogingen', maxp, dui)}
+      </div>
+      <div class="sea-row">
+        <div class="sea-h">Gekwalificeerde leads per maand</div>
+        {cols('leads', maxl)}
+      </div>
+      <div class="sea-x" style="--n:{n}">{labels}</div>
+    </div>'''
 
 
 def cups_ladder(omzet, steps=(1, 5, 10)):
@@ -366,6 +398,14 @@ VERGELIJK_SLOT = ('De bezetting en de bellijst liggen er al. Verdubbelen kan van
 
 logo = 'data:image/png;base64,' + base64.b64encode((ROOT / 'assets' / 'moyee-logo-web.png').read_bytes()).decode()
 
+SEIZOEN = f'''    <section id="seizoen">
+      <p class="eyebrow">Het seizoen</p>
+      <h2>De zomer was stil. Vanaf september <em>loopt het weer</em>.</h2>
+      <p class="lede">Koud bellen kent seizoenen, en koffie helemaal. In juli en augustus zaten we met drie beldagen in twee maanden, aan beide kanten vakantie. In september ging het er weer vol op.</p>
+      {season_chart(S['maanden'])}
+      <p class="fine">In september maakten we {dui(sep['pogingen'])} gesprekspogingen, de drukste maand van de hele periode, en kwamen er {sep['leads']} gekwalificeerde leads uit. De leads in juli en augustus komen deels nog uit gesprekken van juni, dus die maanden ogen beter dan het tempo was. * Eind maart zijn we gestart met één beldag.</p>
+    </section>'''
+
 TOK = {
     'LOGO': logo,
     'PERIODE_KORT': f'{MAAND[m1]} &ndash; {MAAND[m2]} 2026',
@@ -382,6 +422,7 @@ TOK = {
     'SPECS': SPECS,
     'PIJPLIJN': PIJPLIJN,
     'WANNEER': WANNEER,
+    'SEIZOEN': SEIZOEN,
     'WAARDE': WAARDE,
     'TIERS': TIERS,
     'VERGELIJK': VERGELIJK,

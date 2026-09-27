@@ -310,6 +310,59 @@
       ]
     },
     {
+      "id": "seizoen",
+      "type": "tiers",
+      "theme": "dark",
+      "eyebrow": "Het seizoen",
+      "title": [
+        {
+          "t": "De zomer was stil. Vanaf september "
+        },
+        {
+          "t": "loopt het weer",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "columns": [
+        "Periode",
+        "Gesprekspogingen",
+        "Beldagen",
+        "Gekwalificeerde leads"
+      ],
+      "rows": [
+        {
+          "cells": [
+            "April tot en met juni",
+            "1.480",
+            "16",
+            "26"
+          ]
+        },
+        {
+          "cells": [
+            "Juli en augustus",
+            "372",
+            "3",
+            "20"
+          ],
+          "note": "vakantie"
+        },
+        {
+          "cells": [
+            "September",
+            "777",
+            "5",
+            "15"
+          ],
+          "highlight": true
+        }
+      ],
+      "closing": "In juli en augustus stonden er drie beldagen in twee maanden, aan beide kanten vakantie. September is met 777 gesprekken de drukste maand van de hele periode. In het najaar en de winter wordt er meer koffie gedronken en zitten er meer mensen op kantoor, dus dit is het moment om de beldagen op te voeren."
+    },
+    {
       "id": "pijplijn",
       "type": "figures",
       "theme": "light",

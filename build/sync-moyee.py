@@ -18,6 +18,8 @@ by_id = {s['id']: s for s in d['slides']}
 
 vol, res, pij, hui = S['volume'], S['resultaat'], S['pijplijn'], S['huidig']
 kl = S['klantwaarde']
+sz = S['seizoen']
+mnd = {m['kort']: m for m in S['maanden']}
 norm = S['norm_pogingen_per_beldag']
 def eur(n):
     if n < 100 and n != int(n):
@@ -176,6 +178,34 @@ waarde = {
 d['slides'] = [x for x in d['slides'] if x['id'] != 'waarde']
 idx = next(i for i, x in enumerate(d['slides']) if x['id'] == 'vergelijking') + 1
 d['slides'].insert(idx, waarde)
+
+# ---------- seizoen (nieuw, na de juiste dagen) ----------
+seizoen = {
+    'id': 'seizoen', 'type': 'tiers', 'theme': 'dark',
+    'eyebrow': 'Het seizoen',
+    'title': [{'t': 'De zomer was stil. Vanaf september '},
+              {'t': 'loopt het weer', 'accent': True}, {'t': '.'}],
+    'columns': ['Periode', 'Gesprekspogingen', 'Beldagen', 'Gekwalificeerde leads'],
+    'rows': [
+        {'cells': [sz['voorjaar']['label'], dui(sz['voorjaar']['pogingen']),
+                   str(sz['voorjaar']['beldagen']), str(sz['voorjaar']['leads'])]},
+        {'cells': [sz['zomer']['label'], dui(sz['zomer']['pogingen']),
+                   str(sz['zomer']['beldagen']), str(sz['zomer']['leads'])],
+         'note': 'vakantie'},
+        {'cells': [sz['najaar']['label'], dui(sz['najaar']['pogingen']),
+                   str(sz['najaar']['beldagen']), str(sz['najaar']['leads'])],
+         'highlight': True},
+    ],
+    'closing': (
+        f"In juli en augustus stonden er drie beldagen in twee maanden, aan beide kanten vakantie. "
+        f"September is met {dui(mnd['sep']['pogingen'])} gesprekken de drukste maand van de hele periode. "
+        'In het najaar en de winter wordt er meer koffie gedronken en zitten er meer mensen op kantoor, '
+        'dus dit is het moment om de beldagen op te voeren.'
+    ),
+}
+d['slides'] = [x for x in d['slides'] if x['id'] != 'seizoen']
+idx = next(i for i, x in enumerate(d['slides']) if x['id'] == 'pijplijn')
+d['slides'].insert(idx, seizoen)
 
 # ---------- pijplijn (nieuw, vóór de staffel) ----------
 pijl = {

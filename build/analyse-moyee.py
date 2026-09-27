@@ -116,13 +116,37 @@ def main(path):
             'leads_per_1000': round(s[s['code'].isin(LEAD)]['Bedrijf'].nunique() / len(s) * 1000, 1),
         })
 
+    MAAND_KORT = {3: 'mrt', 4: 'apr', 5: 'mei', 6: 'jun', 7: 'jul', 8: 'aug', 9: 'sep',
+                  10: 'okt', 11: 'nov', 12: 'dec', 1: 'jan', 2: 'feb'}
     maanden = []
     for m, g in df.groupby(df['datum'].map(lambda d: d.strftime('%Y-%m'))):
+        gs = len(g[g['code'].isin(GESPROKEN)])
+        actief = sorted(g['datum'].unique())
         maanden.append({
-            'maand': m, 'pogingen': len(g),
+            'maand': m,
+            'kort': MAAND_KORT[int(m.split('-')[1])],
+            'pogingen': len(g),
+            'gesproken': gs,
+            'bereik': round(gs / len(g) * 100, 1),
+            'beldagen': int((g.groupby('datum').size() >= VOLLE_BELDAG).sum()),
+            'dagen_actief': len(actief),
+            'leads': int(g[g['code'].isin(LEAD)]['Bedrijf'].nunique()),
+            'deels': len(actief) <= 3,
+        })
+
+    def blok(maanden_nrs):
+        g = df[df['datum'].map(lambda d: d.month in maanden_nrs)]
+        return {
+            'pogingen': len(g),
             'beldagen': int((g.groupby('datum').size() >= VOLLE_BELDAG).sum()),
             'leads': int(g[g['code'].isin(LEAD)]['Bedrijf'].nunique()),
-        })
+        }
+
+    seizoen = {
+        'voorjaar': dict(label='April tot en met juni', **blok({3, 4, 5, 6})),
+        'zomer': dict(label='Juli en augustus', **blok({7, 8})),
+        'najaar': dict(label='September', **blok({9})),
+    }
 
     # wat een verkochte beldag oplevert bij de norm
     leads_per_beldag = leads_per_1000 * NORM_POGINGEN_PER_BELDAG / 1000
@@ -188,6 +212,7 @@ def main(path):
         'weekdagen': dagen,
         'dagdelen': dagdelen,
         'maanden': maanden,
+        'seizoen': seizoen,
     }
 
     out = ROOT / 'content' / 'moyee-stats.json'
