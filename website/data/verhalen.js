@@ -5,7 +5,7 @@ window.LINK_VERHALEN = [
     "type": "Visie",
     "date": "2026-09-26",
     "date_nl": "26 september 2026",
-    "excerpt": "Veel bureaus noemen de eerste weken een test. Bij ons is de pilot een volwaardige start: bellen, afspraken plannen, aanscherpen en nieuwe klanten binnenhalen.",
+    "excerpt": "Bij LINK. is de pilot geen test, maar een volwaardige start: bellen, afspraken plannen, aanscherpen en nieuwe klanten binnenhalen.",
     "status": "live",
     "read": 2,
     "url": "verhaal-een-pilot-is-geen-proef.html"
@@ -21,14 +21,14 @@ window.LINK_VERHALEN = [
     "url": "verhaal-al-voorzien.html"
   },
   {
-    "title": "Zo herken je een cowboy-bureau",
+    "title": "Wat je mag verwachten van een samenwerking met LINK.",
     "type": "Visie",
     "date": "2026-09-05",
     "date_nl": "5 september 2026",
-    "excerpt": "De markt voor acquisitie zit vol snelle beloftes. Vijf signalen dat je met een partij te maken hebt die vooral op snel geld uit is.",
+    "excerpt": "Een klein en hecht team, één vast aanspreekpunt en eerlijke updates. Zo ziet samenwerken met LINK. er in de praktijk uit.",
     "status": "live",
     "read": 2,
-    "url": "verhaal-cowboy-bureau.html"
+    "url": "verhaal-wat-je-mag-verwachten.html"
   },
   {
     "title": "Acquisitie uitbesteden? Stel deze vragen vooraf",

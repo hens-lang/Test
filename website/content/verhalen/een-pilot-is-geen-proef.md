@@ -4,7 +4,7 @@ type: Visie
 date: 2026-09-26
 author: Hens Boer
 status: live
-excerpt: Veel bureaus noemen de eerste weken een test. Bij ons is de pilot een volwaardige start: bellen, afspraken plannen, aanscherpen en nieuwe klanten binnenhalen.
+excerpt: Bij LINK. is de pilot geen test, maar een volwaardige start: bellen, afspraken plannen, aanscherpen en nieuwe klanten binnenhalen.
 ---
 
 Als ondernemers het woord pilot horen, denken ze vaak aan een proef. Een paar weken kijken of het iets oplevert, en zo niet, dan stop je. Zo zien wij het niet.
@@ -17,11 +17,9 @@ In de eerste gesprekken met beslissers horen we direct wat landt en wat niet. Da
 
 > Staat je propositie scherp, dan weten we dat het werkt met onze manier van bellen.
 
-## Waarom die volgorde zo belangrijk is
+## Waarom we het zo aanpakken
 
-Veel partijen in onze markt beginnen meteen met volume. Zo veel mogelijk bellen, zo veel mogelijk afspraken. Maar een zwakke propositie wordt niet sterker door hem vaker te herhalen. Je verbrandt er alleen je markt mee.
-
-Wij doen het andersom. Eerst het verhaal scherp, dan de stroom op gang. Dat kost in het begin iets meer aandacht van jou, bijvoorbeeld tijdens de kick-off. Maar het levert gesprekken op met bedrijven die jij echt als klant wilt hebben.
+Voor ons draait het om de juiste gesprekken, met de juiste mensen, op het juiste moment. Daarom scherpen we tijdens het bellen continu aan: wat landt bij beslissers, en wat niet. Zo wordt je verhaal elke week sterker, en groeit de stroom mee. Dat kost in het begin iets meer aandacht van jou, bijvoorbeeld tijdens de kick-off. Maar het levert gesprekken op met bedrijven die jij echt als klant wilt hebben.
 
 ## Wat je van de pilot mag verwachten
 
