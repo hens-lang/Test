@@ -140,17 +140,13 @@ window.LINK = {
 
   // Markten waar LINK. thuis is, afgeleid van de huidige partners (zonder namen).
   sectors: [
-    "Installatietechniek",
-    "Elektrotechniek",
+    "Installatie- & elektrotechniek",
     "Maakindustrie",
-    "IT & software",
-    "SaaS",
-    "AI",
+    "Software, SaaS & AI",
     "Cybersecurity",
     "Zakelijke dienstverlening",
-    "Marketing & creatieve bureaus",
-    "Facilitaire dienstverlening",
-    "Hygiëne & veiligheid",
+    "Marketing & creatief",
+    "Facilitair & hygiëne",
     "Duurzaamheidscertificering",
     "Groothandel & logistiek"
   ],
