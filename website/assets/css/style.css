@@ -338,7 +338,7 @@ section { position: relative; }
 @media (min-width: 960px) and (max-height: 760px) { .flow-num { font-size: 150px; } .flow-panel h3 { font-size: 40px; } }
 
 .facts-strip { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-top: clamp(56px, 7vw, 90px); }
-@media (min-width: 900px) { .facts-strip { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 900px) { .facts-strip { grid-template-columns: repeat(3, 1fr); } }
 .facts-strip div { padding: 26px 20px 24px 0; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 .facts-strip b { font-family: var(--font-head); font-weight: 800; font-size: clamp(30px, 3vw, 42px); letter-spacing: -.05em; color: #000; line-height: 1; }
 .facts-strip span { font-size: 14.5px; color: var(--grey-5); }

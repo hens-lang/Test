@@ -107,7 +107,6 @@ window.LINK = {
   facts: [
     { n: "1", l: "vast aanspreekpunt" },
     { n: "100%", l: "persoonlijk" },
-    { n: "{responseShort}", l: "reactietijd" },
     { n: "52×", l: "per jaar een update" }
   ],
 
