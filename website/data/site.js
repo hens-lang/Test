@@ -72,7 +72,8 @@ window.LINK = {
     bedrijf: { src: "assets/img/hens/hens-bedrijf", widths: [900, 1600, 2200], alt: "Hens Boer op een bedrijventerrein" },
     notitie: { src: "assets/img/hens/hens-notitie", widths: [600, 1000], alt: "Hens Boer maakt aantekeningen in zijn notitieboek" },
     avatar:  { src: "assets/img/hens/hens-avatar", widths: [160, 320], alt: "Hens Boer" },
-    koffie:  { src: "assets/img/hens/hens-koffie", widths: [600, 1000], alt: "Hens Boer drinkt koffie uit een blauw kopje" }
+    koffie:  { src: "assets/img/hens/hens-koffie", widths: [600, 1000], alt: "Hens Boer drinkt koffie uit een blauw kopje" },
+    typen:   { src: "assets/img/hens/hens-typen", widths: [800, 1400], alt: "Hens Boer werkt in het partnerportaal op zijn laptop" }
   },
 
   // Zo werkt het. Helder over wat je per fase krijgt, bewust niet over
