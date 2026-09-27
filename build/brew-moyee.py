@@ -411,6 +411,7 @@ TOK = {
     'PERIODE_KORT': f'{MAAND[m1]} &ndash; {MAAND[m2]} 2026',
     'PERIODE_LANG': f'{MAAND_VOL[m1]} tot en met {MAAND_VOL[m2]} 2026',
     'WEKEN': str(round(per['weken'])),
+    'BELDAGEN': str(vol['volle_beldagen']),
     'POGINGEN': dui(vol['pogingen']),
     'BEDRIJVEN': dui(vol['bedrijven']),
     'LEADS': str(res['leads']),

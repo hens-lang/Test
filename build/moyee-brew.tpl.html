@@ -255,11 +255,15 @@ h1{
   .brew{display:block; position:sticky; align-self:start; top:calc(128px + env(safe-area-inset-top,0px))}
 }
 .brew svg{width:100%; height:auto; display:block; overflow:visible}
-.glass-line{fill:none; stroke:rgba(242,239,230,.32); stroke-width:2.2}
-.tick{stroke:rgba(242,239,230,.18); stroke-width:1.4}
-.tick-txt{font-family:var(--sans); font-size:10px; font-weight:600; fill:#8a90a0; letter-spacing:.08em}
+.glass-line{fill:none; stroke:rgba(242,239,230,.34); stroke-width:1.6; stroke-linejoin:round}
+.glass-soft{fill:none; stroke:rgba(255,255,255,.11); stroke-width:1.1; stroke-linecap:round}
+.glass-lip{fill:none; stroke:rgba(242,239,230,.46); stroke-width:2.2; stroke-linecap:round}
+.glass-base{fill:rgba(0,0,0,.4); filter:blur(1px)}
+.meniscus{stroke:url(#crema); stroke-width:2.4; stroke-linecap:round; opacity:.85}
+.tick{stroke:rgba(242,239,230,.16); stroke-width:1.2}
+.tick-txt{font-family:var(--sans); font-size:9.5px; font-weight:600; fill:#79818f; letter-spacing:.1em}
 .drip{fill:var(--liquid-a)}
-.steam{fill:none; stroke:rgba(242,239,230,.26); stroke-width:2; stroke-linecap:round}
+.steam{fill:none; stroke:rgba(242,239,230,.2); stroke-width:1.5; stroke-linecap:round}
 .brew-meta{
   margin-top:24px; display:flex; flex-direction:column; gap:6px;
   font-size:12.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:#8a90a0;
@@ -699,7 +703,7 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
             <div class="bag-sheen" aria-hidden="true"></div>
             <div class="bag-top">
               <img src="{{LOGO}}" alt="">
-              <div>Acquisitie<br>single origin</div>
+              <div>Acquisitie<br>voor Moyee</div>
             </div>
             <div class="bag-valve" aria-hidden="true"><i></i></div>
             <div class="bag-front">
@@ -713,13 +717,13 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
                 <span class="bl-eyebrow">Campagne</span>
                 <h3>Moyee &times; LINK.</h3>
               </div>
-              <div class="bag-row"><span>Herkomst</span><b>Alphen a/d Rijn</b></div>
-              <div class="bag-row"><span>Proces</span><b>Cold calling</b></div>
-              <div class="bag-row"><span>Branding</span><b>{{PERIODE_KORT}}</b></div>
-              <div class="bag-row"><span>Rusttijd</span><b>{{WEKEN}} weken</b></div>
-              <div class="bag-row"><span>Opbrengst</span><b>{{LEADS}} leads</b></div>
+              <div class="bag-row"><span>Periode</span><b>{{PERIODE_KORT}}</b></div>
+              <div class="bag-row"><span>Beldagen</span><b>{{BELDAGEN}}</b></div>
+              <div class="bag-row"><span>Gesprekken</span><b>{{POGINGEN}}</b></div>
+              <div class="bag-row"><span>Bedrijven</span><b>{{BEDRIJVEN}}</b></div>
+              <div class="bag-row"><span>Leads</span><b>{{LEADS}}</b></div>
               <div class="bag-row"><span>Tastings</span><b>{{TASTINGS}} ingepland</b></div>
-              <div class="bl-lot">Lot 2026&#8209;39 &middot; net gebrand</div>
+              <div class="bl-lot">Gebeld vanuit Alphen aan den Rijn</div>
             </div>
             <div class="bag-gusset" aria-hidden="true"></div>
           </div>
@@ -913,23 +917,49 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
   </div>
 
   <aside class="brew" aria-hidden="true">
-    <svg viewBox="0 0 160 360">
-      <g id="steamwrap">
-        <path class="steam" d="M62,42 C54,30 70,24 62,10"/>
-        <path class="steam" d="M80,44 C72,30 88,24 80,8"/>
-        <path class="steam" d="M98,42 C90,30 106,24 98,12"/>
+    <svg viewBox="0 0 190 402">
+      <defs>
+        <linearGradient id="glassSheen" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+          <stop offset=".18" stop-color="#ffffff" stop-opacity=".14"/>
+          <stop offset=".34" stop-color="#ffffff" stop-opacity="0"/>
+          <stop offset=".86" stop-color="#ffffff" stop-opacity="0"/>
+          <stop offset="1" stop-color="#ffffff" stop-opacity=".07"/>
+        </linearGradient>
+        <linearGradient id="crema" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#c89464"/><stop offset="1" stop-color="#8a5330"/>
+        </linearGradient>
+        <clipPath id="glassInner">
+          <path d="M40,60 L51,314 Q52,326 64,326 L116,326 Q128,326 129,314 L140,60 Z"/>
+        </clipPath>
+      </defs>
+
+      <g class="steamwrap">
+        <path class="steam" d="M74,44 C67,32 81,26 74,12"/>
+        <path class="steam" d="M90,46 C83,32 97,26 90,10"/>
+        <path class="steam" d="M106,44 C99,32 113,26 106,14"/>
       </g>
 
-      <g clip-path="url(#carafe)">
-        <rect id="liquid" x="20" y="360" width="120" height="360" fill="url(#brewgrad)"/>
+      <ellipse class="glass-base" cx="90" cy="332" rx="46" ry="7"/>
+
+      <g clip-path="url(#glassInner)">
+        <rect id="liquid" x="34" y="402" width="112" height="402" fill="url(#brewgrad)"/>
         <path id="wave" fill="#6B3A22" d=""/>
+        <path id="meniscus" class="meniscus" fill="none" d=""/>
       </g>
 
-      <path class="glass-line" d="M34,58 L48,300 Q50,314 62,314 L98,314 Q110,314 112,300 L126,58 Z"/>
-      <path class="glass-line" d="M28,58 L132,58" stroke-linecap="round"/>
+      <path class="glass-line" d="M40,60 L51,314 Q52,326 64,326 L116,326 Q128,326 129,314 L140,60"/>
+      <path class="glass-soft" d="M45,66 L55,312 Q56,321 64,321"/>
+      <ellipse class="glass-line" cx="90" cy="60" rx="50" ry="6.5" fill="none"/>
+      <path class="glass-lip" d="M38,58 L142,58"/>
+      <path class="glass-line" d="M138,84 C162,92 164,150 134,170"/>
+
+      <g clip-path="url(#glassInner)">
+        <rect x="34" y="52" width="112" height="282" fill="url(#glassSheen)"/>
+      </g>
 
       <g id="ticks"></g>
-      <ellipse id="drip" class="drip" cx="80" cy="66" rx="3.4" ry="5.2" opacity="0"/>
+      <path id="drip" class="drip" d="M90,68 C94,74 93,80 90,80 C87,80 86,74 90,68 Z" opacity="0"/>
     </svg>
     <div class="brew-meta">
       <b id="extpct">0%</b>
@@ -946,17 +976,18 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
   /* ---- maatstreepjes op de karaf ---- */
   var ticks = document.getElementById('ticks');
   if (ticks){
-    var marks = [[300,'0'],[240,'25'],[180,'50'],[120,'75'],[62,'100']];
+    var marks = [[320,'0'],[255,'25'],[190,'50'],[125,'75'],[62,'100']];
     var svgns = 'http://www.w3.org/2000/svg';
     marks.forEach(function(m){
       var y = m[0];
       var t = document.createElementNS(svgns,'line');
-      t.setAttribute('x1', 118 - (300-y)*0.03); t.setAttribute('x2', 130 - (300-y)*0.03);
+      var tx = 129 + (320 - y) * 0.043;
+      t.setAttribute('x1', tx); t.setAttribute('x2', tx + 11);
       t.setAttribute('y1', y); t.setAttribute('y2', y);
       t.setAttribute('class','tick');
       ticks.appendChild(t);
       var lb = document.createElementNS(svgns,'text');
-      lb.setAttribute('x', 136); lb.setAttribute('y', y+3.5);
+      lb.setAttribute('x', 152); lb.setAttribute('y', y + 3.4);
       lb.setAttribute('class','tick-txt');
       lb.textContent = m[1];
       ticks.appendChild(lb);
@@ -970,7 +1001,8 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
   var prog   = document.getElementById('progress');
   var label  = document.getElementById('brewlabel');
   var drip   = document.getElementById('drip');
-  var TOP = 62, BOTTOM = 312;
+  var men    = document.getElementById('meniscus');
+  var TOP = 62, BOTTOM = 320;
   var target = 0, current = 0;
 
   var stages = [
@@ -1009,20 +1041,20 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
     if (liquid){ liquid.setAttribute('y', y.toFixed(1)); liquid.setAttribute('height', (360-y).toFixed(1)); }
     if (wave){
       var t = (Date.now()-t0)/1000;
-      var d = 'M20,' + y.toFixed(1);
-      for (var x=20; x<=140; x+=10){
-        var yy = y + Math.sin((x/26) + t*1.7) * 2.6 + Math.sin((x/11) - t*1.1) * 1.1;
-        d += ' L' + x + ',' + yy.toFixed(1);
+      var top = 'M34,' + y.toFixed(1);
+      for (var x=34; x<=146; x+=8){
+        var yy = y + Math.sin((x/24) + t*1.6) * 2.2 + Math.sin((x/10) - t*1.05) * 0.9;
+        top += ' L' + x + ',' + yy.toFixed(1);
       }
-      d += ' L140,360 L20,360 Z';
-      wave.setAttribute('d', d);
+      wave.setAttribute('d', top + ' L146,402 L34,402 Z');
+      if (men) men.setAttribute('d', top);
     }
     if (pct) pct.textContent = Math.round(current*100) + '%';
     if (drip){
       var ph = ((Date.now()-t0) % 1500) / 1500;
       if (current < 0.995){
-        drip.setAttribute('opacity', ph < 0.8 ? '0.85' : '0');
-        drip.setAttribute('cy', (66 + ph*(y-72)).toFixed(1));
+        drip.setAttribute('opacity', ph < 0.8 ? '0.9' : '0');
+        drip.setAttribute('transform', 'translate(0,' + (ph * (y - 84)).toFixed(1) + ')');
       } else {
         drip.setAttribute('opacity','0');
       }
