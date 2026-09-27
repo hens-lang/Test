@@ -168,7 +168,7 @@ CTA = f'''
         <h2 class="reveal">We drinken graag een kop koffie met je{DOT}</h2>
         <p class="reveal">Geen verkoopgesprek. Gewoon kennismaken, eerlijk vertellen wat we kunnen, en kijken of het klopt.</p>
         <div class="actions reveal">
-          <a class="btn btn--light" href="contact.html">Plan een kennismaking {ARROW}</a>
+          <a class="btn btn--light" href="contact.html#plan" data-book>Plan een kennismaking {ARROW}</a>
           <a class="tel" data-c="phone" href="#"></a>
         </div>
       </div>

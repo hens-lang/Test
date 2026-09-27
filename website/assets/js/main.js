@@ -76,7 +76,7 @@
       <a class="logo" href="index.html" aria-label="LINK. home"><img src="assets/img/logo-zwart.png" alt="LINK." width="420" height="131"></a>
       <nav class="nav" aria-label="Hoofdmenu">${navLinks}</nav>
       <span class="read-progress" aria-hidden="true"><i></i></span>
-      <div class="nav-cta">${portal}<a class="btn" href="contact.html">Plan een kennismaking ${arrow}</a>
+      <div class="nav-cta">${portal}<a class="btn" href="contact.html#plan" data-book>Plan een kennismaking ${arrow}</a>
         <button class="burger" aria-label="Menu openen" aria-expanded="false" aria-controls="mm"><span></span><span></span></button>
       </div>
     </div>`;
@@ -127,6 +127,12 @@
     const g = $(".giant", footer);
     const fo = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { g.classList.add("drop"); fo.disconnect(); } }), { threshold: 0.4 });
     fo.observe(g);
+  }
+
+  /* ---------- Kennismaking plannen ---------- */
+  if (C.bookingUrl) {
+    $$("[data-book]").forEach((a) => { a.href = C.bookingUrl; a.target = "_blank"; a.rel = "noopener"; });
+    $$("[data-book-only]").forEach((el) => { el.hidden = false; });
   }
 
   /* ---------- Data-bindings (contactgegevens overal gelijk) ---------- */

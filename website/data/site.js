@@ -25,6 +25,10 @@ window.LINK = {
     kvk: "97517267",
     address: { street: "Flemingweg 8", zip: "2408 AV", city: "Alphen aan den Rijn" },
     linkedin: "https://nl.linkedin.com/in/hens-boer-359b8a294",
+    // Link naar je online agenda (bijv. Google Agenda-afspraakplanning of Calendly).
+    // Ingevuld: alle "Plan een kennismaking"-knoppen openen je agenda.
+    // Leeg: de knoppen gaan naar het formulier op de contactpagina.
+    bookingUrl: "",
     web: "www.linkgrp.nl",
     // Reactietijd: komt terug in de zwevende chip, contactpagina en waarden.
     responseTime: "3 minuten",

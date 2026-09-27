@@ -24,6 +24,7 @@ data/site.js  ──►  assets/js/main.js  ──►  alle pagina's
 | Veelgestelde vragen + Google FAQ-data | `data/site.js > faq` | diensten |
 | Verhalen | `content/verhalen/*.md` → `tools/build-verhalen.py` | verhalen, home (3 kaarten) |
 | Reactietijd | `data/site.js > contact.responseTime` | chip, contact, FAQ, waarden, feiten |
+| Kennismaking plannen (agenda-link) | `data/site.js > contact.bookingUrl` | alle "Plan een kennismaking"-knoppen, contact |
 | Partnerportaal-knop | `data/site.js > contact.portalUrl` | header, mobiel menu, footer |
 | Contactformulier-koppeling | `data/site.js > contact.form` | contactpagina |
 
