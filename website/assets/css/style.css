@@ -909,3 +909,6 @@ h1.reveal.in .dot, h2.reveal.in .dot, .split-line.in .dot { transform: none; }
 
 /* Ruimte onderaan zolang de cookiemelding zichtbaar is, zodat niets eronder verdwijnt */
 .site-footer { padding-bottom: calc(36px + var(--consent-room, 0px)); transition: padding-bottom .4s var(--ease); }
+
+/* Footer: de punt als echte cirkel, in de verhouding van het logo */
+.giant span { display: inline-block; width: .2em; height: .2em; margin-left: .1em; border-radius: 50%; background: var(--blue); vertical-align: baseline; color: transparent; }

@@ -118,7 +118,7 @@
           <li>${esc(C.address.street)}<br>${esc(C.address.zip)} ${esc(C.address.city)}</li>
           <li><a href="${esc(C.linkedin)}" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
       </div>
-      <div class="giant" aria-hidden="true">LINK<span>.</span></div>
+      <div class="giant" aria-hidden="true">LINK<span></span></div>
       <div class="bottom"><span>© ${new Date().getFullYear()} LINK. · KvK ${esc(C.kvk)} · <a href="privacy.html">Privacyverklaring</a>${D.tracking && D.tracking.apolloAppId ? ' · <a href="#" data-consent-open>Cookie-instellingen</a>' : ""}</span><span>Jouw succes is ons succes.</span></div>
     </div>`;
   document.body.append(footer);
