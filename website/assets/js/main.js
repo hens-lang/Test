@@ -155,8 +155,10 @@
     bar.innerHTML = `<p><strong>Cookies<span class="dot">.</span></strong> We gebruiken cookies om onze website te verbeteren en ons websitebezoek beter te begrijpen. Alleen als jij dat goed vindt. <a href="privacy.html#cookies">Meer weten</a></p>
       <div class="consent-actions"><button type="button" class="c-no">Alleen noodzakelijk</button><button type="button" class="c-yes">Akkoord</button></div>`;
     document.body.append(bar);
-    const show = () => { bar.hidden = false; requestAnimationFrame(() => bar.classList.add("on")); };
-    const hide = () => { bar.classList.remove("on"); setTimeout(() => (bar.hidden = true), 400); };
+    const room = (on) => document.documentElement.style.setProperty("--consent-room", on ? (bar.offsetHeight + 32) + "px" : "0px");
+    const show = () => { bar.hidden = false; requestAnimationFrame(() => { bar.classList.add("on"); room(true); }); };
+    const hide = () => { bar.classList.remove("on"); room(false); setTimeout(() => (bar.hidden = true), 400); };
+    addEventListener("resize", () => { if (!bar.hidden) room(true); });
     $(".c-yes", bar).addEventListener("click", () => { set("yes"); hide(); loadApollo(); });
     $(".c-no", bar).addEventListener("click", () => { set("no"); hide(); });
     const c = get();

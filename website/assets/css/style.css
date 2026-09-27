@@ -906,3 +906,6 @@ h1.reveal.in .dot, h2.reveal.in .dot, .split-line.in .dot { transform: none; }
 .c-yes { background: var(--blue); color: #000; }
 .c-yes:hover { background: #fff; }
 @media (max-width: 520px) { .consent { right: 16px; max-width: none; } }
+
+/* Ruimte onderaan zolang de cookiemelding zichtbaar is, zodat niets eronder verdwijnt */
+.site-footer { padding-bottom: calc(36px + var(--consent-room, 0px)); transition: padding-bottom .4s var(--ease); }
