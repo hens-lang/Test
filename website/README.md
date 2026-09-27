@@ -26,7 +26,7 @@ data/site.js  ──►  assets/js/main.js  ──►  alle pagina's
 | Reactietijd | `data/site.js > contact.responseTime` | chip, contact, FAQ, waarden, feiten |
 | Kennismaking plannen (agenda-link) | `data/site.js > contact.bookingUrl` | alle "Plan een kennismaking"-knoppen, contact |
 | Apollo-tracking (na toestemming) | `data/site.js > tracking.apolloAppId` | cookiemelding, alle pagina's |
-| Anonieme referenties (functie + type bedrijf) | `data/site.js > references` | home (blok verschijnt zodra gevuld) |
+| Anonieme referenties (functie + type bedrijf) | `data/site.js > references` | nog niet op de site; blok toevoegen in index.html met `data-refs` |
 | Partnerportaal-knop | `data/site.js > contact.portalUrl` | header, mobiel menu, footer |
 | Contactformulier-koppeling | `data/site.js > contact.form` | contactpagina |
 
