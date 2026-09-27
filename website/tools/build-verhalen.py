@@ -220,7 +220,8 @@ def story_page(v, others):
 
 def overview(items):
     chips = '<button type="button" class="v-chip" aria-pressed="true" data-filter="*">Alles</button>' + "".join(
-        f'<button type="button" class="v-chip" aria-pressed="false" data-filter="{t}">{t}</button>' for t in TYPES)
+        f'<button type="button" class="v-chip" aria-pressed="false" data-filter="{t}">{t}</button>' for t in TYPES
+        if any(v["type"] == t for v in items))
     cards = "\n        ".join(card(v) for v in items)
     return head("Verhalen | LINK.",
                 "Partnerverhalen, inzichten uit de praktijk en de visie van LINK. op B2B acquisitie. Geen ruis, wel wat we elke dag horen aan de telefoon.",

@@ -3,7 +3,7 @@ title: Waarom 'we zijn al voorzien' vaak niet betekent wat je denkt
 type: Uit de praktijk
 date: 2026-09-19
 author: Hens Boer
-status: concept
+status: live
 excerpt: Het is een van de zinnen die we het vaakst horen aan de telefoon. Wie hem opvat als een definitief nee, laat kansen liggen.
 ---
 

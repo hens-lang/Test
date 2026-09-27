@@ -88,8 +88,8 @@ window.LINK = {
     },
     {
       name: "Pilot",
-      text: "We gaan de markt in, persoonlijk aan de telefoon en met jouw verhaal. Wat we horen, vertalen we naar scherpere keuzes in doelgroep en propositie.",
-      gets: ["Gesprekken met beslissers", "Marktinzichten en business development", "Elke week een update"]
+      text: "We gaan de markt in met koude acquisitie, persoonlijk aan de telefoon en met jouw verhaal. We plannen afspraken met beslissers en scherpen onderweg doelgroep en propositie aan.",
+      gets: ["Koude acquisitie door ons team", "Afspraken met beslissers", "Aanscherpen op wat we horen", "Elke week een update"]
     },
     {
       name: "Eerste meetings",
@@ -118,7 +118,7 @@ window.LINK = {
       title: "Groei, zonder dat jij zelf de telefoon pakt.",
       points: [
         { h: "Bewezen werkmethode", p: "Van kick-off tot een structurele stroom nieuwe klanten. Getest in de praktijk, niet op papier." },
-        { h: "Een gerichte start", p: "Je start met een pilot waarin we samen je propositie aanscherpen. Zo bouwen we vanaf dag één aan resultaat." },
+        { h: "Een gerichte start", p: "Je start met een pilot: we bellen, plannen afspraken en scherpen onderweg aan. Zo bouwen we vanaf dag één aan nieuwe klanten." },
         { h: "Voorspelbare instroom", p: "Week na week gesprekken met bedrijven die jij als klant wilt hebben." },
         { h: "Korte lijnen", p: "Eén vast aanspreekpunt in een klein en hecht team. Je hebt binnen {response} een reactie." }
       ]
@@ -159,9 +159,9 @@ window.LINK = {
     { q: "Hoe bepalen jullie wie onze ideale klant is?",
       a: "Samen, tijdens de kick-off. We kijken naar je beste klanten, je propositie en je groeidoel. Daarna sturen we bij op basis van wat we in de gesprekken horen, tot we precies bij de juiste bedrijven zitten." },
     { q: "Hoe snel zien we resultaat?",
-      a: "Een pilot is bij ons geen proef om te kijken of het werkt. Het is een gerichte start: we scherpen samen jouw propositie aan voor de markt. Staat die scherp, dan weten we dat het werkt met onze manier van bellen. Je hoort elke week waar we staan, en in de kennismaking geven we je een concreet beeld voor jouw markt." },
+      a: "Een pilot is bij ons geen proef om te kijken of het werkt. Het is een volwaardige start: we doen koude acquisitie, plannen afspraken met beslissers en scherpen onderweg samen je propositie aan. Staat die scherp, dan weten we dat het werkt met onze manier van bellen. Je hoort elke week waar we staan, en in de kennismaking geven we je een concreet beeld voor jouw markt." },
     { q: "Wat kost het?",
-      a: "Dat hangt af van je doelgroep en je ambitie. In de kennismaking maken we het concreet. Je start altijd met een pilot, waarin we samen de basis leggen voor een structurele stroom nieuwe klanten." },
+      a: "Dat hangt af van je doelgroep en je ambitie. In de kennismaking maken we het concreet. Je start altijd met een pilot, waarin we direct bellen, afspraken plannen en de basis leggen voor een structurele stroom nieuwe klanten." },
     { q: "Hoe houden we zicht op de voortgang?",
       a: "Via je eigen partnerportaal, met alle leads, afspraken en updates op één plek. Elke week een update, en heb je een vraag, dan heb je binnen {response} een reactie." },
     { q: "Voor welke bedrijven werken jullie?",

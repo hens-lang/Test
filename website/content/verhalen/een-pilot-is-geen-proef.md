@@ -3,15 +3,15 @@ title: Een pilot is geen proef
 type: Visie
 date: 2026-09-26
 author: Hens Boer
-status: concept
-excerpt: Veel bureaus noemen de eerste weken een test. Bij ons is de pilot de fase waarin we samen jouw propositie scherp krijgen. Daarna werkt het.
+status: live
+excerpt: Veel bureaus noemen de eerste weken een test. Bij ons is de pilot een volwaardige start: bellen, afspraken plannen, aanscherpen en nieuwe klanten binnenhalen.
 ---
 
 Als ondernemers het woord pilot horen, denken ze vaak aan een proef. Een paar weken kijken of het iets oplevert, en zo niet, dan stop je. Zo zien wij het niet.
 
 ## Je bent geen proefkonijn
 
-Een pilot bij LINK. is een gerichte start. We gaan niet lukraak de markt in om te zien wat er gebeurt. We kijken samen wat voor jouw bedrijf werkt: wie je ideale klant is, wat je propositie sterk maakt en hoe je verhaal overkomt aan de telefoon.
+Een pilot bij LINK. is een volwaardige start. We gaan direct de markt in met koude acquisitie, plannen afspraken met beslissers en werken vanaf dag één aan nieuwe klanten. Onderweg kijken we samen wat voor jouw bedrijf werkt: wie je ideale klant is, wat je propositie sterk maakt en hoe je verhaal overkomt aan de telefoon.
 
 In de eerste gesprekken met beslissers horen we direct wat landt en wat niet. Dat vertalen we naar scherpere keuzes. Een andere invalshoek, een andere beslisser, een andere zin die de deur opent.
 
@@ -25,6 +25,8 @@ Wij doen het andersom. Eerst het verhaal scherp, dan de stroom op gang. Dat kost
 
 ## Wat je van de pilot mag verwachten
 
+- Koude acquisitie door ons team, vanaf de eerste week
+- Afspraken met beslissers in jouw agenda
 - Een scherp beeld van je ideale klant
 - Een propositie die werkt in de markt, niet alleen op papier
 - Elke week een eerlijke update over wat we horen

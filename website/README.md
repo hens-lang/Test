@@ -33,16 +33,9 @@ data/site.js  ──►  assets/js/main.js  ──►  alle pagina's
 
 ## Verhalen (blog)
 
-Elk verhaal is een tekstbestand in `content/verhalen/`. Zo voeg je er een toe:
+De verhalen staan vast: vijf gewone pagina's (`verhaal-*.html`) plus het overzicht `verhalen.html`. Voor het online zetten hoef je niets te draaien of bij te houden.
 
-1. Kopieer een bestaand bestand, bijvoorbeeld `een-pilot-is-geen-proef.md`. De bestandsnaam wordt het webadres.
-2. Pas het kopje aan: `title`, `type` (Partnerverhaal, Uit de praktijk of Visie), `date`, `author`, `excerpt` en `status`.
-3. Schrijf de tekst. `## Kop` maakt een tussenkop, `- ` een opsomming en `> ` een uitgelichte quote.
-4. Draai `python3 tools/build-verhalen.py`. Het script maakt de pagina, werkt het overzicht, de homepage en de sitemap bij.
-
-**Status.** `concept` krijgt een zichtbaar label en `noindex`, en gaat niet in de sitemap. Zet het op `live` zodra je akkoord bent. Voor de echte site draai je `python3 tools/build-verhalen.py --live`: dan gaan concepten helemaal niet mee.
-
-**Afspraak.** Klantnamen en cijfers alleen met toestemming van de partner. Nooit de werkwijze zelf uitleggen, alleen wat het oplevert.
+Later uitbreiden? De teksten staan in `content/verhalen/`. Voeg een bestand toe en draai `python3 tools/build-verhalen.py --live`. Een opzet voor een partnerverhaal staat in `content/sjablonen/partnerverhaal.md`. Die gaat pas online met echte cijfers en toestemming van de partner.
 
 ## Bronnen
 
