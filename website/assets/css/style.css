@@ -875,3 +875,4 @@ h1.reveal.in .dot, h2.reveal.in .dot, .split-line.in .dot { transform: none; }
 @media (max-width: 999px) { .portal-visual { justify-self: stretch; } .portal-visual .portal-ui { margin: -22% 0 0 4%; width: 92%; } }
 @media (max-width: 560px) { .portal-visual .portal-ui { margin: -14% 0 0 0; width: 100%; } .portal-visual .pu-body { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) { .portal-visual .portal-ui { transform: none; opacity: 1; } }
+.person strong span { display: inline; color: inherit; font-size: inherit; }

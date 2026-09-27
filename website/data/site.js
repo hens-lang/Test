@@ -22,6 +22,9 @@ window.LINK = {
     email: "info@linkgrp.nl",
     phone: "(0172) 27 10 08",
     phoneHref: "+31172271008",
+    kvk: "97517267",
+    address: { street: "Flemingweg 8", zip: "2408 AV", city: "Alphen aan den Rijn" },
+    linkedin: "https://nl.linkedin.com/in/hens-boer-359b8a294",
     web: "www.linkgrp.nl",
     // Reactietijd: komt terug in de zwevende chip, contactpagina en waarden.
     responseTime: "3 minuten",

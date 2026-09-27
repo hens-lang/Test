@@ -14,6 +14,7 @@
     mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg>',
     phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>',
     pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>',
+    linkedin: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.5h4V21H3V9.5Zm7 0h3.8v1.6h.1c.5-.9 1.8-1.9 3.7-1.9 4 0 4.7 2.6 4.7 6V21h-4v-5.1c0-1.2 0-2.8-1.7-2.8s-2 1.3-2 2.7V21h-4V9.5Z"/></svg>',
     web: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>'
   };
   const C = D.contact;
@@ -113,10 +114,12 @@
         <div><h4>Menu</h4><ul>${D.nav.map((n) => `<li><a href="${n.href}">${esc(n.label)}</a></li>`).join("")}${C.portalUrl ? `<li><a href="${esc(C.portalUrl)}">Partnerportaal</a></li>` : ""}</ul></div>
         <div><h4>Contact</h4><ul>
           <li><a href="mailto:${C.email}">${C.email}</a></li>
-          <li><a href="tel:${C.phoneHref}">${C.phone}</a></li></ul></div>
+          <li><a href="tel:${C.phoneHref}">${C.phone}</a></li>
+          <li>${esc(C.address.street)}<br>${esc(C.address.zip)} ${esc(C.address.city)}</li>
+          <li><a href="${esc(C.linkedin)}" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
       </div>
       <div class="giant" aria-hidden="true">LINK<span>.</span></div>
-      <div class="bottom"><span>© ${new Date().getFullYear()} LINK. Alle rechten voorbehouden.</span><span>Jouw succes is ons succes.</span></div>
+      <div class="bottom"><span>© ${new Date().getFullYear()} LINK. · KvK ${esc(C.kvk)}</span><span>Jouw succes is ons succes.</span></div>
     </div>`;
   document.body.append(footer);
 
@@ -136,7 +139,9 @@
   $$("[data-details]").forEach((ul) => {
     ul.innerHTML = `
       <li><a href="mailto:${C.email}">${ico.mail}${C.email}</a></li>
-      <li><a href="tel:${C.phoneHref}">${ico.phone}${C.phone}</a></li>`;
+      <li><a href="tel:${C.phoneHref}">${ico.phone}${C.phone}</a></li>
+      <li><span>${ico.pin}${esc(C.address.street)}, ${esc(C.address.city)}</span></li>
+      <li><a href="${esc(C.linkedin)}" target="_blank" rel="noopener">${ico.linkedin}LinkedIn</a></li>`;
   });
 
   /* ---------- Foto's (allemaal uit D.photos) ---------- */
