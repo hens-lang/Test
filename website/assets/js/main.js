@@ -18,17 +18,51 @@
   };
   const C = D.contact;
 
-  /* ---------- Intro (eenmaal per bezoek) ---------- */
+  /* ---------- Intro (eenmaal per bezoek): de punt vult het scherm ---------- */
+  let introShown = false;
   (() => {
     let seen = false;
     try { seen = sessionStorage.getItem("link-intro") === "1"; sessionStorage.setItem("link-intro", "1"); } catch (_) { seen = true; }
     if (seen || reduced) return;
+    introShown = true;
     const intro = document.createElement("div");
     intro.className = "intro"; intro.setAttribute("aria-hidden", "true");
-    intro.innerHTML = '<img src="assets/img/logo-wit.png" alt="" width="420" height="131">';
+    intro.innerHTML = '<div class="intro-logo"><img src="assets/img/logo-wit.png" alt="" width="420" height="131"><i class="intro-dot"></i></div>';
     document.body.append(intro);
-    setTimeout(() => intro.classList.add("out"), 1100);
-    setTimeout(() => intro.remove(), 2200);
+    setTimeout(() => intro.classList.add("grow"), 1000);
+    setTimeout(() => intro.classList.add("out"), 1650);
+    setTimeout(() => intro.remove(), 2300);
+  })();
+
+  /* ---------- Paginaovergang: de punt groeit vanaf je klik ---------- */
+  (() => {
+    if (reduced) return;
+    let arrived = false;
+    try { arrived = sessionStorage.getItem("link-pt") === "1"; sessionStorage.removeItem("link-pt"); } catch (_) {}
+    if (arrived && !introShown) {
+      const cover = document.createElement("div");
+      cover.className = "pt pt-in"; cover.setAttribute("aria-hidden", "true");
+      cover.innerHTML = "<i></i>";
+      document.body.append(cover);
+      requestAnimationFrame(() => requestAnimationFrame(() => cover.classList.add("go")));
+      setTimeout(() => cover.remove(), 900);
+    }
+    document.addEventListener("click", (e) => {
+      const a = e.target.closest("a[href]");
+      if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || a.target === "_blank") return;
+      const href = a.getAttribute("href");
+      if (!href || href.startsWith("#") || /^(mailto|tel|https?):/i.test(href) || !/\.html(#.*)?$/.test(href)) return;
+      e.preventDefault();
+      const pt = document.createElement("div");
+      pt.className = "pt pt-out"; pt.setAttribute("aria-hidden", "true");
+      const d = Math.hypot(Math.max(e.clientX, innerWidth - e.clientX), Math.max(e.clientY, innerHeight - e.clientY)) * 2 + 40;
+      pt.innerHTML = `<i style="left:${e.clientX}px;top:${e.clientY}px;width:${d}px;height:${d}px;margin:${-d / 2}px 0 0 ${-d / 2}px"></i>`;
+      document.body.append(pt);
+      requestAnimationFrame(() => requestAnimationFrame(() => pt.classList.add("go")));
+      try { sessionStorage.setItem("link-pt", "1"); } catch (_) {}
+      setTimeout(() => { location.href = href; }, 520);
+    });
+    addEventListener("pageshow", (e) => { if (e.persisted) $$(".pt").forEach((p) => p.remove()); });
   })();
 
   /* ---------- Header + mobiel menu ---------- */
@@ -40,6 +74,7 @@
     <div class="wrap">
       <a class="logo" href="index.html" aria-label="LINK. home"><img src="assets/img/logo-zwart.png" alt="LINK." width="420" height="131"></a>
       <nav class="nav" aria-label="Hoofdmenu">${navLinks}</nav>
+      <span class="read-progress" aria-hidden="true"><i></i></span>
       <div class="nav-cta">${portal}<a class="btn" href="contact.html">Plan een kennismaking ${arrow}</a>
         <button class="burger" aria-label="Menu openen" aria-expanded="false" aria-controls="mm"><span></span><span></span></button>
       </div>
@@ -63,6 +98,8 @@
   const onScroll = () => {
     const y = scrollY;
     header.classList.toggle("is-scrolled", y > 20);
+    const max = document.documentElement.scrollHeight - innerHeight;
+    header.style.setProperty("--p", max > 0 ? Math.min(1, y / max) : 0);
   };
   addEventListener("scroll", onScroll, { passive: true }); onScroll();
 
@@ -82,6 +119,12 @@
       <div class="bottom"><span>© ${new Date().getFullYear()} LINK. Alle rechten voorbehouden.</span><span>Jouw succes is ons succes.</span></div>
     </div>`;
   document.body.append(footer);
+
+  if ("IntersectionObserver" in window) {
+    const g = $(".giant", footer);
+    const fo = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { g.classList.add("drop"); fo.disconnect(); } }), { threshold: 0.4 });
+    fo.observe(g);
+  }
 
   /* ---------- Data-bindings (contactgegevens overal gelijk) ---------- */
   $$("[data-c]").forEach((el) => {
