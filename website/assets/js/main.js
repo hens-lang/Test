@@ -152,7 +152,7 @@
     };
     const bar = document.createElement("div");
     bar.className = "consent"; bar.setAttribute("role", "dialog"); bar.setAttribute("aria-label", "Cookie-instellingen"); bar.hidden = true;
-    bar.innerHTML = `<p><strong>Cookies<span class="dot">.</span></strong> We gebruiken analytische cookies om te zien welke bedrijven onze site bezoeken. Alleen met jouw toestemming. <a href="privacy.html#cookies">Meer weten</a></p>
+    bar.innerHTML = `<p><strong>Cookies<span class="dot">.</span></strong> We gebruiken cookies om onze website te verbeteren en ons websitebezoek beter te begrijpen. Alleen als jij dat goed vindt. <a href="privacy.html#cookies">Meer weten</a></p>
       <div class="consent-actions"><button type="button" class="c-no">Alleen noodzakelijk</button><button type="button" class="c-yes">Akkoord</button></div>`;
     document.body.append(bar);
     const show = () => { bar.hidden = false; requestAnimationFrame(() => bar.classList.add("on")); };
