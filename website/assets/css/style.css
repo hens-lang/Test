@@ -829,35 +829,39 @@ h1.reveal.in .dot, h2.reveal.in .dot, .split-line.in .dot { transform: none; }
   .intro, .pt { display: none; }
 }
 
-/* ---------- Nagebouwd partnerportaal ---------- */
-.portal-ui { max-width: 620px; width: 100%; justify-self: end; border-radius: 22px; background: #fff; overflow: hidden;
-  box-shadow: 0 50px 100px -40px rgba(10,40,80,.4), 0 0 0 1px rgba(0,0,0,.06); font-family: var(--font-body); }
-.pu-bar { display: flex; align-items: center; gap: 7px; padding: 14px 18px; background: #f4f6f8; border-bottom: 1px solid var(--line); }
-.pu-bar span { width: 10px; height: 10px; border-radius: 50%; background: #d6dbe0; }
-.pu-bar em { margin-left: 12px; font-style: normal; font-size: 12.5px; color: var(--grey-5); }
-.pu-body { display: grid; grid-template-columns: 170px 1fr; min-height: 360px; }
-.pu-side { border-right: 1px solid var(--line); padding: 22px 16px; }
-.pu-side img { height: 18px; width: auto; margin: 0 0 26px 8px; }
-.pu-side ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
-.pu-side li { padding: 9px 10px; border-radius: 10px; font-size: 13.5px; color: var(--grey-7); }
-.pu-side li.on { background: var(--blue-soft); color: #000; font-weight: 600; }
-.pu-main { padding: 24px 24px 28px; }
-.pu-main h4 { font-family: var(--font-head); font-weight: 800; font-size: 24px; letter-spacing: -.03em; margin: 0 0 18px; color: #000; }
-.pu-main ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
-.pu-main li { display: flex; gap: 14px; padding: 14px 16px; border-radius: 14px; box-shadow: inset 0 0 0 1px var(--line); background: #fff; }
-.portal-visual.in .pu-main li { animation: audIn .6s var(--ease) both; animation-delay: calc(.4s + var(--k) * .15s); }
-.pu-ico { flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--blue-soft); position: relative; }
-.pu-ico::after { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--blue); }
-.pu-ico.up { background: #f1f2f4; }
-.pu-ico.up::after { background: #000; }
+/* ---------- Nagebouwd partnerportaal (logboek) ---------- */
+.portal-ui { max-width: 620px; width: 100%; justify-self: end; border-radius: 20px; background: #fafbfc; overflow: hidden;
+  box-shadow: 0 50px 100px -40px rgba(10,40,80,.45), 0 0 0 1px rgba(0,0,0,.07); font-family: var(--font-body); }
+.pu-bar { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #fff; border-bottom: 1px solid var(--line); }
+.pu-bar img { height: 15px; width: auto; }
+.pu-search { margin-left: auto; padding: 5px 34px 5px 12px; border-radius: 8px; box-shadow: inset 0 0 0 1px var(--grey-2); font-size: 11.5px; color: var(--grey-5); }
+.pu-avatar { width: 24px; height: 24px; border-radius: 50%; background: #000; color: #fff; display: grid; place-items: center; font-size: 10px; font-weight: 700; }
+.pu-body { display: grid; grid-template-columns: 140px 1fr; }
+.pu-side { padding: 16px 10px; }
+.pu-side ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.pu-side li { padding: 8px 10px; border-radius: 8px; font-size: 12.5px; color: var(--grey-7); }
+.pu-side li.on { background: #eef1f5; color: var(--blue-deep); font-weight: 600; }
+.pu-main { padding: 18px 18px 20px 6px; }
+.pu-main h4 { font-family: var(--font-head); font-weight: 800; font-size: 22px; letter-spacing: -.03em; margin: 0 0 14px; color: #000; }
+.pu-main ol { list-style: none; margin: 0; padding: 14px; display: grid; gap: 14px; background: #fff; border-radius: 14px; box-shadow: inset 0 0 0 1px var(--line); }
+.pu-main li { display: flex; gap: 12px; }
+.pu-main li + li { padding-top: 14px; border-top: 1px solid var(--line); }
+.pu-ico { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--blue-soft); color: var(--blue-deep); display: grid; place-items: center; }
+.pu-ico svg { width: 13px; height: 13px; }
 .pu-main li p { margin: 0; }
-.pu-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11.5px; }
-.pu-kind { padding: 2px 8px; border-radius: 6px; background: var(--blue-soft); color: var(--blue-deep); font-weight: 600; }
-.pu-tag { padding: 2px 8px; border-radius: 6px; background: #eef8f1; color: #1f8a4c; font-weight: 600; }
-.pu-top time { margin-left: auto; color: var(--grey-5); }
-.pu-title { font-weight: 700; font-size: 14.5px; color: #000; margin-top: 6px !important; line-height: 1.35; }
-.pu-meta { font-size: 13px; color: var(--grey-5); }
-@media (max-width: 560px) { .pu-body { grid-template-columns: 1fr; } .pu-side { display: none; } }
+.pu-top { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 11px; }
+.pu-top strong { font-size: 12.5px; color: #000; margin-right: 2px; }
+.pu-kind, .pu-tag { padding: 2px 7px; border-radius: 6px; background: var(--blue-soft); color: var(--blue-deep); font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+.pu-tag svg { width: 10px; height: 10px; }
+.pu-top time { color: var(--grey-5); }
+.pu-change { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px !important; font-size: 12.5px; }
+.pu-change .old { color: var(--grey-5); text-decoration: line-through; text-decoration-color: rgba(0,0,0,.25); }
+.pu-change .arr { color: var(--grey-5); }
+.pu-change .new { font-weight: 700; color: #000; }
+.pu-main li.win .pu-change .new { padding: 2px 8px; border-radius: 6px; background: #e8f7ee; color: #1f8a4c; }
+.pu-main li.win .pu-ico { background: #e8f7ee; color: #1f8a4c; }
+.pu-btn { display: inline-block; margin-top: 8px; padding: 4px 10px; border-radius: 7px; box-shadow: inset 0 0 0 1px var(--grey-2); font-size: 11px; color: #000; }
+@media (max-width: 560px) { .pu-body { grid-template-columns: 1fr; } .pu-side { display: none; } .pu-main { padding: 14px; } }
 
 /* Portaal-compositie: foto van het typen + zwevend portaalvenster */
 .portal-visual { position: relative; justify-self: end; width: 100%; max-width: 640px; padding: 0 0 0 0; }
@@ -866,7 +870,7 @@ h1.reveal.in .dot, h2.reveal.in .dot, .split-line.in .dot { transform: none; }
 .portal-visual.in .pv-photo img { transform: none; }
 .portal-visual .portal-ui { position: relative; z-index: 2; width: 88%; max-width: 540px; margin: -34% 0 0 -8%; justify-self: auto; transform: translateY(30px); opacity: 0; transition: transform 1.1s var(--ease) .25s, opacity .8s var(--ease) .25s; }
 .portal-visual.in .portal-ui { transform: none; opacity: 1; }
-.portal-visual .pu-body { min-height: 0; grid-template-columns: 150px 1fr; }
+.portal-visual .pu-body { grid-template-columns: 130px 1fr; }
 .portal-visual .pu-main li:nth-child(3) { display: none; }
 @media (max-width: 999px) { .portal-visual { justify-self: stretch; } .portal-visual .portal-ui { margin: -22% 0 0 4%; width: 92%; } }
 @media (max-width: 560px) { .portal-visual .portal-ui { margin: -14% 0 0 0; width: 100%; } .portal-visual .pu-body { grid-template-columns: 1fr; } }

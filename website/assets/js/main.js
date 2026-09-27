@@ -253,25 +253,23 @@
     ul.innerHTML = D.sectors.map((s, i) => `<li style="--i:${i}">${esc(s)}</li>`).join("");
   });
 
-  /* ---------- Nagebouwd partnerportaal ---------- */
+  /* ---------- Nagebouwd partnerportaal (logboek) ---------- */
   $$("[data-portal-ui]").forEach((box) => {
     const P = D.portalMock;
+    const sync = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.9-3M4 13a8 8 0 0 0 14.9 3"/><path d="M4 4v4h4M20 20v-4h-4"/></svg>';
     box.innerHTML = `
-      <div class="pu-bar"><span></span><span></span><span></span><em>Partnerportaal · LINK.</em></div>
+      <div class="pu-bar"><img src="assets/img/logo-zwart.png" alt="" width="420" height="131"><span class="pu-search">Zoeken</span><span class="pu-avatar">${esc(P.user)}</span></div>
       <div class="pu-body">
-        <aside class="pu-side">
-          <img src="assets/img/logo-zwart.png" alt="" width="420" height="131">
-          <ul>${P.menu.map((m) => `<li${m === P.active ? ' class="on"' : ""}>${esc(m)}</li>`).join("")}</ul>
-        </aside>
+        <aside class="pu-side"><ul>${P.menu.map((m) => `<li${m === P.active ? ' class="on"' : ""}>${esc(m)}</li>`).join("")}</ul></aside>
         <div class="pu-main">
           <h4>${esc(P.active)}<span class="dot">.</span></h4>
           <ol>${P.entries.map((e, i) => `
-            <li style="--k:${i}">
-              <span class="pu-ico${e.kind === "Update" ? " up" : ""}" aria-hidden="true"></span>
+            <li style="--k:${i}" class="${e.win ? "win" : ""}">
+              <span class="pu-ico" aria-hidden="true">${sync}</span>
               <div>
-                <p class="pu-top"><span class="pu-kind">${esc(e.kind)}</span><span class="pu-tag">${esc(e.tag)}</span><time>${esc(e.when)}</time></p>
-                <p class="pu-title">${esc(e.title)}</p>
-                <p class="pu-meta">${esc(e.meta)}</p>
+                <p class="pu-top"><strong>${esc(e.who)}</strong><span class="pu-kind">${esc(e.kind)}</span><span class="pu-tag">${sync}Status gewijzigd</span><time>${esc(e.when)}</time></p>
+                <p class="pu-change"><span class="old">${esc(e.from)}</span><span class="arr" aria-hidden="true">→</span><span class="new">${esc(e.to)}</span></p>
+                <span class="pu-btn">Bekijk ${esc(e.kind.toLowerCase())}</span>
               </div>
             </li>`).join("")}</ol>
         </div>

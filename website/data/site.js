@@ -173,12 +173,15 @@ window.LINK = {
   portalMock: {
     menu: ["Dashboard", "Afspraken & leads", "Rapportages", "Kalender", "Logboek"],
     active: "Logboek",
+    user: "HB",
+    // Illustratief: statuswijzigingen zoals het logboek ze toont.
     entries: [
-      { kind: "Afspraak", tag: "Ingepland", title: "Kennismaking met directeur-eigenaar", meta: "Installatietechniek · do 10:30", when: "Vandaag" },
-      { kind: "Afspraak", tag: "Bevestigd", title: "Kennismaking met operationeel directeur", meta: "Maakindustrie · di 14:00", when: "Gisteren" },
-      { kind: "Update", tag: "Week 39", title: "Je weekupdate staat klaar", meta: "Wat we deze week hoorden in de markt", when: "Vrijdag" }
+      { who: "Hens Boer", kind: "Afspraak", from: "Afspraak ingepland", to: "Deal gewonnen", when: "25 sep. 12:44", win: true },
+      { who: "Hens Boer", kind: "Afspraak", from: "Vervolg gepland", to: "Offerte gestuurd", when: "24 sep. 16:10" },
+      { who: "Hens Boer", kind: "Lead", from: "Lead", to: "Afspraak ingepland", when: "23 sep. 09:32" }
     ]
   },
+
 
   // Voorbeelden voor de kaart in de hero (illustratief, geen echte partners).
   liveCard: [
