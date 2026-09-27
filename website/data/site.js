@@ -67,7 +67,7 @@ window.LINK = {
     name: "Hens Boer",
     firstName: "Hens",
     role: "Oprichter LINK.",
-    quote: "Drie jaar lang heb ik dagelijks deuren aangebeld en mensen gebeld die mij niet verwachten, met een product waar zij niet op zitten te wachten. Je leert snel wat werkt en wat niet. Deze ervaring zet ik nu in voor onze partners."
+    quote: "Ik heb jarenlang ervaring in direct sales. Elke dag in gesprek met mensen die mij niet verwachtten, over een product waar ze niet op zaten te wachten. Je leert snel wat werkt en wat niet. Die ervaring zet ik nu in voor onze partners."
   },
 
   // Alle foto's van de site. Elke pagina verwijst naar een sleutel
