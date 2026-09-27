@@ -258,7 +258,7 @@
     const P = D.portalMock;
     const sync = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.9-3M4 13a8 8 0 0 0 14.9 3"/><path d="M4 4v4h4M20 20v-4h-4"/></svg>';
     box.innerHTML = `
-      <div class="pu-bar"><img src="assets/img/logo-zwart.png" alt="" width="420" height="131"><span class="pu-search">Zoeken</span><span class="pu-avatar">${esc(P.user)}</span></div>
+      <div class="pu-bar"><img src="assets/img/logo-zwart.png" alt="" width="420" height="131"><span class="pu-search">Zoeken</span></div>
       <div class="pu-body">
         <aside class="pu-side"><ul>${P.menu.map((m) => `<li${m === P.active ? ' class="on"' : ""}>${esc(m)}</li>`).join("")}</ul></aside>
         <div class="pu-main">

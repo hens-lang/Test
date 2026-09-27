@@ -173,12 +173,11 @@ window.LINK = {
   portalMock: {
     menu: ["Dashboard", "Afspraken & leads", "Rapportages", "Kalender", "Logboek"],
     active: "Logboek",
-    user: "HB",
     // Illustratief: statuswijzigingen zoals het logboek ze toont.
     entries: [
-      { who: "Hens Boer", kind: "Afspraak", from: "Afspraak ingepland", to: "Deal gewonnen", when: "25 sep. 12:44", win: true },
-      { who: "Hens Boer", kind: "Afspraak", from: "Vervolg gepland", to: "Offerte gestuurd", when: "24 sep. 16:10" },
-      { who: "Hens Boer", kind: "Lead", from: "Lead", to: "Afspraak ingepland", when: "23 sep. 09:32" }
+      { who: "LINK.", kind: "Afspraak", from: "Afspraak ingepland", to: "Deal gewonnen", when: "25 sep. 12:44", win: true },
+      { who: "LINK.", kind: "Afspraak", from: "Vervolg gepland", to: "Offerte gestuurd", when: "24 sep. 16:10" },
+      { who: "LINK.", kind: "Lead", from: "Lead", to: "Afspraak ingepland", when: "23 sep. 09:32" }
     ]
   },
 
