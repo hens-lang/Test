@@ -133,50 +133,120 @@ h1{
 .lockup span{font-size:23px; font-weight:700; letter-spacing:-.02em}
 
 /* de zak van Moyee */
-.bagwrap{perspective:1100px; display:flex; justify-content:center; position:relative}
+.bagwrap{perspective:1400px; display:flex; justify-content:center; position:relative}
 .beans{position:absolute; inset:-6% -12%; width:124%; height:112%; pointer-events:none; z-index:0}
+.bagwrap::before{
+  content:""; position:absolute; inset:-14% -18%; z-index:0; pointer-events:none;
+  background:radial-gradient(60% 52% at 50% 44%, rgba(229,0,126,.2), transparent 72%);
+  filter:blur(6px);
+}
 .bag{
-  width:min(336px,82vw); aspect-ratio:3/4.15; position:relative; z-index:1;
-  transform-style:preserve-3d; transition:transform .5s cubic-bezier(.2,.7,.3,1);
+  width:min(338px,82vw); aspect-ratio:3/4.78; position:relative; z-index:1;
+  transform-style:preserve-3d; transition:transform .6s cubic-bezier(.2,.7,.3,1);
   will-change:transform;
 }
+.bag-shadow{
+  position:absolute; left:8%; right:8%; bottom:-7%; height:9%; z-index:-1;
+  background:radial-gradient(50% 50% at 50% 50%, rgba(0,0,0,.72), transparent 72%);
+  filter:blur(12px);
+}
 .bag-face{
-  position:absolute; inset:0; border-radius:8px 8px 16px 16px;
+  position:absolute; inset:0; border-radius:5px 5px 26px 26px;
   background:
-    linear-gradient(105deg, rgba(0,0,0,.3) 0 7%, rgba(255,255,255,.1) 7% 13%, rgba(0,0,0,0) 13% 84%, rgba(0,0,0,.36) 84% 100%),
-    linear-gradient(180deg,#F0138E,#C40069);
-  box-shadow:0 44px 90px -32px rgba(0,0,0,.9), inset 0 -40px 60px -40px rgba(0,0,0,.6);
+    linear-gradient(100deg,
+      rgba(255,255,255,.14) 0 1.5%,
+      rgba(255,255,255,.05) 1.5% 5%,
+      rgba(0,0,0,0) 22% 72%,
+      rgba(0,0,0,.22) 92%,
+      rgba(0,0,0,.4) 100%),
+    linear-gradient(176deg,#F22497 0%,#DA0C7F 44%,#A8005F 100%);
+  box-shadow:
+    0 60px 110px -44px rgba(0,0,0,.92),
+    inset 0 1px 0 rgba(255,255,255,.3),
+    inset -1px 0 0 rgba(0,0,0,.25);
   overflow:hidden; display:flex; flex-direction:column;
 }
-.bag-seal{
-  height:34px; flex:none;
-  background:repeating-linear-gradient(90deg, rgba(0,0,0,.26) 0 7px, rgba(255,255,255,.14) 7px 14px);
-  border-bottom:1px solid rgba(0,0,0,.3);
+.bag-sheen{
+  position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(112deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,0) 34%);
+  mix-blend-mode:soft-light;
 }
-.bag-top{padding:26px 24px 0; display:flex; align-items:center; gap:14px}
-.bag-top img{width:52px; height:52px; border-radius:11px}
+.bag-seal{
+  position:relative; height:30px; flex:none;
+  background:
+    repeating-linear-gradient(90deg, rgba(255,255,255,.11) 0 1px, rgba(0,0,0,.09) 1px 3px),
+    linear-gradient(180deg,#E8158C,#C2036E);
+  border-bottom:1px solid rgba(0,0,0,.22);
+  box-shadow:inset 0 -3px 6px -3px rgba(0,0,0,.4);
+}
+.bag-notch{
+  position:absolute; left:26px; top:0; width:11px; height:9px;
+  background:var(--dark);
+  clip-path:polygon(0 0, 100% 0, 50% 100%);
+}
+.bag-top{padding:22px 24px 0; display:flex; align-items:center; gap:14px; position:relative}
+.bag-top img{width:46px; height:46px; border-radius:10px; box-shadow:0 4px 12px -4px rgba(0,0,0,.6)}
 .bag-top div{
-  font-family:var(--mono); font-size:11.5px; letter-spacing:.2em;
-  color:rgba(255,255,255,.84); text-transform:uppercase; line-height:1.55;
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.24em;
+  color:rgba(255,255,255,.9); text-transform:uppercase; line-height:1.7;
+}
+.bag-valve{
+  position:absolute; right:26px; top:92px; width:30px; height:30px; border-radius:50%;
+  background:linear-gradient(160deg,#F7A8D2,#B3006A 62%,#7A0048);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 2px 6px -2px rgba(0,0,0,.6);
+  display:grid; place-items:center;
+}
+.bag-valve i{
+  width:9px; height:9px; border-radius:50%; display:block;
+  background:#5C0037; box-shadow:inset 0 1px 1px rgba(0,0,0,.6);
+}
+.bag-front{
+  flex:1 1 auto; min-height:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:13px; padding:10px 30px 6px;
+  text-align:center; color:rgba(255,255,255,.92);
+}
+.bf-rule{display:block; width:46px; height:1px; background:rgba(255,255,255,.4)}
+.bag-front em{
+  font-family:var(--serif); font-style:italic; font-weight:600;
+  font-size:clamp(20px,2vw,25px); line-height:1.24; letter-spacing:.005em;
+  text-shadow:0 1px 0 rgba(0,0,0,.18);
+}
+.bf-year{
+  font-family:var(--mono); font-size:10px; letter-spacing:.42em;
+  color:rgba(255,255,255,.72); padding-left:.42em;
 }
 .bag-label{
-  margin:22px 20px 22px; padding:17px 18px; border-radius:10px;
-  background:#f8f4eb; color:#1c2230; margin-top:auto; flex:0 0 auto;
-  font-family:var(--mono); font-size:11px; line-height:1.45;
-  display:flex; flex-direction:column; gap:9px;
+  margin:16px 20px 20px; padding:14px 17px 11px; border-radius:6px;
+  background:linear-gradient(180deg,#FAF6EC,#F1EADB);
+  color:#1c2230; margin-top:auto; flex:0 0 auto;
+  font-family:var(--mono); font-size:10px; line-height:1.4;
+  display:flex; flex-direction:column; gap:0;
+  box-shadow:0 2px 10px -4px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.8);
+}
+.bl-head{padding-bottom:8px; border-bottom:1.5px solid #1c2230; margin-bottom:7px}
+.bl-eyebrow{
+  font-family:var(--sans); font-size:8.5px; font-weight:700; letter-spacing:.3em;
+  text-transform:uppercase; color:#8a8171; display:block;
 }
 .bag-label h3{
-  margin:0 0 4px; font-family:var(--sans); font-size:17px; font-weight:800;
-  letter-spacing:-.02em; line-height:1.2;
+  margin:3px 0 0; font-family:var(--sans); font-size:17px; font-weight:800;
+  letter-spacing:-.025em; line-height:1.1; color:#12161f;
 }
-.bag-row{display:flex; justify-content:space-between; gap:12px; border-top:1px dotted rgba(28,34,48,.28); padding-top:8px}
-.bag-row:first-of-type{border-top:none; padding-top:0}
-.bag-row b{font-weight:700; text-align:right}
-.bag-row span{color:#6f6a5c; letter-spacing:.1em}
-.bag-valve{
-  position:absolute; right:26px; top:104px; width:34px; height:34px; border-radius:50%;
-  background:radial-gradient(circle at 38% 34%, #ffe9f5, #9a0055 62%, #5c0033);
-  box-shadow:inset 0 0 0 2px rgba(0,0,0,.25);
+.bag-row{
+  display:flex; justify-content:space-between; align-items:baseline; gap:10px;
+  padding:4.2px 0; border-bottom:1px dotted rgba(28,34,48,.22);
+}
+.bag-row:last-of-type{border-bottom:none}
+.bag-row b{font-weight:700; text-align:right; white-space:nowrap; color:#12161f}
+.bag-row span{color:#8a8171; letter-spacing:.14em; text-transform:uppercase; font-size:8.5px}
+.bl-lot{
+  margin-top:7px; padding-top:7px; border-top:1.5px solid #1c2230;
+  font-size:8.5px; letter-spacing:.16em; text-transform:uppercase; color:#8a8171;
+}
+.bag-gusset{
+  position:absolute; left:0; right:0; bottom:0; height:22px; pointer-events:none;
+  background:linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.32));
+  border-top:1px solid rgba(255,255,255,.08);
 }
 
 /* ---------- karaf ---------- */
@@ -625,22 +695,35 @@ table.data tr.part:first-of-type{border-top:1.5px solid rgba(56,182,255,.35)}
         <canvas class="beans" id="beans" width="460" height="620" aria-hidden="true"></canvas>
         <div class="bag" id="bag">
           <div class="bag-face">
-            <div class="bag-seal"></div>
+            <div class="bag-seal" aria-hidden="true"><span class="bag-notch"></span></div>
+            <div class="bag-sheen" aria-hidden="true"></div>
             <div class="bag-top">
               <img src="{{LOGO}}" alt="">
               <div>Acquisitie<br>single origin</div>
             </div>
-            <div class="bag-valve" aria-hidden="true"></div>
+            <div class="bag-valve" aria-hidden="true"><i></i></div>
+            <div class="bag-front">
+              <span class="bf-rule"></span>
+              <em>elke werkdag<br>vers gebeld</em>
+              <span class="bf-rule"></span>
+              <span class="bf-year">2026</span>
+            </div>
             <div class="bag-label">
-              <h3>Campagne Moyee &times; LINK.</h3>
+              <div class="bl-head">
+                <span class="bl-eyebrow">Campagne</span>
+                <h3>Moyee &times; LINK.</h3>
+              </div>
               <div class="bag-row"><span>Herkomst</span><b>Alphen a/d Rijn</b></div>
               <div class="bag-row"><span>Proces</span><b>Cold calling</b></div>
               <div class="bag-row"><span>Branding</span><b>{{PERIODE_KORT}}</b></div>
               <div class="bag-row"><span>Rusttijd</span><b>{{WEKEN}} weken</b></div>
               <div class="bag-row"><span>Opbrengst</span><b>{{LEADS}} leads</b></div>
               <div class="bag-row"><span>Tastings</span><b>{{TASTINGS}} ingepland</b></div>
+              <div class="bl-lot">Lot 2026&#8209;39 &middot; net gebrand</div>
             </div>
+            <div class="bag-gusset" aria-hidden="true"></div>
           </div>
+          <div class="bag-shadow" aria-hidden="true"></div>
         </div>
       </div>
     </section>
