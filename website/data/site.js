@@ -28,7 +28,7 @@ window.LINK = {
     // Link naar je online agenda (bijv. Google Agenda-afspraakplanning of Calendly).
     // Ingevuld: alle "Plan een kennismaking"-knoppen openen je agenda.
     // Leeg: de knoppen gaan naar het formulier op de contactpagina.
-    bookingUrl: "",
+    bookingUrl: "https://calendar.app.google/DDuUgvNtDmocqqBZ9",
     web: "www.linkgrp.nl",
     // Reactietijd: komt terug in de zwevende chip, contactpagina en waarden.
     responseTime: "3 minuten",
