@@ -828,3 +828,33 @@ h1.reveal.in .dot, h2.reveal.in .dot, .split-line.in .dot { transform: none; }
   .giant span { transform: none; opacity: 1; }
   .intro, .pt { display: none; }
 }
+
+/* ---------- Nagebouwd partnerportaal ---------- */
+.portal-ui { max-width: 620px; width: 100%; justify-self: end; border-radius: 22px; background: #fff; overflow: hidden;
+  box-shadow: 0 50px 100px -40px rgba(10,40,80,.4), 0 0 0 1px rgba(0,0,0,.06); font-family: var(--font-body); }
+.pu-bar { display: flex; align-items: center; gap: 7px; padding: 14px 18px; background: #f4f6f8; border-bottom: 1px solid var(--line); }
+.pu-bar span { width: 10px; height: 10px; border-radius: 50%; background: #d6dbe0; }
+.pu-bar em { margin-left: 12px; font-style: normal; font-size: 12.5px; color: var(--grey-5); }
+.pu-body { display: grid; grid-template-columns: 170px 1fr; min-height: 360px; }
+.pu-side { border-right: 1px solid var(--line); padding: 22px 16px; }
+.pu-side img { height: 18px; width: auto; margin: 0 0 26px 8px; }
+.pu-side ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.pu-side li { padding: 9px 10px; border-radius: 10px; font-size: 13.5px; color: var(--grey-7); }
+.pu-side li.on { background: var(--blue-soft); color: #000; font-weight: 600; }
+.pu-main { padding: 24px 24px 28px; }
+.pu-main h4 { font-family: var(--font-head); font-weight: 800; font-size: 24px; letter-spacing: -.03em; margin: 0 0 18px; color: #000; }
+.pu-main ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.pu-main li { display: flex; gap: 14px; padding: 14px 16px; border-radius: 14px; box-shadow: inset 0 0 0 1px var(--line); background: #fff; }
+.portal-ui.in .pu-main li { animation: audIn .6s var(--ease) both; animation-delay: calc(.4s + var(--k) * .15s); }
+.pu-ico { flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--blue-soft); position: relative; }
+.pu-ico::after { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--blue); }
+.pu-ico.up { background: #f1f2f4; }
+.pu-ico.up::after { background: #000; }
+.pu-main li p { margin: 0; }
+.pu-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11.5px; }
+.pu-kind { padding: 2px 8px; border-radius: 6px; background: var(--blue-soft); color: var(--blue-deep); font-weight: 600; }
+.pu-tag { padding: 2px 8px; border-radius: 6px; background: #eef8f1; color: #1f8a4c; font-weight: 600; }
+.pu-top time { margin-left: auto; color: var(--grey-5); }
+.pu-title { font-weight: 700; font-size: 14.5px; color: #000; margin-top: 6px !important; line-height: 1.35; }
+.pu-meta { font-size: 13px; color: var(--grey-5); }
+@media (max-width: 560px) { .pu-body { grid-template-columns: 1fr; } .pu-side { display: none; } }

@@ -53,7 +53,7 @@ Elk verhaal is een tekstbestand in `content/verhalen/`. Zo voeg je er een toe:
 
 ## Nog in te vullen voor livegang
 
-1. **Foto's** staan in `assets/img/hens/` (uit Drive > Website > wetransfer-map, bijgesneden, gecomprimeerd en zonder EXIF/GPS). Welke foto waar staat, regel je in `data/site.js > photos`. Een lege `src` laat het fotovak netjes verdwijnen. Op de portaalfoto zijn namen, notities, URL en bladwijzers onleesbaar gemaakt.
+1. **Foto's** staan in `assets/img/hens/` (uit Drive > Website > wetransfer-map, bijgesneden, gecomprimeerd en zonder EXIF/GPS). Welke foto waar staat, regel je in `data/site.js > photos`. Een lege `src` laat het fotovak netjes verdwijnen.
 2. **Partnerportaal-URL** in `contact.portalUrl`. Zolang dit veld leeg is, blijft de knop verborgen.
 3. **Contactformulier.** Zonder koppeling opent het formulier een ingevulde e-mail naar info@linkgrp.nl. Wil je het formulier aan een Google Form koppelen (zoals besproken in de website-evaluatie), vul dan `contact.form.endpoint` in met de `formResponse`-URL en zet bij `fields` de `entry.xxxx`-ID's.
 4. **Controleer** e-mail en telefoonnummer. Die komen uit de *Website Teksten Opzet*.

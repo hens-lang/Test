@@ -72,9 +72,7 @@ window.LINK = {
     bedrijf: { src: "assets/img/hens/hens-bedrijf", widths: [900, 1600, 2200], alt: "Hens Boer op een bedrijventerrein" },
     notitie: { src: "assets/img/hens/hens-notitie", widths: [600, 1000], alt: "Hens Boer maakt aantekeningen in zijn notitieboek" },
     avatar:  { src: "assets/img/hens/hens-avatar", widths: [160, 320], alt: "Hens Boer" },
-    koffie:  { src: "assets/img/hens/hens-koffie", widths: [600, 1000], alt: "Hens Boer drinkt koffie uit een blauw kopje" },
-    // Namen, notities, URL en bladwijzers op het scherm zijn onleesbaar gemaakt (AVG).
-    portaal: { src: "assets/img/hens/hens-portaal", widths: [800, 1400], alt: "Het LINK. partnerportaal op een laptop" }
+    koffie:  { src: "assets/img/hens/hens-koffie", widths: [600, 1000], alt: "Hens Boer drinkt koffie uit een blauw kopje" }
   },
 
   // Zo werkt het. Helder over wat je per fase krijgt, bewust niet over
@@ -169,6 +167,17 @@ window.LINK = {
     { q: "Voor welke bedrijven werken jullie?",
       a: "Voor B2B-bedrijven met een sterk product of een sterke dienst die structureel aan tafel willen bij nieuwe klanten. Past het niet, dan zeggen we dat eerlijk. Liever een eerlijk nee vooraf dan een moeizame samenwerking achteraf." }
   ],
+
+  // Nagebouwd partnerportaal (illustratie met voorbeeldregels, geen echte klantdata).
+  portalMock: {
+    menu: ["Dashboard", "Afspraken & leads", "Rapportages", "Kalender", "Logboek"],
+    active: "Logboek",
+    entries: [
+      { kind: "Afspraak", tag: "Ingepland", title: "Kennismaking met directeur-eigenaar", meta: "Installatietechniek · do 10:30", when: "Vandaag" },
+      { kind: "Afspraak", tag: "Bevestigd", title: "Kennismaking met operationeel directeur", meta: "Maakindustrie · di 14:00", when: "Gisteren" },
+      { kind: "Update", tag: "Week 39", title: "Je weekupdate staat klaar", meta: "Wat we deze week hoorden in de markt", when: "Vrijdag" }
+    ]
+  },
 
   // Voorbeelden voor de kaart in de hero (illustratief, geen echte partners).
   liveCard: [

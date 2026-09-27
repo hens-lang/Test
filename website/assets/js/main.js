@@ -253,6 +253,31 @@
     ul.innerHTML = D.sectors.map((s, i) => `<li style="--i:${i}">${esc(s)}</li>`).join("");
   });
 
+  /* ---------- Nagebouwd partnerportaal ---------- */
+  $$("[data-portal-ui]").forEach((box) => {
+    const P = D.portalMock;
+    box.innerHTML = `
+      <div class="pu-bar"><span></span><span></span><span></span><em>Partnerportaal · LINK.</em></div>
+      <div class="pu-body">
+        <aside class="pu-side">
+          <img src="assets/img/logo-zwart.png" alt="" width="420" height="131">
+          <ul>${P.menu.map((m) => `<li${m === P.active ? ' class="on"' : ""}>${esc(m)}</li>`).join("")}</ul>
+        </aside>
+        <div class="pu-main">
+          <h4>${esc(P.active)}<span class="dot">.</span></h4>
+          <ol>${P.entries.map((e, i) => `
+            <li style="--k:${i}">
+              <span class="pu-ico${e.kind === "Update" ? " up" : ""}" aria-hidden="true"></span>
+              <div>
+                <p class="pu-top"><span class="pu-kind">${esc(e.kind)}</span><span class="pu-tag">${esc(e.tag)}</span><time>${esc(e.when)}</time></p>
+                <p class="pu-title">${esc(e.title)}</p>
+                <p class="pu-meta">${esc(e.meta)}</p>
+              </div>
+            </li>`).join("")}</ol>
+        </div>
+      </div>`;
+  });
+
   /* ---------- Verhalen: kaarten + filters ---------- */
   const V = window.LINK_VERHALEN || [];
   const vCard = (v) => `<a class="v-card" href="${esc(v.url)}" data-type="${esc(v.type)}">
