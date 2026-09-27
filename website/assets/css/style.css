@@ -912,3 +912,24 @@ h1.reveal.in .dot, h2.reveal.in .dot, .split-line.in .dot { transform: none; }
 
 /* Footer: de punt als echte cirkel, in de verhouding van het logo */
 .giant span { display: inline-block; width: .2em; height: .2em; margin-left: .1em; border-radius: 50%; background: var(--blue); vertical-align: baseline; color: transparent; }
+
+.flow-lead { color: rgba(0,0,0,.72) !important; max-width: 54ch; margin: 22px 0 0; font-size: clamp(16px, 1.3vw, 19px); }
+.flow.pinned .flow-lead { display: none; }
+.flow:not(.pinned) .flow-foot-note { display: none; }
+.flow-foot-note { max-width: 62ch !important; }
+
+/* Anonieme referenties */
+.refs-sec { background: var(--mist); }
+.refs { display: grid; gap: 20px; }
+@media (min-width: 900px) { .refs { grid-template-columns: repeat(3, 1fr); } }
+.ref { margin: 0; padding: clamp(28px, 3vw, 40px); border-radius: 24px; background: #fff; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; box-shadow: 0 30px 60px -40px rgba(10,60,100,.3); }
+.ref blockquote { margin: 0; font-family: var(--font-head); font-weight: 600; font-size: clamp(19px, 1.7vw, 23px); line-height: 1.4; letter-spacing: -.015em; color: #000; }
+.ref blockquote::before { content: "\201C"; display: block; font-family: Georgia, serif; font-size: 72px; line-height: .6; color: var(--blue); margin-bottom: 10px; }
+.ref figcaption { display: flex; align-items: center; gap: 10px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 14.5px; }
+.ref figcaption b { width: 9px; height: 9px; border-radius: 50%; background: var(--blue); flex: none; }
+.ref figcaption strong { font-family: var(--font-head); color: #000; }
+.ref figcaption span { color: var(--grey-5); }
+.ref figcaption strong::after { content: ","; }
+
+/* Zo werkt het: kop vrij van de zwevende menubalk */
+@media (min-width: 960px) { .flow.pinned .flow-sticky { align-items: flex-start; padding-top: clamp(112px, 14vh, 140px); } }

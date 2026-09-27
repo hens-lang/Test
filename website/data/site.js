@@ -128,7 +128,7 @@ window.LINK = {
       label: "Ik ben eigenaar",
       title: "Groei, zonder dat jij zelf de telefoon pakt.",
       points: [
-        { h: "Bewezen werkmethode", p: "Van kick-off tot een structurele stroom nieuwe klanten. Getest in de praktijk, niet op papier." },
+        { h: "Een werkmethode uit de praktijk", p: "Van kick-off tot een structurele stroom nieuwe klanten. Elke week aangescherpt op basis van data uit onze gesprekken." },
         { h: "Een gerichte start", p: "Je start met een pilot: we bellen, plannen afspraken en scherpen onderweg aan. Zo bouwen we vanaf dag één aan nieuwe klanten." },
         { h: "Voorspelbare instroom", p: "Week na week gesprekken met bedrijven die jij als klant wilt hebben." },
         { h: "Korte lijnen", p: "Eén vast aanspreekpunt in een klein en hecht team. Je hebt binnen {response} een reactie." }
@@ -160,11 +160,17 @@ window.LINK = {
     "Groothandel & logistiek"
   ],
 
+  // Anonieme referenties: alleen functie + type bedrijf, nooit een bedrijfsnaam.
+  // Alleen echte uitspraken van partners, met hun toestemming.
+  // Leeg = het blok verschijnt niet op de site.
+  // Voorbeeld: { quote: "…", role: "Directeur", company: "IT-bedrijf" }
+  references: [],
+
   // Veelgestelde vragen van beslissers. Voedt ook de FAQ-structured data voor Google.
   // {response} = contact.responseTime.
   faq: [
     { q: "Wie belt er namens ons?",
-      a: "Ons eigen, kleine team. Geen callcenter en geen doorverkochte uren. We bellen met jouw verhaal, voorbereid op jouw markt en doelgroep. Hoe we ons voorstellen, stemmen we in de kick-off met je af." },
+      a: "Ons eigen, kleine team. Geen callcenter en geen doorverkochte uren. We bellen onder jouw naam en met jouw verhaal, voorbereid op jouw markt en doelgroep. Voor de beslisser aan de lijn spreekt hij gewoon met jouw bedrijf." },
     { q: "Wat als we al een salesteam hebben?",
       a: "Dan zorgen wij dat hun agenda gevuld raakt. Wij voeren de eerste gesprekken met beslissers en plannen de afspraak. Jouw team doet daarna waar het goed in is: verkopen." },
     { q: "Hoe bepalen jullie wie onze ideale klant is?",

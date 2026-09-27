@@ -345,6 +345,17 @@
     }));
   });
 
+  /* ---------- Anonieme referenties ---------- */
+  $$("[data-refs]").forEach((box) => {
+    const R = D.references || [];
+    if (!R.length) { const s = box.closest("section"); if (s) s.remove(); return; }
+    box.innerHTML = R.map((r, i) => `
+      <figure class="ref reveal" style="--d:${i * 0.1}s">
+        <blockquote>${esc(r.quote)}</blockquote>
+        <figcaption><b aria-hidden="true"></b><strong>${esc(r.role)}</strong><span>${esc(r.company)}</span></figcaption>
+      </figure>`).join("");
+  });
+
   /* ---------- Veelgestelde vragen ---------- */
   const faqText = (t) => t.replace("{response}", C.responseTime);
   $$("[data-faq]").forEach((box) => {
