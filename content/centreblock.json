@@ -16,7 +16,7 @@
       "id": "cover",
       "type": "cover",
       "theme": "dark",
-      "eyebrow": "Voor CentreBlock · september 2026",
+      "eyebrow": "Voor Kees · CentreBlock · september 2026",
       "title": [
         {
           "t": "Structureel "
@@ -29,7 +29,7 @@
           "t": " aan tafel."
         }
       ],
-      "sub": "Wat LINK. voor CentreBlock kan betekenen: structureel gesprekken met bedrijven die jullie nog niet kennen, en na twaalf weken een plan op basis van echte cijfers."
+      "sub": "Wat LINK. voor CentreBlock kan betekenen: structureel aan tafel bij marketingteams en bureaus die willen aantonen welke campagnes echt omzet opleveren, en na twaalf weken een plan op basis van echte cijfers."
     },
     {
       "id": "wie",
@@ -50,7 +50,7 @@
       ],
       "paragraphs": [
         "LINK. is de vaste acquisitiepartner van B2B-bedrijven. Wij bellen dagelijks namens onze klanten en leveren gekwalificeerde afspraken op. Geen lijstjes met namen, maar gesprekken in jullie agenda met een beslisser die weet waarom hij aan tafel zit.",
-        "We werken voor bedrijven met een sterke B2B-propositie, in uiteenlopende branches. Geen bureau op afstand, maar een partner die elke week met je schakelt."
+        "We werken voor bedrijven met een sterke B2B-propositie, van een fairchain koffieleverancier tot een AI-consultancy. Software die het werk van marketeers lichter maakt past daar goed bij. Geen bureau op afstand, maar een partner die elke week met je schakelt."
       ],
       "stats": [
         {
@@ -91,7 +91,7 @@
         {
           "icon": "target",
           "title": "Data en doelgroep",
-          "text": "Wij bouwen de bellijst op basis van jullie ideale klant: branche, grootte, regio en functie. Bestaande relaties en uitsluitingen halen we er vooraf uit."
+          "text": "Wij bouwen de bellijst op jullie ideale klant: bedrijven en bureaus met een marketingbudget dat verantwoord moet worden. Op branche, grootte, regio en functie. Bestaande relaties en uitsluitingen halen we er vooraf uit."
         },
         {
           "icon": "repeat",
@@ -172,7 +172,7 @@
         {
           "icon": "building",
           "title": "Fit",
-          "text": "Het bedrijf past: branche, omvang en situatie voldoen aan de criteria uit de kick-off."
+          "text": "Het bedrijf past: er gaat structureel geld naar marketing en er is een team of bureau dat de campagnes draait."
         },
         {
           "icon": "spark",
@@ -182,7 +182,7 @@
         {
           "icon": "usercheck",
           "title": "Beslisser",
-          "text": "De afspraak staat met iemand die over de aankoop gaat of daar direct invloed op heeft."
+          "text": "De afspraak staat met de marketingmanager, de CMO of de eigenaar van het bureau. Iemand die over tooling gaat of daar direct invloed op heeft."
         }
       ],
       "closing": "Valt een afspraak buiten deze eisen, dan telt hij niet mee. Zo blijft het aantal eerlijk en de kwaliteit hoog."
@@ -211,7 +211,7 @@
         },
         {
           "title": "Bellijst op maat",
-          "text": "Wij bouwen de bellijst op jullie ideale klant: branche, grootte, regio en functie. Bestaande relaties en uitsluitingen gaan er vooraf uit."
+          "text": "Wij bouwen de bellijst op jullie ideale klant: marketingteams en bureaus die moeten aantonen wat hun campagnes opleveren. Bestaande relaties en uitsluitingen gaan er vooraf uit."
         },
         {
           "title": "Twaalf weken bellen",
@@ -296,7 +296,7 @@
         {
           "icon": "users",
           "title": "Kick-off sessie",
-          "text": "Anderhalf tot twee uur met de beslisser en degene die de afspraken gaat voeren."
+          "text": "Anderhalf tot twee uur met Kees en degene die de afspraken gaat voeren."
         },
         {
           "icon": "listx",
@@ -387,7 +387,7 @@
       "steps": [
         {
           "title": "Akkoord",
-          "text": "Jullie geven akkoord op het pilotvoorstel."
+          "text": "Kees geeft akkoord op het pilotvoorstel."
         },
         {
           "title": "Overeenkomsten",
