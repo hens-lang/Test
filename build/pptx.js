@@ -640,8 +640,10 @@ async function main() {
           x: p(x + fs.pad), y: p(y + 74), w: p(w - fs.pad * 2), h: p(56), isTextBox: true, margin: 0,
           fontFace: SANS, bold: true, fontSize: fs.head, color: hl ? C.darkText : C.ink, valign: 'middle', lineSpacingMultiple: 1.15,
         });
+        // rijhoogte krimpt mee zodat ook vijf rijen binnen de kaart blijven
+        const pitch = Math.min(64, (h - 140 - 20) / col.rows.length);
         col.rows.forEach((r, m) => {
-          const ry = y + 140 + m * 64;
+          const ry = y + 140 + m * pitch;
           if (m > 0) {
             slide.addShape('line', {
               x: p(x + fs.pad), y: p(ry), w: p(w - fs.pad * 2), h: 0,
@@ -649,11 +651,11 @@ async function main() {
             });
           }
           slide.addText(r.key, {
-            x: p(x + fs.pad), y: p(ry), w: p(w - fs.pad - 120), h: p(64), isTextBox: true, margin: 0,
+            x: p(x + fs.pad), y: p(ry), w: p(w - fs.pad - 120), h: p(pitch), isTextBox: true, margin: 0,
             fontFace: SANS, fontSize: fs.key, color: hl ? C.darkMuted : C.muted, valign: 'middle',
           });
           slide.addText(r.value, {
-            x: p(x + w - fs.pad - 130), y: p(ry), w: p(130), h: p(64), isTextBox: true, margin: 0,
+            x: p(x + w - fs.pad - 130), y: p(ry), w: p(130), h: p(pitch), isTextBox: true, margin: 0,
             fontFace: SANS, bold: true, fontSize: fs.val, color: hl ? C.accent : C.ink, align: 'right', valign: 'middle',
           });
         });

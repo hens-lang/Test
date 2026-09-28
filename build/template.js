@@ -740,6 +740,10 @@ h1.title { font-size:104px; letter-spacing:-0.03em; }
   display:grid; grid-template-columns:1fr 1fr; gap:32px;
 }
 .compare-grid.cols-3 { gap:24px; }
+/* twee kolommen: vijf rijen moeten binnen de vaste hoogte passen */
+.cols-2 .cmp-card { padding:36px 48px; }
+.cols-2 .cmp-rows { margin-top:22px; }
+.cols-2 .cmp-row { padding:12px 0; }
 .cols-3 .cmp-card { padding:36px 34px; }
 .cols-3 .cmp-head { font-size:25px; }
 .cols-3 .cmp-row { padding:15px 0; gap:16px; }

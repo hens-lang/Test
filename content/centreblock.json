@@ -188,6 +188,80 @@
       "closing": "Valt een afspraak buiten deze eisen, dan telt hij niet mee. Zo blijft het aantal eerlijk en houdt CentreBlock er een goed verhaal aan over."
     },
     {
+      "id": "anders",
+      "type": "compare",
+      "theme": "light",
+      "eyebrow": "Wat we voor jullie aanpassen",
+      "title": [
+        {
+          "t": "Normaal werken we zo. Voor CentreBlock "
+        },
+        {
+          "t": "anders",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "columns": [
+        {
+          "tag": "Onze standaard",
+          "head": "Pilot van twaalf weken",
+          "rows": [
+            {
+              "key": "Start",
+              "value": "Pilot € 4.950"
+            },
+            {
+              "key": "Looptijd",
+              "value": "12 weken vast"
+            },
+            {
+              "key": "Afspraak vooraf",
+              "value": "10 gekwalificeerd"
+            },
+            {
+              "key": "Minimum daarna",
+              "value": "4 beldagen"
+            },
+            {
+              "key": "Beslissen",
+              "value": "Na de pilot"
+            }
+          ]
+        },
+        {
+          "tag": "Voor CentreBlock",
+          "head": "Direct beldagen, per klant",
+          "highlight": true,
+          "rows": [
+            {
+              "key": "Start",
+              "value": "Opstart € 695"
+            },
+            {
+              "key": "Looptijd",
+              "value": "Maand opzegtermijn"
+            },
+            {
+              "key": "Afspraak vooraf",
+              "value": "Geen, we tellen"
+            },
+            {
+              "key": "Minimum daarna",
+              "value": "2 beldagen"
+            },
+            {
+              "key": "Beslissen",
+              "value": "Elke periode"
+            }
+          ]
+        }
+      ],
+      "closing": "Normaal vragen we eerst een pilot. Jullie kennen de klant al, dus die stap slaan we over. De drempel wordt daarmee € 695 in plaats van € 4.950."
+    },
+    {
       "id": "model",
       "type": "offer",
       "theme": "dark",
@@ -211,7 +285,7 @@
         },
         {
           "title": "Beldagen per vier weken",
-          "text": "Daarna reken je per beldag. De klant kiest zelf hoeveel dagen er per periode gebeld wordt, vanaf vier."
+          "text": "Daarna reken je per beldag. De klant kiest zelf hoeveel dagen er per periode gebeld wordt, vanaf twee. Normaal is onze ondergrens vier."
         },
         {
           "title": "Wat een beldag is",
@@ -219,7 +293,7 @@
         },
         {
           "title": "Op- en afschalen",
-          "text": "Loopt het goed, dan zetten we er beldagen bij. Loopt het minder, dan schalen we terug. Vastgelegd met een maand opzegtermijn.",
+          "text": "Loopt het goed, dan zetten we er beldagen bij. Loopt het minder, dan schalen we terug naar twee. Vastgelegd met een maand opzegtermijn.",
           "highlight": true
         }
       ],
@@ -233,7 +307,7 @@
           "Bellijst en uitsluitingen",
           "Belsysteem en regionaal nummer",
           "Koppeling met jullie leads",
-          "Daarna alleen nog beldagen"
+          "Daarna vanaf twee beldagen"
         ]
       }
     },
@@ -244,7 +318,7 @@
       "eyebrow": "De beldagen",
       "title": [
         {
-          "t": "Hoe meer beldagen, hoe lager de "
+          "t": "Vanaf twee beldagen. Hoe meer dagen, hoe lager de "
         },
         {
           "t": "dagprijs",
@@ -262,9 +336,9 @@
       "rows": [
         {
           "cells": [
-            "4 beldagen",
+            "2 tot 4 beldagen",
             "€ 600",
-            "€ 2.400"
+            "€ 1.200 tot € 2.400"
           ]
         },
         {
@@ -283,7 +357,7 @@
           "highlight": true
         }
       ],
-      "closing": "Minimaal vier beldagen per periode van vier weken, vooraf gefactureerd, prijzen excl. btw. De staffel telt per klant. Zit een klant eenmaal op acht dagen, dan blijft die dagprijs staan."
+      "closing": "Minimaal twee beldagen per periode van vier weken, speciaal voor het partnership. Normaal ligt onze ondergrens op vier. Vooraf gefactureerd, prijzen excl. btw, de staffel telt per klant."
     },
     {
       "id": "nodig",
@@ -345,15 +419,15 @@
       "rules": [
         {
           "title": "Geen pilot vooraf",
-          "text": "We starten direct met beldagen, tegen de opstartfee van € 695."
+          "text": "Normaal starten we met een pilot van € 4.950. Voor klanten van CentreBlock vervalt die, tegen een opstart van € 695."
         },
         {
           "title": "Maand opzegtermijn",
           "text": "Vastgelegd, met een maand opzegtermijn. Geen jaarcontract."
         },
         {
-          "title": "Werkperiodes van 4 weken",
-          "text": "Vooraf gefactureerd, per werkperiode."
+          "title": "Vanaf 2 beldagen per 4 weken",
+          "text": "Onze ondergrens is normaal vier. Voor dit partnership twee. Vooraf gefactureerd."
         },
         {
           "title": "Bestaande relaties blijven van de klant",
