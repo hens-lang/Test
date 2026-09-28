@@ -265,7 +265,7 @@ def main():
         "window.LINK_VERHALEN = " + json.dumps(lst, ensure_ascii=False, indent=2) + ";\n")
 
     pages = [("", "1.0"), ("diensten.html", "0.9"), ("over-link.html", "0.8"),
-             ("verhalen.html", "0.8"), ("contact.html", "0.9"), ("privacy.html", "0.3")]
+             ("verhalen.html", "0.8"), ("contact.html", "0.9"), ("werken-bij.html", "0.6"), ("privacy.html", "0.3")]
     pages += [(v["url"], "0.7") for v in items if v["status"] == "live"]
     sm = ['<?xml version="1.0" encoding="UTF-8"?>',
           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']

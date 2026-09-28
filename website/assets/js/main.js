@@ -111,7 +111,7 @@
     <div class="wrap">
       <div class="top">
         <div><img src="assets/img/logo-wit.png" alt="LINK." width="420" height="131" loading="lazy"><p class="tag">${esc(D.brand.tagline)}</p></div>
-        <div><h4>Menu</h4><ul>${D.nav.map((n) => `<li><a href="${n.href}">${esc(n.label)}</a></li>`).join("")}${C.portalUrl ? `<li><a href="${esc(C.portalUrl)}">Partnerportaal</a></li>` : ""}</ul></div>
+        <div><h4>Menu</h4><ul>${D.nav.concat(D.navFooter || []).map((n) => `<li><a href="${n.href}">${esc(n.label)}</a></li>`).join("")}${C.portalUrl ? `<li><a href="${esc(C.portalUrl)}">Partnerportaal</a></li>` : ""}</ul></div>
         <div><h4>Contact</h4><ul>
           <li><a href="mailto:${C.email}">${C.email}</a></li>
           <li><a href="tel:${C.phoneHref}">${C.phone}</a></li>
@@ -354,6 +354,37 @@
         <blockquote>${esc(r.quote)}</blockquote>
         <figcaption><b aria-hidden="true"></b><strong>${esc(r.role)}</strong><span>${esc(r.company)}</span></figcaption>
       </figure>`).join("");
+  });
+
+  /* ---------- Vacatures ---------- */
+  $$("[data-jobs]").forEach((box) => {
+    const J = (D.jobs || []).filter((x) => x.open);
+    const list = (h, a) => a && a.length ? `<div class="job-col"><h4>${h}</h4><ul>${a.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>` : "";
+    const mail = (t) => `mailto:${C.email}?subject=${encodeURIComponent("Sollicitatie: " + t)}`;
+    box.innerHTML = J.map((x, i) => `
+      <details class="job reveal" id="${esc(x.id)}" style="--d:${i * 0.08}s"${i === 0 ? " open" : ""}>
+        <summary>
+          <span class="job-title"><strong>${esc(x.title)}<span class="dot">.</span></strong><em>${esc(x.hours)} · ${esc(x.place)}</em></span>
+          <i aria-hidden="true"></i>
+        </summary>
+        <div class="job-body">
+          <p class="job-intro">${esc(x.intro)}</p>
+          ${x.does.length || x.you.length || x.gets.length ? `<div class="job-cols">${list("Wat je doet", x.does)}${list("Wie je bent", x.you)}${list("Wat je krijgt", x.gets)}</div>` : ""}
+          <div class="job-apply"><a class="btn" href="${mail(x.title)}">Solliciteer ${arrow}</a><span>Of mail je cv of LinkedIn naar <a href="${mail(x.title)}">${C.email}</a></span></div>
+        </div>
+      </details>`).join("");
+    const G = J.filter((x) => x.google);
+    if (G.length && !$("#jobs-ld")) {
+      const ld = document.createElement("script"); ld.type = "application/ld+json"; ld.id = "jobs-ld";
+      ld.textContent = JSON.stringify(G.map((x) => ({
+        "@context": "https://schema.org", "@type": "JobPosting", title: x.title, datePosted: x.posted,
+        description: `<p>${x.intro}</p><ul>${x.does.concat(x.you).map((d) => `<li>${d}</li>`).join("")}</ul>`,
+        employmentType: x.hours.toLowerCase().includes("fulltime") ? ["FULL_TIME", "PART_TIME"] : ["PART_TIME"],
+        hiringOrganization: { "@type": "Organization", name: "LINK.", sameAs: "https://www.linkgrp.nl", logo: "https://www.linkgrp.nl/assets/img/logo-zwart.png" },
+        jobLocation: { "@type": "Place", address: { "@type": "PostalAddress", streetAddress: C.address.street, postalCode: C.address.zip, addressLocality: C.address.city, addressCountry: "NL" } }
+      })));
+      document.head.append(ld);
+    }
   });
 
   /* ---------- Veelgestelde vragen ---------- */

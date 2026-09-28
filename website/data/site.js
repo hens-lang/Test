@@ -55,6 +55,11 @@ window.LINK = {
   // Leeg laten = geen tracking en geen cookiemelding.
   tracking: { apolloAppId: "695040eaae2147001516e8ad" },
 
+  // Extra links in de footer (niet in het hoofdmenu).
+  navFooter: [
+    { href: "werken-bij.html", label: "Werken bij" }
+  ],
+
   nav: [
     { href: "diensten.html", label: "Diensten" },
     { href: "over-link.html", label: "Over LINK." },
@@ -165,6 +170,69 @@ window.LINK = {
   // Leeg = het blok verschijnt niet op de site.
   // Voorbeeld: { quote: "…", role: "Directeur", company: "IT-bedrijf" }
   references: [],
+
+  // Vacatures. Zet open: false om een vacature tijdelijk te verbergen.
+  // "google": true geeft de vacature mee aan Google Jobs (niet voor open sollicitatie).
+  jobs: [
+    {
+      id: "acquisitiespecialist",
+      title: "Acquisitiespecialist",
+      hours: "Fulltime of parttime",
+      place: "Alphen aan den Rijn",
+      open: true, google: true, posted: "2026-09-28",
+      intro: "Je voert namens onze partners gesprekken met beslissers en zorgt dat zij aan tafel komen bij de bedrijven die ze als klant willen hebben.",
+      does: [
+        "Je belt persoonlijk met directeuren en eigenaren van B2B-bedrijven",
+        "Je plant kennismakingen en afspraken voor onze partners",
+        "Je denkt mee over doelgroep en propositie, op basis van wat je hoort",
+        "Je legt je gesprekken vast, zodat we samen elke week scherper worden"
+      ],
+      you: [
+        "Je bent communicatief sterk en vindt het leuk om met mensen te praten",
+        "Je hoort een nee, en gaat gewoon door",
+        "Je bent nieuwsgierig naar hoe bedrijven werken en wat ze drijft",
+        "Ervaring in sales is mooi, maar mentaliteit is belangrijker"
+      ],
+      gets: [
+        "Een plek in een klein en hecht team, met directe lijnen naar de oprichter",
+        "Veel ruimte om te leren, en begeleiding vanaf dag één",
+        "Werken met data en onze eigen AI-modellen",
+        "Een passend salaris, dat bespreken we graag persoonlijk"
+      ]
+    },
+    {
+      id: "stage",
+      title: "Commerciële stage of bijbaan",
+      hours: "Parttime, naast je studie",
+      place: "Alphen aan den Rijn",
+      open: true, google: true, posted: "2026-09-28",
+      intro: "Ben je student en wil je leren hoe B2B-acquisitie echt werkt? Dan leer je het bij ons in de praktijk.",
+      does: [
+        "Je voert zelf gesprekken met beslissers, met begeleiding",
+        "Je helpt bij het voorbereiden van doelgroepen en prospectlijsten",
+        "Je leert werken met data om gesprekken steeds beter te maken"
+      ],
+      you: [
+        "Je studeert, bijvoorbeeld in commerciële economie, marketing of bedrijfskunde",
+        "Je durft de telefoon te pakken en vindt het leuk om te leren",
+        "Je bent een paar dagen per week beschikbaar"
+      ],
+      gets: [
+        "Echte praktijkervaring die je nergens anders zo snel opdoet",
+        "Persoonlijke begeleiding van de oprichter",
+        "Een passende stage- of bijbaanvergoeding, die bespreken we persoonlijk"
+      ]
+    },
+    {
+      id: "open",
+      title: "Open sollicitatie",
+      hours: "Fulltime of parttime",
+      place: "Alphen aan den Rijn",
+      open: true, google: false,
+      intro: "Staat jouw functie er niet tussen, maar wil je wel bij LINK. werken? Vertel ons wie je bent en wat je zoekt.",
+      does: [], you: [], gets: []
+    }
+  ],
 
   // Veelgestelde vragen van beslissers. Voedt ook de FAQ-structured data voor Google.
   // {response} = contact.responseTime.

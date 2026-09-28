@@ -27,6 +27,7 @@ data/site.js  ──►  assets/js/main.js  ──►  alle pagina's
 | Kennismaking plannen (agenda-link) | `data/site.js > contact.bookingUrl` | alle "Plan een kennismaking"-knoppen, contact |
 | Apollo-tracking (na toestemming) | `data/site.js > tracking.apolloAppId` | cookiemelding, alle pagina's |
 | Anonieme referenties (functie + type bedrijf) | `data/site.js > references` | nog niet op de site; blok toevoegen in index.html met `data-refs` |
+| Vacatures | `data/site.js > jobs` | werken-bij.html (+ Google Jobs-gegevens) |
 | Partnerportaal-knop | `data/site.js > contact.portalUrl` | header, mobiel menu, footer |
 | Contactformulier-koppeling | `data/site.js > contact.form` | contactpagina |
 
@@ -73,6 +74,8 @@ website/
 ├── waarom-link.html    (doorverwijzing naar over-link.html#waarom)
 ├── verhalen.html       Overzicht verhalen (gegenereerd)
 ├── contact.html        Formulier + gegevens
+├── werken-bij.html     Vacatures
+├── privacy.html        Privacyverklaring
 ├── 404.html
 ├── data/site.js        ← centrale databron
 ├── assets/css/         style.css (designsysteem), fonts.css
