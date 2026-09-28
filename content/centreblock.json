@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "LINK. kennismaking CentreBlock",
-    "footerLeft": "LINK. · Kennismaking CentreBlock",
+    "title": "LINK. voorstel CentreBlock",
+    "footerLeft": "LINK. · Voorstel CentreBlock",
     "webTitle": "LINK. x CentreBlock",
     "slug": "centreblock",
     "logoText": "LINK",
@@ -19,17 +19,17 @@
       "eyebrow": "Voor Kees · CentreBlock · september 2026",
       "title": [
         {
-          "t": "Structureel "
+          "t": "De opvolging van jullie leads, "
         },
         {
-          "t": "nieuwe klanten",
+          "t": "geregeld",
           "accent": true
         },
         {
-          "t": " aan tafel."
+          "t": "."
         }
       ],
-      "sub": "Wat LINK. voor CentreBlock kan betekenen: structureel aan tafel bij marketingteams en bureaus die willen aantonen welke campagnes echt omzet opleveren, en na twaalf weken een plan op basis van echte cijfers."
+      "sub": "CentreBlock laat zien welke campagnes echt omzet opleveren. Wij bellen de leads die daaruit komen na, namens jullie klanten, en zetten ze om in afspraken. Eén partner voor de opvolging, voor elke klant die dat wil."
     },
     {
       "id": "wie",
@@ -72,10 +72,10 @@
       "eyebrow": "Wat wij doen",
       "title": [
         {
-          "t": "Eén team dat belt, opvolgt en "
+          "t": "Wij pakken op waar het "
         },
         {
-          "t": "afspraken levert",
+          "t": "stil valt",
           "accent": true
         },
         {
@@ -85,18 +85,18 @@
       "cards": [
         {
           "icon": "phone",
-          "title": "Cold calling",
-          "text": "Ervaren B2B-bellers die het gesprek voeren met de beslisser. Eigen belsysteem, een regionaal telefoonnummer op jullie naam en elk gesprek vastgelegd met notities."
+          "title": "Leads nabellen",
+          "text": "De leads die uit jullie platform komen, bellen we na. Snel, met de context van de campagne erbij, namens de klant en op hun naam."
         },
         {
           "icon": "target",
-          "title": "Data en doelgroep",
-          "text": "Wij bouwen de bellijst op jullie ideale klant: bedrijven en bureaus met een marketingbudget dat verantwoord moet worden. Op branche, grootte, regio en functie. Bestaande relaties en uitsluitingen halen we er vooraf uit."
+          "title": "Koud doorbellen",
+          "text": "Vult de leadstroom een beldag niet, dan bellen we koud door in dezelfde doelgroep. Zo is een beldag altijd een volle beldag."
         },
         {
           "icon": "repeat",
           "title": "Opvolging",
-          "text": "Terugbelafspraken komen echt terug in de bellijst en warme leads dragen we direct aan jullie over, met de reden en de context erbij."
+          "text": "Terugbelafspraken komen echt terug in de bellijst. Wie nu niet wil, spreken we later opnieuw. Er gaat niets verloren."
         },
         {
           "icon": "calendar",
@@ -110,44 +110,44 @@
       "id": "hoe",
       "type": "process",
       "theme": "dark",
-      "eyebrow": "Hoe een samenwerking loopt",
+      "eyebrow": "Hoe het loopt per klant",
       "title": [
         {
-          "t": "Van kick-off naar "
+          "t": "Van jullie lead naar een "
         },
         {
-          "t": "afspraken",
+          "t": "afspraak",
           "accent": true
         },
         {
-          "t": " in de agenda."
+          "t": " bij de klant."
         }
       ],
       "steps": [
         {
           "title": "Kick-off",
-          "text": "Samen scherp: doelgroep, beslisser, propositie, bezwaren en wat een goede afspraak voor jullie is. Wij schrijven het belscript, jullie keuren goed."
+          "text": "Per klant een korte sessie: doelgroep, propositie, bezwaren en wat een goede afspraak is. Wij schrijven het belscript, de klant keurt goed."
         },
         {
-          "title": "Belstart",
-          "text": "Vanaf de eerste maandag na de kick-off gaan we bellen, op de dagen en dagdelen die in onze data het beste werken voor jullie branche. Elke afspraak krijgt een bevestigingsmail naar de prospect en een overdracht met context naar jullie."
+          "title": "Leads binnen",
+          "text": "CentreBlock levert de leads met de context uit de campagne. Wij zetten ze in de bellijst, met de verse leads bovenaan."
         },
         {
-          "title": "Wekelijkse rapportage",
-          "text": "Elke week een rapport met contactpogingen, gesproken bedrijven, warme uitkomsten, terugbelafspraken en geplande afspraken, plus wat we terughoren uit de markt."
+          "title": "Bellen",
+          "text": "We bellen op de dagen en dagdelen die in onze data het beste werken voor die branche, met een regionaal nummer op naam van de klant."
         },
         {
-          "title": "Bijsturen",
-          "text": "Om de week evalueren we samen: klopt de doelgroep, klopt de kwaliteit van de afspraken en wat scherpen we aan."
+          "title": "Rapportage",
+          "text": "Elke week een rapport per klant: pogingen, gesproken bedrijven, afspraken en wat we terughoren uit de markt. CentreBlock krijgt dezelfde cijfers."
         }
       ],
       "deliverables": {
-        "title": "Wat jullie ontvangen",
+        "title": "Wat de klant ontvangt",
         "items": [
           "Afspraak in de agenda met bedrijfsinfo, contactpersoon en aanleiding",
-          "Bevestiging naar de prospect uit jullie naam",
+          "Bevestiging naar de prospect uit naam van de klant",
           "Wekelijks rapport in PDF plus alle gespreksnotities",
-          "Een vast aanspreekpunt"
+          "Een vast aanspreekpunt, ook voor CentreBlock"
         ]
       }
     },
@@ -172,7 +172,7 @@
         {
           "icon": "building",
           "title": "Fit",
-          "text": "Het bedrijf past: er gaat structureel geld naar marketing en er is een team of bureau dat de campagnes draait."
+          "text": "Het bedrijf past bij de klant: branche, omvang en situatie voldoen aan de criteria uit de kick-off."
         },
         {
           "icon": "spark",
@@ -182,107 +182,117 @@
         {
           "icon": "usercheck",
           "title": "Beslisser",
-          "text": "De afspraak staat met de marketingmanager, de CMO of de eigenaar van het bureau. Iemand die over tooling gaat of daar direct invloed op heeft."
+          "text": "De afspraak staat met iemand die over de aankoop gaat of daar direct invloed op heeft."
         }
       ],
-      "closing": "Valt een afspraak buiten deze eisen, dan telt hij niet mee. Zo blijft het aantal eerlijk en de kwaliteit hoog."
+      "closing": "Valt een afspraak buiten deze eisen, dan telt hij niet mee. Zo blijft het aantal eerlijk en houdt CentreBlock er een goed verhaal aan over."
     },
     {
-      "id": "pilot",
+      "id": "model",
       "type": "offer",
       "theme": "dark",
-      "eyebrow": "De standaardpilot",
+      "eyebrow": "Het model",
       "title": [
         {
-          "t": "Twaalf weken om het te "
+          "t": "Geen pilot. "
         },
         {
-          "t": "bewijzen",
+          "t": "Meteen",
+          "accent": true
+        },
+        {
+          "t": " beldagen."
+        }
+      ],
+      "cards": [
+        {
+          "title": "Eenmalige opstart",
+          "text": "€ 695 per klant. Kick-off, belscript, inrichting van het belsysteem en een regionaal nummer op naam van de klant. Eén keer, daarna nooit meer."
+        },
+        {
+          "title": "Beldagen per vier weken",
+          "text": "Daarna reken je per beldag. De klant kiest zelf hoeveel dagen er per periode gebeld wordt, vanaf vier."
+        },
+        {
+          "title": "Wat een beldag is",
+          "text": "Een volle dag bellen door één vaste beller: ongeveer honderd gesprekspogingen, alle notities vastgelegd en dezelfde dag overgedragen."
+        },
+        {
+          "title": "Op- en afschalen",
+          "text": "Loopt het goed, dan zetten we er beldagen bij. Loopt het minder, dan schalen we terug. Vastgelegd met een maand opzegtermijn.",
+          "highlight": true
+        }
+      ],
+      "bar": {
+        "label": "Opstart per klant",
+        "price": "€ 695",
+        "note": "eenmalig, excl. btw",
+        "items": [
+          "Kick-off met de klant",
+          "Belscript en bezwaren",
+          "Bellijst en uitsluitingen",
+          "Belsysteem en regionaal nummer",
+          "Koppeling met jullie leads",
+          "Daarna alleen nog beldagen"
+        ]
+      }
+    },
+    {
+      "id": "staffel",
+      "type": "tiers",
+      "theme": "dark",
+      "eyebrow": "De beldagen",
+      "title": [
+        {
+          "t": "Hoe meer beldagen, hoe lager de "
+        },
+        {
+          "t": "dagprijs",
           "accent": true
         },
         {
           "t": "."
         }
       ],
-      "cards": [
+      "columns": [
+        "Beldagen per 4 weken",
+        "Prijs per beldag",
+        "Per 4 weken"
+      ],
+      "rows": [
         {
-          "title": "Kick-off en belscript",
-          "text": "Samen scherp wat we gaan vertellen en bij wie. Wij schrijven het belscript, jullie keuren het goed."
+          "cells": [
+            "4 beldagen",
+            "€ 600",
+            "€ 2.400"
+          ]
         },
         {
-          "title": "Bellijst op maat",
-          "text": "Wij bouwen de bellijst op jullie ideale klant: marketingteams en bureaus die moeten aantonen wat hun campagnes opleveren. Bestaande relaties en uitsluitingen gaan er vooraf uit."
+          "cells": [
+            "5 tot 7 beldagen",
+            "€ 550",
+            "€ 2.750 tot € 3.850"
+          ]
         },
         {
-          "title": "Twaalf weken bellen",
-          "text": "We bellen op de dagen en dagdelen die in onze data het beste werken voor jullie branche, met een regionaal nummer op jullie naam. Elke week een rapportage, om de week evaluatie. Gaat het makkelijker of juist moeizamer, dan zitten we eerder om tafel en schakelen we direct."
-        },
-        {
-          "title": "Tien gekwalificeerde afspraken",
-          "text": "Elke afspraak voldoet aan drie eisen: het bedrijf past, de interesse is echt en de juiste persoon zit aan tafel.",
+          "cells": [
+            "8 beldagen of meer",
+            "€ 500",
+            "vanaf € 4.000"
+          ],
           "highlight": true
         }
       ],
-      "bar": {
-        "label": "Pilot",
-        "price": "€ 4.950",
-        "note": "excl. btw, alles inbegrepen",
-        "items": [
-          "Kick-off en belscript",
-          "Bellijst op jullie ideale klant",
-          "Volledige inrichting van belsysteem en nummer",
-          "Twaalf weken bellen op de beste momenten",
-          "Rapportage elke week, evaluatie om de week",
-          "Tien gekwalificeerde afspraken"
-        ]
-      }
-    },
-    {
-      "id": "vervolg",
-      "type": "offer",
-      "theme": "dark",
-      "eyebrow": "Hoe we verder gaan",
-      "title": [
-        {
-          "t": "Je koopt geen uren. Je "
-        },
-        {
-          "t": "investeert",
-          "accent": true
-        },
-        {
-          "t": " in afspraken in de agenda."
-        }
-      ],
-      "cards": [
-        {
-          "title": "Wat we dan weten",
-          "text": "Uit de pilot blijkt hoeveel tijd er in één gekwalificeerde afspraak zit en hoeveel afspraken er nodig zijn voor één nieuwe klant. Niet geschat, gewoon geteld."
-        },
-        {
-          "title": "Van doel naar bezetting",
-          "text": "Jullie zeggen hoeveel nieuwe klanten je per periode wilt. Wij rekenen terug hoeveel afspraken daarvoor nodig zijn en trekken daar de tijd voor uit."
-        },
-        {
-          "title": "Boven target is voor jullie",
-          "text": "Zijn we eerder klaar dan gepland, dan bellen we de tijd gewoon vol. Wat er dan nog bij komt is voor jullie, zonder extra factuur."
-        },
-        {
-          "title": "Succesfee bij omzet",
-          "text": "Wordt een afspraak een opdracht, dan spreken we daar vooraf een succesfee over af. Wij verdienen pas extra als het jullie ook echt omzet oplevert.",
-          "highlight": true
-        }
-      ],
-      "closing": "Het target komt uit jullie eigen cijfers, dus dat halen we. Zo niet, dan halen we het de volgende werkperiode in."
+      "closing": "Minimaal vier beldagen per periode van vier weken, vooraf gefactureerd, prijzen excl. btw. De staffel telt per klant. Zit een klant eenmaal op acht dagen, dan blijft die dagprijs staan."
     },
     {
       "id": "nodig",
       "type": "needs",
       "theme": "light",
-      "eyebrow": "Wat we van jullie nodig hebben",
+      "eyebrow": "Wat we van CentreBlock nodig hebben",
       "title": [
         {
-          "t": "Een halve dag van jullie, dan "
+          "t": "Leads met context, dan "
         },
         {
           "t": "draaien wij",
@@ -295,8 +305,13 @@
       "cards": [
         {
           "icon": "users",
-          "title": "Kick-off sessie",
-          "text": "Anderhalf tot twee uur met Kees en degene die de afspraken gaat voeren."
+          "title": "Kick-off per klant",
+          "text": "Anderhalf tot twee uur met de klant en degene die de afspraken gaat voeren. Kees of een collega sluit aan."
+        },
+        {
+          "icon": "target",
+          "title": "Leads met context",
+          "text": "De lead plus wat jullie erover weten: het bedrijf, de campagne en waar de interesse vandaan komt. In welk formaat dan ook, wij sluiten aan."
         },
         {
           "icon": "listx",
@@ -305,13 +320,8 @@
         },
         {
           "icon": "check",
-          "title": "Goedkeuring belscript",
-          "text": "Wij schrijven, jullie lezen mee en keuren goed."
-        },
-        {
-          "icon": "repeat",
-          "title": "Opvolging van afspraken",
-          "text": "Eén vaste persoon bij CentreBlock die de afspraken voert en ons kort laat weten hoe ze verliepen."
+          "title": "Eén aanspreekpunt",
+          "text": "Eén vaste persoon bij CentreBlock voor de afstemming, en per klant iemand die de afspraken voert."
         }
       ]
     },
@@ -334,36 +344,36 @@
       ],
       "rules": [
         {
-          "title": "Niet-exclusief",
-          "text": "Jullie zitten nergens aan vast en houden alle vrijheid."
+          "title": "Geen pilot vooraf",
+          "text": "We starten direct met beldagen, tegen de opstartfee van € 695."
         },
         {
-          "title": "Bestaande relaties blijven van jullie",
-          "text": "Uitsluitlijst vooraf, die bedrijven benaderen wij niet."
+          "title": "Maand opzegtermijn",
+          "text": "Vastgelegd, met een maand opzegtermijn. Geen jaarcontract."
         },
         {
           "title": "Werkperiodes van 4 weken",
           "text": "Vooraf gefactureerd, per werkperiode."
         },
         {
-          "title": "Wekelijkse rapportage",
-          "text": "Elke week zicht op wat er gebeurd is en wat het opleverde."
+          "title": "Bestaande relaties blijven van de klant",
+          "text": "Uitsluitlijst vooraf, die bedrijven benaderen wij niet."
         },
         {
-          "title": "Jullie naam, onze uitvoering",
-          "text": "Regionaal nummer en jullie stijl, wij voeren uit."
+          "title": "Wekelijkse rapportage",
+          "text": "Elke week zicht op wat er gebeurd is, voor de klant en voor CentreBlock."
+        },
+        {
+          "title": "Hun naam, onze uitvoering",
+          "text": "Regionaal nummer en de stijl van de klant, wij voeren uit."
         },
         {
           "title": "Gegevens veilig",
-          "text": "Vastgelegd in een verwerkersovereenkomst."
-        },
-        {
-          "title": "Evaluatie om de week",
-          "text": "Bij twijfel om tafel en bijsturen."
+          "text": "Vastgelegd in een verwerkersovereenkomst, per klant."
         },
         {
           "title": "Alles op papier",
-          "text": "Vastgelegd in een korte samenwerkingsovereenkomst."
+          "text": "Vastgelegd in een korte samenwerkingsovereenkomst met CentreBlock."
         }
       ]
     },
@@ -374,10 +384,10 @@
       "eyebrow": "Volgende stap",
       "title": [
         {
-          "t": "Akkoord op de pilot? Dan plannen we de "
+          "t": "Akkoord? Dan starten we met de "
         },
         {
-          "t": "kick-off",
+          "t": "eerste klant",
           "accent": true
         },
         {
@@ -387,15 +397,15 @@
       "steps": [
         {
           "title": "Akkoord",
-          "text": "Kees geeft akkoord op het pilotvoorstel."
+          "text": "Kees geeft akkoord op de samenwerking en de tarieven."
         },
         {
           "title": "Overeenkomsten",
           "text": "LINK. stuurt de samenwerkingsovereenkomst en de verwerkersovereenkomst."
         },
         {
-          "title": "Kick-off",
-          "text": "We plannen de kick-off en de belstart."
+          "title": "Eerste klant",
+          "text": "We kiezen samen de klant waar we mee beginnen en plannen de kick-off."
         }
       ],
       "contact": {
