@@ -35,7 +35,7 @@ window.LINK = {
     responseShort: "3 min",
     // Partnerportaal (leads, afspraken, updates). Vul de echte URL in;
     // zolang dit leeg is, verbergt de site de portaal-knop.
-    portalUrl: "",
+    portalUrl: "https://admin.linkgrp.nl",
     form: {
       // Optioneel: koppel een Google Form. Vul de formResponse-URL en de
       // entry-ID's in. Leeg = het formulier opent een e-mail naar info@.

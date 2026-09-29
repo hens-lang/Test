@@ -68,7 +68,7 @@
 
   /* ---------- Header + mobiel menu ---------- */
   const navLinks = D.nav.map((n) => `<a href="${n.href}"${n.href === page ? ' aria-current="page"' : ""}>${esc(n.label)}</a>`).join("");
-  const portal = C.portalUrl ? `<a class="portal-link" href="${esc(C.portalUrl)}">Partnerportaal</a>` : "";
+  const portal = C.portalUrl ? `<a class="portal-link" href="${esc(C.portalUrl)}" target="_blank" rel="noopener" aria-label="Inloggen in het partnerportaal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Inloggen</span></a>` : "";
   const header = document.createElement("header");
   header.className = "site-header";
   header.innerHTML = `
@@ -82,7 +82,7 @@
     </div>`;
   const mm = document.createElement("div");
   mm.className = "mobile-menu"; mm.id = "mm";
-  mm.innerHTML = `<nav aria-label="Mobiel menu">${navLinks}${C.portalUrl ? `<a href="${esc(C.portalUrl)}">Partnerportaal</a>` : ""}</nav>
+  mm.innerHTML = `<nav aria-label="Mobiel menu">${navLinks}${C.portalUrl ? `<a href="${esc(C.portalUrl)}" target="_blank" rel="noopener">Inloggen</a>` : ""}</nav>
     <div class="mm-meta"><a href="mailto:${C.email}">${C.email}</a><a href="tel:${C.phoneHref}">${C.phone}</a></div>`;
   document.body.prepend(mm);
   document.body.prepend(header);
@@ -111,7 +111,7 @@
     <div class="wrap">
       <div class="top">
         <div><img src="assets/img/logo-wit.png" alt="LINK." width="420" height="131" loading="lazy"><p class="tag">${esc(D.brand.tagline)}</p></div>
-        <div><h4>Menu</h4><ul>${D.nav.concat(D.navFooter || []).map((n) => `<li><a href="${n.href}">${esc(n.label)}</a></li>`).join("")}${C.portalUrl ? `<li><a href="${esc(C.portalUrl)}">Partnerportaal</a></li>` : ""}</ul></div>
+        <div><h4>Menu</h4><ul>${D.nav.concat(D.navFooter || []).map((n) => `<li><a href="${n.href}">${esc(n.label)}</a></li>`).join("")}${C.portalUrl ? `<li><a href="${esc(C.portalUrl)}" target="_blank" rel="noopener">Partnerportaal (inloggen)</a></li>` : ""}</ul></div>
         <div><h4>Contact</h4><ul>
           <li><a href="mailto:${C.email}">${C.email}</a></li>
           <li><a href="tel:${C.phoneHref}">${C.phone}</a></li>
