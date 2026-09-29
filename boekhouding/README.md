@@ -6,6 +6,10 @@ Alles zit in één database, dus relaties, facturen, betalingen en bankmutaties 
 
 ## Starten
 
+**Mac:** dubbelklik op `start.command` (eerste keer: rechtermuisknop → Open). De app opent vanzelf in je browser.
+
+Handmatig:
+
 ```bash
 cd boekhouding
 pip install -r requirements.txt
