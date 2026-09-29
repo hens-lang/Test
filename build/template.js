@@ -90,7 +90,7 @@ function partnerLockup(meta) {
   <div class="partner-lockup">
     <span class="lockup-link">LINK<span class="dot">.</span></span>
     <span class="lockup-x">×</span>
-    <span class="partner-chip${p.solid ? ' bare' : ''}${p.square ? ' square' : ''}">${inner}</span>
+    <span class="partner-chip${p.solid ? ' bare' : ''}${p.square ? ' square' : ''}${p.tall ? ' tall' : ''}">${inner}</span>
   </div>`;
 }
 
@@ -524,6 +524,10 @@ h1.title { font-size:104px; letter-spacing:-0.03em; }
 .partner-name { font-size:30px; font-weight:800; letter-spacing:-0.02em; color:var(--ink); }
 .partner-chip.bare { background:none; padding:0; }
 .partner-chip.bare img { max-height:68px; max-width:320px; border-radius:10px; }
+/* staand logo: hoger chipje, lockup schuift iets omhoog */
+.partner-chip.tall { padding:14px 30px; min-height:122px; }
+.partner-chip.tall img { max-height:96px; max-width:140px; border-radius:0; }
+.partner-lockup:has(.partner-chip.tall) { margin-top:40px; }
 .partner-chip.bare.square img { max-height:104px; max-width:104px; border-radius:22px; }
 .theme-dark .partner-chip.bare .partner-name { color:var(--dark-text); }
 

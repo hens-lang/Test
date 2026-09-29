@@ -193,16 +193,25 @@ async function main() {
           }
           continue;
         }
-        const chipW = logoBuf ? 28 + logoW + (nameW ? 16 + nameW : 0) + 28 : 220;
+        // staand logo krijgt een hoger chipje zodat het leesbaar blijft
+        if (pn.tall && logoBuf) {
+          const r = await sharp(path.resolve(ROOT, pn.logo)).metadata().then((m) => m.width / m.height);
+          logoH = 96;
+          logoW = logoH * r;
+        }
+        const chipH = pn.tall ? 122 : 64;
+        const chipY = ly - (chipH - 64) / 2;
+        const pad = pn.tall ? 30 : 28;
+        const chipW = logoBuf ? pad + logoW + (nameW ? 16 + nameW : 0) + pad : 220;
         slide.addShape('roundRect', {
-          x: p(292), y: p(ly), w: p(chipW), h: p(64), rectRadius: p(14),
+          x: p(292), y: p(chipY), w: p(chipW), h: p(chipH), rectRadius: p(14),
           fill: { color: C.card }, line: { type: 'none' },
         });
         if (logoBuf) {
-          slide.addImage({ data: logoBuf, x: p(292 + 28), y: p(ly + (64 - logoH) / 2), w: p(logoW), h: p(logoH) });
+          slide.addImage({ data: logoBuf, x: p(292 + pad), y: p(chipY + (chipH - logoH) / 2), w: p(logoW), h: p(logoH) });
           if (nameW) {
             slide.addText(pn.name, {
-              x: p(292 + 28 + logoW + 16), y: p(ly), w: p(nameW), h: p(64), isTextBox: true, margin: 0,
+              x: p(292 + pad + logoW + 16), y: p(ly), w: p(nameW), h: p(64), isTextBox: true, margin: 0,
               fontFace: SANS, bold: true, fontSize: 15, color: C.ink, align: 'left', valign: 'middle',
             });
           }
