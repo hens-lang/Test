@@ -10,6 +10,18 @@
     {% if f.status != 'goedgekeurd' %}<button class="ok" name="actie" value="goedkeuren">Goedkeuren</button>{% endif %}
   </form>{% endif %}</div>
 {% with tekst = f.waarschuwingen %}{% include '_waarschuwingen.html' %}{% endwith %}
+{% if inst.doorstuur_email %}
+<div class="kaart acties" style="margin:12px 0 0;padding:12px 16px">
+  <div style="flex:1;min-width:220px">
+  {% if f.doorgestuurd_op %}<span class="status betaald">doorgestuurd</span> naar {{ inst.doorstuur_email }} op {{ f.doorgestuurd_op.replace('T',' ')[:16] }}
+  {% elif not f.bestand %}<span class="status">niet doorgestuurd</span> <span class="zacht">geen bestand bij deze factuur</span>
+  {% elif f.doorstuur_melding %}<span class="status fout">niet doorgestuurd</span> <span class="zacht">{{ f.doorstuur_melding }}</span>
+  {% elif f.status == 'afgekeurd' %}<span class="status">niet doorgestuurd</span> <span class="zacht">afgekeurde facturen gaan niet naar de boekhouding</span>
+  {% else %}<span class="status nieuw">nog niet doorgestuurd</span> <span class="zacht">{{ 'gebeurt na goedkeuring' if inst.doorstuur_moment == 'goedkeuring' and f.status == 'ter_goedkeuring' else 'staat in de wachtrij' }}</span>{% endif %}
+  </div>
+  {% if f.bestand and f.status != 'afgekeurd' %}<form method="post" action="{{ url_for('inkoop_doorsturen', fid=f.id) }}" {% if f.doorgestuurd_op %}onsubmit="return confirm('Deze factuur is al doorgestuurd. Nogmaals versturen?')"{% endif %}>
+    <button class="licht klein">{{ 'Opnieuw doorsturen' if f.doorgestuurd_op else 'Nu doorsturen' }}</button></form>{% endif %}
+</div>{% endif %}
 
 <div class="raster-2" style="margin-top:16px">
 <div>

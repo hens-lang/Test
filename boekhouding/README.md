@@ -36,6 +36,7 @@ Eerst rondkijken met voorbeelddata? Open vóór de eerste start een Terminal in 
 | Controle | Dubbele facturen, bedragen die niet optellen, lage zekerheid en **een afwijkend IBAN (factuurfraude)** worden gemarkeerd | waarschuwingen lezen |
 | Goedkeuren | Vertrouwde leveranciers onder hun limiet worden automatisch goedgekeurd | de rest goedkeuren (1 klik of alles tegelijk) |
 | Boeken | Kosten, voorbelasting en crediteuren worden direct geboekt (dubbel boekhouden) | niets |
+| Boekhouding | Stuurt elke goedgekeurde inkoopfactuur één keer door naar het boekhoudadres (origineel bestand + gegevens) | niets |
 | Betalen | Zet de betaling klaar in je ABN-app, uit te voeren kort voor de vervaldatum (of direct). Creditnota's worden verrekend | bevestigen in de ABN-app |
 | Bank | Haalt elk uur mutaties op en koppelt ze aan facturen (referentie, bedrag, IBAN, naam) | alleen wat niet automatisch lukt |
 | Verkoop | Factuur maken, mailen als pdf **en e-factuur**, betaling herkennen, automatisch herinneren na 7 en 21 dagen | factuur aanmaken |
@@ -68,7 +69,19 @@ automatisch gelezen, pdf's met eenvoudige tekstherkenning (altijd controleren).
 ### 3. Uitgaande mail (facturen, herinneringen, ochtendsamenvatting)
 Vul `SMTP_HOST`, `SMTP_GEBRUIKER`, `SMTP_WACHTWOORD` in (Microsoft 365: `smtp.office365.com`, poort 587).
 
-### 4. ABN AMRO via Ponto
+### 4. Doorsturen naar de boekhouding
+Vul bij **Instellingen → Doorsturen naar de boekhouding** het adres in waar inkoopfacturen naartoe moeten
+(bijv. de scan- en herkenmailbox van je boekhouder). Vereist uitgaande e-mail (stap 3).
+
+- Standaard **na jouw goedkeuring**: afgekeurde, dubbele of verdachte facturen gaan dus niet door. Je kunt ook
+  kiezen voor *direct bij ontvangst*.
+- Elke factuur gaat precies één keer, als `Leverancier_Factuurnummer.pdf` (bij een e-factuur ook de xml), met
+  bedrag, btw, grootboekrekening en betaalwijze in de mail.
+- Lukt versturen even niet, dan wordt het elke 5 minuten opnieuw geprobeerd. Per factuur zie je of en wanneer
+  hij is doorgestuurd, en kun je hem handmatig (opnieuw) versturen.
+- Het geldt voor facturen die binnenkomen nadat je het adres hebt ingevuld; oudere facturen stuur je per stuk door.
+
+### 5. ABN AMRO via Ponto
 Europese regels (PSD2) staan niet toe dat software zelfstandig geld van een ABN-rekening afschrijft. Ponto
 (Isabel Group, onder toezicht van de Nationale Bank van België) is de erkende tussenpartij: de app zet de
 betaling klaar, jij bevestigt hem met de ABN-app.
@@ -105,6 +118,7 @@ Tip: test eerst met `PONTO_OMGEVING=sandbox` en de sandbox-gegevens uit het Pont
 | `sepa.py`, `bankimport.py` | SEPA pain.001-export, CAMT.053/CSV-import |
 | `factuurdocument.py` | Verkoopfactuur als pdf en als e-factuur (UBL / NLCIUS) |
 | `mail.py` | Facturen mailen, herinneringen, dagelijkse samenvatting |
+| `doorsturen.py` | Inkoopfacturen doorsturen naar het boekhoudadres |
 | `planner.py` | Achtergrondtaken (mailbox, bank, herinneringen) |
 | `app.py`, `templates/`, `static/` | Webschermen |
 

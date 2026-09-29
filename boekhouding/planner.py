@@ -1,5 +1,5 @@
 """Achtergrondtaken die draaien zolang de app aanstaat:
-- elke 5 minuten: mailbox en inbox-map verwerken, status van betaalopdrachten bij de bank nagaan
+- elke 5 minuten: mailbox en inbox-map verwerken, inkoopfacturen doorsturen naar de boekhouding, status van betaalopdrachten bij de bank nagaan
 - elk uur: bankmutaties ophalen via Ponto en automatisch afletteren
 - elke ochtend: betalingsherinneringen en de dagelijkse samenvatting."""
 
@@ -11,6 +11,7 @@ from datetime import date, datetime, timedelta
 
 import betalen
 import db
+import doorsturen
 import intake
 import logica
 import mail
@@ -55,6 +56,8 @@ def ronde(con, app_url):
     _probeer(con, "inbox-map", lambda: intake.verwerk_map(con))
     if intake.mailbox_ingesteld():
         _probeer(con, "mailbox", lambda: intake.haal_mail_op(con))
+    if doorsturen.adres(con):
+        _probeer(con, "doorsturen naar boekhouding", lambda: doorsturen.verwerk_wachtrij(con))
     if betalen.ponto_actief(con):
         _probeer(con, "status betaalopdrachten", lambda: betalen.werk_status_bij(con))
         if _mag(con, "bank", timedelta(minutes=55)):

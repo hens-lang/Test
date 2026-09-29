@@ -87,6 +87,8 @@ CREATE TABLE IF NOT EXISTS inkoopfacturen (
     beoordeling_notitie TEXT,
     betaalbatch_id INTEGER REFERENCES betaalbatches(id),
     verrekend_met INTEGER REFERENCES inkoopfacturen(id),   -- creditnota verrekend met deze factuur
+    doorgestuurd_op TEXT,                          -- naar het boekhoudadres gemaild
+    doorstuur_melding TEXT,                        -- reden als doorsturen (nog) niet lukte
     betaald_op TEXT,
     aangemaakt_op TEXT NOT NULL
 );
@@ -211,6 +213,9 @@ STANDAARD_INSTELLINGEN = {
     "herinnering_dagen": "7,21",           # dagen na vervaldatum: 1e en 2e herinnering
     "samenvatting_aan": "1",               # dagelijkse e-mail met wat op jou wacht
     "standaard_kostenrekening": "4900",
+    "doorstuur_email": "",                 # inkoopfacturen automatisch doorsturen naar dit adres
+    "doorstuur_moment": "goedkeuring",     # goedkeuring / ontvangst
+    "doorsturen_vanaf": "",                # alleen facturen die na het instellen binnenkwamen
 }
 
 # Kolommen die in latere versies zijn toegevoegd; oudere databases worden bijgewerkt.
@@ -219,7 +224,7 @@ MIGRATIES = {
                  "bron": "TEXT NOT NULL DEFAULT 'handmatig'"},
     "inkoopfacturen": {"rekening": "TEXT", "betaalwijze": "TEXT NOT NULL DEFAULT 'overboeking'", "bron": "TEXT NOT NULL DEFAULT 'handmatig'", "zekerheid": "REAL",
                        "waarschuwingen": "TEXT", "document_id": "INTEGER",
-                       "verrekend_met": "INTEGER"},
+                       "verrekend_met": "INTEGER", "doorgestuurd_op": "TEXT", "doorstuur_melding": "TEXT"},
     "verkoopfacturen": {"verzonden_op": "TEXT", "herinneringen": "INTEGER NOT NULL DEFAULT 0",
                         "laatst_herinnerd": "TEXT"},
     "verkoopregels": {"rekening": "TEXT"},

@@ -7,11 +7,12 @@
 <a class="{{ 'actief' if status == s }}" href="{{ url_for('inkoop', status=s) }}">{{ naam }}</a>{% endfor %}
 </div>
 <div class="tabel-wrap"><table>
-<thead><tr><th>Leverancier</th><th>Factuurnr</th><th>Datum</th><th>Vervalt</th><th>Rekening</th><th class="bedrag">Incl. btw</th><th>Status</th></tr></thead><tbody>
+<thead><tr><th>Leverancier</th><th>Factuurnr</th><th>Datum</th><th>Vervalt</th><th>Rekening</th><th class="bedrag">Incl. btw</th><th>Status</th>{% if inst.doorstuur_email %}<th title="Doorgestuurd naar de boekhouding">Boekh.</th>{% endif %}</tr></thead><tbody>
 {% for f in facturen %}
 <tr><td>{{ f.relatie_naam }}</td><td><a href="{{ url_for('inkoop_detail', fid=f.id) }}">{{ f.factuurnummer }}</a>{% if f.waarschuwingen and 'LET OP' in f.waarschuwingen %} <span class="rood" title="IBAN wijkt af">⚠</span>{% endif %}</td>
 <td>{{ f.factuurdatum }}</td><td>{{ f.vervaldatum }}</td><td class="zacht">{{ f.rekening }} {{ f.rekening_naam or '' }}</td>
-<td class="bedrag">{{ f.bedrag_incl_cent|euro }}</td><td><span class="status {{ f.status }}">{{ f.status.replace('_',' ').replace('in batch','in betaling') }}</span>{% if f.betaalwijze != 'overboeking' %} <span class="zacht">{{ f.betaalwijze.replace('_',' ') }}</span>{% endif %}</td></tr>
-{% else %}<tr><td colspan="7" class="leeg">Geen facturen.</td></tr>{% endfor %}
+<td class="bedrag">{{ f.bedrag_incl_cent|euro }}</td><td><span class="status {{ f.status }}">{{ f.status.replace('_',' ').replace('in batch','in betaling') }}</span>{% if f.betaalwijze != 'overboeking' %} <span class="zacht">{{ f.betaalwijze.replace('_',' ') }}</span>{% endif %}</td>
+{% if inst.doorstuur_email %}<td>{% if f.doorgestuurd_op %}<span class="groen" title="Doorgestuurd op {{ f.doorgestuurd_op[:10] }}">✓</span>{% elif f.doorstuur_melding %}<span class="rood" title="{{ f.doorstuur_melding }}">!</span>{% endif %}</td>{% endif %}</tr>
+{% else %}<tr><td colspan="8" class="leeg">Geen facturen.</td></tr>{% endfor %}
 </tbody></table></div>
 {% endblock %}

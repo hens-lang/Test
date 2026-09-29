@@ -24,6 +24,10 @@
     <strong>Factuurmailbox</strong>
     <div class="zacht">{% if mail_in %}<span class="stip aan"></span>Gekoppeld: bijlagen worden elke 5 minuten opgehaald.{% else %}<span class="stip uit"></span>Niet gekoppeld. Maak bijv. facturen@jullie-domein.nl aan en zet <span class="mono">IMAP_HOST</span>, <span class="mono">IMAP_GEBRUIKER</span> en <span class="mono">IMAP_WACHTWOORD</span> in config.env.{% endif %}</div>
   </div></div>
+  <div class="koppeling"><div class="icoon">🧾</div><div class="tekst">
+    <strong>Doorsturen naar de boekhouding</strong>
+    <div class="zacht">{% if inst.doorstuur_email %}<span class="stip {{ 'aan' if mail_uit else 'uit' }}"></span>Inkoopfacturen gaan {{ 'na goedkeuring' if inst.doorstuur_moment == 'goedkeuring' else 'direct bij ontvangst' }} naar {{ inst.doorstuur_email }}{{ '' if mail_uit else ' (zodra uitgaande e-mail is ingesteld)' }}.{% else %}<span class="stip"></span>Uit. Vul hieronder het adres van de boekhouding in.{% endif %}</div>
+  </div></div>
   <div class="koppeling"><div class="icoon">📤</div><div class="tekst">
     <strong>Uitgaande e-mail</strong>
     <div class="zacht">{% if mail_uit %}<span class="stip aan"></span>Ingesteld: verkoopfacturen, herinneringen en de dagelijkse samenvatting worden verstuurd.{% else %}<span class="stip uit"></span>Niet ingesteld. Zet <span class="mono">SMTP_HOST</span>, <span class="mono">SMTP_GEBRUIKER</span> en <span class="mono">SMTP_WACHTWOORD</span> in config.env.{% endif %}</div>
@@ -53,6 +57,17 @@
   <div><label>Dagen vóór vervaldatum</label><input name="betaal_dagen_voor_verval" value="{{ inst.betaal_dagen_voor_verval }}" inputmode="numeric"></div>
 </div>
 <p class="zacht">Ook bij "kort voor de vervaldatum" bevestig je de betaling direct na goedkeuren in de ABN-app; de bank voert hem dan op de geplande datum uit.</p>
+<h2>Doorsturen naar de boekhouding</h2>
+<div class="rij">
+  <div><label>E-mailadres van de boekhouding / accountant</label><input name="doorstuur_email" type="email" value="{{ inst.doorstuur_email }}" placeholder="bijv. inkoop@boekhouder.nl"></div>
+  <div><label>Wanneer doorsturen</label><select name="doorstuur_moment">
+    <option value="goedkeuring" {{ 'selected' if inst.doorstuur_moment == 'goedkeuring' }}>Na mijn goedkeuring (aanbevolen)</option>
+    <option value="ontvangst" {{ 'selected' if inst.doorstuur_moment == 'ontvangst' }}>Direct bij ontvangst</option></select></div>
+</div>
+<p class="zacht">Elke inkoopfactuur gaat één keer naar dit adres, met het originele bestand (pdf, en bij een e-factuur ook de xml) en de gegevens in de mail.
+Afgekeurde facturen worden nooit doorgestuurd. Geldt voor facturen die binnenkomen nadat je het adres hebt ingevuld; oudere facturen kun je per stuk doorsturen.
+{% if inst.doorstuur_email and not mail_uit %}<br><span class="oranje">Let op: uitgaande e-mail is nog niet ingesteld (zie Koppelingen), dus er wordt nog niets verstuurd.</span>{% endif %}
+{% if doorstuur_wacht %}<br><span class="oranje">{{ doorstuur_wacht }} factuur/facturen wachten op doorsturen.</span>{% endif %}</p>
 <h2>Boekhouding</h2>
 <div class="rij">
   <div><label>Standaard kostenrekening</label><select name="standaard_kostenrekening">{% for r in rekeningen %}<option value="{{ r.code }}" {{ 'selected' if inst.standaard_kostenrekening == r.code }}>{{ r.code }} {{ r.naam }}</option>{% endfor %}</select></div>

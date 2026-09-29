@@ -4,6 +4,7 @@ Start:  python app.py   ->  http://localhost:5000
 """
 
 import os
+import re
 import secrets
 from datetime import date, timedelta
 from functools import wraps
@@ -18,6 +19,7 @@ from flask import (Flask, Response, abort, flash, g, redirect, render_template, 
 import ai  # noqa: E402
 import bankimport  # noqa: E402
 import betalen  # noqa: E402
+import doorsturen  # noqa: E402
 import factuurdocument  # noqa: E402
 import grootboek  # noqa: E402
 import intake  # noqa: E402
@@ -101,6 +103,14 @@ def met_fouten(view):
     return wrapper
 
 
+def doorsturen_nu(c):
+    """Direct doorsturen naar de boekhouding; lukt het niet, dan probeert de planner het later opnieuw."""
+    try:
+        doorsturen.probeer_direct(c)
+    except Exception:  # noqa: BLE001 - doorsturen mag goedkeuren of uploaden nooit blokkeren
+        pass
+
+
 # ---------------------------------------------------------------- dashboard
 
 @app.route("/")
@@ -124,6 +134,7 @@ def inbox():
             doc_id = intake.ontvang(c, f.filename, f.read(), "upload")
             st = c.execute("SELECT status FROM documenten WHERE id = ?", (doc_id,)).fetchone()["status"]
             resultaat[st] = resultaat.get(st, 0) + 1
+        doorsturen_nu(c)
         flash(f"{len(bestanden)} document(en) ontvangen: {resultaat['verwerkt']} automatisch verwerkt"
               + (f", {resultaat['fout']} met een probleem" if resultaat["fout"] else "")
               + (f", {resultaat['genegeerd']} geen factuur" if resultaat["genegeerd"] else ""), "ok")
@@ -245,6 +256,7 @@ def inkoop_nieuw():
             c, int(f["relatie_id"]), f["factuurnummer"].strip(), f["factuurdatum"], f["vervaldatum"],
             f.get("omschrijving", ""), excl, btw, f.get("betalingskenmerk", "").strip(), bestand,
             rekening=f.get("rekening") or None, betaalwijze=f.get("betaalwijze", "overboeking"))
+        doorsturen_nu(c)
         status = c.execute("SELECT status FROM inkoopfacturen WHERE id = ?", (fid,)).fetchone()["status"]
         flash("Factuur ingevoerd en automatisch goedgekeurd" if status == "goedgekeurd"
               else "Factuur ingevoerd, staat klaar om goed te keuren", "ok")
@@ -282,6 +294,14 @@ def inkoop_wijzig(fid):
     return redirect(url_for("inkoop_detail", fid=fid))
 
 
+@app.route("/inkoop/<int:fid>/doorsturen", methods=["POST"])
+@met_fouten
+def inkoop_doorsturen(fid):
+    doorsturen.stuur(con(), fid)
+    flash(f"Factuur doorgestuurd naar {doorsturen.adres(con())}", "ok")
+    return redirect(url_for("inkoop_detail", fid=fid))
+
+
 @app.route("/bestand/<path:naam>")
 def bestand(naam):
     return send_from_directory(intake.UPLOAD_MAP, naam)
@@ -310,6 +330,7 @@ def goedkeuren_post():
             logica.wijzig_inkoopfactuur(c, fid, {"rekening": rekening})
         logica.beoordeel(c, fid, ok, request.form.get("notitie", ""))
     c.commit()
+    doorsturen_nu(c)
     if ok:
         batch_id, url = betalen.na_goedkeuring(c, ids, url_for("betalen_terug", _external=True))
         if url:
@@ -556,7 +577,16 @@ def instellingen():
         iban = logica.normaliseer_iban(request.form.get("iban"))
         if iban and not logica.iban_geldig(iban):
             raise ValueError(f"IBAN {iban} is ongeldig")
+        doorstuur = request.form.get("doorstuur_email", "").strip()
+        if doorstuur and not re.fullmatch(r"[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+", doorstuur):
+            raise ValueError(f"'{doorstuur}' is geen geldig e-mailadres voor de boekhouding")
+        oud = db.instellingen(c)
+        if doorstuur and not oud.get("doorstuur_email"):
+            # alleen facturen die vanaf nu binnenkomen; oudere kun je per factuur alsnog doorsturen
+            db.zet_instelling(c, "doorsturen_vanaf", db.nu())
         for k in db.STANDAARD_INSTELLINGEN:
+            if k == "doorsturen_vanaf":
+                continue
             if k in ("herinneringen_aan", "samenvatting_aan"):
                 waarde = "1" if request.form.get(k) else "0"
             else:
@@ -567,6 +597,7 @@ def instellingen():
         flash("Instellingen opgeslagen", "ok")
         return redirect(url_for("instellingen"))
     return render_template("instellingen.html", ponto_status=ponto.status(c), ai_aan=ai.beschikbaar(),
+                           doorstuur_wacht=len(doorsturen.wachtrij(c)),
                            mail_in=intake.mailbox_ingesteld(), mail_uit=mail.ingesteld(),
                            rekeningen=grootboek.kostenrekeningen(c),
                            redirect_uri=url_for("ponto_terug", _external=True))

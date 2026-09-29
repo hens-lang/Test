@@ -471,3 +471,101 @@ def test_webschermen(tmp_path, monkeypatch):
     assert b"181,50" in web.get("/verkoop/1").data
     r = web.get("/koppelen/ponto")                       # niet ingesteld -> nette melding, geen crash
     assert r.status_code == 302
+
+
+# ---------------------------------------------------------------- doorsturen naar de boekhouding
+
+
+@pytest.fixture
+def nep_smtp(monkeypatch):
+    verstuurd, storing = [], {"aan": False}
+
+    class NepSMTP:
+        def __init__(self, *a, **k):
+            if storing["aan"]:
+                raise OSError("mailserver onbereikbaar")
+        def __enter__(self): return self
+        def __exit__(self, *a): pass
+        def starttls(self): pass
+        def login(self, *a): pass
+        def send_message(self, m): verstuurd.append(m)
+
+    monkeypatch.setattr(mail.smtplib, "SMTP", NepSMTP)
+    for k, v in {"SMTP_HOST": "smtp.test", "SMTP_GEBRUIKER": "u@wij.nl", "SMTP_WACHTWOORD": "x"}.items():
+        monkeypatch.setenv(k, v)
+    return verstuurd, storing
+
+
+def test_doorsturen_na_goedkeuring(con, tmp_path, nep_smtp):
+    import doorsturen
+    verstuurd, storing = nep_smtp
+    db.zet_instelling(con, "doorstuur_email", "inkoop@boekhouder.nl")
+    doc_id = intake.ontvang(con, "factuur.xml", ubl_van_leverancier(tmp_path), "email")
+    fid = rij(con, "documenten", doc_id)["inkoopfactuur_id"]
+    lev = relatie(con, "Andere Lev", ANDER_IBAN)
+    afgekeurd = logica.voeg_inkoopfactuur_toe(con, lev, "A1", VANDAAG, VANDAAG, "", 100, 21, bestand="x-a.pdf")
+    logica.beoordeel(con, afgekeurd, False)
+
+    assert doorsturen.verwerk_wachtrij(con) == 0            # nog niet goedgekeurd: niets naar de boekhouding
+    logica.beoordeel(con, fid, True)
+    storing["aan"] = True                                   # storing: melding bewaard, later opnieuw
+    assert doorsturen.verwerk_wachtrij(con) == 0
+    assert "onbereikbaar" in rij(con, "inkoopfacturen", fid)["doorstuur_melding"]
+    storing["aan"] = False
+    planner.ronde(con, "http://localhost")                  # achtergrondtaak pakt hem op
+    assert len(verstuurd) == 1
+    m = verstuurd[0]
+    assert m["To"] == "inkoop@boekhouder.nl" and "LEV2026-0001" in m["Subject"] and "181,50" in m["Subject"]
+    namen = sorted(d.get_filename() for d in m.iter_attachments())
+    assert namen == ["Leverancier_Software_B.V._LEV2026-0001.pdf", "Leverancier_Software_B.V._LEV2026-0001.xml"]
+    assert "Grootboek:" in m.get_body().get_content()
+    f = rij(con, "inkoopfacturen", fid)
+    assert f["doorgestuurd_op"] and f["doorstuur_melding"] is None
+    assert doorsturen.verwerk_wachtrij(con) == 0            # nooit dubbel
+    assert len(verstuurd) == 1
+
+
+def test_doorsturen_bij_ontvangst_en_alleen_nieuwe_facturen(con, tmp_path, nep_smtp):
+    import doorsturen
+    verstuurd, _ = nep_smtp
+    lev = relatie(con, "Lev", LEV_IBAN)
+    os.makedirs(intake.UPLOAD_MAP, exist_ok=True)
+    for naam in ("a-oud.pdf", "b-nieuw.pdf"):
+        with open(os.path.join(intake.UPLOAD_MAP, naam), "wb") as fh:
+            fh.write(b"%PDF-1.4")
+    oud = logica.voeg_inkoopfactuur_toe(con, lev, "OUD", VANDAAG, VANDAAG, "", 100, 21, bestand="a-oud.pdf")
+    con.execute("UPDATE inkoopfacturen SET aangemaakt_op = '2020-01-01T00:00:00' WHERE id = ?", (oud,))
+    db.zet_instelling(con, "doorstuur_email", "inkoop@boekhouder.nl")
+    db.zet_instelling(con, "doorstuur_moment", "ontvangst")
+    db.zet_instelling(con, "doorsturen_vanaf", "2025-01-01T00:00:00")
+    nieuw = logica.voeg_inkoopfactuur_toe(con, lev, "NIEUW", VANDAAG, VANDAAG, "", 100, 21, bestand="b-nieuw.pdf")
+    zonder_bestand = logica.voeg_inkoopfactuur_toe(con, lev, "LEEG", VANDAAG, VANDAAG, "", 100, 21)
+    assert [r["id"] for r in doorsturen.wachtrij(con)] == [nieuw]
+    assert doorsturen.verwerk_wachtrij(con) == 1 and "NIEUW" in verstuurd[0]["Subject"]
+    doorsturen.stuur(con, oud)                              # oudere factuur handmatig alsnog
+    assert rij(con, "inkoopfacturen", oud)["doorgestuurd_op"]
+    with pytest.raises(ValueError):
+        doorsturen.stuur(con, zonder_bestand)
+
+
+def test_doorsturen_via_schermen(tmp_path, monkeypatch, nep_smtp):
+    verstuurd, _ = nep_smtp
+    monkeypatch.setattr(intake, "UPLOAD_MAP", str(tmp_path / "uploads"))
+    from app import app
+    app.config.update(TESTING=True, DATABASE=str(tmp_path / "web2.db"))
+    web = app.test_client()
+    web.post("/instellingen", data={**db.STANDAARD_INSTELLINGEN, "iban": EIGEN_IBAN, "doorstuur_email": "fout-adres"})
+    assert b"geen geldig e-mailadres" in web.get("/instellingen").data
+    web.post("/instellingen", data={**db.STANDAARD_INSTELLINGEN, "iban": EIGEN_IBAN,
+                                    "doorstuur_email": "inkoop@boekhouder.nl"})
+    web.post("/inbox", data={"bestanden": [(io.BytesIO(ubl_van_leverancier(tmp_path)), "e.xml")]},
+             content_type="multipart/form-data")
+    assert verstuurd == []                                  # wacht op goedkeuring
+    assert b"gebeurt na goedkeuring" in web.get("/inkoop/1").data
+    web.post("/goedkeuren", data={"ids": "1", "actie": "goedkeuren"})
+    assert len(verstuurd) == 1                              # direct na goedkeuren verstuurd
+    assert b"doorgestuurd" in web.get("/inkoop/1").data
+    assert web.post("/inkoop/1/doorsturen").status_code == 302
+    assert len(verstuurd) == 2                              # handmatig opnieuw
+    for pad in ("/inkoop", "/instellingen"):
+        assert web.get(pad).status_code == 200
