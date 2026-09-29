@@ -14,7 +14,7 @@ In de bijlage het voorstel. Daarin staat wie wij zijn, hoe een samenwerking loop
 
 De kern:
 
-- Twaalf weken bellen namens Kubus Heerenveen, met een regionaal nummer op jullie naam.
+- Een looptijd van twaalf weken. We bellen daarin op de dagen en dagdelen die in onze data het beste werken, namens Kubus Heerenveen en met een regionaal nummer op jullie naam.
 - De bellijst bestaat uit ondernemingen tot twintig medewerkers in Friesland en omgeving.
 - Tien gekwalificeerde afspraken. Een afspraak telt pas mee als het bedrijf past, de interesse echt is en de ondernemer zelf aan tafel zit.
 - Eén vaste prijs van € 4.950 excl. btw, alles inbegrepen. Kick-off, belscript, bellijst, belsysteem, nummer en de wekelijkse rapportage zitten erin.
@@ -44,7 +44,7 @@ Hoi Jan,
 
 Bedankt voor vanochtend. In de bijlage het voorstel.
 
-De kern: twaalf weken bellen namens Kubus Heerenveen bij ondernemingen tot twintig medewerkers in Friesland en omgeving, met tien gekwalificeerde afspraken in jullie agenda. Eén vaste prijs van € 4.950 excl. btw, alles inbegrepen. Elke week een rapportage, om de week een evaluatie.
+De kern: een pilot met een looptijd van twaalf weken, waarin we namens Kubus Heerenveen bellen bij ondernemingen tot twintig medewerkers in Friesland en omgeving, met tien gekwalificeerde afspraken in jullie agenda. Eén vaste prijs van € 4.950 excl. btw, alles inbegrepen. Elke week een rapportage, om de week een evaluatie.
 
 Van jullie kant kost het vooraf ongeveer een halve dag. Daarna draaien wij.
 
