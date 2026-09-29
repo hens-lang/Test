@@ -618,11 +618,28 @@ def ponto_terug():
     if request.args.get("error"):
         raise ValueError(f"Koppelen afgebroken: {request.args.get('error_description') or request.args['error']}")
     ponto.verwerk_terugkeer(c, request.args.get("code"), request.args.get("state"))
-    ponto.kies_rekening(c, db.instellingen(c)["iban"])
-    db.log(c, "ABN AMRO gekoppeld via Ponto")
+    if ponto.kies_rekening(c, db.instellingen(c)["iban"]) is None:
+        return redirect(url_for("ponto_rekening"))
+    db.log(c, "ABN AMRO gekoppeld via Ponto", details=ponto.status(c)["rekening"])
     c.commit()
     flash("ABN AMRO is gekoppeld. Bankmutaties komen voortaan automatisch binnen.", "ok")
     return redirect(url_for("instellingen"))
+
+
+@app.route("/koppelen/ponto/rekening", methods=["GET", "POST"])
+@met_fouten
+def ponto_rekening():
+    """Rekening kiezen als het IBAN uit Instellingen niet in Ponto staat (bijv. in de testomgeving)."""
+    c = con()
+    if request.method == "POST":
+        if ponto.kies_rekening(c, rekening_id=request.form["rekening_id"]) is None:
+            raise ValueError("Deze rekening is niet (meer) beschikbaar in Ponto")
+        db.log(c, "ABN AMRO gekoppeld via Ponto", details=ponto.status(c)["rekening"])
+        c.commit()
+        flash(f"Rekening {ponto.status(c)['rekening']} gekoppeld. Bankmutaties komen voortaan automatisch binnen.", "ok")
+        return redirect(url_for("instellingen"))
+    return render_template("ponto_rekening.html", rekeningen=ponto.rekeningen(c),
+                           omgeving=os.environ.get("PONTO_OMGEVING", "live"))
 
 
 @app.route("/koppelen/ponto/betalen-activeren")

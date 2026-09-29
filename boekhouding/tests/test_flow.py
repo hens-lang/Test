@@ -321,7 +321,9 @@ def test_goedkeuren_zet_betaling_klaar_in_abn_via_ponto(con, monkeypatch):
         assert "code_challenge=" in url and "scope=ai+pi+offline_access" in url
         state = url.split("state=")[1].split("&")[0]
         ponto.verwerk_terugkeer(con, "CODE", state)
-        ponto.kies_rekening(con, EIGEN_IBAN)
+        assert ponto.kies_rekening(con, "NL02RABO0123456789") is None      # sandbox: ander IBAN -> zelf kiezen
+        assert [r["iban"] for r in ponto.rekeningen(con)] == [EIGEN_IBAN]
+        assert ponto.kies_rekening(con, rekening_id="acc1")["id"] == "acc1"
         assert betalen.ponto_actief(con)
 
         lev = relatie(con, "Lev", LEV_IBAN)

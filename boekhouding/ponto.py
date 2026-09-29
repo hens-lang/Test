@@ -148,17 +148,26 @@ def _verzoek(con, methode, pad, body=None):
 # ---------------------------------------------------------------- rekening & mutaties
 
 
-def kies_rekening(con, eigen_iban):
-    """Zoekt de ABN-rekening met het IBAN uit Instellingen."""
-    rekeningen = _verzoek(con, "GET", "/accounts")["data"]
+def rekeningen(con):
+    """Alle rekeningen die in Ponto aan deze koppeling zijn gegeven."""
+    return [{"id": r["id"], "iban": r["attributes"].get("reference", ""),
+             "naam": r["attributes"].get("description") or r["attributes"].get("product") or "",
+             "saldo": r["attributes"].get("currentBalance")}
+            for r in _verzoek(con, "GET", "/accounts")["data"]]
+
+
+def kies_rekening(con, eigen_iban=None, rekening_id=None):
+    """Koppelt de rekening met dit id, of anders die met het IBAN uit Instellingen.
+    Geeft None terug als er geen passende rekening is (dan kiest de gebruiker zelf)."""
+    alle = _verzoek(con, "GET", "/accounts")["data"]
     iban = (eigen_iban or "").replace(" ", "").upper()
-    match = next((r for r in rekeningen if r["attributes"].get("reference", "").replace(" ", "").upper() == iban), None)
+    match = next((r for r in alle if (rekening_id and r["id"] == rekening_id) or
+                  (not rekening_id and iban and r["attributes"].get("reference", "").replace(" ", "").upper() == iban)),
+                 None)
     if match is None:
-        gevonden = ", ".join(r["attributes"].get("reference", "?") for r in rekeningen) or "geen"
-        raise PontoFout(f"Rekening {iban} niet gevonden in Ponto (gekoppeld: {gevonden}). "
-                        "Controleer je IBAN in Instellingen of koppel deze rekening in Ponto.")
+        return None
     d = _lees(con)
-    d.update(rekening_id=match["id"], rekening_iban=iban,
+    d.update(rekening_id=match["id"], rekening_iban=match["attributes"].get("reference", "").replace(" ", "").upper(),
              betalen_actief=bool(match["attributes"].get("availableForPayments", True)))
     _schrijf(con, d)
     return match

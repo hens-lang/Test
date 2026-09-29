@@ -1,0 +1,14 @@
+{% extends 'base.html' %}{% block titel %}Rekening kiezen{% endblock %}
+{% block inhoud %}
+<div class="paginakop"><div><h1>Welke rekening wil je koppelen?</h1>
+<p>{% if inst.iban %}Je IBAN uit Instellingen ({{ inst.iban }}) staat niet tussen de rekeningen die je in Ponto hebt gedeeld.{% else %}Je hebt nog geen eigen IBAN ingevuld bij Instellingen.{% endif %}
+{% if omgeving == 'sandbox' %} In de testomgeving (sandbox) is dat normaal: kies hieronder een testrekening.{% endif %}</p></div></div>
+<div class="kaart">
+{% for r in rekeningen %}
+<form method="post" class="koppeling"><div class="icoon">🏦</div><div class="tekst">
+  <strong class="mono">{{ r.iban or 'onbekend IBAN' }}</strong><div class="zacht">{{ r.naam }}{% if r.saldo is not none %} · saldo € {{ '%.2f'|format(r.saldo|float) }}{% endif %}</div></div>
+  <input type="hidden" name="rekening_id" value="{{ r.id }}"><button>Deze koppelen</button></form>
+{% else %}<div class="leeg">Er zijn geen rekeningen gedeeld. Ga terug naar Ponto en geef toegang tot je ABN AMRO-rekening, en koppel daarna opnieuw.</div>{% endfor %}
+</div>
+{% if omgeving != 'sandbox' %}<p class="zacht">Staat je ABN-rekening er wel bij, maar met een ander IBAN dan in Instellingen? Pas dan het IBAN bij <a href="{{ url_for('instellingen') }}">Instellingen</a> aan.</p>{% endif %}
+{% endblock %}
