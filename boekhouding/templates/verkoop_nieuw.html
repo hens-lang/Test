@@ -1,20 +1,21 @@
 {% extends 'base.html' %}{% block titel %}Nieuwe factuur{% endblock %}
 {% block inhoud %}
-<h1>Nieuwe verkoopfactuur <span class="zacht">{{ nummer }}</span></h1>
+<div class="paginakop"><div><h1>Nieuwe verkoopfactuur</h1><p>Wordt nummer {{ nummer }}</p></div></div>
 {% if not debiteuren %}<div class="melding fout">Voeg eerst een <a href="{{ url_for('relatie', terug=url_for('verkoop_nieuw')) }}">klant (debiteur)</a> toe.</div>{% endif %}
 <form method="post" class="kaart">
 <div class="rij">
-  <div><label>Klant *</label><select name="relatie_id" required>{% for d in debiteuren %}<option value="{{ d.id }}">{{ d.naam }}</option>{% endfor %}</select></div>
+  <div><label>Klant *</label><select name="relatie_id" required>{% for d in debiteuren %}<option value="{{ d.id }}">{{ d.naam }}{{ '' if d.email else ' (geen e-mail)' }}</option>{% endfor %}</select></div>
   <div><label>Factuurdatum</label><input type="date" name="factuurdatum" value="{{ vandaag }}"></div>
 </div>
 <h2>Regels</h2>
-<table id="regels"><tr><th>Omschrijving</th><th style="width:90px">Aantal</th><th style="width:130px">Prijs excl.</th><th style="width:110px">Btw</th></tr>
+<div style="overflow-x:auto"><table id="regels"><thead><tr><th>Omschrijving</th><th style="width:90px">Aantal</th><th style="width:130px">Prijs excl.</th><th style="width:110px">Btw</th></tr></thead><tbody>
 {% for i in range(3) %}
-<tr><td><input name="omschrijving"></td><td><input name="aantal" value="1"></td><td><input name="prijs" placeholder="0,00"></td>
+<tr><td><input name="omschrijving"></td><td><input name="aantal" value="1" inputmode="decimal"></td><td><input name="prijs" placeholder="0,00" inputmode="decimal"></td>
 <td><select name="btw_pct"><option value="21">21%</option><option value="9">9%</option><option value="0">0%</option></select></td></tr>
-{% endfor %}</table>
-<div class="acties"><button type="button" class="licht" onclick="const t=document.getElementById('regels');const r=t.rows[1].cloneNode(true);r.querySelectorAll('input').forEach(i=>i.value=i.name=='aantal'?'1':'');t.tBodies[0].appendChild(r)">+ regel</button></div>
+{% endfor %}</tbody></table></div>
+<div class="acties"><button type="button" class="licht klein" onclick="const t=document.querySelector('#regels tbody');const r=t.rows[0].cloneNode(true);r.querySelectorAll('input').forEach(i=>i.value=i.name=='aantal'?'1':'');t.appendChild(r)">+ regel</button></div>
 <label>Notities op factuur</label><textarea name="notities" rows="2"></textarea>
+{% if mail_aan %}<label class="vink"><input type="checkbox" name="direct_mailen" value="1" checked> Direct mailen naar de klant (pdf + e-factuur)</label>{% endif %}
 <div class="acties"><button>Factuur aanmaken</button></div>
 </form>
 {% endblock %}

@@ -1,6 +1,8 @@
 __pycache__/
 *.pyc
+.venv/
 data/
 uploads/*
 !uploads/.gitkeep
-.venv/
+config.env
+*.pem

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}{% block titel %}Rapportages{% endblock %}
+{% block inhoud %}
+<div class="paginakop"><div><h1>Rapportages {{ jaar }}</h1><p>Rechtstreeks uit het grootboek, altijd actueel.</p></div>
+<span class="niet-printen"><a href="{{ url_for('rapportages', jaar=jaar-1) }}">← {{ jaar-1 }}</a> · <a href="{{ url_for('rapportages', jaar=jaar+1) }}">{{ jaar+1 }} →</a> · <a href="#" onclick="window.print();return false">Afdrukken</a></span></div>
+<div class="tegels">
+  <div class="tegel"><div class="label">Omzet</div><div class="getal">{{ wv.totaal_opbrengsten|euro }}</div></div>
+  <div class="tegel"><div class="label">Kosten</div><div class="getal">{{ wv.totaal_kosten|euro }}</div></div>
+  <div class="tegel"><div class="label">Resultaat voor belasting</div><div class="getal {{ 'groen' if wv.resultaat >= 0 else 'rood' }}">{{ wv.resultaat|euro }}</div>
+    <div class="sub">{% if wv.totaal_opbrengsten %}marge {{ (wv.resultaat / wv.totaal_opbrengsten * 100)|round(1) }}%{% endif %}</div></div>
+</div>
+<div class="raster-2">
+<div class="kaart"><h2>Winst- en verliesrekening</h2>
+<table><tbody>
+<tr><th colspan="2">Opbrengsten</th></tr>
+{% for code, naam, b in wv.opbrengsten %}<tr><td><a href="{{ url_for('grootboekkaart', code=code, jaar=jaar) }}">{{ code }}</a> {{ naam }}</td><td class="bedrag">{{ b|euro }}</td></tr>{% else %}<tr><td colspan="2" class="zacht">Geen</td></tr>{% endfor %}
+<tr class="totaal"><td>Totaal opbrengsten</td><td class="bedrag">{{ wv.totaal_opbrengsten|euro }}</td></tr>
+<tr><th colspan="2">Kosten</th></tr>
+{% for code, naam, b in wv.kosten %}<tr><td><a href="{{ url_for('grootboekkaart', code=code, jaar=jaar) }}">{{ code }}</a> {{ naam }}</td><td class="bedrag">{{ b|euro }}</td></tr>{% else %}<tr><td colspan="2" class="zacht">Geen</td></tr>{% endfor %}
+<tr class="totaal"><td>Totaal kosten</td><td class="bedrag">{{ wv.totaal_kosten|euro }}</td></tr>
+<tr class="totaal"><td>Resultaat</td><td class="bedrag">{{ wv.resultaat|euro }}</td></tr>
+</tbody></table></div>
+<div class="kaart"><h2>Balans per {{ peildatum }}</h2>
+<table><tbody>
+<tr><th colspan="2">Activa</th></tr>
+{% for code, naam, b in balans.activa %}<tr><td><a href="{{ url_for('grootboekkaart', code=code, jaar=jaar) }}">{{ code }}</a> {{ naam }}</td><td class="bedrag">{{ b|euro }}</td></tr>{% endfor %}
+<tr class="totaal"><td>Totaal activa</td><td class="bedrag">{{ balans.totaal_activa|euro }}</td></tr>
+<tr><th colspan="2">Passiva</th></tr>
+{% for code, naam, b in balans.passiva %}<tr><td><a href="{{ url_for('grootboekkaart', code=code, jaar=jaar) }}">{{ code }}</a> {{ naam }}</td><td class="bedrag">{{ b|euro }}</td></tr>{% endfor %}
+<tr><td>Resultaat lopend jaar</td><td class="bedrag">{{ balans.resultaat|euro }}</td></tr>
+<tr class="totaal"><td>Totaal passiva</td><td class="bedrag">{{ balans.totaal_passiva|euro }}</td></tr>
+</tbody></table>
+{% if balans.totaal_activa != balans.totaal_passiva %}<p class="rood klein">Let op: de balans sluit niet ({{ (balans.totaal_activa - balans.totaal_passiva)|euro }} verschil). Voer een beginbalans in via de accountant.</p>{% endif %}
+</div></div>
+<p class="zacht">Indicatief overzicht. Een beginbalans, afschrijvingen en de jaarafsluiting blijven werk voor de accountant.</p>
+{% endblock %}

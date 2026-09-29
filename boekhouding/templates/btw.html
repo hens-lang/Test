@@ -1,10 +1,17 @@
-{% extends 'base.html' %}{% block titel %}Btw{% endblock %}
+{% extends 'base.html' %}{% block titel %}Btw-aangifte{% endblock %}
 {% block inhoud %}
-<div class="acties" style="justify-content:space-between"><h1 style="margin:0">Btw-overzicht {{ jaar }}</h1>
+<div class="paginakop"><div><h1>Btw-aangifte {{ jaar }}</h1><p>Per kwartaal, in de rubrieken van het aangifteformulier van de Belastingdienst.</p></div>
 <span><a href="{{ url_for('btw', jaar=jaar-1) }}">← {{ jaar-1 }}</a> · <a href="{{ url_for('btw', jaar=jaar+1) }}">{{ jaar+1 }} →</a></span></div>
-<div class="tabel-wrap"><table>
-<tr><th>Periode</th><th class="bedrag">Omzet excl.</th><th class="bedrag">Btw verkoop (1a/1b)</th><th class="bedrag">Kosten excl.</th><th class="bedrag">Voorbelasting (5b)</th><th class="bedrag">Te betalen</th></tr>
-{% for k in kwartalen %}<tr><td>{{ k.periode }}</td><td class="bedrag">{{ k.omzet|euro }}</td><td class="bedrag">{{ k.verkoop_btw|euro }}</td><td class="bedrag">{{ k.kosten|euro }}</td><td class="bedrag">{{ k.voorbelasting|euro }}</td><td class="bedrag"><strong>{{ k.te_betalen|euro }}</strong></td></tr>{% endfor %}
-</table></div>
-<p class="zacht">Indicatie op factuurdatum: verkoop telt vanaf status 'verzonden', inkoop telt alles behalve afgekeurde facturen. Controleer met je accountant vóór het indienen van de aangifte.</p>
+{% for k in kwartalen %}
+<div class="kaart">
+  <div class="paginakop" style="margin-bottom:6px"><h2 style="margin:0">{{ k.periode }}</h2>
+    <strong class="{{ 'rood' if k.te_betalen > 0 else 'groen' }}">{{ k.te_betalen|euro }} {{ 'te betalen' if k.te_betalen >= 0 else 'terug te vragen' }}</strong></div>
+  <table><thead><tr><th>Rubriek</th><th></th><th class="bedrag">Omzet</th><th class="bedrag">Btw</th></tr></thead><tbody>
+  {% for code, r in k.aangifte.rubrieken.items() %}<tr><td class="mono">{{ code }}</td><td>{{ r.omschrijving }}</td><td class="bedrag">{{ (r.omzet / 100)|round|int }}</td><td class="bedrag">{{ (r.btw / 100)|round|int }}</td></tr>{% endfor %}
+  <tr><td class="mono">5a</td><td>Verschuldigde omzetbelasting</td><td></td><td class="bedrag">{{ (k.aangifte['5a'] / 100)|round|int }}</td></tr>
+  <tr><td class="mono">5b</td><td>Voorbelasting</td><td></td><td class="bedrag">{{ (k.aangifte['5b'] / 100)|round|int }}</td></tr>
+  <tr class="totaal"><td class="mono">5g</td><td>Totaal te betalen / terug te vragen</td><td></td><td class="bedrag">{{ k.te_betalen|euro }}</td></tr>
+  </tbody></table>
+</div>{% endfor %}
+<p class="zacht">De Belastingdienst werkt met hele euro's (omzet en btw afgerond). Gebaseerd op factuurdatum van geboekte facturen. Laat de aangifte controleren door je accountant.</p>
 {% endblock %}

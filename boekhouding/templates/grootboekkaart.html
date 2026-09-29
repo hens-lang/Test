@@ -1,0 +1,14 @@
+{% extends 'base.html' %}{% block titel %}{{ rek.code }} {{ rek.naam }}{% endblock %}
+{% block inhoud %}
+<div class="paginakop"><div><h1>{{ rek.code }} · {{ rek.naam }}</h1><p>Grootboekkaart {{ jaar }}</p></div>
+<span><a href="{{ url_for('grootboekkaart', code=rek.code, jaar=jaar-1) }}">← {{ jaar-1 }}</a> · <a href="{{ url_for('grootboekkaart', code=rek.code, jaar=jaar+1) }}">{{ jaar+1 }} →</a></span></div>
+<div class="tabel-wrap"><table>
+<thead><tr><th>Datum</th><th>Dagboek</th><th>Omschrijving</th><th class="bedrag">Debet</th><th class="bedrag">Credit</th><th class="bedrag">Saldo</th></tr></thead><tbody>
+{% set ns = namespace(s=0) %}
+{% for r in regels %}{% set ns.s = ns.s + r.debet_cent - r.credit_cent %}
+<tr><td>{{ r.datum }}</td><td>{{ r.dagboek }}</td>
+<td>{% if r.bron_type == 'inkoop' %}<a href="{{ url_for('inkoop_detail', fid=r.bron_id) }}">{{ r.omschrijving }}</a>{% elif r.bron_type == 'verkoop' %}<a href="{{ url_for('verkoop_detail', fid=r.bron_id) }}">{{ r.omschrijving }}</a>{% else %}{{ r.omschrijving }}{% endif %}</td>
+<td class="bedrag">{{ r.debet_cent|euro if r.debet_cent }}</td><td class="bedrag">{{ r.credit_cent|euro if r.credit_cent }}</td><td class="bedrag">{{ ns.s|euro }}</td></tr>
+{% else %}<tr><td colspan="6" class="leeg">Geen boekingen in {{ jaar }}.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

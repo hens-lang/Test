@@ -1,11 +1,13 @@
 {% extends 'base.html' %}{% block titel %}Relaties{% endblock %}
 {% block inhoud %}
-<div class="acties" style="justify-content:space-between"><h1 style="margin:0">Relaties</h1><a class="knop" href="{{ url_for('relatie') }}">+ Nieuwe relatie</a></div>
+<div class="paginakop"><div><h1>Relaties</h1><p>Leveranciers worden automatisch aangemaakt vanuit binnenkomende facturen.</p></div><a class="knop" href="{{ url_for('relatie') }}">+ Nieuwe relatie</a></div>
 <div class="tabel-wrap"><table>
-<tr><th>Naam</th><th>Soort</th><th>IBAN</th><th>E-mail</th><th class="bedrag">Auto-goedkeuren tot</th></tr>
+<thead><tr><th>Naam</th><th>Soort</th><th>IBAN</th><th>Standaard rekening</th><th class="bedrag">Automatisch goedkeuren tot</th><th class="bedrag">Facturen</th></tr></thead><tbody>
 {% for r in relaties %}
-<tr><td><a href="{{ url_for('relatie', rid=r.id) }}">{{ r.naam }}</a></td><td>{{ r.soort }}</td><td>{{ r.iban or '—' }}</td><td>{{ r.email or '' }}</td>
-<td class="bedrag">{{ r.auto_goedkeur_limiet_cent|euro if r.auto_goedkeur_limiet_cent else 'altijd handmatig' }}</td></tr>
-{% else %}<tr><td colspan="5" class="leeg">Nog geen relaties.</td></tr>{% endfor %}
-</table></div>
+<tr><td><a href="{{ url_for('relatie', rid=r.id) }}">{{ r.naam }}</a>{% if r.bron == 'automatisch' %} <span class="status" title="Automatisch aangemaakt">auto</span>{% endif %}</td><td>{{ r.soort }}</td>
+<td class="mono">{{ r.iban or '—' }}{% if r.iban and not r.iban_geverifieerd %} <span class="oranje" title="Nog niet geverifieerd">•</span>{% endif %}</td>
+<td class="zacht">{{ r.standaard_rekening or '' }}</td>
+<td class="bedrag">{{ r.auto_goedkeur_limiet_cent|euro if r.auto_goedkeur_limiet_cent else '—' }}</td><td class="bedrag">{{ r.n_inkoop + r.n_verkoop }}</td></tr>
+{% else %}<tr><td colspan="6" class="leeg">Nog geen relaties.</td></tr>{% endfor %}
+</tbody></table></div>
 {% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}{% block titel %}Grootboek{% endblock %}
+{% block inhoud %}
+<div class="paginakop"><div><h1>Grootboek {{ jaar }}</h1><p>Alle boekingen gebeuren automatisch. Klik op een rekening voor de grootboekkaart.</p></div>
+<span><a href="{{ url_for('grootboek_scherm', jaar=jaar-1) }}">← {{ jaar-1 }}</a> · <a href="{{ url_for('grootboek_scherm', jaar=jaar+1) }}">{{ jaar+1 }} →</a></span></div>
+<div class="tabel-wrap"><table>
+<thead><tr><th>Code</th><th>Rekening</th><th>Soort</th><th class="bedrag">Saldo {{ jaar }}</th></tr></thead><tbody>
+{% for s in saldi %}<tr><td class="mono"><a href="{{ url_for('grootboekkaart', code=s.code, jaar=jaar) }}">{{ s.code }}</a></td><td>{{ s.naam }}</td><td class="zacht">{{ s.soort }}</td>
+<td class="bedrag">{% if s.saldo %}{{ (s.saldo if s.soort in ('activa','kosten') else -s.saldo)|euro }}{% else %}<span class="zacht">—</span>{% endif %}</td></tr>{% endfor %}
+</tbody></table></div>
+<form method="post" class="kaart"><h2>Rekening toevoegen</h2>
+<div class="rij"><div><label>Code</label><input name="code" required inputmode="numeric" placeholder="bijv. 4610"></div><div><label>Naam</label><input name="naam" required></div>
+<div><label>Soort</label><select name="soort"><option value="kosten">kosten</option><option value="opbrengst">opbrengst</option><option value="activa">activa</option><option value="passiva">passiva</option></select></div></div>
+<div class="acties"><button class="licht">Toevoegen</button></div></form>
+{% endblock %}

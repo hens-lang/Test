@@ -1,0 +1,3 @@
+{% for w in (tekst or '').split('\n') if w %}
+<div class="waarschuwing {{ 'ernstig' if w.startswith('LET OP') else ('info' if w.startswith(('Wordt geïncasseerd','Factuur is al betaald','Creditnota')) else '') }}">{{ '⚠' if not w.startswith(('Wordt','Factuur is al','Creditnota')) else 'ℹ' }} {{ w }}</div>
+{% endfor %}

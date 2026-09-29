@@ -1,42 +1,64 @@
 {% extends 'base.html' %}{% block titel %}Betalingen{% endblock %}
 {% block inhoud %}
-<h1>Betalingen</h1>
+<div class="paginakop"><div><h1>Betalingen</h1>
+<p>{% if ponto_aan %}Gekoppeld met ABN AMRO: betaalopdrachten gaan rechtstreeks naar je ABN-app.{% else %}Nog niet gekoppeld met ABN AMRO: je krijgt een betaalbestand om te uploaden. <a href="{{ url_for('instellingen') }}">Koppelen →</a>{% endif %}</p></div></div>
+
+{% set wacht = batches|selectattr('status','equalto','ter_ondertekening')|list %}
+{% for b in wacht %}
+<div class="kaart" style="border-left:3px solid var(--waarschuw)">
+  <strong>Betaalopdracht #{{ b.id }} wacht op jouw bevestiging</strong> · {{ b.aantal }} betaling(en), {{ b.totaal_cent|euro }}, uitvoerdatum {{ b.uitvoerdatum }}
+  <div class="acties"><a class="knop ok" href="{{ b.ondertekenen_url }}">Bevestigen in ABN AMRO</a>
+  <a class="knop licht" href="{{ url_for('betalen_terug') }}">Status verversen</a></div>
+</div>{% endfor %}
+
 {% if request.args.nieuw %}
-<div class="kaart" style="border-left:4px solid var(--ok)">
-  <strong>Betaalbatch #{{ request.args.nieuw }} staat klaar.</strong>
+<div class="kaart" style="border-left:3px solid var(--ok)">
+  <strong>Betaalbestand #{{ request.args.nieuw }} staat klaar.</strong>
   <div class="acties"><a class="knop" href="{{ url_for('batch_download', bid=request.args.nieuw) }}">⬇ Download betaalbestand</a></div>
-  <span class="zacht">Upload dit bestand in je bankomgeving (ING: Betalen → Batchbetalingen, Rabobank: Betalen → Bestanden aanleveren, ABN AMRO: Betalen → Batch). Bevestig daar één keer; de bank voert alles uit. Lees daarna je afschrift in bij <a href="{{ url_for('bank') }}">Bank</a> — de facturen gaan dan automatisch op betaald.</span>
+  <span class="zacht">ABN AMRO Internet Bankieren → Betalen → Batchbetalingen / Bestand uploaden → kies dit bestand → bevestig met de app.
+  Zodra de afschrijving binnenkomt, gaan de facturen automatisch op betaald.</span>
 </div>{% endif %}
 
 <h2>Betaalvoorstel</h2>
 {% if voorstel %}
-<form method="post" action="{{ url_for('batch_maken') }}">
+<form method="post" action="{{ url_for('betaalopdracht_maken') }}">
 <div class="tabel-wrap"><table>
-<tr><th><input type="checkbox" checked onclick="document.querySelectorAll('input[name=ids]').forEach(c=>c.checked=this.checked)"></th>
-<th>Leverancier</th><th>Factuur</th><th>IBAN</th><th>Vervalt</th><th>Betalen op</th><th class="bedrag">Bedrag</th></tr>
+<thead><tr><th><input type="checkbox" checked onclick="document.querySelectorAll('input[name=ids]').forEach(c=>{if(!c.disabled)c.checked=this.checked})"></th>
+<th>Leverancier</th><th>Factuur</th><th>IBAN</th><th>Vervalt</th><th>Betalen op</th><th class="bedrag">Bedrag</th></tr></thead><tbody>
 {% for v in voorstel %}
 <tr><td><input type="checkbox" name="ids" value="{{ v.id }}" {{ 'checked' if v.iban_ok else 'disabled' }}></td>
-<td>{{ v.relatie_naam }}</td><td><a href="{{ url_for('inkoop_detail', fid=v.id) }}">{{ v.factuurnummer }}</a></td>
-<td>{% if v.iban_ok %}{{ v.relatie_iban }}{% else %}<a class="rood" href="{{ url_for('relatie', rid=v.relatie_id, terug=url_for('betalingen')) }}">IBAN ontbreekt</a>{% endif %}</td>
-<td>{{ v.vervaldatum }}</td><td>{{ v.betaaldatum }}</td><td class="bedrag">{{ v.bedrag_incl_cent|euro }}</td></tr>
+<td>{{ v.relatie_naam }}</td><td><a href="{{ url_for('inkoop_detail', fid=v.id) }}">{{ v.factuurnummer }}</a>
+  {% for c in v.credits %}<div class="zacht">−{{ (-c.bedrag_incl_cent)|euro }} creditnota {{ c.factuurnummer }}</div>{% endfor %}</td>
+<td class="mono">{% if v.iban_ok %}{{ v.relatie_iban }}{% else %}<a class="rood" href="{{ url_for('relatie', rid=v.relatie_id, terug=url_for('betalingen')) }}">IBAN ontbreekt</a>{% endif %}</td>
+<td>{{ v.vervaldatum }}</td><td>{{ v.betaaldatum }}</td><td class="bedrag">{{ v.te_betalen_cent|euro }}</td></tr>
 {% endfor %}
-<tr><td colspan="6"><strong>Totaal</strong></td><td class="bedrag"><strong>{{ voorstel|sum(attribute='bedrag_incl_cent')|euro }}</strong></td></tr>
-</table></div>
+<tr class="totaal"><td colspan="6">Totaal</td><td class="bedrag">{{ voorstel|sum(attribute='te_betalen_cent')|euro }}</td></tr>
+</tbody></table></div>
 <div class="acties">
-  <label style="margin:0">Uitvoerdatum</label><input type="date" name="uitvoerdatum" style="max-width:180px" title="Leeg = vroegste geplande betaaldatum">
-  <button class="ok">Maak betaalbestand</button>
+  <label style="margin:0">Uitvoerdatum</label><input type="date" name="uitvoerdatum" style="max-width:180px" title="Leeg = geplande betaaldatum">
+  <button class="ok">{{ 'Klaarzetten in ABN AMRO' if ponto_aan else 'Maak betaalbestand' }}</button>
 </div>
 </form>
 {% else %}<div class="kaart leeg">Geen goedgekeurde facturen om te betalen.</div>{% endif %}
 
-<h2>Betaalbatches</h2>
+{% if wachtend %}
+<h2>Wordt afgeschreven door leverancier</h2>
+<div class="tabel-wrap"><table><thead><tr><th>Leverancier</th><th>Factuur</th><th>Wijze</th><th class="bedrag">Bedrag</th></tr></thead><tbody>
+{% for f in wachtend %}<tr><td>{{ f.relatie_naam }}</td><td><a href="{{ url_for('inkoop_detail', fid=f.id) }}">{{ f.factuurnummer }}</a></td><td>{{ f.betaalwijze.replace('_',' ') }}</td><td class="bedrag">{{ f.bedrag_incl_cent|euro }}</td></tr>{% endfor %}
+</tbody></table></div>
+<p class="zacht">Deze facturen worden niet door jou betaald; ze gaan vanzelf op betaald zodra de afschrijving op je bankrekening staat.</p>
+{% endif %}
+
+<h2>Betaalopdrachten</h2>
 <div class="tabel-wrap"><table>
-<tr><th>#</th><th>Aangemaakt</th><th>Uitvoerdatum</th><th>Posten</th><th class="bedrag">Totaal</th><th>Status</th><th></th></tr>
+<thead><tr><th>#</th><th>Aangemaakt</th><th>Uitvoering</th><th>Via</th><th>Posten</th><th class="bedrag">Totaal</th><th>Status</th><th></th></tr></thead><tbody>
 {% for b in batches %}{% set s = batch_status[b.id] %}
-<tr><td>{{ b.id }}</td><td>{{ b.aangemaakt_op.replace('T',' ') }}</td><td>{{ b.uitvoerdatum }}</td><td>{{ b.aantal }}</td><td class="bedrag">{{ b.totaal_cent|euro }}</td>
-<td>{% if s.open %}<span class="status in_batch">{{ s.betaald or 0 }}/{{ b.aantal }} betaald</span>{% elif s.betaald %}<span class="status betaald">betaald</span>{% else %}<span class="status">geannuleerd</span>{% endif %}</td>
-<td style="white-space:nowrap"><a href="{{ url_for('batch_download', bid=b.id) }}">download</a>
-{% if s.open %} · <form class="inline" method="post" action="{{ url_for('batch_annuleren', bid=b.id) }}" onsubmit="return confirm('Batch annuleren? Doe dit alleen als je het bestand NIET bij de bank hebt ingediend.')"><button class="licht" style="padding:2px 8px">annuleren</button></form>{% endif %}</td></tr>
-{% else %}<tr><td colspan="7" class="zacht">Nog geen batches.</td></tr>{% endfor %}
-</table></div>
+<tr><td>{{ b.id }}</td><td>{{ b.aangemaakt_op.replace('T',' ')[:16] }}</td><td>{{ b.uitvoerdatum }}</td><td>{{ 'ABN-app' if b.kanaal == 'ponto' else 'bestand' }}</td><td>{{ b.aantal }}</td><td class="bedrag">{{ b.totaal_cent|euro }}</td>
+<td>{% if b.status in ('geannuleerd','geweigerd') %}<span class="status {{ b.status }}">{{ b.status }}</span>
+    {% elif s.open %}{% if b.status == 'ter_ondertekening' %}<span class="status ter_ondertekening">te bevestigen</span>{% else %}<span class="status in_batch">{{ s.betaald or 0 }}/{{ b.aantal }} afgeschreven</span>{% endif %}
+    {% else %}<span class="status betaald">betaald</span>{% endif %}</td>
+<td style="white-space:nowrap"><a href="{{ url_for('batch_download', bid=b.id) }}">xml</a>
+{% if s.open and b.status not in ('geannuleerd','geweigerd') %} · <form class="inline" method="post" action="{{ url_for('batch_annuleren', bid=b.id) }}" onsubmit="return confirm('Betaalopdracht annuleren? Doe dit alleen als hij NIET bij de bank is bevestigd of uitgevoerd.')"><button class="licht klein">annuleren</button></form>{% endif %}</td></tr>
+{% else %}<tr><td colspan="8" class="zacht">Nog geen betaalopdrachten.</td></tr>{% endfor %}
+</tbody></table></div>
 {% endblock %}

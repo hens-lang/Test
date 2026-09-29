@@ -1,0 +1,40 @@
+{% extends 'base.html' %}{% block titel %}Inbox{% endblock %}
+{% block inhoud %}
+<div class="paginakop"><div><h1>Inbox</h1><p>Alle binnengekomen documenten. Facturen worden automatisch gelezen, geboekt en klaargezet om goed te keuren.</p></div>
+  {% if mail_in %}<form method="post" action="{{ url_for('inbox_ophalen') }}"><button class="licht">Mailbox nu ophalen</button></form>{% endif %}</div>
+
+<form method="post" enctype="multipart/form-data" id="uploadform">
+  <label class="dropzone" id="dropzone">
+    <input type="file" name="bestanden" multiple accept=".pdf,.xml,image/*" onchange="this.form.submit()">
+    <div style="font-size:28px">📄</div>
+    <div class="groot">Sleep facturen hierheen of klik om te kiezen</div>
+    <div class="zacht">pdf, e-factuur (xml) of foto · meerdere tegelijk mag</div>
+  </label>
+</form>
+<p class="zacht" style="margin:10px 2px 18px">
+  {% if mail_in %}Facturen die naar <strong>{{ mailadres }}</strong> worden gestuurd komen hier elke 5 minuten vanzelf binnen.{% else %}Tip: koppel een factuurmailbox bij <a href="{{ url_for('instellingen') }}">Instellingen</a>, dan komen facturen vanzelf binnen.{% endif %}
+  Je kunt ook bestanden in de map <span class="mono">{{ inbox_map }}</span> zetten.
+  {% if not ai_aan %}<br><span class="oranje">AI-herkenning staat uit: alleen e-facturen worden volledig automatisch gelezen, pdf's met eenvoudige tekstherkenning.</span>{% endif %}
+</p>
+
+<div class="tabel-wrap"><table>
+<thead><tr><th>Ontvangen</th><th>Document</th><th>Bron</th><th>Resultaat</th><th></th></tr></thead><tbody>
+{% for d in docs %}
+<tr><td class="zacht" style="white-space:nowrap">{{ d.ontvangen_op.replace('T',' ')[:16] }}</td>
+<td><a href="{{ url_for('bestand', naam=d.opslag) }}" target="_blank">{{ d.bestandsnaam }}</a>{% if d.onderwerp %}<br><span class="zacht">{{ d.afzender }} · {{ d.onderwerp }}</span>{% endif %}</td>
+<td>{{ d.bron }}</td>
+<td>{% if d.status == 'verwerkt' %}<span class="status verwerkt">verwerkt</span> <a href="{{ url_for('inkoop_detail', fid=d.inkoopfactuur_id) }}">{{ d.relatie_naam }} · {{ d.bedrag_incl_cent|euro }}</a> <span class="status {{ d.factuur_status }}">{{ (d.factuur_status or '').replace('_',' ') }}</span>
+    {% else %}<span class="status {{ d.status }}">{{ d.status }}</span>{% if d.melding %}<div class="zacht">{{ d.melding }}</div>{% endif %}{% endif %}</td>
+<td style="white-space:nowrap">{% if d.status in ('fout','genegeerd') %}
+  <form class="inline" method="post" action="{{ url_for('inbox_actie', doc_id=d.id, actie='opnieuw') }}"><button class="licht klein">Opnieuw</button></form>
+  {% if d.status == 'fout' %}<form class="inline" method="post" action="{{ url_for('inbox_actie', doc_id=d.id, actie='negeer') }}"><button class="licht klein">Negeren</button></form>{% endif %}
+  <a class="knop licht klein" href="{{ url_for('inkoop_nieuw') }}">Handmatig</a>{% endif %}</td></tr>
+{% else %}<tr><td colspan="5" class="leeg"><div class="groot">📭</div>Nog geen documenten ontvangen.</td></tr>{% endfor %}
+</tbody></table></div>
+<script>
+const dz = document.getElementById('dropzone'), inp = dz.querySelector('input');
+['dragenter','dragover'].forEach(e => dz.addEventListener(e, ev => { ev.preventDefault(); dz.classList.add('actief'); }));
+['dragleave','drop'].forEach(e => dz.addEventListener(e, ev => { ev.preventDefault(); dz.classList.remove('actief'); }));
+dz.addEventListener('drop', ev => { inp.files = ev.dataTransfer.files; document.getElementById('uploadform').submit(); });
+</script>
+{% endblock %}

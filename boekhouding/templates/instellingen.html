@@ -1,11 +1,40 @@
 {% extends 'base.html' %}{% block titel %}Instellingen{% endblock %}
 {% block inhoud %}
-<h1>Instellingen</h1>
+<div class="paginakop"><div><h1>Instellingen</h1></div></div>
+
+<div class="kaart">
+  <h2>Koppelingen</h2>
+  <div class="koppeling"><div class="icoon">🏦</div><div class="tekst">
+    <strong>ABN AMRO (via Ponto)</strong>
+    <div class="zacht">{% if ponto_status.verbonden %}<span class="stip aan"></span>Gekoppeld met {{ ponto_status.rekening }}. Bankmutaties komen elk uur binnen; betalingen gaan na goedkeuren naar je ABN-app.
+      {% elif ponto_status.ingesteld %}<span class="stip uit"></span>Klaar om te koppelen. Je logt in bij Ponto en geeft toegang tot je ABN-rekening.
+      {% else %}<span class="stip"></span>Nog niet ingesteld. Maak een Ponto-account aan en zet de gegevens in <span class="mono">config.env</span> (zie README).{% endif %}</div>
+    {% if ponto_status.ingesteld %}<div class="acties" style="margin-bottom:0">
+      {% if ponto_status.verbonden %}
+        <a class="knop licht klein" href="{{ url_for('ponto_betalen_activeren') }}">Betalen activeren (eenmalig)</a>
+        <form class="inline" method="post" action="{{ url_for('ponto_ontkoppelen') }}" onsubmit="return confirm('Koppeling met ABN AMRO verbreken?')"><button class="licht klein">Ontkoppelen</button></form>
+      {% else %}<a class="knop klein" href="{{ url_for('ponto_koppelen') }}">ABN AMRO koppelen</a>{% endif %}
+    </div><div class="zacht klein">Redirect-URL voor het Ponto-dashboard: <span class="mono">{{ redirect_uri }}</span></div>{% endif %}
+  </div></div>
+  <div class="koppeling"><div class="icoon">✨</div><div class="tekst">
+    <strong>Facturen lezen met AI (Claude)</strong>
+    <div class="zacht">{% if ai_aan %}<span class="stip aan"></span>Aan: pdf's en foto's worden automatisch uitgelezen en gecategoriseerd.{% else %}<span class="stip uit"></span>Uit. Zet <span class="mono">ANTHROPIC_API_KEY</span> in config.env. Zonder AI worden alleen e-facturen volledig automatisch gelezen.{% endif %}</div>
+  </div></div>
+  <div class="koppeling"><div class="icoon">📥</div><div class="tekst">
+    <strong>Factuurmailbox</strong>
+    <div class="zacht">{% if mail_in %}<span class="stip aan"></span>Gekoppeld: bijlagen worden elke 5 minuten opgehaald.{% else %}<span class="stip uit"></span>Niet gekoppeld. Maak bijv. facturen@jullie-domein.nl aan en zet <span class="mono">IMAP_HOST</span>, <span class="mono">IMAP_GEBRUIKER</span> en <span class="mono">IMAP_WACHTWOORD</span> in config.env.{% endif %}</div>
+  </div></div>
+  <div class="koppeling"><div class="icoon">📤</div><div class="tekst">
+    <strong>Uitgaande e-mail</strong>
+    <div class="zacht">{% if mail_uit %}<span class="stip aan"></span>Ingesteld: verkoopfacturen, herinneringen en de dagelijkse samenvatting worden verstuurd.{% else %}<span class="stip uit"></span>Niet ingesteld. Zet <span class="mono">SMTP_HOST</span>, <span class="mono">SMTP_GEBRUIKER</span> en <span class="mono">SMTP_WACHTWOORD</span> in config.env.{% endif %}</div>
+  </div></div>
+</div>
+
 <form method="post" class="kaart">
-<h2 style="margin-top:0">Bedrijf</h2>
+<h2>Bedrijf</h2>
 <div class="rij">
   <div><label>Bedrijfsnaam</label><input name="bedrijfsnaam" value="{{ inst.bedrijfsnaam }}"></div>
-  <div><label>E-mail</label><input name="email" value="{{ inst.email }}"></div>
+  <div><label>E-mail (ook voor de dagelijkse samenvatting)</label><input name="email" value="{{ inst.email }}"></div>
   <div><label>KvK</label><input name="kvk" value="{{ inst.kvk }}"></div>
   <div><label>Btw-nummer</label><input name="btw_nummer" value="{{ inst.btw_nummer }}"></div>
 </div>
@@ -14,17 +43,28 @@
   <div><label>Postcode</label><input name="postcode" value="{{ inst.postcode }}"></div>
   <div><label>Plaats</label><input name="plaats" value="{{ inst.plaats }}"></div>
 </div>
-<h2>Bank</h2>
+<h2>Bank en betalen</h2>
 <div class="rij">
-  <div><label>Eigen IBAN (waarvan betaald wordt)</label><input name="iban" value="{{ inst.iban }}"></div>
-  <div><label>BIC</label><input name="bic" value="{{ inst.bic }}" placeholder="bijv. INGBNL2A"></div>
-  <div><label>Betalen X dagen vóór vervaldatum</label><input name="betaal_dagen_voor_verval" value="{{ inst.betaal_dagen_voor_verval }}"></div>
+  <div><label>Eigen IBAN (ABN AMRO)</label><input name="iban" class="mono" value="{{ inst.iban }}"></div>
+  <div><label>BIC</label><input name="bic" value="{{ inst.bic }}"></div>
+  <div><label>Betaalmoment</label><select name="betaalmoment">
+    <option value="vervaldatum" {{ 'selected' if inst.betaalmoment == 'vervaldatum' }}>Kort voor de vervaldatum</option>
+    <option value="direct" {{ 'selected' if inst.betaalmoment == 'direct' }}>Direct na goedkeuren</option></select></div>
+  <div><label>Dagen vóór vervaldatum</label><input name="betaal_dagen_voor_verval" value="{{ inst.betaal_dagen_voor_verval }}" inputmode="numeric"></div>
+</div>
+<p class="zacht">Ook bij "kort voor de vervaldatum" bevestig je de betaling direct na goedkeuren in de ABN-app; de bank voert hem dan op de geplande datum uit.</p>
+<h2>Boekhouding</h2>
+<div class="rij">
+  <div><label>Standaard kostenrekening</label><select name="standaard_kostenrekening">{% for r in rekeningen %}<option value="{{ r.code }}" {{ 'selected' if inst.standaard_kostenrekening == r.code }}>{{ r.code }} {{ r.naam }}</option>{% endfor %}</select></div>
 </div>
 <h2>Verkoopfacturen</h2>
 <div class="rij">
   <div><label>Factuurprefix</label><input name="factuur_prefix" value="{{ inst.factuur_prefix }}"></div>
-  <div><label>Betaaltermijn (dagen)</label><input name="betaaltermijn_dagen" value="{{ inst.betaaltermijn_dagen }}"></div>
+  <div><label>Betaaltermijn (dagen)</label><input name="betaaltermijn_dagen" value="{{ inst.betaaltermijn_dagen }}" inputmode="numeric"></div>
+  <div><label>Herinneringen na (dagen na verval)</label><input name="herinnering_dagen" value="{{ inst.herinnering_dagen }}" placeholder="7,21"></div>
 </div>
+<label class="vink"><input type="checkbox" name="herinneringen_aan" value="1" {{ 'checked' if inst.herinneringen_aan == '1' }}> Automatisch betalingsherinneringen sturen</label>
+<label class="vink"><input type="checkbox" name="samenvatting_aan" value="1" {{ 'checked' if inst.samenvatting_aan == '1' }}> Elke ochtend een e-mail met wat op mij wacht</label>
 <div class="acties"><button>Opslaan</button></div>
 </form>
 {% endblock %}

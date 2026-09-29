@@ -1,38 +1,64 @@
 {% extends 'base.html' %}{% block titel %}Overzicht{% endblock %}
 {% block inhoud %}
-<h1>Overzicht</h1>
+<div class="paginakop"><div><h1>Goedendag</h1><p>Dit is de stand van zaken op {{ vandaag }}.</p></div>
+  <a class="knop" href="{{ url_for('inbox') }}">+ Facturen toevoegen</a></div>
+
 <div class="tegels">
   <a class="tegel {{ 'aandacht' if d.te_keuren_n }}" href="{{ url_for('goedkeuren') }}">
     <div class="label">Wacht op jouw goedkeuring</div><div class="getal">{{ d.te_keuren_n }}</div>
     <div class="sub">{{ d.te_keuren_s|euro }}</div></a>
-  <a class="tegel" href="{{ url_for('betalingen') }}">
-    <div class="label">Goedgekeurd, nog te betalen</div><div class="getal">{{ d.te_betalen_s|euro }}</div>
-    <div class="sub">{{ d.te_betalen_n }} facturen</div></a>
+  <a class="tegel {{ 'aandacht' if d.te_ondertekenen_n }}" href="{{ url_for('betalingen') }}">
+    <div class="label">Nog te betalen</div><div class="getal">{{ d.te_betalen_s|euro }}</div>
+    <div class="sub">{{ d.te_betalen_n }} facturen{% if d.te_ondertekenen_n %} · <span class="rood">{{ d.te_ondertekenen_n }} te bevestigen in ABN-app</span>{% endif %}</div></a>
   <a class="tegel {{ 'aandacht' if d.te_laat_n }}" href="{{ url_for('verkoop') }}">
     <div class="label">Nog te ontvangen</div><div class="getal">{{ d.te_ontvangen_s|euro }}</div>
-    <div class="sub">{{ d.te_ontvangen_n }} facturen{% if d.te_laat_n %}, <span class="rood">{{ d.te_laat_n }} te laat</span>{% endif %}</div></a>
-  <a class="tegel {{ 'aandacht' if d.ongekoppeld_n }}" href="{{ url_for('bank') }}">
-    <div class="label">Bank: niet gekoppeld</div><div class="getal">{{ d.ongekoppeld_n }}</div>
-    <div class="sub">transacties om na te lopen</div></a>
-  <a class="tegel" href="{{ url_for('btw') }}">
-    <div class="label">Btw {{ d.btw.periode }} (tot nu)</div><div class="getal">{{ d.btw.te_betalen|euro }}</div>
-    <div class="sub">{{ 'af te dragen' if d.btw.te_betalen >= 0 else 'terug te vragen' }}</div></a>
+    <div class="sub">{{ d.te_ontvangen_n }} facturen{% if d.te_laat_n %} · <span class="rood">{{ d.te_laat_n }} te laat</span>{% endif %}</div></a>
+  <a class="tegel" href="{{ url_for('bank') }}">
+    <div class="label">Banksaldo (volgens administratie)</div><div class="getal">{{ d.saldo_bank|euro }}</div>
+    <div class="sub">{% if d.ongekoppeld_n %}<span class="oranje">{{ d.ongekoppeld_n }} mutaties te verwerken</span>{% else %}alles verwerkt{% endif %}</div></a>
 </div>
 
-<div class="kaart">
-  <strong>Zo werkt het</strong>
-  <ol class="zacht" style="margin:8px 0 0;padding-left:20px;line-height:1.7">
-    <li>Voer een inkoopfactuur in (met pdf). Vertrouwde leveranciers onder hun limiet worden automatisch goedgekeurd.</li>
-    <li>Keur de rest goed bij <a href="{{ url_for('goedkeuren') }}">Goedkeuren</a> — één klik, of alles tegelijk.</li>
-    <li>Bij <a href="{{ url_for('betalingen') }}">Betalingen</a> maak je één betaalbestand; upload dat bij je bank en bevestig daar één keer.</li>
-    <li>Lees je bankafschrift in bij <a href="{{ url_for('bank') }}">Bank</a>: betalingen en ontvangsten worden automatisch afgeletterd.</li>
-  </ol>
+<div class="raster-2">
+  <div class="kaart">
+    <div class="paginakop" style="margin-bottom:10px"><h2 style="margin:0">Omzet en kosten {{ d.jaar }}</h2>
+      <a class="zacht" href="{{ url_for('rapportages') }}">Resultaat: <strong class="{{ 'groen' if d.resultaat >= 0 else 'rood' }}">{{ d.resultaat|euro }}</strong> →</a></div>
+    {% set maxw = [1] + d.maanden|map(attribute='omzet')|list + d.maanden|map(attribute='kosten')|list %}{% set top = maxw|max %}
+    <div class="legenda"><span><i style="background:var(--series-1)"></i>Omzet</span><span><i style="background:var(--series-2)"></i>Kosten</span></div>
+    <div class="grafiek" role="img" aria-label="Omzet en kosten per maand">
+      {% for m in d.maanden %}
+      <div class="maand" tabindex="0">
+        <div class="staaf o" style="height:{{ [m.omzet, 0]|max / top * 100 }}%"></div>
+        <div class="staaf k" style="height:{{ [m.kosten, 0]|max / top * 100 }}%"></div>
+        <div class="tip">{{ ['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'][loop.index0] }}: omzet {{ m.omzet|euro }} · kosten {{ m.kosten|euro }}</div>
+      </div>{% endfor %}
+    </div>
+    <div class="grafiek-as">{% for n in ['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'] %}<span>{{ n }}</span>{% endfor %}</div>
+    <details style="margin-top:10px"><summary>Toon als tabel</summary>
+      <table><thead><tr><th>Maand</th><th class="bedrag">Omzet</th><th class="bedrag">Kosten</th></tr></thead><tbody>
+      {% for m in d.maanden %}<tr><td>{{ m.maand }}</td><td class="bedrag">{{ m.omzet|euro }}</td><td class="bedrag">{{ m.kosten|euro }}</td></tr>{% endfor %}
+      </tbody></table></details>
+  </div>
+  <div class="kaart">
+    <h2>Btw {{ d.btw.periode }}</h2>
+    <div class="tegel" style="box-shadow:none;border:0;padding:0">
+      <div class="getal">{{ d.btw.te_betalen|euro }}</div>
+      <div class="sub">{{ 'af te dragen' if d.btw.te_betalen >= 0 else 'terug te vragen' }} tot nu toe · <a href="{{ url_for('btw') }}">aangifte →</a></div>
+    </div>
+    <h2>Automatisering</h2>
+    <div class="zacht" style="line-height:2">
+      <div><span class="stip {{ 'aan' if ai_aan else 'uit' }}"></span>Facturen lezen met AI {{ 'aan' if ai_aan else 'uit' }}</div>
+      <div><span class="stip {{ 'aan' if mail_in else 'uit' }}"></span>Factuurmailbox {{ 'gekoppeld' if mail_in else 'niet gekoppeld' }}</div>
+      <div><span class="stip {{ 'aan' if ponto_status.verbonden else 'uit' }}"></span>ABN AMRO {{ 'gekoppeld' if ponto_status.verbonden else 'niet gekoppeld' }}</div>
+      {% if d.inbox_fout_n %}<div><span class="stip uit"></span><a href="{{ url_for('inbox') }}">{{ d.inbox_fout_n }} document(en) vragen aandacht</a></div>{% endif %}
+    </div>
+    {% if not (ai_aan and mail_in and ponto_status.verbonden) %}<a class="knop licht klein" href="{{ url_for('instellingen') }}" style="margin-top:10px">Koppelingen instellen</a>{% endif %}
+  </div>
 </div>
 
 <h2>Recente activiteit</h2>
-<div class="tabel-wrap"><table>
-{% for l in d.log %}<tr><td class="zacht" style="white-space:nowrap">{{ l.tijd.replace('T',' ') }}</td><td>{{ l.actie }}</td><td class="zacht">{{ l.details }}</td></tr>
-{% else %}<tr><td class="leeg">Nog geen activiteit. Begin bij <a href="{{ url_for('instellingen') }}">Instellingen</a> en voeg <a href="{{ url_for('relatie') }}">een relatie</a> toe.</td></tr>{% endfor %}
-</table></div>
+<div class="tabel-wrap"><table><tbody>
+{% for l in d.log %}<tr><td class="zacht" style="white-space:nowrap;width:1%">{{ l.tijd.replace('T',' ')[:16] }}</td><td>{{ l.actie }}</td><td class="zacht">{{ l.details }}</td></tr>
+{% else %}<tr><td class="leeg">Nog geen activiteit. Begin bij <a href="{{ url_for('instellingen') }}">Instellingen</a>.</td></tr>{% endfor %}
+</tbody></table></div>
 <a href="{{ url_for('logboek') }}">Volledig logboek →</a>
 {% endblock %}

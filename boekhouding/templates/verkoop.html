@@ -1,12 +1,12 @@
 {% extends 'base.html' %}{% block titel %}Verkoop{% endblock %}
 {% block inhoud %}
-<div class="acties" style="justify-content:space-between"><h1 style="margin:0">Verkoopfacturen</h1><a class="knop" href="{{ url_for('verkoop_nieuw') }}">+ Nieuwe factuur</a></div>
+<div class="paginakop"><div><h1>Verkoopfacturen</h1><p>Betalingen worden automatisch herkend; te late klanten krijgen vanzelf een herinnering.</p></div><a class="knop" href="{{ url_for('verkoop_nieuw') }}">+ Nieuwe factuur</a></div>
 <div class="tabel-wrap"><table>
-<tr><th>Nummer</th><th>Klant</th><th>Datum</th><th>Vervalt</th><th class="bedrag">Incl. btw</th><th>Status</th></tr>
+<thead><tr><th>Nummer</th><th>Klant</th><th>Datum</th><th>Vervalt</th><th class="bedrag">Incl. btw</th><th>Status</th></tr></thead><tbody>
 {% for v in facturen %}
 <tr><td><a href="{{ url_for('verkoop_detail', fid=v.id) }}">{{ v.factuurnummer }}</a></td><td>{{ v.relatie_naam }}</td><td>{{ v.factuurdatum }}</td><td>{{ v.vervaldatum }}</td>
 <td class="bedrag">{{ totalen[v.id]|euro }}</td>
-<td>{% if v.status == 'verzonden' and v.vervaldatum < vandaag %}<span class="status te_laat">te laat</span>{% else %}<span class="status {{ v.status }}">{{ v.status }}</span>{% endif %}</td></tr>
+<td>{% if v.status == 'verzonden' and v.vervaldatum < vandaag %}<span class="status te_laat">te laat</span>{% if v.herinneringen %} <span class="zacht">{{ v.herinneringen }}× herinnerd</span>{% endif %}{% else %}<span class="status {{ v.status }}">{{ v.status }}</span>{% endif %}</td></tr>
 {% else %}<tr><td colspan="6" class="leeg">Nog geen verkoopfacturen.</td></tr>{% endfor %}
-</table></div>
+</tbody></table></div>
 {% endblock %}

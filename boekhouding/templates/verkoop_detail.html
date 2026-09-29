@@ -1,18 +1,23 @@
 {% extends 'base.html' %}{% block titel %}{{ v.factuurnummer }}{% endblock %}
 {% block inhoud %}
-<div class="acties niet-printen">
-  <span class="status {{ v.status }}">{{ v.status }}</span>
-  <button class="licht" onclick="window.print()">Afdrukken / PDF</button>
-  {% if r.email %}<a class="knop licht" href="mailto:{{ r.email }}?subject={{ ('Factuur ' ~ v.factuurnummer ~ ' - ' ~ inst.bedrijfsnaam)|urlencode }}&body={{ ('Beste,\n\nIn de bijlage vind je factuur ' ~ v.factuurnummer ~ ' van ' ~ (t.incl|euro) ~ '. Graag voldoen voor ' ~ v.vervaldatum ~ ' op ' ~ inst.iban ~ ' o.v.v. ' ~ v.factuurnummer ~ '.\n\nMet vriendelijke groet,\n' ~ inst.bedrijfsnaam)|urlencode }}">E-mail aan klant</a>{% endif %}
-  <form class="inline" method="post" action="{{ url_for('verkoop_status', fid=v.id) }}">
-    {% if v.status == 'concept' %}<button name="status" value="verzonden">Markeer als verzonden</button>{% endif %}
-    {% if v.status == 'verzonden' %}<button class="ok" name="status" value="betaald">Markeer als betaald</button>{% endif %}
-  </form>
+<div class="paginakop niet-printen"><div><h1>{{ v.factuurnummer }} · {{ r.naam }}</h1>
+  <p><span class="status {{ 'te_laat' if v.status == 'verzonden' and v.vervaldatum < vandaag else v.status }}">{{ 'te laat' if v.status == 'verzonden' and v.vervaldatum < vandaag else v.status }}</span>
+  {% if v.herinneringen %} · {{ v.herinneringen }} herinnering(en) verstuurd{% endif %}</p></div>
+  <div class="acties" style="margin:0">
+    <a class="knop licht" href="{{ url_for('verkoop_pdf', fid=v.id) }}" target="_blank">PDF</a>
+    <a class="knop licht" href="{{ url_for('verkoop_ubl', fid=v.id) }}">E-factuur (UBL)</a>
+    {% if mail_aan and r.email and v.status != 'betaald' %}<form class="inline" method="post" action="{{ url_for('verkoop_mailen', fid=v.id) }}"><button>{{ 'Mailen naar klant' if v.status == 'concept' else 'Opnieuw mailen' }}</button></form>{% endif %}
+    <form class="inline" method="post" action="{{ url_for('verkoop_status', fid=v.id) }}">
+      {% if v.status == 'concept' %}<button class="licht" name="status" value="verzonden">Markeer als verzonden</button>{% endif %}
+      {% if v.status == 'verzonden' %}<button class="licht" name="status" value="betaald" onclick="return confirm('Handmatig op betaald zetten? Normaal gebeurt dit automatisch zodra de betaling op de bank staat.')">Markeer als betaald</button>{% endif %}
+    </form>
+  </div>
 </div>
+{% if not mail_aan %}<p class="zacht niet-printen">Stel e-mail in bij Instellingen om facturen direct vanuit de app te versturen.</p>{% elif not r.email %}<p class="zacht niet-printen">Deze klant heeft geen e-mailadres. <a href="{{ url_for('relatie', rid=r.id) }}">Toevoegen →</a></p>{% endif %}
 <div class="factuur">
   <div class="kop">
-    <div><h1 style="margin-bottom:4px">Factuur</h1><div>{{ v.factuurnummer }}</div></div>
-    <div style="text-align:right"><strong>{{ inst.bedrijfsnaam }}</strong><br>{{ inst.adres }}<br>{{ inst.postcode }} {{ inst.plaats }}<br>
+    <div><h1 style="margin-bottom:4px;color:#111827">Factuur</h1><div>{{ v.factuurnummer }}</div></div>
+    <div style="text-align:right;font-size:13px;color:#4b5563"><strong style="color:#111827">{{ inst.bedrijfsnaam }}</strong><br>{{ inst.adres }}<br>{{ inst.postcode }} {{ inst.plaats }}<br>
       {% if inst.kvk %}KvK {{ inst.kvk }}<br>{% endif %}{% if inst.btw_nummer %}Btw {{ inst.btw_nummer }}<br>{% endif %}{{ inst.email }}</div>
   </div>
   <div class="kop">
@@ -20,13 +25,15 @@
     <div style="text-align:right">Factuurdatum: {{ v.factuurdatum }}<br>Vervaldatum: {{ v.vervaldatum }}</div>
   </div>
   <table>
-    <tr><th>Omschrijving</th><th class="bedrag">Aantal</th><th class="bedrag">Prijs</th><th class="bedrag">Btw</th><th class="bedrag">Totaal</th></tr>
-    {% for regel in t.regels %}<tr><td>{{ regel.omschrijving }}</td><td class="bedrag">{{ '%g'|format(regel.aantal) }}</td><td class="bedrag">{{ regel.prijs_cent|euro }}</td><td class="bedrag">{{ regel.btw_pct }}%</td><td class="bedrag">{{ (regel.aantal * regel.prijs_cent)|round|int|euro }}</td></tr>{% endfor %}
+    <thead><tr><th>Omschrijving</th><th class="bedrag">Aantal</th><th class="bedrag">Prijs</th><th class="bedrag">Btw</th><th class="bedrag">Totaal</th></tr></thead><tbody>
+    {% for regel in t.regels %}<tr><td>{{ regel.omschrijving }}</td><td class="bedrag">{{ '%g'|format(regel.aantal) }}</td><td class="bedrag">{{ regel.prijs_cent|euro }}</td><td class="bedrag">{{ regel.btw_pct }}%</td><td class="bedrag">{{ t.regel_excl[regel.id]|euro }}</td></tr>{% endfor %}
     <tr><td colspan="4" class="bedrag">Subtotaal</td><td class="bedrag">{{ t.excl|euro }}</td></tr>
     {% for pct, bedrag in t.btw|dictsort %}<tr><td colspan="4" class="bedrag">Btw {{ pct }}%</td><td class="bedrag">{{ bedrag|euro }}</td></tr>{% endfor %}
     <tr><td colspan="4" class="bedrag"><strong>Totaal</strong></td><td class="bedrag"><strong>{{ t.incl|euro }}</strong></td></tr>
-  </table>
+  </tbody></table>
   {% if v.notities %}<p>{{ v.notities }}</p>{% endif %}
-  <p class="zacht" style="margin-top:30px">Graag het totaalbedrag vóór {{ v.vervaldatum }} overmaken op {{ inst.iban }} t.n.v. {{ inst.bedrijfsnaam }}, onder vermelding van <strong>{{ v.factuurnummer }}</strong>.</p>
+  <p style="margin-top:30px;color:#4b5563;font-size:13px">Graag het totaalbedrag vóór {{ v.vervaldatum }} overmaken op {{ inst.iban }} t.n.v. {{ inst.bedrijfsnaam }}, onder vermelding van <strong>{{ v.factuurnummer }}</strong>.</p>
 </div>
+<h2 class="niet-printen">Historie</h2>
+<div class="tabel-wrap niet-printen"><table><tbody>{% for l in log %}<tr><td class="zacht" style="white-space:nowrap">{{ l.tijd.replace('T',' ')[:16] }}</td><td>{{ l.actie }}</td><td class="zacht">{{ l.details }}</td></tr>{% endfor %}</tbody></table></div>
 {% endblock %}

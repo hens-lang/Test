@@ -1,7 +1,7 @@
 <!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Inloggen</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
-<body><main style="max-width:360px;margin-top:10vh">
+<body><main style="max-width:380px;margin-top:14vh">
 {% for cat, msg in get_flashed_messages(with_categories=true) %}<div class="melding {{ cat }}">{{ msg }}</div>{% endfor %}
-<form method="post" class="kaart"><h1>Inloggen</h1>
-<label>Wachtwoord</label><input type="password" name="wachtwoord" autofocus>
-<div class="acties"><button>Inloggen</button></div></form></main></body></html>
+<form method="post" class="kaart"><h1>Inloggen</h1><p class="zacht">Boekhouding</p>
+<label>Wachtwoord</label><input type="password" name="wachtwoord" autofocus autocomplete="current-password">
+<div class="acties"><button style="width:100%;justify-content:center">Inloggen</button></div></form></main></body></html>

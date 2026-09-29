@@ -1,8 +1,8 @@
 {% extends 'base.html' %}{% block titel %}Logboek{% endblock %}
 {% block inhoud %}
-<h1>Logboek</h1>
-<div class="tabel-wrap"><table><tr><th>Tijd</th><th>Actie</th><th>Object</th><th>Details</th></tr>
+<div class="paginakop"><div><h1>Logboek</h1><p>Elke actie van jou en van de automatische processen wordt vastgelegd.</p></div></div>
+<div class="tabel-wrap"><table><thead><tr><th>Tijd</th><th>Actie</th><th>Object</th><th>Details</th></tr></thead><tbody>
 {% for l in log %}<tr><td class="zacht" style="white-space:nowrap">{{ l.tijd.replace('T',' ') }}</td><td>{{ l.actie }}</td>
-<td>{% if l.object_type == 'inkoop' %}<a href="{{ url_for('inkoop_detail', fid=l.object_id) }}">inkoop #{{ l.object_id }}</a>{% elif l.object_type == 'verkoop' %}<a href="{{ url_for('verkoop_detail', fid=l.object_id) }}">verkoop #{{ l.object_id }}</a>{% elif l.object_type == 'relatie' %}<a href="{{ url_for('relatie', rid=l.object_id) }}">relatie #{{ l.object_id }}</a>{% elif l.object_type %}{{ l.object_type }} #{{ l.object_id }}{% endif %}</td>
-<td class="zacht">{{ l.details }}</td></tr>{% endfor %}</table></div>
+<td style="white-space:nowrap">{% if l.object_type == 'inkoop' %}<a href="{{ url_for('inkoop_detail', fid=l.object_id) }}">inkoop #{{ l.object_id }}</a>{% elif l.object_type == 'verkoop' %}<a href="{{ url_for('verkoop_detail', fid=l.object_id) }}">verkoop #{{ l.object_id }}</a>{% elif l.object_type == 'relatie' %}<a href="{{ url_for('relatie', rid=l.object_id) }}">relatie #{{ l.object_id }}</a>{% elif l.object_type %}{{ l.object_type }} #{{ l.object_id }}{% endif %}</td>
+<td class="zacht">{{ l.details }}</td></tr>{% endfor %}</tbody></table></div>
 {% endblock %}

@@ -1,33 +1,47 @@
 {% extends 'base.html' %}{% block titel %}Goedkeuren{% endblock %}
 {% block inhoud %}
-<h1>Goedkeuren</h1>
+<div class="paginakop"><div><h1>Goedkeuren</h1>
+  <p>{% if ponto_aan %}Na goedkeuren staat de betaling direct klaar in je ABN AMRO-app om te bevestigen.{% else %}Goedgekeurde facturen worden geboekt en komen in het betaalvoorstel.{% endif %}</p></div></div>
 {% if facturen %}
-<form method="post">
-<div class="tabel-wrap"><table>
-<tr><th><input type="checkbox" onclick="document.querySelectorAll('input[name=ids]').forEach(c=>c.checked=this.checked)"></th>
-<th>Leverancier</th><th>Factuur</th><th>Vervalt</th><th class="bedrag">Bedrag</th><th></th></tr>
-{% for f in facturen %}
-<tr>
-<td><input type="checkbox" name="ids" value="{{ f.id }}"></td>
-<td>{{ f.relatie_naam }}{% if not iban_ok[f.id] %}<br><span class="rood zacht">⚠ geen geldig IBAN — <a href="{{ url_for('relatie', rid=f.relatie_id, terug=url_for('goedkeuren')) }}">aanvullen</a></span>{% endif %}</td>
-<td><a href="{{ url_for('inkoop_detail', fid=f.id) }}">{{ f.factuurnummer }}</a><br><span class="zacht">{{ f.omschrijving or '' }}</span></td>
-<td>{% if f.vervaldatum < vandaag %}<span class="status te_laat">{{ f.vervaldatum }}</span>{% else %}{{ f.vervaldatum }}{% endif %}</td>
-<td class="bedrag"><strong>{{ f.bedrag_incl_cent|euro }}</strong></td>
-<td style="white-space:nowrap">
-  {% if f.bestand %}<a href="{{ url_for('bestand', naam=f.bestand) }}" target="_blank">pdf</a> · {% endif %}
-  <button class="ok" formaction="{{ url_for('goedkeuren_post') }}" name="actie" value="goedkeuren" onclick="this.form.querySelectorAll('input[name=ids]').forEach(c=>c.checked=(c.value=='{{ f.id }}'))">✓</button>
-  <button class="fout" name="actie" value="afkeuren" onclick="this.form.querySelectorAll('input[name=ids]').forEach(c=>c.checked=(c.value=='{{ f.id }}'))">✕</button>
-</td></tr>
-{% endfor %}
-</table></div>
+<form method="post" id="keurform">
+<div class="kaart">
+  <label class="vink" style="margin:0 0 14px"><input type="checkbox" onclick="document.querySelectorAll('input[name=ids]').forEach(c=>c.checked=this.checked)"> Alles selecteren</label>
+  {% for f in facturen %}
+  <div class="factuurkaart">
+    <input type="checkbox" name="ids" value="{{ f.id }}" style="margin-top:4px">
+    <div>
+      <div><strong>{{ f.relatie_naam }}</strong> · <a href="{{ url_for('inkoop_detail', fid=f.id) }}">{{ f.factuurnummer }}</a>
+        {% if f.bron != 'handmatig' %}<span class="status" title="Automatisch ingelezen">auto · {{ f.bron }}</span>{% endif %}</div>
+      <div class="kenmerken">
+        <span>{{ f.omschrijving or 'geen omschrijving' }}</span>
+        <span>vervalt {% if f.vervaldatum < vandaag %}<span class="rood">{{ f.vervaldatum }}</span>{% else %}{{ f.vervaldatum }}{% endif %}</span>
+        <span>{% if iban_ok[f.id] %}{{ f.relatie_iban }}{% if not f.iban_geverifieerd %} <span class="oranje">(nieuw IBAN)</span>{% endif %}{% else %}<a class="rood" href="{{ url_for('relatie', rid=f.relatie_id, terug=url_for('goedkeuren')) }}">IBAN ontbreekt</a>{% endif %}</span>
+        {% if f.bestand %}<a href="{{ url_for('bestand', naam=f.bestand) }}" target="_blank">factuur bekijken</a>{% endif %}
+      </div>
+      <div class="kenmerken" style="margin-top:8px">
+        <span>Boeken op <select name="rekening_{{ f.id }}">{% for r in rekeningen %}<option value="{{ r.code }}" {{ 'selected' if r.code == f.rekening }}>{{ r.code }} {{ r.naam }}</option>{% endfor %}</select></span>
+      </div>
+      {% with tekst = f.waarschuwingen %}{% include '_waarschuwingen.html' %}{% endwith %}
+    </div>
+    <div style="text-align:right">
+      <div class="bedrag-groot">{{ f.bedrag_incl_cent|euro }}</div>
+      <div class="zacht">incl. {{ f.btw_cent|euro }} btw</div>
+      <div class="acties" style="justify-content:flex-end;margin-bottom:0">
+        <button class="fout klein" name="actie" value="afkeuren" onclick="kies({{ f.id }})">Afkeuren</button>
+        <button class="ok klein" name="actie" value="goedkeuren" onclick="kies({{ f.id }})">Goedkeuren</button>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
 <div class="acties">
-  <button class="ok" name="actie" value="goedkeuren">Geselecteerde goedkeuren</button>
+  <button class="ok" name="actie" value="goedkeuren">Geselecteerde goedkeuren{{ ' en betalen' if ponto_aan }}</button>
   <button class="fout" name="actie" value="afkeuren">Geselecteerde afkeuren</button>
   <input name="notitie" placeholder="notitie (optioneel)" style="max-width:280px">
 </div>
 </form>
-<p class="zacht">Goedgekeurde facturen komen automatisch in het <a href="{{ url_for('betalingen') }}">betaalvoorstel</a>.</p>
+<script>function kies(id){document.querySelectorAll('input[name=ids]').forEach(c=>c.checked=(c.value==String(id)));}</script>
 {% else %}
-<div class="kaart leeg">🎉 Niets om goed te keuren. <a href="{{ url_for('betalingen') }}">Naar betaalvoorstel →</a></div>
+<div class="kaart leeg"><div class="groot">✓</div>Niets om goed te keuren. <a href="{{ url_for('betalingen') }}">Naar betalingen →</a></div>
 {% endif %}
 {% endblock %}
