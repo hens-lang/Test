@@ -66,6 +66,18 @@
     addEventListener("pageshow", (e) => { if (e.persisted) $$(".pt").forEach((p) => p.remove()); });
   })();
 
+  /* ---------- Punt nooit alleen op een nieuwe regel ---------- */
+  $$("h1 .dot, h2 .dot, h3 .dot").forEach((dot) => {
+    const prev = dot.previousSibling;
+    if (!prev || prev.nodeType !== 3) return;
+    const m = prev.textContent.match(/(\S+)$/);
+    if (!m) return;
+    prev.textContent = prev.textContent.slice(0, -m[1].length);
+    const nw = document.createElement("span"); nw.className = "nw";
+    nw.textContent = m[1];
+    dot.parentNode.insertBefore(nw, dot); nw.appendChild(dot);
+  });
+
   /* ---------- Header + mobiel menu ---------- */
   const navLinks = D.nav.map((n) => `<a href="${n.href}"${n.href === page ? ' aria-current="page"' : ""}>${esc(n.label)}</a>`).join("");
   const portal = C.portalUrl ? `<a class="portal-link" href="${esc(C.portalUrl)}" target="_blank" rel="noopener" aria-label="Inloggen in het partnerportaal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Inloggen</span></a>` : "";

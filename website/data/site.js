@@ -56,14 +56,13 @@ window.LINK = {
   tracking: { apolloAppId: "695040eaae2147001516e8ad" },
 
   // Extra links in de footer (niet in het hoofdmenu).
-  navFooter: [
-    { href: "werken-bij.html", label: "Werken bij" }
-  ],
+  navFooter: [],
 
   nav: [
     { href: "diensten.html", label: "Diensten" },
     { href: "over-link.html", label: "Over LINK." },
     { href: "verhalen.html", label: "Verhalen" },
+    { href: "werken-bij.html", label: "Werken bij" },
     { href: "contact.html", label: "Contact" }
   ],
 

@@ -779,7 +779,7 @@ h1.reveal.in, h2.reveal.in { transform: none; clip-path: inset(-10% -5% -20% -5%
 }
 
 /* Menu: eerder naar hamburger, zodat de knop nooit tegen het menu aan komt */
-@media (max-width: 1080px) {
+@media (max-width: 1179px) {
   .nav, .nav-cta .btn, .portal-link { display: none; }
   .burger { display: block; }
 }
@@ -963,3 +963,12 @@ h1.reveal.in .dot, h2.reveal.in .dot, .split-line.in .dot { transform: none; }
 .apply-steps b { font-family: var(--font-head); font-size: 13px; letter-spacing: .14em; color: var(--blue-deep); padding-top: 6px; flex: none; }
 .apply-steps h3 { font-size: clamp(20px, 1.8vw, 24px); margin-bottom: 6px; }
 .apply-steps p { margin: 0; color: var(--grey-7); }
+
+/* Mobiel: tekstlinks groot genoeg om aan te tikken (min. 44px) */
+@media (pointer: coarse) {
+  .link-arrow, .cta .actions a.tel, .story-back, .notfor-close .link-arrow { display: inline-flex; align-items: center; min-height: 44px; background-position: 0 calc(100% - 8px); }
+  .error-links a { min-height: 44px; }
+}
+
+.nw { white-space: nowrap; }
+@media (pointer: coarse) { .story-back { display: flex; width: fit-content; } }
