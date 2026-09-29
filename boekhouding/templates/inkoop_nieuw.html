@@ -1,0 +1,23 @@
+{% extends 'base.html' %}{% block titel %}Factuur invoeren{% endblock %}
+{% block inhoud %}
+<h1>Inkoopfactuur invoeren</h1>
+{% if not crediteuren %}<div class="melding fout">Voeg eerst een <a href="{{ url_for('relatie', terug=url_for('inkoop_nieuw')) }}">leverancier (crediteur)</a> toe.</div>{% endif %}
+<form method="post" enctype="multipart/form-data" class="kaart">
+<div class="rij">
+  <div><label>Leverancier *</label><select name="relatie_id" required>{% for c in crediteuren %}<option value="{{ c.id }}">{{ c.naam }}</option>{% endfor %}</select>
+    <span class="zacht"><a href="{{ url_for('relatie', terug=url_for('inkoop_nieuw')) }}">+ nieuwe leverancier</a></span></div>
+  <div><label>Factuurnummer *</label><input name="factuurnummer" required></div>
+  <div><label>Factuurdatum *</label><input type="date" name="factuurdatum" value="{{ vandaag }}" required></div>
+  <div><label>Vervaldatum *</label><input type="date" name="vervaldatum" value="{{ verval }}" required></div>
+</div>
+<div class="rij">
+  <div><label>Bedrag excl. btw *</label><input name="bedrag_excl" required placeholder="0,00"></div>
+  <div><label>Btw-tarief</label><select name="btw_pct"><option value="21">21%</option><option value="9">9%</option><option value="0">0% / verlegd</option></select></div>
+  <div><label>Btw-bedrag (laat leeg = berekenen)</label><input name="btw" placeholder="automatisch"></div>
+  <div><label>Betalingskenmerk</label><input name="betalingskenmerk" placeholder="bijv. 1234 5678 9012 3456"></div>
+</div>
+<label>Omschrijving</label><input name="omschrijving">
+<label>Factuur (pdf/afbeelding)</label><input type="file" name="bestand" accept=".pdf,image/*">
+<div class="acties"><button>Opslaan</button><button class="licht" name="nog_een" value="1">Opslaan en nog een</button></div>
+</form>
+{% endblock %}

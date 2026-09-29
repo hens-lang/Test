@@ -1,0 +1,11 @@
+{% extends 'base.html' %}{% block titel %}Relaties{% endblock %}
+{% block inhoud %}
+<div class="acties" style="justify-content:space-between"><h1 style="margin:0">Relaties</h1><a class="knop" href="{{ url_for('relatie') }}">+ Nieuwe relatie</a></div>
+<div class="tabel-wrap"><table>
+<tr><th>Naam</th><th>Soort</th><th>IBAN</th><th>E-mail</th><th class="bedrag">Auto-goedkeuren tot</th></tr>
+{% for r in relaties %}
+<tr><td><a href="{{ url_for('relatie', rid=r.id) }}">{{ r.naam }}</a></td><td>{{ r.soort }}</td><td>{{ r.iban or '—' }}</td><td>{{ r.email or '' }}</td>
+<td class="bedrag">{{ r.auto_goedkeur_limiet_cent|euro if r.auto_goedkeur_limiet_cent else 'altijd handmatig' }}</td></tr>
+{% else %}<tr><td colspan="5" class="leeg">Nog geen relaties.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

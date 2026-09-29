@@ -1,0 +1,26 @@
+{% extends 'base.html' %}{% block titel %}Factuur {{ f.factuurnummer }}{% endblock %}
+{% block inhoud %}
+<h1>{{ f.relatie_naam }} — {{ f.factuurnummer }} <span class="status {{ f.status }}">{{ f.status.replace('_',' ') }}</span></h1>
+<div class="kaart">
+<table>
+<tr><th>Leverancier</th><td><a href="{{ url_for('relatie', rid=f.relatie_id) }}">{{ f.relatie_naam }}</a> · {{ f.relatie_iban or 'geen IBAN' }}</td></tr>
+<tr><th>Factuurdatum / verval</th><td>{{ f.factuurdatum }} / {{ f.vervaldatum }}</td></tr>
+<tr><th>Omschrijving</th><td>{{ f.omschrijving or '—' }}</td></tr>
+<tr><th>Bedrag</th><td>{{ f.bedrag_excl_cent|euro }} + {{ f.btw_cent|euro }} btw = <strong>{{ f.bedrag_incl_cent|euro }}</strong></td></tr>
+<tr><th>Betalingskenmerk</th><td>{{ f.betalingskenmerk or '—' }}</td></tr>
+{% if f.betaalbatch_id %}<tr><th>Betaalbatch</th><td><a href="{{ url_for('batch_download', bid=f.betaalbatch_id) }}">batch #{{ f.betaalbatch_id }}</a></td></tr>{% endif %}
+{% if f.betaald_op %}<tr><th>Betaald op</th><td>{{ f.betaald_op }}</td></tr>{% endif %}
+{% if f.bestand %}<tr><th>Bestand</th><td><a href="{{ url_for('bestand', naam=f.bestand) }}" target="_blank">bekijk factuur</a></td></tr>{% endif %}
+</table>
+{% if f.status in ('ter_goedkeuring','afgekeurd','goedgekeurd') %}
+<form method="post" action="{{ url_for('goedkeuren_post') }}" class="acties">
+  <input type="hidden" name="id" value="{{ f.id }}"><input type="hidden" name="terug" value="{{ url_for('inkoop_detail', fid=f.id) }}">
+  <input name="notitie" placeholder="notitie (optioneel)" style="max-width:300px">
+  {% if f.status != 'goedgekeurd' %}<button class="ok" name="actie" value="goedkeuren">Goedkeuren</button>{% endif %}
+  {% if f.status != 'afgekeurd' %}<button class="fout" name="actie" value="afkeuren">Afkeuren</button>{% endif %}
+</form>{% endif %}
+</div>
+<h2>Historie</h2>
+<div class="tabel-wrap"><table>{% for l in log %}<tr><td class="zacht">{{ l.tijd.replace('T',' ') }}</td><td>{{ l.actie }}</td><td class="zacht">{{ l.details }}</td></tr>{% endfor %}</table></div>
+{% if f.bestand and f.bestand.lower().endswith('.pdf') %}<iframe src="{{ url_for('bestand', naam=f.bestand) }}" style="width:100%;height:80vh;border:1px solid var(--lijn);border-radius:10px"></iframe>{% endif %}
+{% endblock %}

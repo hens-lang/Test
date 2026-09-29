@@ -1,0 +1,30 @@
+{% extends 'base.html' %}{% block titel %}Instellingen{% endblock %}
+{% block inhoud %}
+<h1>Instellingen</h1>
+<form method="post" class="kaart">
+<h2 style="margin-top:0">Bedrijf</h2>
+<div class="rij">
+  <div><label>Bedrijfsnaam</label><input name="bedrijfsnaam" value="{{ inst.bedrijfsnaam }}"></div>
+  <div><label>E-mail</label><input name="email" value="{{ inst.email }}"></div>
+  <div><label>KvK</label><input name="kvk" value="{{ inst.kvk }}"></div>
+  <div><label>Btw-nummer</label><input name="btw_nummer" value="{{ inst.btw_nummer }}"></div>
+</div>
+<div class="rij">
+  <div><label>Adres</label><input name="adres" value="{{ inst.adres }}"></div>
+  <div><label>Postcode</label><input name="postcode" value="{{ inst.postcode }}"></div>
+  <div><label>Plaats</label><input name="plaats" value="{{ inst.plaats }}"></div>
+</div>
+<h2>Bank</h2>
+<div class="rij">
+  <div><label>Eigen IBAN (waarvan betaald wordt)</label><input name="iban" value="{{ inst.iban }}"></div>
+  <div><label>BIC</label><input name="bic" value="{{ inst.bic }}" placeholder="bijv. INGBNL2A"></div>
+  <div><label>Betalen X dagen vóór vervaldatum</label><input name="betaal_dagen_voor_verval" value="{{ inst.betaal_dagen_voor_verval }}"></div>
+</div>
+<h2>Verkoopfacturen</h2>
+<div class="rij">
+  <div><label>Factuurprefix</label><input name="factuur_prefix" value="{{ inst.factuur_prefix }}"></div>
+  <div><label>Betaaltermijn (dagen)</label><input name="betaaltermijn_dagen" value="{{ inst.betaaltermijn_dagen }}"></div>
+</div>
+<div class="acties"><button>Opslaan</button></div>
+</form>
+{% endblock %}

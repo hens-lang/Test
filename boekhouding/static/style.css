@@ -1,0 +1,45 @@
+:root { --bg:#f5f6f8; --kaart:#fff; --tekst:#1c2430; --zacht:#6b7585; --lijn:#e3e6eb;
+        --accent:#1f6feb; --ok:#1a7f37; --fout:#cf222e; --waarschuw:#b76e00; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",sans-serif; background:var(--bg); color:var(--tekst); font-size:15px; }
+a { color:var(--accent); text-decoration:none; } a:hover { text-decoration:underline; }
+header { background:#14202e; color:#fff; padding:0 16px; display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
+header .merk { font-weight:700; margin-right:16px; padding:14px 0; }
+header nav a { color:#c9d4e2; padding:14px 10px; display:inline-block; }
+header nav a.actief, header nav a:hover { color:#fff; text-decoration:none; background:rgba(255,255,255,.08); }
+.badge { background:var(--fout); color:#fff; border-radius:10px; padding:1px 7px; font-size:12px; margin-left:4px; }
+main { max-width:1150px; margin:0 auto; padding:24px 16px 60px; }
+h1 { font-size:22px; margin:0 0 16px; } h2 { font-size:17px; margin:24px 0 10px; }
+.kaart { background:var(--kaart); border:1px solid var(--lijn); border-radius:10px; padding:16px; margin-bottom:16px; }
+.tegels { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-bottom:16px; }
+.tegel { background:var(--kaart); border:1px solid var(--lijn); border-radius:10px; padding:14px 16px; display:block; color:inherit; }
+.tegel:hover { text-decoration:none; border-color:var(--accent); }
+.tegel .label { color:var(--zacht); font-size:13px; } .tegel .getal { font-size:24px; font-weight:650; margin-top:4px; }
+.tegel .sub { color:var(--zacht); font-size:13px; }
+.tegel.aandacht { border-left:4px solid var(--fout); }
+table { width:100%; border-collapse:collapse; background:var(--kaart); }
+th, td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--lijn); vertical-align:top; }
+th { font-size:12px; text-transform:uppercase; letter-spacing:.03em; color:var(--zacht); font-weight:600; }
+td.bedrag, th.bedrag { text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.tabel-wrap { overflow-x:auto; border:1px solid var(--lijn); border-radius:10px; margin-bottom:16px; }
+.status { font-size:12px; padding:2px 8px; border-radius:10px; background:#eef1f5; white-space:nowrap; }
+.status.ter_goedkeuring { background:#fff4d6; color:#7a4d00; } .status.goedgekeurd { background:#dcf1ff; color:#0b4f8a; }
+.status.in_batch { background:#e9e0ff; color:#4b2a9a; } .status.betaald { background:#dafbe1; color:var(--ok); }
+.status.afgekeurd { background:#ffe2e0; color:var(--fout); } .status.verzonden { background:#dcf1ff; color:#0b4f8a; }
+.status.te_laat { background:#ffe2e0; color:var(--fout); }
+form.inline { display:inline; }
+label { display:block; font-size:13px; color:var(--zacht); margin:10px 0 4px; }
+input, select, textarea { width:100%; padding:8px 10px; border:1px solid #cfd5dd; border-radius:6px; font:inherit; background:#fff; color:inherit; }
+input[type=checkbox] { width:auto; }
+.rij { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:0 14px; }
+button, .knop { display:inline-block; background:var(--accent); color:#fff; border:0; border-radius:6px; padding:8px 14px; font:inherit; cursor:pointer; }
+.knop:hover, button:hover { filter:brightness(1.08); text-decoration:none; }
+button.ok { background:var(--ok); } button.fout { background:var(--fout); } button.licht, .knop.licht { background:#e8ecf1; color:var(--tekst); }
+.acties { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:12px 0; }
+.melding { padding:10px 14px; border-radius:8px; margin-bottom:12px; }
+.melding.ok { background:#dafbe1; color:#0f5323; } .melding.fout { background:#ffe2e0; color:#82071e; }
+.zacht { color:var(--zacht); font-size:13px; } .waarschuw { color:var(--waarschuw); } .rood { color:var(--fout); }
+.leeg { padding:30px; text-align:center; color:var(--zacht); }
+.factuur { background:#fff; max-width:800px; margin:0 auto; padding:40px; border:1px solid var(--lijn); }
+.factuur .kop { display:flex; justify-content:space-between; gap:20px; margin-bottom:30px; }
+@media print { header, .niet-printen { display:none !important; } body { background:#fff; } main { padding:0; } .factuur { border:0; } }

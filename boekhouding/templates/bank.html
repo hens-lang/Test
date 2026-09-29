@@ -1,0 +1,29 @@
+{% extends 'base.html' %}{% block titel %}Bank{% endblock %}
+{% block inhoud %}
+<h1>Bank</h1>
+<form method="post" enctype="multipart/form-data" class="kaart acties" style="margin-top:0">
+  <div style="flex:1;min-width:240px"><strong>Bankafschrift inlezen</strong><br><span class="zacht">CAMT.053 (XML, elke NL bank) of CSV-export van ING / Rabobank. Dubbele regels worden overgeslagen.</span></div>
+  <input type="file" name="afschrift" accept=".xml,.csv,.txt" style="max-width:280px"><button>Inlezen &amp; afletteren</button>
+</form>
+<div class="acties">
+  <a class="knop {{ '' if filter == 'ongekoppeld' else 'licht' }}" href="{{ url_for('bank', filter='ongekoppeld') }}">Niet gekoppeld</a>
+  <a class="knop {{ '' if filter == 'alle' else 'licht' }}" href="{{ url_for('bank', filter='alle') }}">Alle</a>
+</div>
+<div class="tabel-wrap"><table>
+<tr><th>Datum</th><th>Tegenpartij</th><th>Omschrijving</th><th class="bedrag">Bedrag</th><th>Gekoppeld aan</th></tr>
+{% for t in transacties %}
+<tr><td style="white-space:nowrap">{{ t.datum }}</td><td>{{ t.naam }}<br><span class="zacht">{{ t.tegenrekening }}</span></td>
+<td class="zacht">{{ t.omschrijving }}{% if t.referentie %}<br>ref: {{ t.referentie }}{% endif %}</td>
+<td class="bedrag {{ 'rood' if t.bedrag_cent < 0 }}">{{ t.bedrag_cent|euro }}</td>
+<td>{% if t.gekoppeld_type %}
+  <a href="{{ url_for('inkoop_detail', fid=t.gekoppeld_id) if t.gekoppeld_type == 'inkoop' else url_for('verkoop_detail', fid=t.gekoppeld_id) }}">{{ t.gekoppeld_type }} #{{ t.gekoppeld_id }}</a>
+{% else %}
+  <form method="post" action="{{ url_for('bank_koppel', tid=t.id) }}" class="acties" style="margin:0;flex-wrap:nowrap">
+  <select name="factuur" style="min-width:200px">
+    {% if t.bedrag_cent < 0 %}{% for f in open_inkoop %}<option value="inkoop:{{ f.id }}" {{ 'selected' if f.bedrag_incl_cent == -t.bedrag_cent }}>{{ f.relatie_naam }} {{ f.factuurnummer }} ({{ f.bedrag_incl_cent|euro }})</option>{% endfor %}
+    {% else %}{% for v in open_verkoop %}<option value="verkoop:{{ v.id }}" {{ 'selected' if verkoop_incl[v.id] == t.bedrag_cent }}>{{ v.factuurnummer }} {{ v.relatie_naam }} ({{ verkoop_incl[v.id]|euro }})</option>{% endfor %}{% endif %}
+  </select><button class="licht">Koppel</button></form>
+{% endif %}</td></tr>
+{% else %}<tr><td colspan="5" class="leeg">Geen transacties{{ ' om na te lopen' if filter == 'ongekoppeld' }}.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

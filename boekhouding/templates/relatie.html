@@ -1,0 +1,38 @@
+{% extends 'base.html' %}{% block titel %}{{ r.naam if r else 'Nieuwe relatie' }}{% endblock %}
+{% block inhoud %}
+<h1>{{ r.naam if r else 'Nieuwe relatie' }}</h1>
+<form method="post" class="kaart">
+<div class="rij">
+  <div><label>Naam *</label><input name="naam" required value="{{ r.naam if r }}"></div>
+  <div><label>Soort</label><select name="soort">{% for s in ['crediteur','debiteur','beide'] %}<option {{ 'selected' if r and r.soort == s }}>{{ s }}</option>{% endfor %}</select></div>
+  <div><label>E-mail</label><input name="email" type="email" value="{{ r.email or '' if r }}"></div>
+</div>
+<div class="rij">
+  <div><label>IBAN</label><input name="iban" value="{{ r.iban or '' if r }}" placeholder="NL00BANK0123456789"></div>
+  <div><label>BIC (optioneel)</label><input name="bic" value="{{ r.bic or '' if r }}"></div>
+  <div><label>Automatisch goedkeuren tot (€, 0 = nooit)</label><input name="auto_goedkeur_limiet" value="{{ '%.2f'|format(r.auto_goedkeur_limiet_cent/100) if r else '0' }}"></div>
+</div>
+<div class="rij">
+  <div><label>Adres</label><input name="adres" value="{{ r.adres or '' if r }}"></div>
+  <div><label>Postcode</label><input name="postcode" value="{{ r.postcode or '' if r }}"></div>
+  <div><label>Plaats</label><input name="plaats" value="{{ r.plaats or '' if r }}"></div>
+</div>
+<div class="rij">
+  <div><label>KvK</label><input name="kvk" value="{{ r.kvk or '' if r }}"></div>
+  <div><label>Btw-nummer</label><input name="btw_nummer" value="{{ r.btw_nummer or '' if r }}"></div>
+</div>
+<label>Notities</label><textarea name="notities" rows="2">{{ r.notities or '' if r }}</textarea>
+<div class="acties"><button>Opslaan</button><a href="{{ url_for('relaties') }}">Annuleren</a></div>
+<p class="zacht">Tip: geef vaste leveranciers (telefonie, huur, software) een limiet. Facturen tot dat bedrag worden automatisch goedgekeurd en komen direct in het betaalvoorstel.</p>
+</form>
+{% if r %}
+<h2>Inkoopfacturen</h2>
+<div class="tabel-wrap"><table><tr><th>Nr</th><th>Datum</th><th>Vervalt</th><th class="bedrag">Bedrag</th><th>Status</th></tr>
+{% for f in inkoop %}<tr><td><a href="{{ url_for('inkoop_detail', fid=f.id) }}">{{ f.factuurnummer }}</a></td><td>{{ f.factuurdatum }}</td><td>{{ f.vervaldatum }}</td><td class="bedrag">{{ f.bedrag_incl_cent|euro }}</td><td><span class="status {{ f.status }}">{{ f.status.replace('_',' ') }}</span></td></tr>
+{% else %}<tr><td colspan="5" class="zacht">Geen</td></tr>{% endfor %}</table></div>
+<h2>Verkoopfacturen</h2>
+<div class="tabel-wrap"><table><tr><th>Nr</th><th>Datum</th><th>Vervalt</th><th class="bedrag">Bedrag</th><th>Status</th></tr>
+{% for v in verkoop %}<tr><td><a href="{{ url_for('verkoop_detail', fid=v.id) }}">{{ v.factuurnummer }}</a></td><td>{{ v.factuurdatum }}</td><td>{{ v.vervaldatum }}</td><td class="bedrag">{{ verkoop_incl[v.id]|euro }}</td><td><span class="status {{ v.status }}">{{ v.status }}</span></td></tr>
+{% else %}<tr><td colspan="5" class="zacht">Geen</td></tr>{% endfor %}</table></div>
+{% endif %}
+{% endblock %}

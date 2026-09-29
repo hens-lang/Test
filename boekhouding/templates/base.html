@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block titel %}Boekhouding{% endblock %} · {{ inst.bedrijfsnaam if inst else '' }}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+{% set ep = request.endpoint or '' %}
+<header>
+  <span class="merk">{{ inst.bedrijfsnaam if inst else 'Boekhouding' }}</span>
+  <nav>
+    <a href="{{ url_for('dashboard') }}" class="{{ 'actief' if ep == 'dashboard' }}">Overzicht</a>
+    <a href="{{ url_for('goedkeuren') }}" class="{{ 'actief' if ep.startswith('goedkeuren') }}">Goedkeuren{% if te_keuren_badge %}<span class="badge">{{ te_keuren_badge }}</span>{% endif %}</a>
+    <a href="{{ url_for('betalingen') }}" class="{{ 'actief' if ep.startswith('batch') or ep == 'betalingen' }}">Betalingen</a>
+    <a href="{{ url_for('inkoop') }}" class="{{ 'actief' if ep.startswith('inkoop') }}">Inkoop</a>
+    <a href="{{ url_for('verkoop') }}" class="{{ 'actief' if ep.startswith('verkoop') }}">Verkoop</a>
+    <a href="{{ url_for('bank') }}" class="{{ 'actief' if ep.startswith('bank') }}">Bank</a>
+    <a href="{{ url_for('relaties') }}" class="{{ 'actief' if ep.startswith('relatie') }}">Relaties</a>
+    <a href="{{ url_for('btw') }}" class="{{ 'actief' if ep == 'btw' }}">Btw</a>
+    <a href="{{ url_for('instellingen') }}" class="{{ 'actief' if ep == 'instellingen' }}">Instellingen</a>
+  </nav>
+</header>
+<main>
+  {% for cat, msg in get_flashed_messages(with_categories=true) %}<div class="melding {{ cat }}">{{ msg }}</div>{% endfor %}
+  {% block inhoud %}{% endblock %}
+</main>
+</body>
+</html>

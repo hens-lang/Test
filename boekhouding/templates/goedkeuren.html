@@ -1,0 +1,33 @@
+{% extends 'base.html' %}{% block titel %}Goedkeuren{% endblock %}
+{% block inhoud %}
+<h1>Goedkeuren</h1>
+{% if facturen %}
+<form method="post">
+<div class="tabel-wrap"><table>
+<tr><th><input type="checkbox" onclick="document.querySelectorAll('input[name=ids]').forEach(c=>c.checked=this.checked)"></th>
+<th>Leverancier</th><th>Factuur</th><th>Vervalt</th><th class="bedrag">Bedrag</th><th></th></tr>
+{% for f in facturen %}
+<tr>
+<td><input type="checkbox" name="ids" value="{{ f.id }}"></td>
+<td>{{ f.relatie_naam }}{% if not iban_ok[f.id] %}<br><span class="rood zacht">⚠ geen geldig IBAN — <a href="{{ url_for('relatie', rid=f.relatie_id, terug=url_for('goedkeuren')) }}">aanvullen</a></span>{% endif %}</td>
+<td><a href="{{ url_for('inkoop_detail', fid=f.id) }}">{{ f.factuurnummer }}</a><br><span class="zacht">{{ f.omschrijving or '' }}</span></td>
+<td>{% if f.vervaldatum < vandaag %}<span class="status te_laat">{{ f.vervaldatum }}</span>{% else %}{{ f.vervaldatum }}{% endif %}</td>
+<td class="bedrag"><strong>{{ f.bedrag_incl_cent|euro }}</strong></td>
+<td style="white-space:nowrap">
+  {% if f.bestand %}<a href="{{ url_for('bestand', naam=f.bestand) }}" target="_blank">pdf</a> · {% endif %}
+  <button class="ok" formaction="{{ url_for('goedkeuren_post') }}" name="actie" value="goedkeuren" onclick="this.form.querySelectorAll('input[name=ids]').forEach(c=>c.checked=(c.value=='{{ f.id }}'))">✓</button>
+  <button class="fout" name="actie" value="afkeuren" onclick="this.form.querySelectorAll('input[name=ids]').forEach(c=>c.checked=(c.value=='{{ f.id }}'))">✕</button>
+</td></tr>
+{% endfor %}
+</table></div>
+<div class="acties">
+  <button class="ok" name="actie" value="goedkeuren">Geselecteerde goedkeuren</button>
+  <button class="fout" name="actie" value="afkeuren">Geselecteerde afkeuren</button>
+  <input name="notitie" placeholder="notitie (optioneel)" style="max-width:280px">
+</div>
+</form>
+<p class="zacht">Goedgekeurde facturen komen automatisch in het <a href="{{ url_for('betalingen') }}">betaalvoorstel</a>.</p>
+{% else %}
+<div class="kaart leeg">🎉 Niets om goed te keuren. <a href="{{ url_for('betalingen') }}">Naar betaalvoorstel →</a></div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}{% block titel %}Betalingen{% endblock %}
+{% block inhoud %}
+<h1>Betalingen</h1>
+{% if request.args.nieuw %}
+<div class="kaart" style="border-left:4px solid var(--ok)">
+  <strong>Betaalbatch #{{ request.args.nieuw }} staat klaar.</strong>
+  <div class="acties"><a class="knop" href="{{ url_for('batch_download', bid=request.args.nieuw) }}">⬇ Download betaalbestand</a></div>
+  <span class="zacht">Upload dit bestand in je bankomgeving (ING: Betalen → Batchbetalingen, Rabobank: Betalen → Bestanden aanleveren, ABN AMRO: Betalen → Batch). Bevestig daar één keer; de bank voert alles uit. Lees daarna je afschrift in bij <a href="{{ url_for('bank') }}">Bank</a> — de facturen gaan dan automatisch op betaald.</span>
+</div>{% endif %}
+
+<h2>Betaalvoorstel</h2>
+{% if voorstel %}
+<form method="post" action="{{ url_for('batch_maken') }}">
+<div class="tabel-wrap"><table>
+<tr><th><input type="checkbox" checked onclick="document.querySelectorAll('input[name=ids]').forEach(c=>c.checked=this.checked)"></th>
+<th>Leverancier</th><th>Factuur</th><th>IBAN</th><th>Vervalt</th><th>Betalen op</th><th class="bedrag">Bedrag</th></tr>
+{% for v in voorstel %}
+<tr><td><input type="checkbox" name="ids" value="{{ v.id }}" {{ 'checked' if v.iban_ok else 'disabled' }}></td>
+<td>{{ v.relatie_naam }}</td><td><a href="{{ url_for('inkoop_detail', fid=v.id) }}">{{ v.factuurnummer }}</a></td>
+<td>{% if v.iban_ok %}{{ v.relatie_iban }}{% else %}<a class="rood" href="{{ url_for('relatie', rid=v.relatie_id, terug=url_for('betalingen')) }}">IBAN ontbreekt</a>{% endif %}</td>
+<td>{{ v.vervaldatum }}</td><td>{{ v.betaaldatum }}</td><td class="bedrag">{{ v.bedrag_incl_cent|euro }}</td></tr>
+{% endfor %}
+<tr><td colspan="6"><strong>Totaal</strong></td><td class="bedrag"><strong>{{ voorstel|sum(attribute='bedrag_incl_cent')|euro }}</strong></td></tr>
+</table></div>
+<div class="acties">
+  <label style="margin:0">Uitvoerdatum</label><input type="date" name="uitvoerdatum" style="max-width:180px" title="Leeg = vroegste geplande betaaldatum">
+  <button class="ok">Maak betaalbestand</button>
+</div>
+</form>
+{% else %}<div class="kaart leeg">Geen goedgekeurde facturen om te betalen.</div>{% endif %}
+
+<h2>Betaalbatches</h2>
+<div class="tabel-wrap"><table>
+<tr><th>#</th><th>Aangemaakt</th><th>Uitvoerdatum</th><th>Posten</th><th class="bedrag">Totaal</th><th>Status</th><th></th></tr>
+{% for b in batches %}{% set s = batch_status[b.id] %}
+<tr><td>{{ b.id }}</td><td>{{ b.aangemaakt_op.replace('T',' ') }}</td><td>{{ b.uitvoerdatum }}</td><td>{{ b.aantal }}</td><td class="bedrag">{{ b.totaal_cent|euro }}</td>
+<td>{% if s.open %}<span class="status in_batch">{{ s.betaald or 0 }}/{{ b.aantal }} betaald</span>{% elif s.betaald %}<span class="status betaald">betaald</span>{% else %}<span class="status">geannuleerd</span>{% endif %}</td>
+<td style="white-space:nowrap"><a href="{{ url_for('batch_download', bid=b.id) }}">download</a>
+{% if s.open %} · <form class="inline" method="post" action="{{ url_for('batch_annuleren', bid=b.id) }}" onsubmit="return confirm('Batch annuleren? Doe dit alleen als je het bestand NIET bij de bank hebt ingediend.')"><button class="licht" style="padding:2px 8px">annuleren</button></form>{% endif %}</td></tr>
+{% else %}<tr><td colspan="7" class="zacht">Nog geen batches.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% block titel %}Inkoop{% endblock %}
+{% block inhoud %}
+<div class="acties" style="justify-content:space-between"><h1 style="margin:0">Inkoopfacturen</h1><a class="knop" href="{{ url_for('inkoop_nieuw') }}">+ Factuur invoeren</a></div>
+<div class="acties">
+{% for s, naam in [(None,'Alle'),('ter_goedkeuring','Ter goedkeuring'),('goedgekeurd','Goedgekeurd'),('in_batch','In betaalbatch'),('betaald','Betaald'),('afgekeurd','Afgekeurd')] %}
+<a class="knop {{ '' if status == s else 'licht' }}" href="{{ url_for('inkoop', status=s) }}">{{ naam }}</a>{% endfor %}
+</div>
+<div class="tabel-wrap"><table>
+<tr><th>Leverancier</th><th>Factuurnr</th><th>Datum</th><th>Vervalt</th><th class="bedrag">Incl. btw</th><th>Status</th></tr>
+{% for f in facturen %}
+<tr><td>{{ f.relatie_naam }}</td><td><a href="{{ url_for('inkoop_detail', fid=f.id) }}">{{ f.factuurnummer }}</a></td><td>{{ f.factuurdatum }}</td><td>{{ f.vervaldatum }}</td>
+<td class="bedrag">{{ f.bedrag_incl_cent|euro }}</td><td><span class="status {{ f.status }}">{{ f.status.replace('_',' ') }}</span></td></tr>
+{% else %}<tr><td colspan="6" class="leeg">Geen facturen.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

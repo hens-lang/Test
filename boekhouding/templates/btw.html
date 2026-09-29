@@ -1,0 +1,10 @@
+{% extends 'base.html' %}{% block titel %}Btw{% endblock %}
+{% block inhoud %}
+<div class="acties" style="justify-content:space-between"><h1 style="margin:0">Btw-overzicht {{ jaar }}</h1>
+<span><a href="{{ url_for('btw', jaar=jaar-1) }}">← {{ jaar-1 }}</a> · <a href="{{ url_for('btw', jaar=jaar+1) }}">{{ jaar+1 }} →</a></span></div>
+<div class="tabel-wrap"><table>
+<tr><th>Periode</th><th class="bedrag">Omzet excl.</th><th class="bedrag">Btw verkoop (1a/1b)</th><th class="bedrag">Kosten excl.</th><th class="bedrag">Voorbelasting (5b)</th><th class="bedrag">Te betalen</th></tr>
+{% for k in kwartalen %}<tr><td>{{ k.periode }}</td><td class="bedrag">{{ k.omzet|euro }}</td><td class="bedrag">{{ k.verkoop_btw|euro }}</td><td class="bedrag">{{ k.kosten|euro }}</td><td class="bedrag">{{ k.voorbelasting|euro }}</td><td class="bedrag"><strong>{{ k.te_betalen|euro }}</strong></td></tr>{% endfor %}
+</table></div>
+<p class="zacht">Indicatie op factuurdatum: verkoop telt vanaf status 'verzonden', inkoop telt alles behalve afgekeurde facturen. Controleer met je accountant vóór het indienen van de aangifte.</p>
+{% endblock %}
