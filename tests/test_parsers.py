@@ -99,10 +99,12 @@ ECHT = sorted(INBOX.glob("*")) if INBOX.exists() else []
 @pytest.mark.parametrize("pad", [p for p in ECHT if p.suffix.lower() in (".xls", ".pdf", ".csv")], ids=lambda p: p.name)
 def test_echte_inbox(pad):
     e = parse_bestand(pad)
-    assert e.type in ("A", "B", "C", "F", "V"), f"{pad.name} niet herkend"
+    assert e.type in ("A", "B", "C", "F", "S", "V"), f"{pad.name} niet herkend"
     assert len(e.df) > 0
     van, tot = e.periode
-    assert van <= tot <= dt.date.today() + dt.timedelta(days=1)
+    assert van <= tot
+    if e.type != "V":  # verkooplijst mag klaarstaande facturen met een toekomstige datum bevatten
+        assert tot <= dt.date.today() + dt.timedelta(days=1)
 
 
 def test_verkoopfactuur_tekst():
@@ -126,3 +128,15 @@ def test_verkoop_csv(tmp_path):
     assert e.type == "V"
     assert e.df["bedrag_excl"].tolist() == [800.0, -1500.0]
     assert (e.df["bron"] == "mail").all()
+
+
+def test_steam_contactstatistieken():
+    e = parse_bestand(FIXTURES / "contactstatistics_agents_2026-10-01.xls")
+    assert e.type == "S" and len(e.df) == 84
+    assert e.df["peildatum"].unique().tolist() == ["2026-10-01"]
+    tot = e.df.groupby("agent_raw")["contactpogingen"].sum()
+    assert tot["Mart Blijleven"] == 3238          # gelijk aan Pogingen in de urenexport
+    assert not e.df["agent_raw"].str.startswith("Subtotaal").any()
+    # duur in Excel-XML: '1900-01-01T15:04' = 39 uur 4 minuten
+    r = e.df[(e.df.agent_raw == "Hens Boer") & (e.df.project == "Moyee Coffee")].iloc[0]
+    assert r["recordtijd_s"] == 39 * 3600 + 4 * 60

@@ -34,6 +34,10 @@ class Klant:
     belstart: dt.date | None
     factuur_namen: list = field(default_factory=list)
     status: str = "actief"
+    omzet_boekhouding: float | None = None
+    steam_campagnes: list = field(default_factory=list)
+    targets_per_code: dict = field(default_factory=dict)
+    memo_classificatie: bool = False
 
     @property
     def actief(self) -> bool:
@@ -102,8 +106,33 @@ class Config:
         return self.beller_voor(afzender)
 
     def klant_voor_debiteur(self, naam) -> str | None:
-        treffers = [k.naam for k in self.klanten.values() if k.herkent(naam)]
-        return treffers[0] if len(treffers) == 1 else None
+        norm = lambda x: re.sub(r"[^a-z0-9]", "", (x or "").lower())
+        treffers = [k for k in self.klanten.values() if k.herkent(naam)]
+        if not treffers:
+            return None
+        # Meest specifieke naam wint ("MostWare Next" boven "MostWare").
+        treffers.sort(key=lambda k: -len(norm(k.naam.split("(")[0])))
+        if len(treffers) > 1 and len(norm(treffers[0].naam.split("(")[0])) == len(norm(treffers[1].naam.split("(")[0])):
+            return None
+        return treffers[0].naam
+
+    def klant_voor_campagne(self, campagne) -> str | None:
+        """Campagnenaam in Steam ('Binnenstebuiten (PIVOT)', 'MostWare') -> klant uit de config."""
+        norm = lambda x: re.sub(r"[^a-z0-9]", "", (x or "").lower())
+        c = norm(campagne)
+        if not c:
+            return None
+        for k in self.klanten.values():
+            if c in [norm(n) for n in k.steam_campagnes]:
+                return k.naam
+        exact = [k.naam for k in self.klanten.values() if norm(k.naam) == c]
+        if exact:
+            return exact[0]
+        kand = [k for k in self.klanten.values()
+                if norm(k.naam.split("(")[0]) and (c.startswith(norm(k.naam.split("(")[0]))
+                                                   or norm(k.naam.split("(")[0]).startswith(c))]
+        kand.sort(key=lambda k: len(norm(k.naam.split("(")[0])))   # kortste = meest algemene naam
+        return kand[0].naam if kand else None
 
     def beller_voor(self, agent_raw) -> str | None:
         if agent_raw is None:
@@ -139,6 +168,10 @@ def laad(config_dir: Path | str = CONFIG_DIR) -> Config:
             belstart=_datum(v.get("belstart")),
             factuur_namen=list(v.get("factuur_namen") or []),
             status=str(v.get("status") or "actief").lower(),
+            omzet_boekhouding=v.get("omzet_boekhouding"),
+            steam_campagnes=list(v.get("steam_campagnes") or []),
+            targets_per_code={int(c): float(t) for c, t in (v.get("targets_per_code") or {}).items()},
+            memo_classificatie=bool(v.get("memo_classificatie", False)),
         )
 
     bellers = {}

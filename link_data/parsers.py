@@ -7,6 +7,8 @@ Type A  belexport (Management module, tabel idTableRapportage, loadRecord per ri
 Type B  urenexport (PayableHoursPerDay: één rij per beller per dag)
 Type C  historie-export (één rij per belpoging), herkend aan de kolommen
 Type F  factuur van een beller (PDF): nummer, datum, week, uren, bedrag excl. btw
+Type S  contactstatistieken per agent x campagne x bellijst (Excel-XML, "contactstatistics_agents"):
+        alle contactpogingen, hits, afgehandeld en de beltijd per campagne
 Type V  verkoopfactuur van LINK. aan een opdrachtgever (PDF): één regel per factuurregel,
         met werkperiode-nummer en periode
 
@@ -30,7 +32,7 @@ CONTACT_KOLOMMEN = [
     "sleutel", "bron", "campagne_pid", "ctpid", "historiepid", "agent_raw", "agent_pid",
     "project", "campagne_naam", "bedrijf", "contact_dt", "datum", "uur",
     "code", "code_raw", "is_max", "omschrijving", "gespreksduur_s", "prepare_s", "dial_s",
-    "finish_s", "aantal_pogingen", "is_hit", "is_contactmoment", "is_afgehandeld", "afspraak_dt",
+    "finish_s", "aantal_pogingen", "is_hit", "is_contactmoment", "is_afgehandeld", "afspraak_dt", "memo",
 ]
 
 UREN_TIJDKOLOMMEN = {
@@ -51,7 +53,11 @@ FACTUUR_KOLOMMEN = ["sleutel", "afzender", "factuurnr", "factuurdatum", "week_ge
                     "tarief", "bedrag_excl", "omschrijving"]
 
 VERKOOP_KOLOMMEN = ["sleutel", "factuurnr", "klant_naam", "debiteurnr", "factuurdatum", "regel",
-                    "omschrijving", "werkperiode_nr", "periode_van", "periode_tot", "bedrag_excl", "is_lead", "bron"]
+                    "omschrijving", "werkperiode_nr", "periode_van", "periode_tot", "bedrag_excl", "is_lead", "bron", "status"]
+
+STATS_KOLOMMEN = ["sleutel", "peildatum", "agent_raw", "campagne", "project", "contactpogingen", "calls", "hits",
+                  "afgehandeld", "recordtijd_s", "wachten_s", "laden_s", "prepare_s", "dial_s", "gesprek_s",
+                  "finish_s"]
 
 # Kolomnamen (lowercase) die in Type C kunnen voorkomen, per genormaliseerd veld.
 C_ALIASSEN = {
@@ -67,6 +73,7 @@ C_ALIASSEN = {
     "historiepid": ["historiepid", "historie pid"],
     "project": ["naam project", "projectcode", "project"],
     "bedrijf": ["bedrijf"],
+    "memo": ["laatste interne memo", "memo", "interne memo"],
     "omschrijving": ["resultcode omschr.", "resultaatomschrijving", "omschrijving"],
     "gespreksduur_s": ["gespreksduur", "talking"],
 }
@@ -243,6 +250,7 @@ def _contact_record(d: dict, bron: str, pid_load=None, ctpid_load=None) -> dict:
         "is_contactmoment": _int(d.get("Is contactmoment")),
         "is_afgehandeld": _int(d.get("Is afgehandeld")),
         "afspraak_dt": (lambda x: x.isoformat(sep=" ") if x else None)(parse_datumtijd(d.get("Afspraakdatum + tijd"))),
+        "memo": pak("memo"),
     }
 
 
@@ -369,7 +377,7 @@ def parse_verkoopfactuur_tekst(tekst: str) -> list[dict] | None:
             "periode_van": _d(per.group(1)) if per else None, "periode_tot": _d(per.group(2)) if per else None,
             "bedrag_excl": _bedrag_flex(m.group(4)),
             "is_lead": bool(re.search(r"\blead|overdracht", oms, re.I)) and not re.search(r"retainer", oms, re.I),
-            "bron": "pdf",
+            "bron": "pdf", "status": None,
         })
     return regels or None
 
@@ -394,7 +402,8 @@ def _parse_factuur(pad: Path) -> Export:
 # ---------------------------------------------------------------- publiek
 
 def _parse_verkoop_csv(pad: Path) -> Export:
-    """Lijst verkoopfacturen (bv. uit de mailbox): factuurnr;factuurdatum;debiteur;bedrag_incl[;bedrag_excl;opmerking].
+    """Lijst verkoopfacturen (bv. uit de mailbox):
+    factuurnr;factuurdatum;debiteur;bedrag_incl[;bedrag_excl;opmerking;periode_van;periode_tot;werkperiode].
     Bedragen incl. 21% btw worden omgerekend naar excl. Een PDF van dezelfde factuur gaat voor."""
     ruw = pad.read_bytes()
     sha = hashlib.sha256(ruw).hexdigest()
@@ -416,17 +425,65 @@ def _parse_verkoop_csv(pad: Path) -> Export:
             continue
         rijen.append({"sleutel": f"{r.factuurnr}|1", "factuurnr": r.factuurnr, "klant_naam": schoon(r.debiteur),
                       "debiteurnr": None, "factuurdatum": r.factuurdatum, "regel": 1,
-                      "omschrijving": getattr(r, "opmerking", "") or "", "werkperiode_nr": None,
-                      "periode_van": None, "periode_tot": None, "bedrag_excl": excl, "is_lead": False,
-                      "bron": "mail"})
+                      "omschrijving": getattr(r, "opmerking", "") or "",
+                      "werkperiode_nr": int(r.werkperiode) if getattr(r, "werkperiode", "") else None,
+                      "periode_van": getattr(r, "periode_van", "") or None,
+                      "periode_tot": getattr(r, "periode_tot", "") or None, "bedrag_excl": excl, "is_lead": False,
+                      "bron": "mail", "status": (getattr(r, "status", "") or None)})
     out = pd.DataFrame(rijen, columns=VERKOOP_KOLOMMEN)
     out["datum"] = out["factuurdatum"]
     melding = f"overgeslagen zonder factuurdatum: {', '.join(zonder_datum)}" if zonder_datum else ""
     return Export(pad, "V", out, sha, list(df.columns), melding)
 
 
+def _xml_duur(v) -> int:
+    """Excel-XML duur '1900-01-01T15:04:00.000' (dagen sinds 31-12-1899) -> seconden."""
+    s = schoon(v)
+    try:
+        t = dt.datetime.fromisoformat(s[:19])
+    except ValueError:
+        return tijd_naar_sec(s) or 0
+    return int((t - dt.datetime(1899, 12, 31)).total_seconds())
+
+
+def _parse_stats(pad: Path, ruw: bytes) -> Export:
+    sha = hashlib.sha256(ruw).hexdigest()
+    soup = BeautifulSoup(ruw.decode("utf-8", errors="replace"), "lxml-xml")
+    rijen = soup.find_all("Row")
+    tekst = lambda c: schoon(BeautifulSoup(c.get_text(), "lxml").get_text(" "))
+    kop = [tekst(c) for c in rijen[0].find_all("Cell")]
+    idx = {k: i for i, k in enumerate(kop)}
+    m = re.search(r"(\d{4}-\d{2}-\d{2})", pad.name)
+    peil = m.group(1) if m else dt.date.fromtimestamp(pad.stat().st_mtime).isoformat()
+    out = []
+    for r in rijen[1:]:
+        c = [tekst(x) for x in r.find_all("Cell")]
+        if len(c) < len(kop) - 1 or not c[0] or c[0].startswith(("Subtotaal", "Records:")):
+            if len(c) < 10:
+                break   # tweede tabel (pauzes per campagne)
+            continue
+        g = lambda k: c[idx[k]] if k in idx and idx[k] < len(c) else ""
+        out.append({
+            "sleutel": f"{peil}|{g('Agent')}|{g('Campagne')}|{g('Project')}", "peildatum": peil,
+            "agent_raw": g("Agent"), "campagne": g("Campagne"), "project": g("Project"),
+            "contactpogingen": _int(g("Contactpog.")) or 0, "calls": _int(g("Calls")) or 0,
+            "hits": _int(g("Hits")) or 0, "afgehandeld": _int(g("Afgeh")) or 0,
+            "recordtijd_s": _xml_duur(g("Record tijd")), "wachten_s": _xml_duur(g("Wachten")),
+            "laden_s": _xml_duur(g("Laadtijd")), "prepare_s": _xml_duur(g("Prepare")), "dial_s": _xml_duur(g("Dial")),
+            "gesprek_s": _xml_duur(g("Gespreksduur")), "finish_s": _xml_duur(g("Finish")),
+        })
+    df = pd.DataFrame(out, columns=STATS_KOLOMMEN)
+    df["datum"] = peil
+    return Export(pad, "S", df, sha, kop)
+
+
 def parse_bestand(pad) -> Export:
     pad = Path(pad)
+    begin = pad.read_bytes()[:400]
+    if begin.lstrip().startswith(b"<?xml") and b"Workbook" in begin:
+        ruw = pad.read_bytes()
+        if b"Contactpog." in ruw and b"Record tijd" in ruw:
+            return _parse_stats(pad, ruw)
     if pad.suffix.lower() == ".pdf":
         return _parse_factuur(pad)
     if pad.suffix.lower() == ".csv":

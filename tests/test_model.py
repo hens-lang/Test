@@ -129,3 +129,51 @@ def test_verkoopfacturen_bepalen_opbrengst(pipeline):
     # startdatum afgeleid uit 'werkperiode 2'
     t = m.targets.set_index("klant").loc["GrowOn Agency"]
     assert t["start_bron"] in ("config", "verkoopfactuur")
+
+
+def test_conceptfactuur_vervalt_als_echte_factuur_er_is(pipeline):
+    con, _, _, cfg, _ = pipeline
+    basis = {"debiteurnr": None, "regel": 1, "omschrijving": "", "werkperiode_nr": None, "periode_van": None,
+             "periode_tot": None, "is_lead": False, "bron": "mail", "klant_naam": "GrowOn Agency B.V."}
+    v = pd.DataFrame([
+        {**basis, "sleutel": "concept-x|1", "factuurnr": "concept-x", "factuurdatum": "2026-10-26",
+         "bedrag_excl": 1600.0, "status": "te_versturen"},
+        {**basis, "sleutel": "2026-0100|1", "factuurnr": "2026-0100", "factuurdatum": "2026-10-27",
+         "bedrag_excl": 1600.0, "status": "open"},
+    ])
+    m = model.bouw(cfg, store.lees(con, "contactmomenten"), store.lees(con, "uren"), None, None, v)
+    assert m.verkoop["factuurnr"].tolist() == ["2026-0100"]
+    assert m.dq["mogelijk_dubbel"] == []
+
+
+def test_verdeelsleutel_gekalibreerd_op_steam_beltijd(pipeline):
+    con, _, _, cfg, _ = pipeline
+    from link_data.parsers import parse_bestand
+    st = parse_bestand(FIXTURES / "contactstatistics_agents_2026-10-01.xls").df
+    m = model.bouw(cfg, store.lees(con, "contactmomenten"), store.lees(con, "uren"), None, None, None, st)
+    for b in m.verdeling["beller"].dropna().unique():
+        s = m.stats[m.stats.beller == b].groupby("klant").recordtijd_s.sum()
+        if s.empty:
+            continue
+        v = m.verdeling[(m.verdeling.beller == b) & (m.verdeling.uren > 0)].groupby("klant").uren.sum()
+        d = pd.concat([s / s.sum(), v / v.sum()], axis=1).fillna(0)
+        assert (d.iloc[:, 0] - d.iloc[:, 1]).abs().max() < 0.005, b
+    a = m.verdeling[m.verdeling.uren > 0].groupby(["datum", "beller"]).aandeel.sum()
+    assert (a.round(6) == 1).all()
+    assert all(c["ok"] for c in m.dq["controles"])
+
+
+def test_memo_classificatie_moyee(pipeline):
+    con, _, _, cfg, _ = pipeline
+    c = store.lees(con, "contactmomenten").head(5).copy()
+    c["campagne_pid"] = 11
+    c["code"] = 101
+    c["code_raw"] = "101"
+    c["memo"] = ["01-09-2026 10:00:00 kortingscode meegegeven",                 # lead (stempel telt niet)
+                 "Flavia Monday to thursday 16-09-2026 10:00",                  # afspraak
+                 "Afspraak is ingepland in oktober",                            # afspraak
+                 "enthousiast, offerte sturen en daarna proeverij inplannen",   # lead (nog niet gepland)
+                 "Op 20 augustus perfect voor de proeverij. do 20 augustus 09:30"]  # tasting gepland
+    c["sleutel"] = [f"t{i}" for i in range(5)]
+    m = model.bouw(cfg, c, store.lees(con, "uren"))
+    assert m.contacten.sort_values("sleutel")["code_eff"].tolist() == [101, 100, 100, 101, 100]

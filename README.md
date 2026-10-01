@@ -9,6 +9,7 @@ Alles draait op dezelfde dataset (`data/link.db`) en dezelfde configuratie (`con
    - belexports (`custom_*.xls`, Management module)
    - urenexport (`PayableHoursPerDay_*.xls`)
    - historie-export met alle contactmomenten (zodra beschikbaar)
+   - contactstatistieken per agent (`contactstatistics_agents_*.xls`): alle pogingen en beltijd per campagne
    - facturen van bellers (PDF)
    - verkoopfacturen aan klanten (PDF), of een lijst `verkoopfacturen_mailbox.csv`
      (`factuurnr;factuurdatum;debiteur;bedrag_incl;opmerking`)
@@ -51,7 +52,9 @@ pip install -r requirements.txt
 - **Uren**: `Te betalen` uit de urenexport.
 - **Kosten ZZP**: voor een week mét factuur geldt het gefactureerde bedrag. Voor een week zonder factuur is het een schatting: Steam-uren x tarief. Facturen zonder weeknummer gaan naar de week van de factuurdatum (do t/m zo) of naar de week ervoor (ma t/m wo).
 - **Kosten eigenaren**: een vaste vergoeding per maand. Die wordt verdeeld over de betaalde uren van die maand.
-- **Verdeelsleutel**: Steam splitst uren niet per campagne. Daarom worden de uren van een beller op een dag verdeeld naar rato van zijn belregels per opdrachtgever die dag. Een dag zonder belregels komt op "Niet toegerekend".
+- **Verdeelsleutel**: Steam splitst uren niet per campagne. De verdeling per dag volgt de belregels; het totaal per beller per opdrachtgever wordt gekalibreerd op de beltijd per campagne uit de contactstatistieken (`verdeelsleutel: steam_gekalibreerd`). Zonder contactstatistieken: alleen belregels.
+- **Resultaat uit de memo**: bij `memo_classificatie: true` (Moyee) telt een overdracht (101) met een afspraak of ingeplande tasting in de memo als afspraak (100). Patronen in `instellingen.yaml`; controle op het tabblad Datakwaliteit.
+- **Alleen meetbaar werk** (schakelaar, standaard aan): alleen opdrachtgevers met belregels of door Steam gemeten beltijd in de periode.
 - **Opbrengst**: wat echt gefactureerd is. Een verkoopfactuur telt verdeeld over zijn periode (een factuur zonder periode: 28 dagen vanaf de factuurdatum), tot de peildatum. Met `opbrengst_basis: facturen_en_schatting` vult het model dagen zonder factuur aan met fee / 28.
 - **Werkperiodes**: volgens de verkoopfactuur als die er is ("werkperiode 4, periode ..."), anders vanaf de belstart.
 - **Status klant**: `actief`, `pauze` of `gestopt`. Alleen actieve klanten tellen mee in targets en scenario.

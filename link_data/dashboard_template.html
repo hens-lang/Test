@@ -106,6 +106,7 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
   <label id="lTot">Tot en met<input type="date" id="fTot"></label>
   <label>Beller<select id="fBeller"></select></label>
   <label>Opdrachtgever<select id="fKlant"></select></label>
+  <label style="flex-direction:row;align-items:center;gap:6px;color:var(--tekst);font-size:14px"><input type="checkbox" id="fMeetbaar" checked> Alleen meetbaar werk</label>
   <div class="info" id="fInfo"></div>
 </div>
 <main>
@@ -117,7 +118,7 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
     <div class="kaart"><h3>Resultaten per week</h3><p class="uitleg">Resultaat volgens <code>telt_als_resultaat</code> per opdrachtgever.</p><div class="chart"><canvas id="cTrendRes"></canvas></div></div>
   </div>
   <h2>Targets huidige werkperiode</h2>
-  <p class="uitleg">Stand op de peildatum. Werkperiode volgens de verkoopfactuur als die er is, anders vanaf de belstart. Niet afhankelijk van de filters.</p>
+  <p class="uitleg">Actieve opdrachtgevers, stand op de peildatum. Werkperiode volgens de verkoopfactuur als die er is, anders vanaf de belstart. Niet afhankelijk van de filters.</p>
   <div class="kaart tabelwrap" id="tTargets"></div>
 </section>
 
@@ -125,6 +126,9 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
 <section class="tab" id="tab-bellers">
   <p class="uitleg">Inzet (uren, pogingen) komt uit de urenexport, de funnel (bereik, conversie, resultaten) uit de belregels. Belregels zonder uren tellen mee in de funnel, niet in de per-uur-cijfers.</p>
   <div class="kaart tabelwrap" id="tBellers"></div>
+  <h2>Steam-statistieken: alle contactpogingen</h2>
+  <p class="uitleg">Uit <code>contactstatistics_agents</code> (stand <span id="statsPeil"></span>, hele periode, niet afhankelijk van de datumfilter). Hits zoals Steam ze telt per campagne. Bereik = calls / pogingen.</p>
+  <div class="kaart tabelwrap" id="tStats"></div>
   <div class="grid twee" style="margin-top:12px">
     <div class="kaart"><h3>Tijdsverdeling als % van de betaalde tijd</h3><p class="uitleg">Prepare en Finish zijn verloren tijd: daar zit de winst.</p><div class="chart" id="wTijd"><canvas id="cTijd"></canvas></div></div>
     <div class="kaart"><h3>Pogingen per betaald uur, per week</h3><p class="uitleg">Uit de urenexport.</p><div class="chart"><canvas id="cBellerTrend"></canvas></div></div>
@@ -133,16 +137,20 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
 
 <!-- OPDRACHTGEVERS -->
 <section class="tab" id="tab-klanten">
+  <label style="display:flex;gap:6px;align-items:center;font-size:14px;margin:0 0 10px"><input type="checkbox" id="fToonGestopt"> Toon gestopte en gepauzeerde opdrachtgevers</label>
   <div class="kaart tabelwrap" id="tKlanten"></div>
   <div class="grid twee" style="margin-top:12px">
     <div class="kaart"><h3>Uitkomst van de belregels per opdrachtgever</h3><p class="uitleg">Aandeel per funnelgroep. Veel data-fout (300) = slechte bellijst.</p><div class="chart" id="wFunnel"><canvas id="cFunnel"></canvas></div></div>
     <div class="kaart"><h3>Pijplijn</h3><p class="uitleg">Terugbelafspraken (500) en infomails (501) die nog opvolging nodig hebben.</p><div class="tabelwrap" id="tPijplijn"></div></div>
   </div>
+  <h2>Debiteuren en te versturen</h2>
+  <p class="uitleg">Uit de verkoopfacturen (bedragen incl. btw, zoals in de boekhouding). Stand van de laatst ingelezen lijst, niet afhankelijk van de filters.</p>
+  <div class="kaart tabelwrap" id="tDebiteuren"></div>
   <h2>Kwaliteit van de bellijsten</h2>
   <p class="uitleg">Per project / bellijst. Rood: data-foutratio boven 15%.</p>
   <div class="kaart tabelwrap" id="tLijsten"></div>
   <h2>Verdeelsleutel kosten</h2>
-  <p class="uitleg">Uren worden in Steam niet per campagne gesplitst. De betaalde uren van een beller op een dag worden verdeeld naar rato van zijn belregels per opdrachtgever die dag. Dagen zonder belregels staan op "Niet toegerekend".</p>
+  <p class="uitleg">Steam splitst betaalde uren niet per campagne. De verdeling per dag volgt de belregels van die dag; het totaal per beller per opdrachtgever is gekalibreerd op de beltijd per campagne uit de Steam-contactstatistieken. Dagen zonder belregels volgen alleen de Steam-beltijd.</p>
   <div class="kaart tabelwrap" id="tVerdeling"></div>
 </section>
 
@@ -241,12 +249,20 @@ function periodeOpties(type) {
   return [...opts.entries()].reverse();
 }
 
-const S = {van: 0, tot: D.datums.length - 1, b: -1, k: -1, modus: "a", sc: null};
+const S = {van: 0, tot: D.datums.length - 1, b: -1, k: -1, modus: "a", sc: null, meetbaar: true};
+// Meetbaar = opdrachtgever met belregels of met door Steam gemeten beltijd (verdeelsleutel) in de periode.
+const NT = D.klanten.findIndex(k => k.naam === "Niet toegerekend");
+const meetbareKlanten = () => new Set(F.c.filter(r => inP(r[0])).map(r => r[3])
+  .concat(F.v.filter(r => inP(r[0]) && r[3] > 0 && r[2] !== NT).map(r => r[2])));
 
 function initFilters() {
   const fb = document.getElementById("fBeller"), fk = document.getElementById("fKlant");
   fb.innerHTML = "<option value='-1'>Alle bellers</option>" + D.bellers.map((b, i) => `<option value="${i}">${esc(b.naam)}</option>`).join("");
-  fk.innerHTML = "<option value='-1'>Alle opdrachtgevers</option>" + D.klanten.map((k, i) => `<option value="${i}">${esc(k.naam)}${k.status && k.status !== "actief" ? " (" + k.status + ")" : ""}</option>`).join("");
+  const opt = (k, i) => `<option value="${i}">${esc(k.naam)}${k.status && k.status !== "actief" && k.status !== "onbekend" ? " (" + k.status + ")" : ""}</option>`;
+  const actiefK = D.klanten.map((k, i) => [k, i]).filter(([k]) => k.status === "actief" || k.status === "onbekend");
+  const overigK = D.klanten.map((k, i) => [k, i]).filter(([k]) => !(k.status === "actief" || k.status === "onbekend"));
+  fk.innerHTML = "<option value='-1'>Alle opdrachtgevers</option>" + actiefK.map(([k, i]) => opt(k, i)).join("")
+    + (overigK.length ? `<optgroup label="Gestopt / pauze">${overigK.map(([k, i]) => opt(k, i)).join("")}</optgroup>` : "");
   const pt = document.getElementById("fPeriodeType"), pw = document.getElementById("fPeriodeWaarde");
   const van = document.getElementById("fVan"), tot = document.getElementById("fTot");
   van.min = tot.min = D.datums[0]; van.max = tot.max = D.datums[D.datums.length - 1];
@@ -276,6 +292,10 @@ function initFilters() {
   pw.onchange = van.onchange = tot.onchange = zetPeriode;
   fb.onchange = () => { S.b = +fb.value; render(); };
   fk.onchange = () => { S.k = +fk.value; render(); };
+  const fm = document.getElementById("fMeetbaar");
+  try { const v = localStorage.getItem("link-meetbaar"); if (v !== null) fm.checked = v === "1"; } catch (_) {}
+  S.meetbaar = fm.checked;
+  fm.onchange = () => { S.meetbaar = fm.checked; try { localStorage.setItem("link-meetbaar", fm.checked ? "1" : "0"); } catch (_) {} render(); };
   zichtbaar(); van.value = D.datums[0]; tot.value = D.datums[D.datums.length - 1];
 }
 
@@ -283,20 +303,29 @@ function initFilters() {
 const inP = d => d >= S.van && d <= S.tot;
 function selectie(opts = {}) {
   const b = opts.negeerBeller ? -1 : S.b, k = opts.negeerKlant ? -1 : S.k;
+  const MK = S.meetbaar ? meetbareKlanten() : null, mk = kk => !MK || MK.has(kk);
   const C = F.c.filter(r => inP(r[0]) && (b < 0 || r[2] === b) && (k < 0 || r[3] === k));
   const U = F.u.filter(r => inP(r[0]) && (b < 0 || r[1] === b));
-  const V = F.v.filter(r => inP(r[0]) && (b < 0 || r[1] === b) && (k < 0 || r[2] === k));
+  const V = F.v.filter(r => inP(r[0]) && (b < 0 || r[1] === b) && (k < 0 || r[2] === k) && mk(r[2]));
   const Vall = F.v.filter(r => inP(r[0]));
   // opbrengst: bij beller-filter het deel naar rato van zijn uren op die opdrachtgever
   const uK = new Array(NK).fill(0), uKb = new Array(NK).fill(0), kK = new Array(NK).fill(0);
   Vall.forEach(r => { uK[r[2]] += r[3]; kK[r[2]] += r[5]; if (b >= 0 && r[1] === b) uKb[r[2]] += r[3]; });
   const aandeelK = kk => b < 0 ? 1 : div(uKb[kk], uK[kk]) || 0;
-  const O = F.o.filter(r => inP(r[0]) && (k < 0 || r[1] === k)).map(r => { const a = aandeelK(r[1]); return [r[0], r[1], r[2] * a, r[3] * a, r[4] * a, r[5]]; });
+  const O = F.o.filter(r => inP(r[0]) && (k < 0 || r[1] === k) && mk(r[1])).map(r => { const a = aandeelK(r[1]); return [r[0], r[1], r[2] * a, r[3] * a, r[4] * a, r[5]]; });
   // overige kosten: naar rato van de toegerekende kosten
   const kostTot = kK.reduce((a, x) => a + x, 0);
   const kostSel = V.reduce((a, r) => a + r[5], 0);
-  const X = F.x.filter(r => inP(r[0])).map(r => [r[0], r[1] * (b < 0 && k < 0 ? 1 : (div(kostSel, kostTot) || 0))]);
-  return {C, U, V, O, X};
+  const X = F.x.filter(r => inP(r[0])).map(r => [r[0], r[1] * (b < 0 && k < 0 && !MK ? 1 : (div(kostSel, kostTot) || 0))]);
+  // Wat buiten "meetbaar werk" valt, voor de toelichting
+  let buiten = null;
+  if (MK) {
+    const Ob = F.o.filter(r => inP(r[0]) && !MK.has(r[1]) && (k < 0 || r[1] === k));
+    const Vb = F.v.filter(r => inP(r[0]) && !MK.has(r[2]) && (b < 0 || r[1] === b) && (k < 0 || r[2] === k));
+    buiten = {opbr: som(Ob, 2) + som(Ob, 3), kosten: som(Vb, 5), uren: som(Vb, 3),
+      klanten: [...new Set(Ob.map(r => r[1]).concat(Vb.map(r => r[2])))].map(i => D.klanten[i].naam)};
+  }
+  return {C, U, V, O, X, buiten};
 }
 function funnel(C) {
   const f = {n: C.length, bereikt: 0, res: 0, ng: 0, nb: 0, fout: 0, overig: 0, c500: 0, c501: 0, leads: 0, metUren: 0, resMetUren: 0, bereiktMetUren: 0};
@@ -349,7 +378,7 @@ function kostenUitsplitsing(sel, t) {
 function renderOverzicht() {
   const sel = selectie(), t = totalen(sel), f = funnel(sel.C);
   const kaarten = [
-    ["Betaalde uren", num(t.uren, 1), "uit de urenexport"],
+    ["Betaalde uren", num(t.uren, 1), S.meetbaar ? "toegerekend aan meetbaar werk" : "uit de urenexport"],
     ["Kosten", eur(t.kosten), kostenUitsplitsing(sel, t)],
     ["Opbrengst", eur(t.opbr), `gefactureerd ${eurT(som(sel.O.filter(r => r[5]), 2) + som(sel.O.filter(r => r[5]), 3))} · geschat ${eurT(som(sel.O.filter(r => !r[5]), 2) + som(sel.O.filter(r => !r[5]), 3))}`],
     ["Marge", `<span class="${t.marge >= 0 ? "pos" : "neg"}">${eur(t.marge)}</span>`, t.opbr ? pct(t.marge / t.opbr) + " van opbrengst" : ""],
@@ -358,6 +387,8 @@ function renderOverzicht() {
     ["Pogingen per betaald uur", num(div(t.pogingen, t.uren), 1), "urenexport"],
     ["Bereik-ratio", pct(f.bereikRatio), "bereikt / belregels"],
   ];
+  if (sel.buiten && (sel.buiten.opbr || sel.buiten.kosten)) kaarten.push(["Buiten meetbaar werk", `<span class="vs" style="font-size:20px">${eurT(sel.buiten.opbr)} / ${eurT(sel.buiten.kosten)}</span>`,
+    `opbrengst / kosten niet meegeteld (${nf(1).format(sel.buiten.uren)} uur): ${sel.buiten.klanten.map(esc).join(", ")}`]);
   document.getElementById("kpis").innerHTML = kaarten.map(([l, w, s]) => `<div class="kaart kpi"><div class="l">${l}</div><div class="w">${w}</div><div class="s">${s}</div></div>`).join("");
 
   const weken = [...new Set(weekVan.slice(S.van, S.tot + 1))];
@@ -376,8 +407,7 @@ function renderOverzicht() {
     options: {plugins: {legend: {display: false}}, scales: {y: {beginAtZero: true, ticks: {precision: 0}}, x: {grid: {display: false}}}}});
 
   const kleur = {groen: "groen", oranje: "oranje", rood: "rood"};
-  const volg = {actief: 0, pauze: 1, gestopt: 2};
-  const rijen = [...D.targets].sort((a, b) => (volg[a.status] ?? 0) - (volg[b.status] ?? 0)).map(t => `<tr><td>${esc(t.klant)}</td><td class="l">${t.periode_van ? dmy(t.periode_van) + " t/m " + dmy(t.periode_tot) : "-"}${t.periode_bron && t.periode_bron !== "berekend" ? ` <span class="vs">(${esc(t.periode_bron)})</span>` : ""}</td>
+  const rijen = D.targets.filter(t => (t.status || "actief") === "actief").map(t => `<tr><td>${esc(t.klant)}${t.detail ? `<div class="vs">${esc(t.detail)}</div>` : ""}</td><td class="l">${t.periode_van ? dmy(t.periode_van) + " t/m " + dmy(t.periode_tot) : "-"}${t.periode_bron && t.periode_bron !== "berekend" ? ` <span class="vs">(${esc(t.periode_bron)})</span>` : ""}</td>
     <td>${t.resultaten ?? "-"}</td><td>${t.target ?? ontbreekt}</td><td>${num(t.prognose, 1)}</td>
     <td class="l"><span class="stip ${kleur[t.stoplicht] || "grijs"}">${t.stoplicht}</span></td>
     <td>${num(t.benodigd_per_werkdag, 2)}</td><td>${t.werkdagen_rest ?? "-"}</td>
@@ -425,6 +455,13 @@ function renderBellers() {
   document.getElementById("tBellers").innerHTML = lijst.length ? `<table><thead><tr><th>Beller</th><th>Uren</th><th>Dagen</th><th>Pogingen</th><th>Pog./uur</th><th>Belregels</th><th>Belregels/uur</th><th>Bereik</th><th>Conversie</th><th>Resultaten</th><th>Res./100</th><th>Res./uur</th><th>Norm € ${M.tarief_doel}</th><th>Kosten</th><th>Kosten/res.</th><th>Opbr./uur</th><th>Marge/uur</th><th>Focus</th></tr></thead><tbody>${lijst.map(rij).join("")}</tbody></table>
     <p class="uitleg" style="margin-top:8px">Norm = benodigde resultaten per betaald uur bij € ${M.tarief_doel} met gelijk urenbudget (zie Scenario). Groen = haalt de norm al. Kosten/res. en res./uur tellen alleen belregels op dagen met uren.</p>` : "<p class='uitleg'>Geen data in deze selectie.</p>";
 
+  const S8 = (F.s || []).filter(r => (S.b < 0 || r[0] === S.b) && (S.k < 0 || r[1] === S.k));
+  document.getElementById("statsPeil").textContent = dmy(D.dq.stats_peildatum) || "-";
+  const sb = perSleutel(S8, r => r[0], () => []);
+  document.getElementById("tStats").innerHTML = S8.length ? `<table><thead><tr><th>Beller</th><th>Contactpogingen</th><th>Calls</th><th>Bereik</th><th>Hits</th><th>Hits per 100 pog.</th><th>Afgehandeld</th><th>Beltijd (u)</th><th>Pog. per beluur</th><th>Gesprekstijd</th></tr></thead><tbody>${
+    [...sb.entries()].map(([b, A]) => { const p = som(A, 2), c = som(A, 3), h = som(A, 4), t = som(A, 6) / 3600;
+      return `<tr><td>${esc(D.bellers[b]?.naam ?? "?")}</td><td>${num(p)}</td><td>${num(c)}</td><td>${pct(div(c, p))}</td><td>${num(h)}</td><td>${num(div(h * 100, p), 2)}</td><td>${num(som(A, 5))}</td><td>${num(t, 1)}</td><td>${num(div(p, t), 1)}</td><td>${pct(div(som(A, 7) / 3600, t))}</td></tr>`; }).join("")}</tbody></table>` : "<p class='uitleg'>Geen contactstatistieken ingelezen.</p>";
+
   const s = SERIES();
   const met = lijst.filter(x => x.s.U.length);
   const delen = [["Talking", 10], ["Dial", 9], ["Prepare", 8], ["Finish", 11], ["Wachten/laden", 7], ["Pauzes", 12]];
@@ -447,8 +484,11 @@ function renderKlanten() {
   const sel = selectie({negeerKlant: true});
   const kTot = som(sel.V, 5);
   const xTot = som(sel.X, 1);
+  const toonAlles = document.getElementById("fToonGestopt").checked;
+  const zichtbaar = k => toonAlles || !k.config || k.status === "actief" || k.naam === "Niet toegerekend";
   const rijen = D.klanten.map((k, i) => {
     if (S.k >= 0 && i !== S.k) return null;
+    if (S.k < 0 && !zichtbaar(k)) return null;
     const C = sel.C.filter(r => r[3] === i), V = sel.V.filter(r => r[2] === i), O = sel.O.filter(r => r[1] === i);
     const f = funnel(C), uren = som(V, 3), kb = som(V, 5), ov = xTot * (div(kb, kTot) || 0), kosten = kb + ov, opbr = som(O, 2) + som(O, 3);
     if (!f.n && !uren && !opbr) return null;
@@ -459,7 +499,7 @@ function renderKlanten() {
     rijen.map(r => `<tr><td>${esc(r.k.naam)}${r.k.config ? (r.k.status !== "actief" ? ` <span class='vs'>${r.k.status}</span>` : "") : " <span class='vs'>niet in config</span>"}</td><td>${r.k.fee == null ? ontbreekt : eur(r.k.fee)}</td><td>${eur(r.opbr)}</td><td>${eur(r.kosten)}</td>
       <td class="${r.marge >= 0 ? "pos" : "neg"}">${eur(r.marge)}</td><td>${r.opbr ? pct(r.marge / r.opbr) : "-"}</td><td>${num(r.uren, 1)}</td><td>${num(r.f.n)}</td><td>${pct(r.f.bereikRatio)}</td><td>${pct(r.f.conversie)}</td>
       <td>${num(r.f.res)}</td><td>${eur(div(r.kosten, r.f.res))}</td><td class="${r.f.foutRatio > .15 ? "rood" : ""}">${pct(r.f.foutRatio)}</td><td>${ok(r.k.target)}</td></tr>`).join("")
-  }</tbody></table><p class="uitleg" style="margin-top:8px">Kosten = toegerekende belkosten (verdeelsleutel) + overige kosten naar rato. Opdrachtgevers zonder beldata krijgen wel opbrengst maar geen kosten: zie Datakwaliteit.</p>`;
+  }</tbody></table><p class="uitleg" style="margin-top:8px">Kosten = toegerekende belkosten (verdeelsleutel) + overige kosten naar rato. Opbrengst = verkoopfacturen, verdeeld over hun periode.</p>`;
 
   const s = SERIES(), mf = rijen.filter(r => r.f.n);
   const groepen = [["Resultaat", r => r.f.res], ["Bereikt, geen resultaat", r => r.f.bereikt - r.f.res], ["Niet geschikt", r => r.f.ng], ["Niet bereikt", r => r.f.nb], ["Data-fout", r => r.f.fout]];
@@ -470,12 +510,17 @@ function renderKlanten() {
   document.getElementById("tPijplijn").innerHTML = `<table><thead><tr><th>Opdrachtgever</th><th>Terugbel (500)</th><th>Infomail (501)</th><th>Totaal</th></tr></thead><tbody>${
     mf.filter(r => r.f.c500 + r.f.c501).map(r => `<tr><td>${esc(r.k.naam)}</td><td>${r.f.c500}</td><td>${r.f.c501}</td><td><b>${r.f.c500 + r.f.c501}</b></td></tr>`).join("")}</tbody></table>`;
 
-  const lijsten = perSleutel(sel.C.filter(r => S.k < 0 || r[3] === S.k), r => r[6] + "|" + r[3], () => []);
+  const deb = (D.dq.debiteuren || []), sd = k => deb.reduce((a, r) => a + (r[k] || 0), 0);
+  document.getElementById("tDebiteuren").innerHTML = deb.length ? `<table><thead><tr><th>Opdrachtgever</th><th>Open</th><th>Vervallen</th><th>Te versturen</th><th class="l">Facturen</th></tr></thead><tbody>${
+    deb.map(r => `<tr><td>${esc(r.klant)}</td><td>${r.open ? eur(r.open, 2) : ""}</td><td class="${r.vervallen ? "rood" : ""}">${r.vervallen ? eur(r.vervallen, 2) : ""}</td><td>${r.te_versturen ? eur(r.te_versturen, 2) : ""}</td><td class="l vs">${esc(r.facturen)}</td></tr>`).join("")}
+    <tr><td><b>Totaal</b></td><td><b>${eur(sd("open"), 2)}</b></td><td class="rood"><b>${eur(sd("vervallen"), 2)}</b></td><td><b>${eur(sd("te_versturen"), 2)}</b></td><td></td></tr></tbody></table>` : "<p class='uitleg'>Geen statusinformatie. Voeg een kolom status (betaald, open, vervallen, te_versturen) toe aan de factuurlijst.</p>";
+
+  const lijsten = perSleutel(sel.C.filter(r => (S.k < 0 || r[3] === S.k) && (S.k >= 0 || zichtbaar(D.klanten[r[3]]))), r => r[6] + "|" + r[3], () => []);
   const lr = [...lijsten.entries()].map(([k, C]) => ({p: D.projecten[C[0][6]], k: D.klanten[C[0][3]].naam, f: funnel(C)})).sort((a, b) => b.f.n - a.f.n);
   document.getElementById("tLijsten").innerHTML = `<table><thead><tr><th>Project / bellijst</th><th class="l">Opdrachtgever</th><th>Belregels</th><th>Data-fout (300)</th><th>Niet geschikt</th><th>Bereik</th><th>Resultaten</th><th>Res./100</th></tr></thead><tbody>${
     lr.map(x => `<tr><td>${esc(x.p)}</td><td class="l">${esc(x.k)}</td><td>${x.f.n}</td><td class="${x.f.foutRatio > .15 ? "rood" : ""}">${pct(x.f.foutRatio, 1)}</td><td>${pct(div(x.f.ng, x.f.n))}</td><td>${pct(x.f.bereikRatio)}</td><td>${x.f.res}</td><td>${num(x.f.per100, 1)}</td></tr>`).join("")}</tbody></table>`;
 
-  const V = sel.V.filter(r => S.k < 0 || r[2] === S.k);
+  const V = sel.V.filter(r => (S.k < 0 || r[2] === S.k) && (S.k >= 0 || zichtbaar(D.klanten[r[2]])));
   const bTot = new Array(NB).fill(0); sel.V.forEach(r => bTot[r[1]] += r[3]);
   const vk = perSleutel(V, r => r[1] + "|" + r[2], () => []);
   const vr = [...vk.values()].map(A => ({b: D.bellers[A[0][1]]?.naam ?? "?", k: D.klanten[A[0][2]].naam, uren: som(A, 3), pog: som(A, 4), kosten: som(A, 5), aandeel: div(som(A, 3), bTot[A[0][1]])})).sort((a, b) => a.b.localeCompare(b.b) || b.uren - a.uren);
@@ -682,14 +727,17 @@ function renderDQ() {
   h += q.controles.every(c => c.ok) ? `<div class="melding ok">Alle somcontroles kloppen.</div>` : `<div class="melding fout">Een of meer somcontroles wijken af.</div>`;
   if (alleenA) h += `<div class="melding">De uur-van-de-dag-analyse draait op de belexport (Type A, alleen laatste contactmoment per record). Historie-export (Type C) ontbreekt nog.</div>`;
   h += `<h2>Somcontroles</h2><div class="kaart">${tabel(q.controles, [["controle","Controle"],["dashboard","Dashboard"],["bron","Bron"],["ok","Status"]])}</div>`;
-  h += `<h2>Verkoopfacturen</h2><p class="uitleg">Opbrengst = gefactureerd bedrag, verdeeld over de factuurperiode (tot de peildatum). Vooruitgefactureerd na de peildatum: ${eurT(q.vooruitgefactureerd || 0)}.</p><div class="kaart">${tabel(q.verkoopfacturen, [["factuurnr","Factuur"],["debiteur","Debiteur"],["klant","Opdrachtgever"],["factuurdatum","Datum"],["werkperiode","WP"],["periode","Periode"],["bedrag_excl","Bedrag excl."]])}</div>`;
+  h += `<h2>Verkoopfacturen</h2><p class="uitleg">Status: betaald, open, vervallen of te versturen (concept). Opbrengst = gefactureerd bedrag, verdeeld over de factuurperiode (tot de peildatum). Vooruitgefactureerd na de peildatum: ${eurT(q.vooruitgefactureerd || 0)}.</p><div class="kaart">${tabel(q.verkoopfacturen, [["factuurnr","Factuur"],["debiteur","Debiteur"],["klant","Opdrachtgever"],["factuurdatum","Datum"],["werkperiode","WP"],["periode","Periode"],["bedrag_excl","Bedrag excl."],["status","Status"]])}</div>`;
+  h += `<h2>Aansluiting met de boekhouding</h2><p class="uitleg">Ingelezen verkoopfacturen tegenover de omzet in de boekhouding (<code>omzet_boekhouding</code> in klanten.yaml). Een positief verschil betekent dat er nog facturen ontbreken in <code>data/inbox/</code>.</p><div class="kaart">${tabel(q.verkoop_per_klant, [["debiteur","Opdrachtgever"],["facturen","Facturen"],["totaal_excl","Ingelezen excl."],["boekhouding","Boekhouding"],["verschil","Verschil"],["eerste","Eerste"],["laatste","Laatste"]])}</div>`;
   if ((q.verkoopfacturen || []).some(f => f.klant === "niet gekoppeld")) h += `<div class="melding fout">Verkoopfactuur van onbekende debiteur. Voeg de naam toe als <code>factuur_namen</code> in klanten.yaml.</div>`;
   h += `<h2>Werkperiodes zonder verkoopfactuur</h2><p class="uitleg">Verstreken werkperiodes (vanaf belstart) waarvoor geen factuur in de inbox staat. Controleer of ze gefactureerd zijn, of zet de factuur in <code>data/inbox/</code>. Hier telt de opbrengst als schatting (fee / 28 per dag).</p><div class="kaart" style="max-height:420px;overflow:auto">${tabel(q.werkperiodes_zonder_verkoopfactuur, [["klant","Opdrachtgever"],["werkperiode","WP"],["van","Van"],["tot","Tot"],["verwacht_bedrag","Fee"],["start_volgens","Start volgens"]])}</div>`;
   if ((q.fee_afwijkingen || []).length) h += `<h2>Factuurbedrag wijkt af van fee in config</h2><div class="kaart">${tabel(q.fee_afwijkingen, [["klant","Opdrachtgever"],["factuurnr","Factuur"],["factuurbedrag","Factuur"],["fee_in_config","Config"]])}</div>`;
   h += `<h2>Overige kosten per maand</h2><p class="uitleg">Uit <code>config/kosten.yaml</code> (facturen) en <code>instellingen.yaml</code>. Maanden zonder factuur: laatste factuurbedrag doorgeschat.</p><div class="kaart">${tabel(q.kostenposten, [["post","Post"],["maand","Maand"],["bedrag_excl","Bedrag excl."],["basis","Basis"]])}</div>`;
+  if ((q.stats_controle || []).length) h += `<h2>Steam-statistieken tegenover de rest</h2><p class="uitleg">Contactpogingen uit de statistieken horen gelijk te zijn aan Pogingen in de urenexport. Hits (Steam) tegenover resultaten (dashboard, volgens telt_als_resultaat).</p><div class="kaart">${tabel(q.stats_controle, [["beller","Beller"],["contactpogingen_steam","Pogingen Steam-statistiek"],["pogingen_urenexport","Pogingen urenexport"],["hits_steam","Hits Steam"],["resultaten_dashboard","Resultaten dashboard"]])}</div><h3 style="margin-top:12px">Beltijd per opdrachtgever</h3><div class="kaart">${tabel(q.stats_tijd_per_klant, [["klant","Opdrachtgever"],["beltijd_steam_uur","Beltijd Steam (u)"],["uren_verdeelsleutel","Betaalde uren verdeelsleutel"]])}</div>`;
   h += `<h2>Facturen tegenover Steam-uren</h2><p class="uitleg">Weken met factuur: kosten = gefactureerd bedrag. Weken zonder factuur: geschat als Steam-uren x tarief. Facturen zonder weeknummer worden toegewezen volgens <code>factuur_zelfde_week_vanaf_weekdag</code>.</p><div class="kaart" style="max-height:420px;overflow:auto">${tabel(q.factuurvergelijking, [["beller","Beller"],["week","Week"],["steam_uren","Steam-uren"],["factuur_uren","Factuur-uren"],["verschil_uren","Verschil"],["geschat","Geschat €"],["gefactureerd","Gefactureerd €"],["facturen","Factuur"],["week_bron","Week volgens"],["status","Status"]])}</div>`;
   const nietGekoppeld = (q.facturen || []).filter(f => f.beller === "niet gekoppeld");
   if (nietGekoppeld.length) h += `<div class="melding fout">Facturen van onbekende afzender: ${nietGekoppeld.map(f => esc(f.afzender)).join(", ")}. Voeg toe als <code>factuur_afzenders</code> in bellers.yaml.</div>`;
+  if ((q.memo_classificatie || []).length) h += `<h2>Afspraak of lead uit de memo</h2><p class="uitleg">Voor klanten met <code>memo_classificatie</code> (bv. Moyee: alles staat op 101). Patronen in <code>instellingen.yaml</code>.</p><div class="kaart" style="max-height:420px;overflow:auto">${tabel(q.memo_classificatie, [["klant","Opdrachtgever"],["datum","Datum"],["beller","Beller"],["code_steam","Code Steam"],["telt_als","Telt als"],["reden","Reden"]])}</div>`;
   h += `<h2>Ingelezen bestanden</h2><div class="kaart">${tabel(q.bestanden, [["naam","Bestand"],["type","Type"],["rijen","Rijen"],["periode_van","Van"],["periode_tot","Tot"],["kolommen","Kolommen"],["ingelezen_op","Ingelezen"]])}</div>`;
   h += `<h2>Periodes per bron</h2><div class="kaart">${tabel(q.periodes, [["bron","Bron"],["onderwerp","Opdrachtgever / agent"],["rijen","Rijen"],["van","Van"],["tot","Tot"]])}</div>`;
   h += `<h2>Niet gekoppelde campagne-PID's</h2><p class="uitleg">Voeg deze toe aan <code>config/klanten.yaml</code>.</p><div class="kaart">${tabel(q.niet_gekoppelde_pids, [["pid","PID"],["campagne_in_export","Campagne volgens export"],["projecten","Projecten"],["rijen","Rijen"],["van","Van"],["tot","Tot"]])}</div>`;
@@ -716,6 +764,7 @@ document.getElementById("nav").onclick = e => {
   try { localStorage.setItem("link-tab", actieveTab); } catch (_) {}
   render();
 };
+document.getElementById("fToonGestopt").onchange = () => render();
 document.getElementById("scModus").onclick = e => { const b = e.target.closest("button"); if (b) { S.modus = b.dataset.m; renderScenario(); } };
 document.getElementById("scReset").onclick = () => { S.sc = null; document.getElementById("scSliders").dataset.sleutel = ""; renderScenario(); };
 document.getElementById("scNeutraal").onclick = () => {

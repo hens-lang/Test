@@ -7,6 +7,7 @@ Ontdubbeling:
   uren             (datum, agent_raw). Een nieuwere export overschrijft de oude regel.
   facturen         afzender | factuurnummer (facturen van bellers).
   verkoopfacturen  factuurnummer | regel (facturen van LINK. aan opdrachtgevers).
+  steamstats       peildatum | agent | campagne | bellijst (cumulatieve stand; het model gebruikt de nieuwste).
   bestanden        sha256 van de inhoud; hetzelfde bestand wordt één keer geregistreerd.
 """
 from __future__ import annotations
@@ -18,7 +19,8 @@ from pathlib import Path
 import pandas as pd
 
 from .config import ROOT
-from .parsers import (CONTACT_KOLOMMEN, EXTENSIES, FACTUUR_KOLOMMEN, UREN_KOLOMMEN, VERKOOP_KOLOMMEN, Export,
+from .parsers import (CONTACT_KOLOMMEN, EXTENSIES, FACTUUR_KOLOMMEN, STATS_KOLOMMEN, UREN_KOLOMMEN,
+                      VERKOOP_KOLOMMEN, Export,
                       parse_bestand)
 
 DB_PAD = ROOT / "data" / "link.db"
@@ -43,12 +45,18 @@ def verbind(pad: Path | str = DB_PAD) -> sqlite3.Connection:
             omschrijving TEXT, bestand TEXT);
         CREATE TABLE IF NOT EXISTS verkoopfacturen (sleutel TEXT PRIMARY KEY, factuurnr TEXT, klant_naam TEXT,
             debiteurnr TEXT, factuurdatum TEXT, regel INTEGER, omschrijving TEXT, werkperiode_nr INTEGER,
-            periode_van TEXT, periode_tot TEXT, bedrag_excl REAL, is_lead INTEGER, bron TEXT, bestand TEXT);
+            periode_van TEXT, periode_tot TEXT, bedrag_excl REAL, is_lead INTEGER, bron TEXT, status TEXT,
+            bestand TEXT);
+        CREATE TABLE IF NOT EXISTS steamstats (sleutel TEXT PRIMARY KEY, peildatum TEXT, agent_raw TEXT,
+            campagne TEXT, project TEXT, contactpogingen INTEGER, calls INTEGER, hits INTEGER, afgehandeld INTEGER,
+            recordtijd_s INTEGER, wachten_s INTEGER, laden_s INTEGER, prepare_s INTEGER, dial_s INTEGER,
+            gesprek_s INTEGER, finish_s INTEGER, bestand TEXT);
         CREATE TABLE IF NOT EXISTS bestanden (
             sha256 TEXT PRIMARY KEY, naam TEXT, type TEXT, rijen INTEGER,
             periode_van TEXT, periode_tot TEXT, kolommen INTEGER, ingelezen_op TEXT);
     """)
-    _migreer(con, "verkoopfacturen", {"bron": "TEXT"})
+    _migreer(con, "verkoopfacturen", {"bron": "TEXT", "status": "TEXT"})
+    _migreer(con, "contactmomenten", {"memo": "TEXT"})
     return con
 
 
@@ -61,11 +69,13 @@ def _migreer(con, tabel: str, kolommen: dict):
     con.commit()
 
 
-def _upsert(con, tabel, df: pd.DataFrame, sleutel: list[str], voorwaarde: str = ""):
+def _upsert(con, tabel, df: pd.DataFrame, sleutel: list[str], voorwaarde: str = "", behoud: tuple = ()):
+    """Insert of update. Kolommen in `behoud` houden hun oude waarde als de nieuwe leeg is."""
     if df.empty:
         return
     cols = list(df.columns)
-    upd = ", ".join(f"{c}=excluded.{c}" for c in cols if c not in sleutel)
+    upd = ", ".join(f"{c}=COALESCE(excluded.{c}, {tabel}.{c})" if c in behoud else f"{c}=excluded.{c}"
+                    for c in cols if c not in sleutel)
     sql = (f"INSERT INTO {tabel} ({', '.join(cols)}) VALUES ({', '.join('?' * len(cols))}) "
            f"ON CONFLICT({', '.join(sleutel)}) DO UPDATE SET {upd} {voorwaarde}")
     rows = [tuple(None if pd.isna(v) else (int(v) if isinstance(v, bool) else v) for v in r)
@@ -91,10 +101,16 @@ def bewaar(con, exp: Export) -> int:
         _upsert(con, "uren", df, ["datum", "agent_raw"])
     elif exp.type == "F":
         _upsert(con, "facturen", df[FACTUUR_KOLOMMEN + ["bestand"]], ["sleutel"])
+    elif exp.type == "S":
+        _upsert(con, "steamstats", df[STATS_KOLOMMEN + ["bestand"]], ["sleutel"])
     elif exp.type == "V":
         # Een PDF (met periode en regels) gaat voor op een regel uit een lijst (CSV/mailbox).
         _upsert(con, "verkoopfacturen", df[VERKOOP_KOLOMMEN + ["bestand"]], ["sleutel"],
-                "WHERE verkoopfacturen.bron = 'mail' OR excluded.bron = 'pdf'")
+                "WHERE verkoopfacturen.bron = 'mail' OR excluded.bron = 'pdf'", behoud=("status",))
+        # status uit de lijst ook toepassen als de PDF al voorging
+        if "status" in df:
+            for r in df.dropna(subset=["status"]).itertuples():
+                con.execute("UPDATE verkoopfacturen SET status=? WHERE factuurnr=?", (r.status, r.factuurnr))
     con.commit()
     return len(exp.df)
 

@@ -9,9 +9,15 @@
 #   target_per_4wk       aantal resultaten per werkperiode
 #   deliverable          omschrijving van wat we leveren
 #   telt_als_resultaat   welke resultaatcodes tellen voor deze klant als resultaat
+#   targets_per_code     optioneel, bv. {100: 4, 101: 10}: target per resultaatcode per 4 weken.
+#                        Het stoplicht kijkt dan naar het onderdeel dat het meest achterloopt.
+#   memo_classificatie   true: een resultaat met een afspraak in de memo telt als 100 (afspraak),
+#                        anders als 101 (lead). Patronen in instellingen.yaml.
 #   belstart             eerste beldag (jjjj-mm-dd); werkperiodes tellen vanaf hier.
 #                        Leeg? Dan wordt hij afgeleid uit een verkoopfactuur ("werkperiode N, periode ...").
 #   factuur_namen        naam zoals op onze verkoopfactuur, als die niet al de klantnaam bevat
+#   omzet_boekhouding    controlecijfer: omzet excl. btw volgens de boekhouding (top 10, laatste 12 mnd,
+#                        stand 1-10-2026). Datakwaliteit toont het verschil met de ingelezen facturen.
 #   status               actief (standaard), pauze of gestopt. Alleen actieve klanten tellen mee
 #                        in targets, stoplichten en de scenario-rekenaar; historie blijft zichtbaar.
 #
@@ -20,15 +26,19 @@
 
 klanten:
   Moyee Coffee:
+    omzet_boekhouding: 12600
     pids: [11]
     fee_per_4wk: 1500
     extra_per_lead: 150
-    target_per_4wk: null
-    deliverable: lead (101)
-    telt_als_resultaat: [101]
+    target_per_4wk: 14
+    targets_per_code: {100: 4, 101: 10}   # 1 afspraak per week + ca. 2-3 leads per week
+    memo_classificatie: true   # bellers zetten alles op 101; afspraak wordt herkend uit de memo
+    deliverable: afspraak (100) + lead (101)
+    telt_als_resultaat: [100, 101]
     belstart: null
 
   Green Earth:
+    omzet_boekhouding: 4350
     pids: [1019]
     fee_per_4wk: 1800
     extra_per_lead: 0
@@ -42,8 +52,8 @@ klanten:
     fee_per_4wk: 1200
     extra_per_lead: 0
     target_per_4wk: 6
-    deliverable: afspraak (100)
-    telt_als_resultaat: [100]
+    deliverable: afspraak (100) of overdracht (101)
+    telt_als_resultaat: [100, 101]   # bevestigd: overdrachten tellen als resultaat
     belstart: 2026-09-07
 
   Helden Productions:
@@ -86,15 +96,17 @@ klanten:
     belstart: 2026-09-07
 
   Binnenstebuiten (Pivot):
+    omzet_boekhouding: 4100
     pids: [1017]
     fee_per_4wk: 1600
     extra_per_lead: 0
     target_per_4wk: 6
     deliverable: afspraak
-    telt_als_resultaat: [100]
+    telt_als_resultaat: [100, 101]   # bevestigd: afspraak + overdracht
     belstart: 2026-08-10
 
   FairChain Workforce:
+    omzet_boekhouding: 4500
     status: gestopt
     pids: [1013]
     fee_per_4wk: 1500
@@ -105,6 +117,7 @@ klanten:
     belstart: null
 
   BuildingBricks:
+    omzet_boekhouding: 8352
     pids: [14]
     fee_per_4wk: 1500   # uit verkoopfactuur 2026-0092
     extra_per_lead: null
@@ -114,6 +127,7 @@ klanten:
     belstart: null
 
   GrowOn Agency:
+    omzet_boekhouding: 5300
     pids: [1016]
     fee_per_4wk: 1600   # uit verkoopfactuur 2026-0096
     extra_per_lead: null
@@ -123,25 +137,28 @@ klanten:
     belstart: 2026-08-03
 
   OK Creative Agency:
+    omzet_boekhouding: 6500
     pids: [1018]
     factuur_namen: ["Onze Kapel B.V."]   # bevestigd door Hens
     fee_per_4wk: 2000   # uit verkoopfactuur 2026-0095
     extra_per_lead: null
     target_per_4wk: 6
     deliverable: afspraak
-    telt_als_resultaat: [100]
+    telt_als_resultaat: [100, 101]   # bevestigd: afspraak + overdracht
     belstart: 2026-08-03
 
   MostWare (Heads Up):
+    omzet_boekhouding: 8000
     pids: [1015]        # uit de export: kolom Campagne = "MostWare", CampagnePID 1015
     fee_per_4wk: 2000   # uit verkoopfactuur 2026-0089
     extra_per_lead: null
     target_per_4wk: 8
     deliverable: afspraak
-    telt_als_resultaat: [100]
+    telt_als_resultaat: [100, 101]   # bevestigd: afspraak + overdracht
     belstart: null
 
   KIK Ongediertebestrijding:
+    omzet_boekhouding: 6491
     status: pauze
     pids: []            # PID nog onbekend
     fee_per_4wk: null
@@ -153,6 +170,7 @@ klanten:
 
   # Gevonden in de verkoopfacturen (mailbox), nog niet in de oorspronkelijke lijst:
   Tragter Brandbeveiliging:
+    omzet_boekhouding: 3200
     status: gestopt     # bevestigd: laatste factuur april 2026, creditnota juni
     pids: []
     fee_per_4wk: null
@@ -171,3 +189,22 @@ klanten:
     deliverable: null
     telt_als_resultaat: [100, 101]
     belstart: null
+
+  # Nieuw, gezien in "te versturen" in de boekhouding (1-10-2026):
+  MostWare Next:
+    pids: []            # PID volgt zodra de campagne in Steam staat
+    fee_per_4wk: null   # eerste factuur 5-10-2026: € 5.989,50 incl. (= € 4.950 excl.)
+    extra_per_lead: null
+    target_per_4wk: null
+    deliverable: null
+    telt_als_resultaat: [100]
+    belstart: 2026-10-05
+
+  Kubus Heerenveen:
+    pids: []            # pilot; PID volgt zodra de campagne in Steam staat
+    fee_per_4wk: null   # eerste factuur 5-10-2026: € 5.989,50 incl. (= € 4.950 excl.)
+    extra_per_lead: null
+    target_per_4wk: null
+    deliverable: null
+    telt_als_resultaat: [100]
+    belstart: 2026-10-05

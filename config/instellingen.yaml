@@ -51,3 +51,30 @@ factuur_zelfde_week_vanaf_weekdag: 4   # 1 = maandag ... 7 = zondag
 #                            28 dagen vanaf de factuurdatum.
 #   facturen_en_schatting  = dagen zonder factuur aanvullen met fee / 28 (en leads x leadfee).
 opbrengst_basis: facturen
+
+# Verdeelsleutel van uren en kosten over opdrachtgevers:
+#   steam_gekalibreerd = dagverdeling uit belregels, totaal per klant gelijk aan de beltijd per campagne
+#                        in de Steam-contactstatistieken (contactstatistics_agents_*.xls). Aanbevolen.
+#   belregels          = alleen naar rato van belregels per dag (zonder Steam-statistieken).
+verdeelsleutel: steam_gekalibreerd
+
+# Resultaat uit de memo (voor klanten met memo_classificatie: true in klanten.yaml).
+# Een resultaat (bv. 101 'overgedragen') telt als afspraak (100) als de memo een van deze
+# patronen bevat (hoofdletterongevoelig, reguliere expressies). Het tijdstempel waarmee Steam
+# een memo begint (dd-mm-jjjj uu:mm:ss) wordt genegeerd; een datum met tijd zonder seconden
+# (bv. "16-09-2026 10:00") telt wel als afspraak.
+memo_afspraak_patronen:
+  - '(?<!geen )afspraak'
+  - 'ingepland'
+  - '\btasting\b'
+  - '(proeverij|tasting)\s+(is\s+|staat\s+)?(op\s+)?(gepland|ingepland|afgesproken)'
+  - '(proeverij|tasting)\s+op\s+(maandag|dinsdag|woensdag|donderdag|vrijdag|\d)'
+  - '\bmeeting\b'
+  - '\bkennismaking(sgesprek)?\b'
+  - '\bdemo\b'
+  - '\b\d{1,2}-\d{1,2}-\d{4}\s+\d{1,2}[:.]\d{2}(?![:.]\d)'
+  # datum in woorden met tijd: "do 20 augustus 09:30"
+  - '\b\d{1,2}\s+(jan|feb|maart|mrt|apr|mei|jun|jul|aug|sep|okt|nov|dec)[a-z]*\b[^.\n]{0,25}\b\d{1,2}[:.]\d{2}\b'
+  # proeverij/tasting en een concrete datum in dezelfde memo
+  - '(proeverij|tasting)[\s\S]{0,300}?\b\d{1,2}\s+(jan|feb|maart|mrt|apr|mei|jun|jul|aug|sep|okt|nov|dec)[a-z]*\b'
+  - '\b\d{1,2}\s+(jan|feb|maart|mrt|apr|mei|jun|jul|aug|sep|okt|nov|dec)[a-z]*\b[\s\S]{0,300}?(proeverij|tasting)'

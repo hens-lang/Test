@@ -19,8 +19,9 @@ def csv_export(model: Model, map_: Path) -> list[Path]:
     map_.mkdir(parents=True, exist_ok=True)
     c = model.contacten
     tabellen = {
-        "contactmomenten.csv": c.drop(columns=["bedrijf"]),
+        "contactmomenten.csv": c.drop(columns=["bedrijf", "memo"], errors="ignore"),
         "uren_per_dag.csv": model.uren,
+        "steam_contactstatistieken.csv": model.stats,
         "facturen.csv": model.facturen,
         "verdeelsleutel.csv": model.verdeling,
         "opbrengst_per_dag.csv": model.opbrengst,
@@ -98,7 +99,7 @@ def payload(model: Model, cfg: Config) -> dict:
         })
 
     feiten = {
-        "c": [[d(r.datum), int(r.uur), bi.get(r.beller, -1), ki[r.klant_label], int(r.code) if pd.notna(r.code) else -1,
+        "c": [[d(r.datum), int(r.uur), bi.get(r.beller, -1), ki[r.klant_label], int(r.code_eff) if pd.notna(r.code_eff) else -1,
                int(bool(r.is_max)), pi[r.project], int(bool(r.is_resultaat)), int(bool(r.met_uren))]
               for r in c.itertuples()],
         "u": [[d(r.datum), bi.get(r.beller, -1), int(r.te_betalen_s), int(r.pogingen), int(r.records),
@@ -111,6 +112,11 @@ def payload(model: Model, cfg: Config) -> dict:
         "o": [[d(r.datum), ki[r.klant], _r(r.fee, 3), _r(r.leads_eur), int(r.leads), int(bool(r.gefactureerd))]
               for r in o.itertuples()],
         "x": [[d(r.datum), _r(r.bedrag, 3), posten.index(r.post), int(r.basis == "factuur")] for r in x.itertuples()],
+        # Steam-contactstatistieken (cumulatief, geen datum): beller, klant, pogingen, calls, hits, afgehandeld,
+        # beltijd (s), gesprekstijd (s)
+        "s": [[bi.get(r.beller, -1), ki.get(r.klant, ki[NIET_TOEGEREKEND]) if r.klant else ki[NIET_TOEGEREKEND],
+               int(r.contactpogingen), int(r.calls), int(r.hits), int(r.afgehandeld), int(r.recordtijd_s),
+               int(r.gesprek_s)] for r in model.stats.itertuples()] if len(model.stats) else [],
     }
     inst = cfg.instellingen
     return {
