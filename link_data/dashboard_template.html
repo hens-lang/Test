@@ -90,6 +90,7 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
   <div class="kop"><div class="logo">LINK<b>.</b></div><div class="sub">Belprestaties en kostprijs · peildatum <span id="peildatum"></span> · gegenereerd <span id="gegenereerd"></span></div></div>
   <nav id="nav">
     <button data-tab="overzicht" class="actief">Overzicht</button>
+    <button data-tab="resultaten">Resultaten per uur</button>
     <button data-tab="bellers">Bellers</button>
     <button data-tab="klanten">Opdrachtgevers</button>
     <button data-tab="focus">Focus over de dag</button>
@@ -120,6 +121,22 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
   <h2>Targets huidige werkperiode</h2>
   <p class="uitleg">Actieve opdrachtgevers, stand op de peildatum. Werkperiode volgens de verkoopfactuur als die er is, anders vanaf de belstart. Niet afhankelijk van de filters.</p>
   <div class="kaart tabelwrap" id="tTargets"></div>
+</section>
+
+<!-- RESULTATEN PER UUR -->
+<section class="tab" id="tab-resultaten">
+  <p class="uitleg">Resultaten (volgens <code>telt_als_resultaat</code> per opdrachtgever) tegenover de betaalde uren die via de verdeelsleutel aan die opdrachtgever zijn toegerekend. Kosten = toegerekende belkosten + overige kosten naar rato.</p>
+  <div class="grid kpis" id="rKpis"></div>
+  <div class="grid twee" style="margin-top:12px">
+    <div class="kaart"><h3>Resultaten per betaald uur, per opdrachtgever</h3><div class="chart" id="wResUur"><canvas id="cResUur"></canvas></div></div>
+    <div class="kaart"><h3>Resultaten per betaald uur, per week</h3><p class="uitleg">Totaal van de selectie.</p><div class="chart"><canvas id="cResUurTrend"></canvas></div></div>
+  </div>
+  <h2>Per opdrachtgever, uitgesplitst naar beller</h2>
+  <div class="modus" id="rGroep">
+    <button class="knop licht actief" data-g="klant">Opdrachtgever › beller</button>
+    <button class="knop licht" data-g="beller">Beller › opdrachtgever</button>
+  </div>
+  <div class="kaart tabelwrap" id="tResUur"></div>
 </section>
 
 <!-- BELLERS -->
@@ -441,6 +458,66 @@ const focusCel = v => v == null ? "<span class='ontbreekt'>-</span>" : `<span cl
 function pogingenSelectie() {
   return (F.p || []).filter(r => inP(r[0]) && (S.b < 0 || r[2] === S.b) && (S.k < 0 || r[3] === S.k));
 }
+
+// ---------- tab: resultaten per uur
+let resGroep = "klant";
+function resUurData(sel) {
+  const Xtot = som(sel.X, 1), Vk = som(sel.V, 5);
+  const P = pogingenSelectie();
+  const cel = () => ({res: 0, a100: 0, a101: 0, uren: 0, kosten: 0, pog: 0});
+  const m = new Map();
+  const get = (k, b) => { const key = k + "|" + b; if (!m.has(key)) m.set(key, {k, b, ...cel()}); return m.get(key); };
+  sel.C.forEach(r => { if (!r[7]) return; const c = get(r[3], r[2]); c.res++; if (r[4] === 100) c.a100++; if (r[4] === 101) c.a101++; });
+  sel.V.forEach(r => { const c = get(r[2], r[1]); c.uren += r[3]; c.kosten += r[5] + (Vk ? Xtot * r[5] / Vk : 0); });
+  P.forEach(r => { if (m.has(r[3] + "|" + r[2]) || true) get(r[3], r[2]).pog++; });
+  return [...m.values()].filter(c => c.k !== NT || c.res);
+}
+function somCellen(A) { return A.reduce((t, c) => ({res: t.res + c.res, a100: t.a100 + c.a100, a101: t.a101 + c.a101, uren: t.uren + c.uren, kosten: t.kosten + c.kosten, pog: t.pog + c.pog}), {res: 0, a100: 0, a101: 0, uren: 0, kosten: 0, pog: 0}); }
+function renderResultaten() {
+  const sel = selectie();
+  const data = resUurData(sel).filter(c => S.k >= 0 || D.klanten[c.k].status === "actief" || D.klanten[c.k].status === "onbekend" || document.getElementById("fToonGestopt").checked || c.res);
+  const T = somCellen(data);
+  const kaart = (l, w, sub) => `<div class="kaart kpi"><div class="l">${l}</div><div class="w">${w}</div><div class="s">${sub}</div></div>`;
+  document.getElementById("rKpis").innerHTML = [
+    kaart("Resultaten", num(T.res), `${num(T.a100)} afspraken · ${num(T.a101)} overdrachten`),
+    kaart("Betaalde uren", num(T.uren, 1), "toegerekend"),
+    kaart("Resultaten per betaald uur", num(div(T.res, T.uren), 2), "hoofd-KPI"),
+    kaart("Uren per resultaat", num(div(T.uren, T.res), 1), "betaalde uren"),
+    kaart("Kosten per resultaat", eur(div(T.kosten, T.res)), `kosten ${eurT(T.kosten)}`),
+    kaart("Resultaten per 100 pogingen", num(div(T.res * 100, T.pog), 2), `${num(T.pog)} belpogingen`),
+  ].join("");
+
+  const perK = [...perSleutel(data, c => c.k, () => []).entries()].map(([k, A]) => ({k, A, t: somCellen(A)}))
+    .filter(x => x.t.uren > 0.5 || x.t.res).sort((a, b) => (div(b.t.res, b.t.uren) || 0) - (div(a.t.res, a.t.uren) || 0));
+  const s8 = SERIES();
+  document.getElementById("wResUur").style.height = Math.max(180, 70 + perK.length * 34) + "px";
+  grafiek("cResUur", {type: "bar", data: {labels: perK.map(x => D.klanten[x.k].naam), datasets: [{label: "Resultaten per betaald uur", data: perK.map(x => div(x.t.res, x.t.uren)), backgroundColor: s8[0], borderRadius: 4, maxBarThickness: 22}]},
+    options: {indexAxis: "y", plugins: {legend: {display: false}, tooltip: {callbacks: {label: c => {
+      const x = perK[c.dataIndex]; return `${nf(2).format(c.parsed.x || 0)} per uur · ${x.t.res} resultaten in ${nf(1).format(x.t.uren)} uur`; }}}},
+      scales: {x: {beginAtZero: true}, y: {grid: {display: false}}}}});
+
+  const weken = [...new Set(weekVan.slice(S.van, S.tot + 1))];
+  const rw = new Map(weken.map(w => [w, {res: 0, uren: 0}]));
+  sel.C.forEach(r => { if (r[7] && rw.has(weekVan[r[0]])) rw.get(weekVan[r[0]]).res++; });
+  sel.V.forEach(r => { if (rw.has(weekVan[r[0]])) rw.get(weekVan[r[0]]).uren += r[3]; });
+  grafiek("cResUurTrend", {type: "line", data: {labels: weken.map(w => "wk " + +w.slice(6)), datasets: [{label: "Resultaten per betaald uur", data: weken.map(w => { const x = rw.get(w); return x.uren >= 2 ? div(x.res, x.uren) : null; }), borderColor: s8[0], backgroundColor: s8[0], borderWidth: 2, pointRadius: 3, spanGaps: true}]},
+    options: {plugins: {legend: {display: false}, tooltip: {callbacks: {label: c => { const x = rw.get(weken[c.dataIndex]); return `${nf(2).format(c.parsed.y)} per uur · ${x.res} resultaten / ${nf(1).format(x.uren)} uur`; }}}}, scales: {y: {beginAtZero: true}, x: {}}}});
+
+  document.querySelectorAll("#rGroep button").forEach(b => b.classList.toggle("actief", b.dataset.g === resGroep));
+  const rij = (naam, t, hoofd) => `<tr${hoofd ? ' style="font-weight:600;background:var(--surface-2)"' : ""}><td class="l">${hoofd ? "" : "&nbsp;&nbsp;&nbsp;"}${esc(naam)}</td>
+    <td>${num(t.res)}</td><td>${num(t.a100)}</td><td>${num(t.a101)}</td><td>${num(t.uren, 1)}</td>
+    <td><b>${num(div(t.res, t.uren), 2)}</b></td><td>${num(div(t.uren, t.res), 1)}</td><td>${eur(t.kosten)}</td><td>${eur(div(t.kosten, t.res))}</td>
+    <td>${num(t.pog)}</td><td>${num(div(t.res * 100, t.pog), 2)}</td></tr>`;
+  const naamK = k => D.klanten[k].naam, naamB = b => D.bellers[b]?.naam ?? "Onbekend";
+  const [hoofdSleutel, subSleutel, hoofdNaam, subNaam] = resGroep === "klant" ? ["k", "b", naamK, naamB] : ["b", "k", naamB, naamK];
+  const groepen = [...perSleutel(data, c => c[hoofdSleutel], () => []).entries()].map(([h, A]) => ({h, A, t: somCellen(A)}))
+    .filter(x => x.t.uren > 0.05 || x.t.res).sort((a, b) => b.t.res - a.t.res || b.t.uren - a.t.uren);
+  document.getElementById("tResUur").innerHTML = `<table><thead><tr><th class="l">${resGroep === "klant" ? "Opdrachtgever / beller" : "Beller / opdrachtgever"}</th><th>Resultaten</th><th>Afspraken (100)</th><th>Overdrachten (101)</th><th>Betaalde uren</th><th>Res. per uur</th><th>Uren per res.</th><th>Kosten</th><th>Kosten per res.</th><th>Belpogingen</th><th>Res. per 100 pog.</th></tr></thead><tbody>${
+    groepen.map(g => rij(hoofdNaam(g.h), g.t, true) + g.A.filter(c => c.uren > 0.05 || c.res).sort((a, b) => b.res - a.res || b.uren - a.uren).map(c => rij(subNaam(c[subSleutel]), c, false)).join("")).join("")}
+    ${rij("Totaal", T, true)}</tbody></table>
+    <p class="uitleg" style="margin-top:8px">Resultaten van een beller zonder toegerekende uren bij die opdrachtgever (bijvoorbeeld belregels op een dag zonder uren) tellen mee in het aantal, niet in "per uur". Belpogingen uit "Call attempts statuses".</p>`;
+}
+document.getElementById("rGroep").onclick = e => { const b = e.target.closest("button"); if (b) { resGroep = b.dataset.g; renderResultaten(); } };
 
 // ---------- tab: bellers
 function bellerStats(sel, bi) {
@@ -797,7 +874,7 @@ let actieveTab = "overzicht";
 function render() {
   const n = S.tot - S.van + 1;
   document.getElementById("fInfo").textContent = `${dmy(D.datums[S.van])} t/m ${dmy(D.datums[S.tot])} · ${n} dagen`;
-  ({overzicht: renderOverzicht, bellers: renderBellers, klanten: renderKlanten, focus: renderFocus, scenario: renderScenario, dq: renderDQ})[actieveTab]();
+  ({overzicht: renderOverzicht, resultaten: renderResultaten, bellers: renderBellers, klanten: renderKlanten, focus: renderFocus, scenario: renderScenario, dq: renderDQ})[actieveTab]();
 }
 document.getElementById("nav").onclick = e => {
   const t = e.target.closest("button"); if (!t) return;
