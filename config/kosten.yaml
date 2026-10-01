@@ -12,13 +12,16 @@
 #         periode_tot, doorschatten (false = niet doorschatten naar maanden zonder factuur).
 
 facturen:
-  # Steam Connect: maandfactuur (licenties, nummers, belminuten). Bedrag uit de mail, vermoedelijk incl. btw.
-  - {post: Steam Connect, leverancier: Steam-connect Benelux B.V., factuurnr: "26000787", datum: 2026-04-07, bedrag: 972.54, incl_btw: true}
-  - {post: Steam Connect, leverancier: Steam-connect Benelux B.V., factuurnr: "26000969", datum: 2026-05-05, bedrag: 523.23, incl_btw: true}
-  - {post: Steam Connect, leverancier: Steam-connect Benelux B.V., factuurnr: "26001120", datum: 2026-06-02, bedrag: 465.60, incl_btw: true}
-  - {post: Steam Connect, leverancier: Steam-connect Benelux B.V., factuurnr: "26001366", datum: 2026-07-03, bedrag: 499.09, incl_btw: true}
-  - {post: Steam Connect, leverancier: Steam-connect Benelux B.V., factuurnr: "26001469", datum: 2026-08-03, bedrag: 578.39, incl_btw: true}
-  - {post: Steam Connect, leverancier: Steam-connect Benelux B.V., factuurnr: "26001630", datum: 2026-09-02, bedrag: 614.88, incl_btw: true}  # 2 herinneringen, lijkt onbetaald
+  # Steam Connect: maandfactuur achteraf ("Uw referentie" = de maand waarover gefactureerd wordt).
+  # Bedragen excl. btw uit de PDF's in Google Drive (map Steam-connect Benelux).
+  - {post: Steam Connect, leverancier: Steam-connect Benelux B.V., factuurnr: "26000787", datum: 2026-04-07, maand: 2026-03-01, bedrag: 303.75}   # maart: licentie 198 + account 20 + telefonie 85,75
+  - {post: Steam Connect, leverancier: Steam-connect Benelux B.V., factuurnr: "26000796", datum: 2026-04-09, maand: 2026-03-01, bedrag: -218.00}  # creditnota maart (licentie + account)
+  - {post: Steam Connect consultancy, leverancier: Steam-connect Benelux B.V., factuurnr: "26000787", datum: 2026-04-07, maand: 2026-03-01, bedrag: 500.00, doorschatten: false}  # eenmalig, 4 uur
+  - {post: Steam Connect, leverancier: Steam-connect Benelux B.V., factuurnr: "26000969", datum: 2026-05-05, maand: 2026-04-01, bedrag: 432.42}
+  - {post: Steam Connect, leverancier: Steam-connect Benelux B.V., factuurnr: "26001120", datum: 2026-06-02, maand: 2026-05-01, bedrag: 384.79}
+  - {post: Steam Connect, leverancier: Steam-connect Benelux B.V., factuurnr: "26001366", datum: 2026-07-03, maand: 2026-06-01, bedrag: 412.47}
+  - {post: Steam Connect, leverancier: Steam-connect Benelux B.V., factuurnr: "26001469", datum: 2026-08-03, maand: 2026-07-01, bedrag: 478.01}
+  - {post: Steam Connect, leverancier: Steam-connect Benelux B.V., factuurnr: "26001630", datum: 2026-09-02, maand: 2026-08-01, bedrag: 508.16}   # 2 herinneringen, lijkt onbetaald
 
   # Ad Hoc Data: jaarlicentie + losse recordaankopen (bedragen incl. 21% btw).
   - {post: Data AdHocData, leverancier: Ad Hoc Data, factuurnr: ZX4526421, datum: 2026-04-29, bedrag: 798.60, incl_btw: true, periode_van: 2026-04-29, periode_tot: 2027-04-28, doorschatten: false}  # Basis NL 2500, jaarlicentie

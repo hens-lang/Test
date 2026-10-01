@@ -43,8 +43,8 @@ klanten:
     fee_per_4wk: 1800
     extra_per_lead: 0
     target_per_4wk: 6
-    deliverable: afspraak (100)
-    telt_als_resultaat: [100]
+    deliverable: afspraak (100) of overdracht (101)
+    telt_als_resultaat: [100, 101]   # bevestigd: afspraak + overdracht
     belstart: 2026-08-31
 
   Second Life Textile:

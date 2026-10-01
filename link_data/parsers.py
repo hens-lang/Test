@@ -376,7 +376,7 @@ def parse_verkoopfactuur_tekst(tekst: str) -> list[dict] | None:
             "omschrijving": oms, "werkperiode_nr": int(wp.group(1)) if wp else None,
             "periode_van": _d(per.group(1)) if per else None, "periode_tot": _d(per.group(2)) if per else None,
             "bedrag_excl": _bedrag_flex(m.group(4)),
-            "is_lead": bool(re.search(r"\blead|overdracht", oms, re.I)) and not re.search(r"retainer", oms, re.I),
+            "is_lead": bool(re.search(r"\blead|overdracht", oms, re.I)) and not re.search(r"retainer|werkperiode", oms, re.I),
             "bron": "pdf", "status": None,
         })
     return regels or None
@@ -403,7 +403,8 @@ def _parse_factuur(pad: Path) -> Export:
 
 def _parse_verkoop_csv(pad: Path) -> Export:
     """Lijst verkoopfacturen (bv. uit de mailbox):
-    factuurnr;factuurdatum;debiteur;bedrag_incl[;bedrag_excl;opmerking;periode_van;periode_tot;werkperiode].
+    factuurnr;factuurdatum;debiteur;bedrag_incl[;bedrag_excl;opmerking;periode_van;periode_tot;werkperiode;status;regel].
+    Meerdere regels per factuur: zelfde factuurnr met regel 1, 2, ... (opmerking met 'lead' = leadfee).
     Bedragen incl. 21% btw worden omgerekend naar excl. Een PDF van dezelfde factuur gaat voor."""
     ruw = pad.read_bytes()
     sha = hashlib.sha256(ruw).hexdigest()
@@ -423,13 +424,15 @@ def _parse_verkoop_csv(pad: Path) -> Export:
             excl = round(_bedrag_flex(r.bedrag_incl) / 1.21, 2)
         else:
             continue
-        rijen.append({"sleutel": f"{r.factuurnr}|1", "factuurnr": r.factuurnr, "klant_naam": schoon(r.debiteur),
-                      "debiteurnr": None, "factuurdatum": r.factuurdatum, "regel": 1,
-                      "omschrijving": getattr(r, "opmerking", "") or "",
+        regel = int(getattr(r, "regel", "") or 1)
+        oms = getattr(r, "opmerking", "") or ""
+        rijen.append({"sleutel": f"{r.factuurnr}|{regel}", "factuurnr": r.factuurnr, "klant_naam": schoon(r.debiteur),
+                      "debiteurnr": None, "factuurdatum": r.factuurdatum, "regel": regel,
+                      "omschrijving": oms,
                       "werkperiode_nr": int(r.werkperiode) if getattr(r, "werkperiode", "") else None,
                       "periode_van": getattr(r, "periode_van", "") or None,
-                      "periode_tot": getattr(r, "periode_tot", "") or None, "bedrag_excl": excl, "is_lead": False,
-                      "bron": "mail", "status": (getattr(r, "status", "") or None)})
+                      "periode_tot": getattr(r, "periode_tot", "") or None, "bedrag_excl": excl,
+                      "is_lead": bool(re.search(r"\blead|overdracht", oms, re.I)), "bron": "mail", "status": (getattr(r, "status", "") or None)})
     out = pd.DataFrame(rijen, columns=VERKOOP_KOLOMMEN)
     out["datum"] = out["factuurdatum"]
     melding = f"overgeslagen zonder factuurdatum: {', '.join(zonder_datum)}" if zonder_datum else ""

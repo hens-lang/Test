@@ -589,7 +589,8 @@ def _dq_verkoop(cfg, verkoop, contacten, peildatum, opbrengst) -> dict:
          "periode": f"{r.periode_van} t/m {r.periode_tot}" + (" (aangenomen)" if r.periode_afgeleid else ""),
          "bedrag_excl": r.bedrag_excl, "bron": r.bron, "status": r.status}
         for r in verkoop.itertuples()]
-    per = {k: g for k, g in verkoop.assign(k=verkoop["klant"].fillna(verkoop["klant_naam"])).groupby("k")}
+    verstuurd = verkoop[verkoop["status"] != "te_versturen"]
+    per = {k: g for k, g in verstuurd.assign(k=verstuurd["klant"].fillna(verstuurd["klant_naam"])).groupby("k")}
     dq["verkoop_per_klant"] = []
     for k in sorted(set(per) | {kl.naam for kl in cfg.klanten.values() if kl.omzet_boekhouding}):
         g = per.get(k, verkoop.iloc[0:0])
