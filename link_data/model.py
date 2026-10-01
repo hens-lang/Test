@@ -50,6 +50,8 @@ class Model:
     dq: dict = field(default_factory=dict)
     verkoop: pd.DataFrame = field(default_factory=pd.DataFrame)
     stats: pd.DataFrame = field(default_factory=pd.DataFrame)
+    pogingen: pd.DataFrame = field(default_factory=pd.DataFrame)
+    werkdagen: pd.DataFrame = field(default_factory=pd.DataFrame)
 
 
 # ---------------------------------------------------------------- hulpfuncties
@@ -663,6 +665,59 @@ def _dq_verkoop(cfg, verkoop, contacten, peildatum, opbrengst) -> dict:
     return dq
 
 
+def _pogingen(p: pd.DataFrame | None, cfg: Config) -> pd.DataFrame:
+    if p is None or p.empty:
+        return pd.DataFrame(columns=["datum", "uur", "beller", "klant", "verbonden", "agent_raw", "campagne"])
+    p = p.copy()
+    p["beller"] = p["agent_raw"].map(cfg.beller_voor)
+    p["klant"] = p["campagne"].map(cfg.klant_voor_campagne)
+    # Steam levert deze export in UTC; omrekenen naar lokale tijd.
+    bron_tz = cfg.instellingen.get("belpogingen_tijdzone", "UTC")
+    lokaal = (pd.to_datetime(p["poging_dt"]).dt.tz_localize(bron_tz)
+              .dt.tz_convert(cfg.instellingen.get("tijdzone", "Europe/Amsterdam")).dt.tz_localize(None))
+    p["poging_dt"] = lokaal.astype(str)
+    p["datum"] = lokaal.dt.date
+    p["uur"] = lokaal.dt.hour
+    p["verbonden"] = p["verbonden"].astype(bool)
+    return p
+
+
+def _werkdagen(sessies: pd.DataFrame | None, pogingen: pd.DataFrame, cfg: Config,
+               laat_uur: int = 20) -> pd.DataFrame:
+    """Werkdag per beller per dag uit de agent-sessies: van de eerste inlog tot de laatste uitlog.
+    Een uitlog na laat_uur of op een andere dag (niet uitgelogd, automatisch uitgelogd) wordt vervangen
+    door het tijdstip van de laatste belpoging die dag."""
+    kol = ["datum", "beller", "start", "eind", "eind_bron"]
+    if sessies is None or sessies.empty:
+        return pd.DataFrame(columns=kol)
+    s = sessies.copy()
+    s = s[s["functie"].fillna("Agent").str.lower() == "agent"]
+    s["beller"] = s["agent_raw"].map(cfg.beller_voor)
+    s = s.dropna(subset=["beller"])
+    s["in"] = pd.to_datetime(s["ingelogd"])
+    s["uit"] = pd.to_datetime(s["uitgelogd"])
+    s["datum"] = s["in"].dt.date
+    if len(pogingen) and "poging_dt" in pogingen:
+        laatste = pogingen.assign(t=pd.to_datetime(pogingen["poging_dt"])).groupby(["beller", "datum"])["t"].max()
+    else:
+        laatste = pd.Series(dtype="datetime64[ns]")
+    uur = lambda t: t.hour + t.minute / 60 + t.second / 3600
+    rijen = []
+    for (b, d), g in s.groupby(["beller", "datum"]):
+        start = g["in"].min()
+        geldig = g["uit"][(g["uit"].notna()) & (g["uit"].dt.date == d) & (g["uit"].dt.hour < laat_uur)]
+        eind, bron = (geldig.max(), "uitlog") if len(geldig) else (pd.NaT, None)
+        lp = laatste.get((b, d))
+        twijfel = g["uit"].isna().any() or ((g["uit"].dt.date != d) | (g["uit"].dt.hour >= laat_uur)).any()
+        if lp is not None and pd.notna(lp) and (pd.isna(eind) or (twijfel and lp > eind)):
+            eind, bron = lp, "laatste belpoging"
+        if pd.isna(eind) or eind <= start:
+            continue
+        rijen.append({"datum": d, "beller": b, "start": round(uur(start), 3), "eind": round(uur(eind), 3),
+                      "eind_bron": bron})
+    return pd.DataFrame(rijen, columns=kol)
+
+
 def _campagnerapport(cr: pd.DataFrame | None, cfg: Config, contacten, verdeling, overig) -> list:
     """Per opdrachtgever: alle pogingen en resultaten uit het Steam-rapport Contactresultaten, voorraad van
     de bellijst, en kosten per resultaat over dezelfde (hele) periode."""
@@ -717,7 +772,8 @@ def _dq_stats(stats, contacten, uren, verdeling) -> dict:
 def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
          bestanden: pd.DataFrame | None = None, facturen_raw: pd.DataFrame | None = None,
          verkoop_raw: pd.DataFrame | None = None, stats_raw: pd.DataFrame | None = None,
-         campagne_raw: pd.DataFrame | None = None) -> Model:
+         campagne_raw: pd.DataFrame | None = None, pogingen_raw: pd.DataFrame | None = None,
+         sessies_raw: pd.DataFrame | None = None) -> Model:
     contacten = _contacten(contacten_raw, cfg)
     uren = _uren(uren_raw, cfg)
     facturen = _facturen(facturen_raw if facturen_raw is not None else pd.DataFrame(), cfg)
@@ -781,7 +837,20 @@ def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
     dq["kostenposten"] = _kosten_overzicht(overig)
     dq.update(_dq_stats(stats, contacten, uren, verdeling))
     dq["campagnerapport"] = _campagnerapport(campagne_raw, cfg, contacten, verdeling, overig)
-    return Model(contacten, uren, facturen, verdeling, opbrengst, overig, targets, peildatum, dq, verkoop, stats)
+    pogingen = _pogingen(pogingen_raw, cfg)
+    if len(pogingen):
+        bekend = {r["agent"] for r in dq["niet_gekoppelde_agents"]}
+        for a, g in pogingen[pogingen["beller"].isna()].groupby("agent_raw"):
+            if a not in bekend:
+                dq["niet_gekoppelde_agents"].append({"agent": a, "bron": "belpogingen", "rijen": len(g)})
+    werkdagen_ = _werkdagen(sessies_raw, pogingen, cfg)
+    dq["werkdag_bron"] = "in- en uitlogtijden" if len(werkdagen_) else "eerste en laatste belpoging"
+    dq["pogingen_dekking"] = [
+        {"klant": k, "pogingen": len(g), "van": str(g["datum"].min()), "tot": str(g["datum"].max()),
+         "bellers": ", ".join(sorted(g["beller"].fillna(g["agent_raw"]).unique()))}
+        for k, g in pogingen.assign(k=pogingen["klant"].fillna(pogingen["campagne"])).groupby("k")] if len(pogingen) else []
+    return Model(contacten, uren, facturen, verdeling, opbrengst, overig, targets, peildatum, dq, verkoop, stats,
+                 pogingen, werkdagen_)
 
 
 def resultaten_per_klant(model: Model) -> pd.Series:

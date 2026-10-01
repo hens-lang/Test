@@ -177,3 +177,34 @@ def test_memo_classificatie_moyee(pipeline):
     c["sleutel"] = [f"t{i}" for i in range(5)]
     m = model.bouw(cfg, c, store.lees(con, "uren"))
     assert m.contacten.sort_values("sleutel")["code_eff"].tolist() == [101, 100, 100, 101, 100]
+
+
+def _html(kop, rijen):
+    th = "".join(f"<th>{k}</th>" for k in kop)
+    tr = "".join("<tr>" + "".join(f"<td>{c}</td>" for c in r) + "</tr>" for r in rijen)
+    return f"<html><body><table id='idTableRapportage'><tr>{th}</tr>{tr}</table></body></html>"
+
+
+def test_belpogingen_utc_en_werkdag_uit_inlog(pipeline, tmp_path):
+    con, _, _, cfg, _ = pipeline
+    from link_data.parsers import parse_bestand
+    pk = ["Campagne", "Project", "CallerID", "CtPID", "ChPID", "Contactdatum", "Gecontacteerd door",
+          "Gekozen nummer", "Status", "SIP Response"]
+    # 06:30 UTC = 08:30 Nederlandse zomertijd
+    p_rows = [["GrowOn Agency", "x", "1", str(i), str(i), f"2026-09-30 {6 + i // 10:02d}:{(i * 5) % 60:02d}:00",
+               "M. Blijleven", "0000", "Gesprek verbonden" if i % 2 else "Kon niet verbinden", ""] for i in range(60)]
+    (tmp_path / "Call_attempts_statuses_x.xls").write_text(_html(pk, p_rows), encoding="utf-8")
+    sk = ["PersoneelsPID", "Personeel", "Ingelogd", "Uitgelogd", "Ingelogde tijd", "Sessie-ID", "IP-address", "Afdeling", "Functie"]
+    s_rows = [["7", "Mart Blijleven", "30-9-2026 08:30:00", "30-9-2026 23:59:00", "15:29:00", "{A}", "-", "Agents", "Agent"]]
+    (tmp_path / "LogIn_Out_x.xls").write_text(_html(sk, s_rows), encoding="utf-8")
+    P = parse_bestand(tmp_path / "Call_attempts_statuses_x.xls")
+    L = parse_bestand(tmp_path / "LogIn_Out_x.xls")
+    assert P.type == "P" and len(P.df) == 60 and "Gekozen nummer" not in P.df.columns
+    assert L.type == "L" and "IP-address" not in L.df.columns
+    m = model.bouw(cfg, store.lees(con, "contactmomenten"), store.lees(con, "uren"),
+                   None, None, None, None, None, P.df, L.df)
+    assert m.pogingen["uur"].min() == 8                       # omgerekend van UTC
+    w = m.werkdagen.set_index("beller").loc["Mart Blijleven"]
+    assert w["start"] == 8.5
+    assert w["eind_bron"] == "laatste belpoging"              # uitlog om 23:59 is onbetrouwbaar
+    assert abs(w["eind"] - (13 + 55 / 60)) < 0.01             # laatste poging 11:55 UTC = 13:55

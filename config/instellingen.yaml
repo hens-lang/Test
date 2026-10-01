@@ -78,3 +78,7 @@ memo_afspraak_patronen:
   # proeverij/tasting en een concrete datum in dezelfde memo
   - '(proeverij|tasting)[\s\S]{0,300}?\b\d{1,2}\s+(jan|feb|maart|mrt|apr|mei|jun|jul|aug|sep|okt|nov|dec)[a-z]*\b'
   - '\b\d{1,2}\s+(jan|feb|maart|mrt|apr|mei|jun|jul|aug|sep|okt|nov|dec)[a-z]*\b[\s\S]{0,300}?(proeverij|tasting)'
+
+# Tijdzones. De export "Call attempts statuses" staat in UTC; die wordt omgerekend naar lokale tijd.
+tijdzone: Europe/Amsterdam
+belpogingen_tijdzone: UTC

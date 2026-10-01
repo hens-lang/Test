@@ -99,7 +99,7 @@ ECHT = sorted(INBOX.glob("*")) if INBOX.exists() else []
 @pytest.mark.parametrize("pad", [p for p in ECHT if p.suffix.lower() in (".xls", ".pdf", ".csv")], ids=lambda p: p.name)
 def test_echte_inbox(pad):
     e = parse_bestand(pad)
-    assert e.type in ("A", "B", "C", "F", "R", "S", "V"), f"{pad.name} niet herkend"
+    assert e.type in ("A", "B", "C", "F", "L", "P", "R", "S", "V"), f"{pad.name} niet herkend"
     assert len(e.df) > 0
     van, tot = e.periode
     assert van <= tot

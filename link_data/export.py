@@ -66,7 +66,8 @@ def _schoon(v):
 
 def payload(model: Model, cfg: Config) -> dict:
     c, u, v, o, x = model.contacten, model.uren, model.verdeling, model.opbrengst, model.overig
-    alle = [s for s in (c["datum"], u["datum"], v["datum"], o["datum"], x["datum"]) if len(s)]
+    pg = model.pogingen
+    alle = [s for s in (c["datum"], u["datum"], v["datum"], o["datum"], x["datum"], pg["datum"] if len(pg) else []) if len(s)]
     eerste = min(s.min() for s in alle)
     laatste = max(s.max() for s in alle)
     datums = [d.isoformat() for d in pd.date_range(eerste, laatste).date]
@@ -112,6 +113,12 @@ def payload(model: Model, cfg: Config) -> dict:
         "o": [[d(r.datum), ki[r.klant], _r(r.fee, 3), _r(r.leads_eur), int(r.leads), int(bool(r.gefactureerd))]
               for r in o.itertuples()],
         "x": [[d(r.datum), _r(r.bedrag, 3), posten.index(r.post), int(r.basis == "factuur")] for r in x.itertuples()],
+        # Belpogingen: dag, uur (decimaal), beller, klant, verbonden
+        "p": [[d(r.datum), round(pd.Timestamp(r.poging_dt).hour + pd.Timestamp(r.poging_dt).minute / 60, 3), bi.get(r.beller, -1), ki.get(r.klant, ki[NIET_TOEGEREKEND]) if r.klant else ki[NIET_TOEGEREKEND],
+               int(r.verbonden)] for r in pg.itertuples()] if len(pg) else [],
+        # Werkdag uit in- en uitlogtijden: dag, beller, start (uur, decimaal), eind
+        "w": [[d(r.datum), bi.get(r.beller, -1), r.start, r.eind] for r in model.werkdagen.itertuples()
+              if str(r.datum) in di] if len(model.werkdagen) else [],
         # Steam-contactstatistieken (cumulatief, geen datum): beller, klant, pogingen, calls, hits, afgehandeld,
         # beltijd (s), gesprekstijd (s)
         "s": [[bi.get(r.beller, -1), ki.get(r.klant, ki[NIET_TOEGEREKEND]) if r.klant else ki[NIET_TOEGEREKEND],
@@ -123,6 +130,7 @@ def payload(model: Model, cfg: Config) -> dict:
         "meta": {
             "peildatum": model.peildatum.isoformat(), "gegenereerd": dt.datetime.now().strftime("%d-%m-%Y %H:%M"),
             "bron_contacten": model.dq.get("bron_contacten", []),
+            "werkdag_bron": model.dq.get("werkdag_bron"),
             "anker": inst["werkperiode_anker"].isoformat(),
             "focus_drempel": inst.get("focus_drempel", 0.8),
             "uur_start": inst.get("beldag_start_uur", 8), "uur_eind": inst.get("beldag_eind_uur", 17),

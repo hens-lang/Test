@@ -20,7 +20,7 @@ import pandas as pd
 
 from .config import ROOT
 from .parsers import (CONTACT_KOLOMMEN, EXTENSIES, FACTUUR_KOLOMMEN, STATS_KOLOMMEN, UREN_KOLOMMEN,
-                      VERKOOP_KOLOMMEN, RESULTATEN_KOLOMMEN, Export,
+                      VERKOOP_KOLOMMEN, RESULTATEN_KOLOMMEN, POGING_KOLOMMEN, SESSIE_KOLOMMEN, Export,
                       parse_bestand)
 
 DB_PAD = ROOT / "data" / "link.db"
@@ -55,6 +55,11 @@ def verbind(pad: Path | str = DB_PAD) -> sqlite3.Connection:
             periode_van TEXT, periode_tot TEXT, agentfilter TEXT, adressen INTEGER, onaangeraakt INTEGER,
             niet_afgehandeld INTEGER, contactpogingen INTEGER, code INTEGER, omschrijving TEXT, aantal INTEGER,
             bestand TEXT);
+        CREATE TABLE IF NOT EXISTS belpogingen (sleutel TEXT PRIMARY KEY, campagne TEXT, project TEXT, ctpid INTEGER,
+            chpid INTEGER, poging_dt TEXT, datum TEXT, uur INTEGER, agent_raw TEXT, verbonden INTEGER, status TEXT,
+            sip TEXT, bestand TEXT);
+        CREATE TABLE IF NOT EXISTS sessies (sleutel TEXT PRIMARY KEY, personeel_pid INTEGER, agent_raw TEXT,
+            ingelogd TEXT, uitgelogd TEXT, duur_s INTEGER, functie TEXT, datum TEXT, bestand TEXT);
         CREATE TABLE IF NOT EXISTS bestanden (
             sha256 TEXT PRIMARY KEY, naam TEXT, type TEXT, rijen INTEGER,
             periode_van TEXT, periode_tot TEXT, kolommen INTEGER, ingelezen_op TEXT);
@@ -107,6 +112,10 @@ def bewaar(con, exp: Export) -> int:
         _upsert(con, "facturen", df[FACTUUR_KOLOMMEN + ["bestand"]], ["sleutel"])
     elif exp.type == "S":
         _upsert(con, "steamstats", df[STATS_KOLOMMEN + ["bestand"]], ["sleutel"])
+    elif exp.type == "L":
+        _upsert(con, "sessies", df[SESSIE_KOLOMMEN + ["bestand"]], ["sleutel"])
+    elif exp.type == "P":
+        _upsert(con, "belpogingen", df[POGING_KOLOMMEN + ["bestand"]], ["sleutel"])
     elif exp.type == "R":
         _upsert(con, "campagneresultaten", df[RESULTATEN_KOLOMMEN + ["bestand"]], ["sleutel"])
     elif exp.type == "V":

@@ -70,7 +70,8 @@ def main(argv=None):
     m = model_mod.bouw(m_cfg, store.lees(con, "contactmomenten"), store.lees(con, "uren"),
                        store.lees(con, "bestanden"), store.lees(con, "facturen"),
                        store.lees(con, "verkoopfacturen"), store.lees(con, "steamstats"),
-                       store.lees(con, "campagneresultaten"))
+                       store.lees(con, "campagneresultaten"), store.lees(con, "belpogingen"),
+                       store.lees(con, "sessies"))
     if exports:
         m.dq["controles"].extend(_resultaatcontrole(exports, m))
 

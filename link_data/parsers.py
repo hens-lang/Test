@@ -9,6 +9,9 @@ Type C  historie-export (één rij per belpoging), herkend aan de kolommen
 Type F  factuur van een beller (PDF): nummer, datum, week, uren, bedrag excl. btw
 Type S  contactstatistieken per agent x campagne x bellijst (Excel-XML, "contactstatistics_agents"):
         alle contactpogingen, hits, afgehandeld en de beltijd per campagne
+Type P  belpogingen ("Call attempts statuses"): elke gekozen poging met tijdstip, beller, campagne en
+        of het gesprek verbonden werd (geen resultaatcode). Het gekozen nummer wordt niet bewaard.
+Type L  in- en uitlogtijden ("LogIn_Out"): sessies per medewerker (IP-adres wordt niet bewaard)
 Type R  contactresultaten per campagne ("callresults"): aantal pogingen per resultaatcode over alle
         pogingen, plus voorraad van de bellijst (totaal, onaangeraakt, niet afgehandeld)
 Type V  verkoopfactuur van LINK. aan een opdrachtgever (PDF): één regel per factuurregel,
@@ -60,6 +63,11 @@ VERKOOP_KOLOMMEN = ["sleutel", "factuurnr", "klant_naam", "debiteurnr", "factuur
 STATS_KOLOMMEN = ["sleutel", "peildatum", "agent_raw", "campagne", "project", "contactpogingen", "calls", "hits",
                   "afgehandeld", "recordtijd_s", "wachten_s", "laden_s", "prepare_s", "dial_s", "gesprek_s",
                   "finish_s"]
+
+POGING_KOLOMMEN = ["sleutel", "campagne", "project", "ctpid", "chpid", "poging_dt", "datum", "uur", "agent_raw",
+                   "verbonden", "status", "sip"]
+
+SESSIE_KOLOMMEN = ["sleutel", "personeel_pid", "agent_raw", "ingelogd", "uitgelogd", "duur_s", "functie", "datum"]
 
 RESULTATEN_KOLOMMEN = ["sleutel", "exportdatum", "campagne", "periode_van", "periode_tot", "agentfilter",
                        "adressen", "onaangeraakt", "niet_afgehandeld", "contactpogingen", "code", "omschrijving",
@@ -512,6 +520,41 @@ def _parse_callresults(pad: Path, soup: BeautifulSoup, sha: str) -> Export:
     return Export(pad, "R", df, sha, ["Rc", "", "Aantal"])
 
 
+def _parse_sessies(tabel, sha: str, pad: Path) -> Export:
+    kop, rijen = _tabel_rijen(tabel)
+    uit = []
+    for _, cellen in rijen:
+        d = _rij_dict(kop, cellen)
+        t_in = parse_datumtijd(d.get("Ingelogd"))
+        if t_in is None or not d.get("Personeel"):
+            continue
+        t_uit = parse_datumtijd(d.get("Uitgelogd"))
+        uit.append({"sleutel": d.get("Sessie-ID") or f"{d.get('Personeel')}|{t_in}", "personeel_pid": _int(d.get("PersoneelsPID")),
+                    "agent_raw": d.get("Personeel"), "ingelogd": t_in.isoformat(sep=" "),
+                    "uitgelogd": t_uit.isoformat(sep=" ") if t_uit else None,
+                    "duur_s": tijd_naar_sec(d.get("Ingelogde tijd")), "functie": d.get("Functie"),
+                    "datum": t_in.date().isoformat()})
+    return Export(pad, "L", pd.DataFrame(uit, columns=SESSIE_KOLOMMEN), sha, kop)
+
+
+def _parse_pogingen(tabel, sha: str, pad: Path) -> Export:
+    kop, rijen = _tabel_rijen(tabel)
+    uit = []
+    for _, cellen in rijen:
+        d = _rij_dict(kop, cellen)
+        t = parse_datumtijd(d.get("Contactdatum"))
+        if t is None:
+            continue
+        iso = t.isoformat(sep=" ")
+        uit.append({"sleutel": f"{d.get('Campagne')}|{d.get('CtPID')}|{iso}|{d.get('Gecontacteerd door')}",
+                    "campagne": d.get("Campagne"), "project": d.get("Project"), "ctpid": _int(d.get("CtPID")),
+                    "chpid": _int(d.get("ChPID")), "poging_dt": iso, "datum": t.date().isoformat(), "uur": t.hour,
+                    "agent_raw": d.get("Gecontacteerd door"), "verbonden": d.get("Status") == "Gesprek verbonden",
+                    "status": d.get("Status"), "sip": d.get("SIP Response") or None})
+    df = pd.DataFrame(uit, columns=POGING_KOLOMMEN).drop_duplicates("sleutel")
+    return Export(pad, "P", df, sha, kop)
+
+
 def parse_bestand(pad) -> Export:
     pad = Path(pad)
     begin = pad.read_bytes()[:400]
@@ -527,6 +570,13 @@ def parse_bestand(pad) -> Export:
     if "callresults" in pad.name.lower() or re.search(r"Afgehandeld positief", soup.get_text()[:20000] or ""):
         if soup.find(string=re.compile("Contactpogingen")) and soup.find(string=re.compile("Onaangeraakte adressen")):
             return _parse_callresults(pad, soup, sha)
+    for t in soup.find_all("table"):
+        tr = t.find("tr")
+        kopje = {schoon(x.get_text()) for x in tr.find_all(["th", "td"])} if tr else set()
+        if {"Gecontacteerd door", "Contactdatum", "Status", "CtPID"} <= kopje:
+            return _parse_pogingen(t, sha, pad)
+        if {"Personeel", "Ingelogd", "Uitgelogd", "Sessie-ID"} <= kopje:
+            return _parse_sessies(t, sha, pad)
     type_, tabel = herken(soup, pad)
     if type_ == "B":
         df, kop = _parse_uren(tabel)

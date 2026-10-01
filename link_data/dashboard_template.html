@@ -161,14 +161,14 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
 <section class="tab" id="tab-focus">
   <div id="focusMelding"></div>
   <div class="grid twee">
-    <div class="kaart"><h3>Belregels per uur van de dag</h3><div class="chart"><canvas id="cUurPog"></canvas></div></div>
-    <div class="kaart"><h3>Bereik-ratio en conversie per uur</h3><p class="uitleg">Alleen uren met minimaal 20 belregels.</p><div class="chart"><canvas id="cUurRatio"></canvas></div></div>
+    <div class="kaart"><h3>Belpogingen per uur van de dag</h3><div class="chart"><canvas id="cUurPog"></canvas></div></div>
+    <div class="kaart"><h3>Verbonden, bereik en conversie per uur</h3><p class="uitleg">Alleen uren met minimaal 20 pogingen of belregels.</p><div class="chart"><canvas id="cUurRatio"></canvas></div></div>
   </div>
   <h2>Focus-index per beller</h2>
-  <p class="uitleg">Belregels per uur in de laatste 2 uur van de dag, gedeeld door het gemiddelde per uur in de uren daarvoor. Onder <span id="fDrempel"></span> = rood.</p>
+  <p class="uitleg">Pogingen per uur in de laatste 2 uur van de werkdag (in- en uitlog), gedeeld door het tempo in de uren daarvoor. Onder <span id="fDrempel"></span> = rood.</p>
   <div class="kaart tabelwrap" id="tFocus"></div>
   <h2>Heatmap beller x uur van de dag</h2>
-  <p class="uitleg">Aantal belregels. Hoe donkerder, hoe drukker (per beller geschaald).</p>
+  <p class="uitleg">Aantal belpogingen per uur. Hoe donkerder, hoe drukker (per beller geschaald).</p>
   <div class="kaart tabelwrap" id="tHeat"></div>
   <h2>Dag van de week</h2>
   <div class="kaart tabelwrap" id="tWeekdag"></div>
@@ -419,19 +419,28 @@ function renderOverzicht() {
 }
 
 // ---------- focus-index (gedeeld door tabs)
-function focusIndex(C) {
-  const perDag = perSleutel(C, r => r[0], () => []);
-  let laat = 0, laatUren = 0, vroeg = 0, vroegUren = 0, dagen = 0;
-  for (const rows of perDag.values()) {
-    const uren = rows.map(r => r[1]); const eerste = Math.min(...uren), laatste = Math.max(...uren);
-    if (laatste - eerste < 2) continue;
-    const per = {}; rows.forEach(r => per[r[1]] = (per[r[1]] || 0) + 1);
-    for (let h = eerste; h <= laatste; h++) { const n = per[h] || 0; if (h >= laatste - 1) { laat += n; laatUren++; } else { vroeg += n; vroegUren++; } }
-    dagen++;
+// Met belpogingen (F.p, uur met minuten) en werkdagen (F.w, in- en uitlog): pogingen per uur in de
+// laatste 2 uur van de werkdag gedeeld door het tempo daarvoor. Zonder die data: op belregels per klokuur.
+const werkdagIdx = new Map((F.w || []).map(r => [r[0] + "|" + r[1], r]));
+function focusIndex(A) {
+  const perDag = perSleutel(A, r => r[0] + "|" + r[2], () => []);
+  let laat = 0, laatU = 0, vroeg = 0, vroegU = 0, dagen = 0;
+  for (const [sleutel, rows] of perDag) {
+    const w = werkdagIdx.get(sleutel);
+    let start, eind;
+    if (w) { start = w[2]; eind = w[3]; }
+    else { const u = rows.map(r => r[1]); start = Math.floor(Math.min(...u)); eind = Math.floor(Math.max(...u)) + 1; }
+    if (eind - start < 3) continue;
+    const grens = eind - 2;
+    for (const r of rows) { if (r[1] >= grens) laat++; else if (r[1] >= start) vroeg++; }
+    laatU += 2; vroegU += grens - start; dagen++;
   }
-  return {index: div(div(laat, laatUren), div(vroeg, vroegUren)), dagen};
+  return {index: div(div(laat, laatU), div(vroeg, vroegU)), dagen};
 }
 const focusCel = v => v == null ? "<span class='ontbreekt'>-</span>" : `<span class="${v < M.focus_drempel ? "rood" : "groen"}" style="font-weight:600">${num(v, 2)}</span>`;
+function pogingenSelectie() {
+  return (F.p || []).filter(r => inP(r[0]) && (S.b < 0 || r[2] === S.b) && (S.k < 0 || r[3] === S.k));
+}
 
 // ---------- tab: bellers
 function bellerStats(sel, bi) {
@@ -443,7 +452,8 @@ function bellerStats(sel, bi) {
   let opbr = 0; F.o.filter(r => inP(r[0]) && (S.k < 0 || r[1] === S.k)).forEach(r => opbr += (r[2] + r[3]) * (div(uKb[r[1]], uK[r[1]]) || 0));
   const dagen = new Set(U.map(r => r[0])).size;
   return {f, uren, kosten, pog, opbr, dagen, records: som(U, 4), afgeh: som(U, 5), U, C,
-    pph: div(pog, uren), bph: div(f.metUren, uren), rph: div(f.resMetUren, uren), focus: focusIndex(C)};
+    pph: div(pog, uren), bph: div(f.metUren, uren), rph: div(f.resMetUren, uren),
+    focus: (F.p || []).length ? focusIndex((F.p || []).filter(r => inP(r[0]) && r[2] === bi && (S.k < 0 || r[3] === S.k))) : focusIndex(C)};
 }
 function renderBellers() {
   const sel = selectie({negeerBeller: true});
@@ -536,43 +546,70 @@ function renderKlanten() {
 
 // ---------- tab: focus
 function renderFocus() {
-  const heeftC = M.bron_contacten.includes("C"), alleenA = !heeftC;
-  document.getElementById("focusMelding").innerHTML = alleenA
-    ? `<div class="melding fout"><b>Let op: deze analyse draait op de belexport (Type A).</b> Die toont per record alleen het laatste contactmoment; eerdere pogingen zijn overschreven. Uur-van-de-dag en focus-index zijn daardoor vertekend. Zet de historie-export (alle contactmomenten) in <code>data/inbox/</code> en draai <code>python run.py</code>.</div>`
-    : `<div class="melding ok">Analyse op basis van de historie-export (alle contactmomenten).</div>`;
-  document.getElementById("fDrempel").textContent = nf(1).format(M.focus_drempel);
   const sel = selectie(), s = SERIES();
+  const A = pogingenSelectie(), heeftP = A.length > 0;
+  const metWerkdag = (F.w || []).length > 0;
+  document.getElementById("focusMelding").innerHTML = heeftP
+    ? `<div class="melding ok">Activiteit per uur, focus-index en heatmap op basis van <b>alle belpogingen</b> (${num(A.length)} in deze selectie, Steam "Call attempts statuses", omgerekend naar Nederlandse tijd). Werkdag: ${metWerkdag ? "in- en uitlogtijden" : "eerste en laatste poging"}. Resultaten per uur komen uit de belexport.</div>`
+    : `<div class="melding fout"><b>Let op: geen belpogingen in deze selectie.</b> Uur-van-de-dag draait op de belexport (alleen laatste contactmoment per record) en is vertekend. Zet "Call attempts statuses" in <code>data/inbox/</code>.</div>`;
+  document.getElementById("fDrempel").textContent = nf(1).format(M.focus_drempel);
+  const uurVan = r => Math.floor(r[1]);
+  const pogUur = UUR.map(h => A.filter(r => uurVan(r) === h));
   const perUur = UUR.map(h => funnel(sel.C.filter(r => r[1] === h)));
-  const MIN_N = 20; // ratio's pas tonen vanaf 20 belregels in dat uur
-  grafiek("cUurPog", {type: "bar", data: {labels: UUR.map(h => h + ":00"), datasets: [
-    {label: "Belregels", data: perUur.map(f => f.n), backgroundColor: s[0], borderRadius: 4, maxBarThickness: 32},
-    {label: "Resultaten", data: perUur.map(f => f.res), backgroundColor: s[1], borderRadius: 4, maxBarThickness: 32}]},
+  const MIN_N = 20;
+  grafiek("cUurPog", {type: "bar", data: {labels: UUR.map(h => h + ":00"), datasets: heeftP ? [
+      {label: "Belpogingen", data: pogUur.map(x => x.length), backgroundColor: s[0], borderRadius: 4, maxBarThickness: 32},
+      {label: "Verbonden", data: pogUur.map(x => x.filter(r => r[4]).length), backgroundColor: s[2], borderRadius: 4, maxBarThickness: 32}]
+    : [{label: "Belregels", data: perUur.map(f => f.n), backgroundColor: s[0], borderRadius: 4, maxBarThickness: 32},
+       {label: "Resultaten", data: perUur.map(f => f.res), backgroundColor: s[1], borderRadius: 4, maxBarThickness: 32}]},
     options: {scales: {y: {beginAtZero: true, ticks: {precision: 0}}, x: {grid: {display: false}}}}});
-  grafiek("cUurRatio", {type: "line", data: {labels: UUR.map(h => h + ":00"), datasets: [
-    {label: "Bereik-ratio", data: perUur.map(f => f.n >= MIN_N ? f.bereikRatio : null), spanGaps: false, borderColor: s[0], backgroundColor: s[0], borderWidth: 2, pointRadius: 3},
-    {label: "Conversie bereikt → resultaat", data: perUur.map(f => f.n >= MIN_N ? f.conversie : null), borderColor: s[1], backgroundColor: s[1], borderWidth: 2, pointRadius: 3}]},
+  const ds = [];
+  if (heeftP) ds.push({label: "Verbonden-ratio (pogingen)", data: pogUur.map(x => x.length >= MIN_N ? div(x.filter(r => r[4]).length, x.length) : null), borderColor: s[2], backgroundColor: s[2], borderWidth: 2, pointRadius: 3});
+  ds.push({label: "Bereik-ratio (belregels)", data: perUur.map(f => f.n >= MIN_N ? f.bereikRatio : null), borderColor: s[0], backgroundColor: s[0], borderWidth: 2, pointRadius: 3});
+  ds.push({label: "Conversie bereikt → resultaat", data: perUur.map(f => f.n >= MIN_N ? f.conversie : null), borderColor: s[1], backgroundColor: s[1], borderWidth: 2, pointRadius: 3});
+  grafiek("cUurRatio", {type: "line", data: {labels: UUR.map(h => h + ":00"), datasets: ds},
     options: {scales: {y: {beginAtZero: true, ticks: pctTick}, x: {}}, plugins: {tooltip: {callbacks: {label: c => c.dataset.label + ": " + (c.parsed.y == null ? "-" : nf(1).format(c.parsed.y * 100) + "%")}}}}});
 
-  const bl = D.bellers.map((b, i) => ({b, i, C: sel.C.filter(r => r[2] === i)})).filter(x => x.C.length);
-  document.getElementById("tFocus").innerHTML = `<table><thead><tr><th>Beller</th><th>Focus-index</th><th>Dagen (≥ 3 uur)</th><th>Bereik laatste 2 uur</th><th>Bereik daarvoor</th></tr></thead><tbody>${bl.map(x => {
-    const fi = focusIndex(x.C);
-    const laat = [], vroeg = [];
-    perSleutel(x.C, r => r[0], () => []).forEach(rows => { const mx = Math.max(...rows.map(r => r[1])); rows.forEach(r => (r[1] >= mx - 1 ? laat : vroeg).push(r)); });
-    return `<tr><td>${esc(x.b.naam)}</td><td>${focusCel(fi.index)}</td><td>${fi.dagen}</td><td>${pct(funnel(laat).bereikRatio)}</td><td>${pct(funnel(vroeg).bereikRatio)}</td></tr>`;
+  const bron = heeftP ? A : sel.C;
+  const bl = D.bellers.map((b, i) => ({b, i, R: bron.filter(r => r[2] === i)})).filter(x => x.R.length);
+  const wd = (F.w || []).filter(r => inP(r[0]));
+  document.getElementById("tFocus").innerHTML = `<table><thead><tr><th>Beller</th><th>Focus-index</th><th>Dagen (≥ 3 uur)</th><th>Gem. start</th><th>Gem. einde</th><th>${heeftP ? "Pogingen/uur laatste 2 uur" : "Bereik laatste 2 uur"}</th><th>${heeftP ? "Pogingen/uur daarvoor" : "Bereik daarvoor"}</th><th>${heeftP ? "Verbonden laatste 2 uur" : ""}</th><th>${heeftP ? "Verbonden daarvoor" : ""}</th></tr></thead><tbody>${bl.map(x => {
+    const fi = focusIndex(x.R);
+    const w = wd.filter(r => r[1] === x.i), gs = div(w.reduce((a, r) => a + r[2], 0), w.length), ge = div(w.reduce((a, r) => a + r[3], 0), w.length);
+    const tijd = v => v == null ? "-" : `${Math.floor(v)}:${String(Math.round((v % 1) * 60)).padStart(2, "0")}`;
+    let a = "", b = "", c = "", d = "";
+    if (heeftP) {
+      let laat = [], vroeg = [], lu = 0, vu = 0;
+      perSleutel(x.R, r => r[0], () => []).forEach((rows, dag) => {
+        const wr = werkdagIdx.get(dag + "|" + x.i); const u = rows.map(r => r[1]);
+        const st = wr ? wr[2] : Math.floor(Math.min(...u)), ei = wr ? wr[3] : Math.floor(Math.max(...u)) + 1;
+        if (ei - st < 3) return; lu += 2; vu += ei - 2 - st;
+        rows.forEach(r => (r[1] >= ei - 2 ? laat : r[1] >= st ? vroeg : []).push(r));
+      });
+      a = num(div(laat.length, lu), 1); b = num(div(vroeg.length, vu), 1);
+      c = pct(div(laat.filter(r => r[4]).length, laat.length)); d = pct(div(vroeg.filter(r => r[4]).length, vroeg.length));
+    } else {
+      const laat = [], vroeg = [];
+      perSleutel(x.R, r => r[0], () => []).forEach(rows => { const mx = Math.max(...rows.map(r => r[1])); rows.forEach(r => (r[1] >= mx - 1 ? laat : vroeg).push(r)); });
+      a = pct(funnel(laat).bereikRatio); b = pct(funnel(vroeg).bereikRatio);
+    }
+    return `<tr><td>${esc(x.b.naam)}</td><td>${focusCel(fi.index)}</td><td>${fi.dagen}</td><td>${tijd(gs)}</td><td>${tijd(ge)}</td><td>${a}</td><td>${b}</td><td>${c}</td><td>${d}</td></tr>`;
   }).join("")}</tbody></table>`;
 
   const kleur = (v, max) => { if (!v) return ""; const a = 0.12 + 0.88 * v / max; return `background:color-mix(in srgb, var(--s1) ${Math.round(a * 100)}%, var(--surface));color:${a > .55 ? "#fff" : "var(--tekst)"}`; };
+  const hu = r => heeftP ? Math.floor(r[1]) : r[1];
   document.getElementById("tHeat").innerHTML = `<table class="heat"><thead><tr><th>Beller</th>${UUR.map(h => `<th>${h}</th>`).join("")}<th>Totaal</th></tr></thead><tbody>${bl.map(x => {
-    const n = UUR.map(h => x.C.filter(r => r[1] === h).length), mx = Math.max(...n, 1);
-    return `<tr><td>${esc(x.b.naam)}</td>${n.map((v, j) => `<td style="${kleur(v, mx)}" title="${esc(x.b.naam)} ${UUR[j]}:00 · ${v} belregels">${v || ""}</td>`).join("")}<td><b>${x.C.length}</b></td></tr>`;
+    const n = UUR.map(h => x.R.filter(r => hu(r) === h).length), mx = Math.max(...n, 1);
+    return `<tr><td>${esc(x.b.naam)}</td>${n.map((v, j) => `<td style="${kleur(v, mx)}" title="${esc(x.b.naam)} ${UUR[j]}:00 · ${v} ${heeftP ? "pogingen" : "belregels"}">${v || ""}</td>`).join("")}<td><b>${x.R.length}</b></td></tr>`;
   }).join("")}</tbody></table>`;
 
-  const wd = [1,2,3,4,5,6].map(w => {
+  const wdg = [1,2,3,4,5,6].map(w => {
     const C = sel.C.filter(r => datumObj[r[0]].getDay() === w), U = sel.U.filter(r => datumObj[r[0]].getDay() === w), f = funnel(C);
-    return {w, f, uren: som(U, 2) / 3600, pog: som(U, 3)};
-  }).filter(x => x.f.n || x.uren);
-  document.getElementById("tWeekdag").innerHTML = `<table><thead><tr><th>Dag</th><th>Betaalde uren</th><th>Pogingen/uur</th><th>Belregels</th><th>Bereik</th><th>Resultaten</th><th>Conversie</th><th>Res./100</th></tr></thead><tbody>${
-    wd.map(x => `<tr><td>${WEEKDAGEN[x.w]}</td><td>${num(x.uren, 1)}</td><td>${num(div(x.pog, x.uren), 1)}</td><td>${x.f.n}</td><td>${pct(x.f.bereikRatio)}</td><td>${x.f.res}</td><td>${pct(x.f.conversie)}</td><td>${num(x.f.per100, 1)}</td></tr>`).join("")}</tbody></table>`;
+    const P = A.filter(r => datumObj[r[0]].getDay() === w);
+    return {w, f, uren: som(U, 2) / 3600, pog: som(U, 3), P};
+  }).filter(x => x.f.n || x.uren || x.P.length);
+  document.getElementById("tWeekdag").innerHTML = `<table><thead><tr><th>Dag</th><th>Betaalde uren</th><th>Pogingen/uur</th>${heeftP ? "<th>Belpogingen</th><th>Verbonden</th>" : ""}<th>Belregels</th><th>Bereik</th><th>Resultaten</th><th>Conversie</th><th>Res./100</th></tr></thead><tbody>${
+    wdg.map(x => `<tr><td>${WEEKDAGEN[x.w]}</td><td>${num(x.uren, 1)}</td><td>${num(div(x.pog, x.uren), 1)}</td>${heeftP ? `<td>${num(x.P.length)}</td><td>${pct(div(x.P.filter(r => r[4]).length, x.P.length))}</td>` : ""}<td>${x.f.n}</td><td>${pct(x.f.bereikRatio)}</td><td>${x.f.res}</td><td>${pct(x.f.conversie)}</td><td>${num(x.f.per100, 1)}</td></tr>`).join("")}</tbody></table>`;
 }
 
 // ---------- scenario
