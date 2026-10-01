@@ -321,27 +321,33 @@ def parse_factuur_tekst(tekst: str, bestandsnaam: str = "") -> dict | None:
     t = tekst.replace("\xa0", " ")
     if not re.search(r"factuur", t, re.I):
         return None
-    m = (re.search(r"Factuur(?:nummer)?\s*:\s*(\w+)", t) or re.search(r"FACTUUR\s*\n\s*(\d{3,})", t)
-         or re.search(r"(\d{3,})", bestandsnaam))
+    m = (re.search(r"Factuur(?:nummer|nr)?\s*:\s*(\w+)", t, re.I) or re.search(r"FACTUUR\s*\n\s*(\d{3,})", t)
+         or re.search(r"(\d{2,})", bestandsnaam))
     nr = m.group(1) if m else None
     datum = None
     m = re.search(r"Factuurdatum[\s\S]{0,60}?(\d{1,2})[/-](\d{1,2})[/-](\d{4})", t, re.I)
+    if not m:
+        m = re.search(r"\bDATUM\s*:\s*(\d{1,2})[/-](\d{1,2})[/-](\d{4})", t)
     if m:
         datum = dt.date(int(m.group(3)), int(m.group(2)), int(m.group(1)))
     else:
         m = re.search(r"Factuurdatum[\s\S]{0,60}?(\d{1,2})\s+([a-z]+)\s+(\d{4})", t, re.I)
         if m and m.group(2).lower() in _MAANDEN:
             datum = dt.date(int(m.group(3)), _MAANDEN[m.group(2).lower()], int(m.group(1)))
-    m = re.search(r"Betreft\s*:?\s*week\s*(\d{1,2})", t, re.I)
+    m = re.search(r"Betreft\s*:?\s*week\s*(\d{1,2})", t, re.I) or re.search(r"(?<![a-z])week\s*(\d{1,2})\b", t, re.I)
     week = int(m.group(1)) if m else None
+    # Tabelregel "€ 28,00 8 € 224,00" (prijs, aantal uur, bedrag)
+    regel = re.search(r"€\s*([\d.]+,\d{2})\s+(\d+(?:,\d+)?)\s+€\s*([\d.]+,\d{2})", t)
     m = (re.search(r"(\d+(?:,\d+)?)\s*(?:uur|gewerkte\s+uren)", t, re.I)
          or re.search(r"Werkzaamheden\s*\n?\s*(\d+(?:,\d+)?)\s*\n?\s*€", t))
-    uren = _bedrag(m.group(1)) if m else None
+    uren = _bedrag(m.group(1)) if m else (_bedrag(regel.group(2)) if regel else None)
     m = re.search(r"(?:Totaalbedrag|Subtotaal)\s+excl\.?\s*btw\s*\n?\s*€\s*([\d.]+,\d{2})", t, re.I)
-    bedrag = _bedrag(m.group(1)) if m else None
+    bedrag = _bedrag(m.group(1)) if m else (_bedrag(regel.group(3)) if regel else None)
     m = re.search(r"€\s*([\d.]+,\d{2})\s*\n?\s*€\s*[\d.]+,\d{2}", t[t.find("Werkzaamheden"):]) if "Werkzaamheden" in t else None
-    tarief = _bedrag(m.group(1)) if m else (round(bedrag / uren, 2) if bedrag and uren else None)
-    m = re.search(r"(?:t\.\s?n\.\s?v\.|Ten name van)\s+(.+?)(?:\s+o\.v\.v\.|\n|$)", t, re.I)
+    tarief = _bedrag(m.group(1)) if m else (_bedrag(regel.group(1)) if regel else
+                                            (round(bedrag / uren, 2) if bedrag and uren else None))
+    m = (re.search(r"(?:t\.\s?n\.\s?v\.|Ten name van)\s+(.+?)(?:\s+o\.v\.v\.|\n|$)", t, re.I)
+         or re.search(r"Rekeninghouder\s*:\s*(.+?)(?:\n|$)", t, re.I))
     afzender = schoon(m.group(1)) if m else None
     m = re.search(r"Betreft\s*:?\s*(.+)", t, re.I)
     if bedrag is None or datum is None:

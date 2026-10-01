@@ -34,13 +34,22 @@ bellers:
     actief: true
 
   Madelon de Winter:
-    aliassen: []          # staat in geen enkele Steam-export
-    factuur_afzenders: ["De Winter Solutions", "Madelon de Winter"]
+    aliassen: ["Madelon De Winter"]   # gevonden in de belpogingen (OK Creative)
+    factuur_afzenders: ["De Winter Solutions", "Madelon de Winter", "M. De Winter"]
     type: ZZP
-    tarief_nu: 25
+    tarief_nu: 28         # volgens factuur 54 (8 uur x € 28, 0% btw)
     tarief_nieuw: 36
     ingang_nieuw: null
     actief: false         # gestopt (laatste factuur 54, 30-9-2026); belde voor OK Creative Agency
+
+  Matthijs van Beest:
+    aliassen: ["Matthijs van Beest"]   # gevonden in de belpogingen (OK Creative, 443 pogingen)
+    factuur_afzenders: []              # factuur nog niet gevonden
+    type: ZZP
+    tarief_nu: 25                      # aanname: standaardtarief ZZP; aanpassen als het anders is
+    tarief_nieuw: 36
+    ingang_nieuw: null
+    actief: true
 
   Hens Boer:
     aliassen: ["Hens Boer", "H. Boer"]
