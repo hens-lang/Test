@@ -1,0 +1,357 @@
+"""Parsers voor Steam Connect / Belstat-exports.
+
+Alle exports zijn HTML-tabellen met een .xls-extensie. `parse_bestand(pad)` herkent
+het type automatisch en geeft een `Export` met een genormaliseerde DataFrame terug.
+
+Type A  belexport (Management module, tabel idTableRapportage, loadRecord per rij)
+Type B  urenexport (PayableHoursPerDay: één rij per beller per dag)
+Type C  historie-export (één rij per belpoging), herkend aan de kolommen
+Type F  factuur van een beller (PDF): nummer, datum, week, uren, bedrag excl. btw
+
+De genormaliseerde kolommen van A en C zijn gelijk (CONTACT_KOLOMMEN), zodat het model
+en de wekelijkse klantrapportages dezelfde functies kunnen gebruiken.
+"""
+from __future__ import annotations
+
+import datetime as dt
+import hashlib
+import re
+from dataclasses import dataclass, field
+from pathlib import Path
+
+import pandas as pd
+from bs4 import BeautifulSoup
+
+from . import codes
+
+CONTACT_KOLOMMEN = [
+    "sleutel", "bron", "campagne_pid", "ctpid", "historiepid", "agent_raw", "agent_pid",
+    "project", "campagne_naam", "bedrijf", "contact_dt", "datum", "uur",
+    "code", "code_raw", "is_max", "omschrijving", "gespreksduur_s", "prepare_s", "dial_s",
+    "finish_s", "aantal_pogingen", "is_hit", "is_contactmoment", "is_afgehandeld", "afspraak_dt",
+]
+
+UREN_TIJDKOLOMMEN = {
+    "Wachten": "wachten_s", "Laden": "laden_s", "Prepare": "prepare_s", "Dial": "dial_s",
+    "Talking": "talking_s", "Finish": "finish_s", "Chat": "chat_s", "Social media": "social_s",
+    "Totaaltijd campagnes": "campagnetijd_s", "Onbetaalde tijd campagnes": "onbetaald_campagne_s",
+    "Persoonlijke verzorging": "verzorging_s", "Lange pauze": "lange_pauze_s",
+    "Korte pauze": "korte_pauze_s", "Menu": "menu_s", "Algemene training": "training_alg_s",
+    "Persoonlijke training": "training_pers_s", "Unbound wait": "unbound_wait_s",
+    "Totaal pauzes": "pauzes_s", "Onbetaalde pauzes": "onbetaalde_pauzes_s",
+    "Totaal gewerkt": "gewerkt_s", "Te betalen": "te_betalen_s", "Betaald": "betaald_s", "DND": "dnd_s",
+}
+UREN_TELKOLOMMEN = {"Pogingen": "pogingen", "Records": "records", "Hits": "hits",
+                    "Afgehandelde": "afgehandeld"}
+UREN_KOLOMMEN = ["datum", "agent_raw", "afdeling", *UREN_TELKOLOMMEN.values(), *UREN_TIJDKOLOMMEN.values()]
+
+FACTUUR_KOLOMMEN = ["sleutel", "afzender", "factuurnr", "factuurdatum", "week_genoemd", "uren",
+                    "tarief", "bedrag_excl", "omschrijving"]
+
+# Kolomnamen (lowercase) die in Type C kunnen voorkomen, per genormaliseerd veld.
+C_ALIASSEN = {
+    "agent_raw": ["naam agent", "agent", "medewerker", "gebruiker"],
+    "contact_dt": ["contactmoment datum & tijd", "datum & tijd", "datum tijd", "datumtijd",
+                   "tijdstip", "historie datum & tijd", "belmoment"],
+    "datum_los": ["contactdatum", "datum"],
+    "tijd_los": ["contact tijdstip", "tijd"],
+    "code_raw": ["resultaatcode", "resultaat code", "resultcode", "code"],
+    "campagne_pid": ["campagnepid", "campagne pid"],
+    "campagne_naam": ["campagne"],
+    "ctpid": ["ctpid"],
+    "historiepid": ["historiepid", "historie pid"],
+    "project": ["naam project", "projectcode", "project"],
+    "bedrijf": ["bedrijf"],
+    "omschrijving": ["resultcode omschr.", "resultaatomschrijving", "omschrijving"],
+    "gespreksduur_s": ["gespreksduur", "talking"],
+}
+
+
+EXTENSIES = (".xls", ".html", ".htm", ".pdf")
+
+
+@dataclass
+class Export:
+    pad: Path
+    type: str                     # "A", "B", "C" of "onbekend"
+    df: pd.DataFrame
+    sha256: str
+    kolommen: list = field(default_factory=list)
+    melding: str = ""
+
+    @property
+    def periode(self):
+        if self.df.empty or "datum" not in self.df:
+            return None, None
+        d = pd.to_datetime(self.df["datum"])
+        return d.min().date(), d.max().date()
+
+
+# ---------------------------------------------------------------- hulpfuncties
+
+def schoon(tekst) -> str:
+    """Non-breaking spaces en dubbele spaties weg."""
+    if tekst is None:
+        return ""
+    return re.sub(r"\s+", " ", str(tekst).replace("\xa0", " ")).strip()
+
+
+def tijd_naar_sec(v) -> int | None:
+    """'1:23:45' -> 5025. Ook '83:10:00' en 'mm:ss'. Leeg -> None."""
+    s = schoon(v)
+    if not s:
+        return None
+    try:
+        delen = [int(float(x)) for x in s.split(":")]
+    except ValueError:
+        return None
+    while len(delen) < 3:
+        delen.insert(0, 0)
+    h, m, sec = delen[-3:]
+    return h * 3600 + m * 60 + sec
+
+
+def parse_datumtijd(v) -> dt.datetime | None:
+    """'4-8-2026 13:21:15' (d-m-yyyy) -> datetime."""
+    s = schoon(v)
+    if not s:
+        return None
+    for fmt in ("%d-%m-%Y %H:%M:%S", "%d-%m-%Y %H:%M", "%d-%m-%Y", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
+        try:
+            return dt.datetime.strptime(s, fmt)
+        except ValueError:
+            pass
+    return None
+
+
+def _int(v):
+    s = schoon(v)
+    try:
+        return int(float(s.replace(",", "."))) if s else None
+    except ValueError:
+        return None
+
+
+def _lees(pad: Path) -> tuple[str, BeautifulSoup]:
+    ruw = Path(pad).read_bytes()
+    html = ruw.decode("utf-8", errors="replace")
+    return hashlib.sha256(ruw).hexdigest(), BeautifulSoup(html, "lxml")
+
+
+def _tabel_rijen(tabel):
+    """Kop + rijen (lijst van (tr, [celteksten])) uit een HTML-tabel."""
+    kop_tr = tabel.find("thead").find("tr") if tabel.find("thead") else tabel.find("tr")
+    kop = [schoon(th.get_text()) for th in kop_tr.find_all(["th", "td"])]
+    body = tabel.find("tbody") or tabel
+    rijen = []
+    for tr in body.find_all("tr", recursive=False if tabel.find("tbody") else True):
+        if tr is kop_tr:
+            continue
+        cellen = [schoon(td.get_text()) for td in tr.find_all("td")]
+        if cellen:
+            rijen.append((tr, cellen))
+    return kop, rijen
+
+
+def _rij_dict(kop, cellen):
+    """Kolomnaam -> waarde. Dubbele kolomnamen (bv. 'Telefoonnummer') houden de eerste niet-lege."""
+    d = {}
+    for k, v in zip(kop, cellen):
+        if k not in d or (not d[k] and v):
+            d[k] = v
+    return d
+
+
+# ---------------------------------------------------------------- herkenning
+
+def herken(soup: BeautifulSoup, pad: Path) -> tuple[str, object]:
+    """Geeft (type, tabel) terug."""
+    naam = Path(pad).name.lower()
+    for tabel in soup.find_all("table"):
+        try:
+            kop, rijen = _tabel_rijen(tabel)
+        except AttributeError:
+            continue
+        kl = {k.lower() for k in kop}
+        if {"te betalen", "agent", "datum"} <= kl:
+            return "B", tabel
+        heeft_load = any("loadRecord" in (tr.get("ondblclick") or "") for tr, _ in rijen[:20])
+        if "histor" in naam and _is_contacttabel(kl):
+            return "C", tabel
+        if tabel.get("id") == "idTableRapportage" and heeft_load:
+            return "A", tabel
+        if _is_contacttabel(kl):
+            return "C", tabel
+    return "onbekend", None
+
+
+def _is_contacttabel(kl: set) -> bool:
+    def heeft(veld):
+        return any(a in kl for a in C_ALIASSEN[veld])
+    return heeft("agent_raw") and heeft("code_raw") and (heeft("contact_dt") or heeft("datum_los"))
+
+
+# ---------------------------------------------------------------- Type A en C
+
+def _contact_record(d: dict, bron: str, pid_load=None, ctpid_load=None) -> dict:
+    def pak(veld):
+        for a in C_ALIASSEN.get(veld, [veld]):
+            for k, v in d.items():
+                if k.lower() == a and v:
+                    return v
+        return None
+
+    moment = parse_datumtijd(pak("contact_dt"))
+    if moment is None and pak("datum_los"):
+        moment = parse_datumtijd(f"{pak('datum_los')} {pak('tijd_los') or ''}".strip())
+    code_raw = pak("code_raw")
+    code, is_max = codes.normaliseer(code_raw)
+    pid = _int(d.get("CampagnePID")) or pid_load or _int(pak("campagne_pid"))
+    ctpid = _int(d.get("CTPID")) or ctpid_load
+    agent = pak("agent_raw")
+    iso = moment.isoformat(sep=" ") if moment else None
+    sleutel = f"{pid}|{ctpid}|{iso}" if ctpid is not None else f"{pid}|agent:{agent}|{iso}"
+    return {
+        "sleutel": sleutel,
+        "bron": bron,
+        "campagne_pid": pid,
+        "ctpid": ctpid,
+        "historiepid": _int(pak("historiepid")),
+        "agent_raw": agent,
+        "agent_pid": _int(d.get("Agent PID")),
+        "project": pak("project"),
+        "campagne_naam": d.get("Campagne") or None,
+        "bedrijf": pak("bedrijf"),
+        "contact_dt": iso,
+        "datum": moment.date().isoformat() if moment else None,
+        "uur": moment.hour if moment else None,
+        "code": code,
+        "code_raw": code_raw,
+        "is_max": bool(is_max),
+        "omschrijving": pak("omschrijving") or codes.OMSCHRIJVING.get(code),
+        "gespreksduur_s": tijd_naar_sec(d.get("Gespreksduur") or pak("gespreksduur_s")),
+        "prepare_s": tijd_naar_sec(d.get("Prepare")),
+        "dial_s": tijd_naar_sec(d.get("Dial")),
+        "finish_s": tijd_naar_sec(d.get("Finish")),
+        "aantal_pogingen": _int(d.get("Aantal contactpogingen")),
+        "is_hit": _int(d.get("Is hit")),
+        "is_contactmoment": _int(d.get("Is contactmoment")),
+        "is_afgehandeld": _int(d.get("Is afgehandeld")),
+        "afspraak_dt": (lambda x: x.isoformat(sep=" ") if x else None)(parse_datumtijd(d.get("Afspraakdatum + tijd"))),
+    }
+
+
+def _parse_contacten(tabel, bron: str) -> tuple[pd.DataFrame, list]:
+    kop, rijen = _tabel_rijen(tabel)
+    records = []
+    for tr, cellen in rijen:
+        m = re.search(r"loadRecord\(\s*(\d+)\s*,\s*(\d+)", tr.get("ondblclick") or "")
+        pid, ctpid = (int(m.group(1)), int(m.group(2))) if m else (None, None)
+        records.append(_contact_record(_rij_dict(kop, cellen), bron, pid, ctpid))
+    df = pd.DataFrame(records, columns=CONTACT_KOLOMMEN)
+    # Steam herhaalt een record per opname (Recording); zelfde contactmoment = één regel.
+    df = df.drop_duplicates("sleutel", keep="first").reset_index(drop=True)
+    return df, kop
+
+
+# ---------------------------------------------------------------- Type B
+
+def _parse_uren(tabel) -> tuple[pd.DataFrame, list]:
+    kop, rijen = _tabel_rijen(tabel)
+    records = []
+    for _, cellen in rijen:
+        d = _rij_dict(kop, cellen)
+        datum = parse_datumtijd(d.get("Datum"))
+        if datum is None or not d.get("Agent"):
+            continue  # totaalregels e.d.
+        r = {"datum": datum.date().isoformat(), "agent_raw": d["Agent"], "afdeling": d.get("Afdeling")}
+        for k, n in UREN_TELKOLOMMEN.items():
+            r[n] = _int(d.get(k)) or 0
+        for k, n in UREN_TIJDKOLOMMEN.items():
+            r[n] = tijd_naar_sec(d.get(k)) or 0
+        records.append(r)
+    return pd.DataFrame(records, columns=UREN_KOLOMMEN), kop
+
+
+# ---------------------------------------------------------------- Type F (facturen)
+
+_MAANDEN = {m: i + 1 for i, m in enumerate(
+    ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september",
+     "oktober", "november", "december"])}
+
+
+def _bedrag(s):
+    return float(s.replace(".", "").replace(",", ".")) if s else None
+
+
+def _pdf_tekst(pad: Path) -> str:
+    from pypdf import PdfReader
+    return "\n".join((p.extract_text() or "") for p in PdfReader(str(pad)).pages)
+
+
+def parse_factuur_tekst(tekst: str, bestandsnaam: str = "") -> dict | None:
+    """Haalt de kernvelden uit de tekst van een factuur. None als het geen factuur lijkt."""
+    t = tekst.replace("\xa0", " ")
+    if not re.search(r"factuur", t, re.I):
+        return None
+    m = (re.search(r"Factuur(?:nummer)?\s*:\s*(\w+)", t) or re.search(r"FACTUUR\s*\n\s*(\d{3,})", t)
+         or re.search(r"(\d{3,})", bestandsnaam))
+    nr = m.group(1) if m else None
+    datum = None
+    m = re.search(r"Factuurdatum[\s\S]{0,60}?(\d{1,2})[/-](\d{1,2})[/-](\d{4})", t, re.I)
+    if m:
+        datum = dt.date(int(m.group(3)), int(m.group(2)), int(m.group(1)))
+    else:
+        m = re.search(r"Factuurdatum[\s\S]{0,60}?(\d{1,2})\s+([a-z]+)\s+(\d{4})", t, re.I)
+        if m and m.group(2).lower() in _MAANDEN:
+            datum = dt.date(int(m.group(3)), _MAANDEN[m.group(2).lower()], int(m.group(1)))
+    m = re.search(r"Betreft\s*:?\s*week\s*(\d{1,2})", t, re.I)
+    week = int(m.group(1)) if m else None
+    m = (re.search(r"(\d+(?:,\d+)?)\s*(?:uur|gewerkte\s+uren)", t, re.I)
+         or re.search(r"Werkzaamheden\s*\n?\s*(\d+(?:,\d+)?)\s*\n?\s*€", t))
+    uren = _bedrag(m.group(1)) if m else None
+    m = re.search(r"(?:Totaalbedrag|Subtotaal)\s+excl\.?\s*btw\s*\n?\s*€\s*([\d.]+,\d{2})", t, re.I)
+    bedrag = _bedrag(m.group(1)) if m else None
+    m = re.search(r"€\s*([\d.]+,\d{2})\s*\n?\s*€\s*[\d.]+,\d{2}", t[t.find("Werkzaamheden"):]) if "Werkzaamheden" in t else None
+    tarief = _bedrag(m.group(1)) if m else (round(bedrag / uren, 2) if bedrag and uren else None)
+    m = re.search(r"(?:t\.\s?n\.\s?v\.|Ten name van)\s+(.+?)(?:\s+o\.v\.v\.|\n|$)", t, re.I)
+    afzender = schoon(m.group(1)) if m else None
+    m = re.search(r"Betreft\s*:?\s*(.+)", t, re.I)
+    if bedrag is None or datum is None:
+        return None
+    return {"sleutel": f"{afzender}|{nr}", "afzender": afzender, "factuurnr": nr,
+            "factuurdatum": datum.isoformat(), "week_genoemd": week, "uren": uren, "tarief": tarief,
+            "bedrag_excl": bedrag, "omschrijving": schoon(m.group(1)) if m else None}
+
+
+def _parse_factuur(pad: Path) -> Export:
+    ruw = pad.read_bytes()
+    sha = hashlib.sha256(ruw).hexdigest()
+    r = parse_factuur_tekst(_pdf_tekst(pad), pad.name)
+    if r is None:
+        return Export(pad, "onbekend", pd.DataFrame(), sha, [], "PDF zonder herkenbare factuur")
+    df = pd.DataFrame([r], columns=FACTUUR_KOLOMMEN)
+    df["datum"] = df["factuurdatum"]
+    return Export(pad, "F", df, sha, FACTUUR_KOLOMMEN)
+
+
+# ---------------------------------------------------------------- publiek
+
+def parse_bestand(pad) -> Export:
+    pad = Path(pad)
+    if pad.suffix.lower() == ".pdf":
+        return _parse_factuur(pad)
+    sha, soup = _lees(pad)
+    type_, tabel = herken(soup, pad)
+    if type_ == "B":
+        df, kop = _parse_uren(tabel)
+    elif type_ in ("A", "C"):
+        df, kop = _parse_contacten(tabel, type_)
+    else:
+        return Export(pad, "onbekend", pd.DataFrame(), sha, [], "Geen bekende Steam-tabel gevonden")
+    return Export(pad, type_, df, sha, kop)
+
+
+def parse_map(map_) -> list[Export]:
+    return [parse_bestand(p) for p in sorted(Path(map_).iterdir())
+            if p.is_file() and p.suffix.lower() in EXTENSIES]

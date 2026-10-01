@@ -1,0 +1,139 @@
+# Opdrachtgevers van LINK.
+# Bedragen excl. btw, per werkperiode van 4 weken (28 dagen).
+# null = nog invullen. Het model toont dit als "ontbreekt" en rekent er niet mee.
+#
+# Velden:
+#   pids                 campagne-PID's in Steam (loadRecord / CampagnePID)
+#   fee_per_4wk          vaste fee per werkperiode
+#   extra_per_lead       extra fee per resultaatcode 101 (lead / overdracht)
+#   target_per_4wk       aantal resultaten per werkperiode
+#   deliverable          omschrijving van wat we leveren
+#   telt_als_resultaat   welke resultaatcodes tellen voor deze klant als resultaat
+#   belstart             eerste beldag (jjjj-mm-dd); werkperiodes tellen vanaf hier
+
+klanten:
+  Moyee Coffee:
+    pids: [11]
+    fee_per_4wk: 1500
+    extra_per_lead: 150
+    target_per_4wk: null
+    deliverable: lead (101)
+    telt_als_resultaat: [101]
+    belstart: null
+
+  Green Earth:
+    pids: [1019]
+    fee_per_4wk: 1800
+    extra_per_lead: 0
+    target_per_4wk: 6
+    deliverable: afspraak (100)
+    telt_als_resultaat: [100]
+    belstart: 2026-08-31
+
+  Second Life Textile:
+    pids: [1023]
+    fee_per_4wk: 1200
+    extra_per_lead: 0
+    target_per_4wk: 6
+    deliverable: afspraak (100)
+    telt_als_resultaat: [100]
+    belstart: 2026-09-07
+
+  Helden Productions:
+    pids: [1020]
+    fee_per_4wk: 800
+    extra_per_lead: 0
+    target_per_4wk: 4
+    deliverable: afspraak/overdracht
+    telt_als_resultaat: [100, 101]
+    belstart: 2026-08-24
+
+  Bloei Interieurbeplanting:
+    pids: [1021]
+    fee_per_4wk: 1200
+    extra_per_lead: 0
+    target_per_4wk: null
+    deliverable: afspraak + overdracht
+    telt_als_resultaat: [100, 101]
+    belstart: 2026-08-17
+
+  Koeckebackers:
+    pids: []            # PID nog onbekend
+    fee_per_4wk: 1500
+    extra_per_lead: 0
+    target_per_4wk: 14  # "ca. 15 per maand" omgerekend naar 4 weken; pas aan indien nodig
+    deliverable: afspraak
+    telt_als_resultaat: [100]
+    belstart: 2026-08-17
+
+  Reaction Security:
+    pids: []            # PID nog onbekend
+    fee_per_4wk: 1800
+    extra_per_lead: 0
+    target_per_4wk: null
+    deliverable: null
+    telt_als_resultaat: [100, 101]   # standaard zolang deliverable onbekend is
+    belstart: 2026-09-07
+
+  Binnenstebuiten (Pivot):
+    pids: [1017]
+    fee_per_4wk: 1600
+    extra_per_lead: 0
+    target_per_4wk: null
+    deliverable: afspraak
+    telt_als_resultaat: [100]
+    belstart: 2026-08-10
+
+  FairChain Workforce:
+    pids: [1013]
+    fee_per_4wk: 1500
+    extra_per_lead: 0
+    target_per_4wk: null
+    deliverable: null
+    telt_als_resultaat: [100, 101]   # standaard zolang deliverable onbekend is
+    belstart: null
+
+  BuildingBricks:
+    pids: [14]
+    fee_per_4wk: null
+    extra_per_lead: null
+    target_per_4wk: null
+    deliverable: afspraak
+    telt_als_resultaat: [100]
+    belstart: null
+
+  GrowOn Agency:
+    pids: [1016]
+    fee_per_4wk: null
+    extra_per_lead: null
+    target_per_4wk: null
+    deliverable: afspraak/lead
+    telt_als_resultaat: [100, 101]
+    belstart: 2026-08-03
+
+  OK Creative Agency:
+    pids: [1018]
+    fee_per_4wk: null
+    extra_per_lead: null
+    target_per_4wk: null
+    deliverable: afspraak
+    telt_als_resultaat: [100]
+    belstart: 2026-08-03
+
+  MostWare (Heads Up):
+    pids: [1015]        # uit de export: kolom Campagne = "MostWare", CampagnePID 1015
+    fee_per_4wk: null
+    extra_per_lead: null
+    target_per_4wk: null
+    deliverable: afspraak
+    telt_als_resultaat: [100]
+    belstart: null
+
+  KIK Ongediertebestrijding:
+    pids: []            # PID nog onbekend
+    fee_per_4wk: null
+    extra_per_lead: null
+    target_per_4wk: null
+    deliverable: overdracht (101)
+    telt_als_resultaat: [101]
+    belstart: null

@@ -1,0 +1,396 @@
+<html>
+<head>
+<title> Management module</title>
+<meta charset="utf-8"/>
+</head>
+<body id="idBody" onload="jsOnLoad()" style="margin: 2px 0px 0px 0px;">
+
+
+<div id="idSQL" style="width: 800px; font-family: courier new; display: none;"></div>
+<p></p><table cellpadding="5" cellspacing="0" class="sortable" id="idTableRapportage" style="border-collapse: collapse;"><thead><tr><th>Projectcode</th><input name="columnExcelNumberFormat_1" type="hidden" value="@"/><th>Naam agent</th><input name="columnExcelNumberFormat_2" type="hidden" value="@"/><th>Bedrijf</th><input name="columnExcelNumberFormat_3" type="hidden" value="@"/><th>Recording</th><input name="columnExcelNumberFormat_4" type="hidden" value=""/><th>Contactmoment datum &amp; tijd</th><input name="columnExcelNumberFormat_5" type="hidden" value="d-m-y [h]:mm:ss"/><th>Laatste interne memo</th><input name="columnExcelNumberFormat_6" type="hidden" value=""/><th>Resultaatcode</th><input name="columnExcelNumberFormat_7" type="hidden" value="0"/><input name="cntColumns" type="hidden" value="7"/></tr></thead>
+<tbody><tr ondblclick="loadRecord(14,1, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X0</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>27-5-2026 11:22:12</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,2, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X1</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>13-5-2026 09:23:32</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,3, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X2</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>29-5-2026 10:22:42</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,4, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X3</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>26-5-2026 14:29:19</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,5, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X4</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>16-6-2026 09:29:27</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,6, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X5</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>26-5-2026 14:04:38</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,7, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X6</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>26-5-2026 14:39:09</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,8, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X7</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>26-5-2026 14:45:56</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,9, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X8</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>26-5-2026 14:48:48</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>100</td></tr>
+<tr ondblclick="loadRecord(14,10, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X9</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>29-5-2026 10:25:40</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,11, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X10</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>6-7-2026 09:11:40</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,12, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X11</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>27-5-2026 13:19:05</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>101</td></tr>
+<tr ondblclick="loadRecord(14,13, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X12</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>22-6-2026 09:04:11</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,14, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X13</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>27-5-2026 12:40:29</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,14, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X14</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>27-5-2026 12:40:29</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,14, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X15</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>27-5-2026 12:40:29</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,15, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X16</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>27-5-2026 13:36:17</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,16, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X17</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>11-9-2026 11:16:35</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>500</td></tr>
+<tr ondblclick="loadRecord(14,17, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X18</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>27-5-2026 13:57:02</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,17, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X19</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>27-5-2026 13:57:02</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,18, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X20</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>1-7-2026 09:14:11</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,19, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X21</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>29-5-2026 13:22:47</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,20, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X22</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>15-9-2026 09:11:40</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>500</td></tr>
+<tr ondblclick="loadRecord(14,20, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X23</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>15-9-2026 09:11:40</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>500</td></tr>
+<tr ondblclick="loadRecord(14,21, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X24</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>22-6-2026 11:29:40</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>MAX-400</td></tr>
+<tr ondblclick="loadRecord(14,22, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X25</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>27-5-2026 14:26:00</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,23, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X26</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>27-5-2026 14:34:05</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,24, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X27</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>27-5-2026 14:34:50</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,25, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X28</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>29-5-2026 12:18:40</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,26, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X29</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>29-6-2026 14:57:54</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,27, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X30</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>23-9-2026 09:05:21</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,28, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X31</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>27-5-2026 15:11:05</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,29, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X32</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>28-5-2026 10:14:06</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,30, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X33</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>28-5-2026 10:21:19</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,31, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X34</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>28-5-2026 10:34:44</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,32, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X35</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>28-5-2026 10:42:05</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,33, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X36</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>16-6-2026 09:20:54</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,34, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X37</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>8-6-2026 11:00:19</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,35, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X38</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>2-6-2026 10:12:37</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+<tr ondblclick="loadRecord(14,36, 0)"><td style='mso-number-format:"\@"'>BB Outb</td><td style='mso-number-format:"\@"'>Marnix Messemaker</td><td style='mso-number-format:"\@"'>X39</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"\@"'>1-7-2026 08:58:52</td><td style='mso-number-format:"\@"'></td><td style='mso-number-format:"0"'>200</td></tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</tbody></table><form action="xml/.asp" id="idFrmXML" method="POST" target="xmlExport"><input id="idFrmCTPID" name="idFrmCTPID" type="hidden" value=""/><input id="idFrmCampagnePID" name="idFrmCampagnePID" type="hidden" value=""/><input id="idxmlType" name="nmxmlType" type="hidden" value=""/><input id="idxmlmailTo" name="nmxmlmailTo" type="hidden" value=""/><input id="idxmlmailCC" name="nmxmlmailCC" type="hidden" value=""/><input id="idxmlmailFrom" name="nmxmlmailFrom" type="hidden" value=""/><input id="idxmlmailSubject" name="nmxmlmailSubject" type="hidden" value=""/></form><form action="rapportage_batch_recordings.aspx" id="idFrmBatchRecordings" method="POST" style="display:block" target="downloadBatchRecording"><input id="useVoicelogBlock" name="useVoicelogBlock" type="hidden" value="-1"/><input id="campaignPid" name="campaignPid" type="hidden" value="14"/><input name="exportrecordingformat" type="hidden" value="0"/><input name="recordingRename" type="hidden" value=""/><input name="voicelogRename" type="hidden" value=""/><input id="recordingsHTTPServer" name="recordingsHTTPServer" type="hidden" value=""/></form>
+</body>
+</html>

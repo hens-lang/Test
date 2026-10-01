@@ -1,0 +1,60 @@
+# Bellers van LINK.
+# aliassen: precies zoals de naam in de Steam-exports staat (belexport en urenexport).
+# tarief_nu / tarief_nieuw: uurtarief excl. btw. ingang_nieuw: datum vanaf wanneer tarief_nieuw geldt
+# (null = tarief_nu blijft gelden). type: ZZP of eigenaar.
+# vaste_vergoeding_per_maand: vast bedrag per kalendermaand (eigenaren). Telt mee als kosten
+#   vanaf de maand van vaste_vergoeding_vanaf en wordt binnen een maand over de betaalde uren
+#   van die maand verdeeld (dus effectief uurtarief = maandbedrag / uren die maand).
+#   De lopende maand telt naar rato van de dagen tot de laatste datum in de data.
+# Uurtarief en vaste vergoeding mogen naast elkaar bestaan; de kosten tellen dan op.
+# factuur_afzenders: naam zoals die op de factuur staat (t.n.v. / Ten name van).
+#   Voor weken met een factuur gebruikt het model het gefactureerde bedrag als kosten;
+#   weken zonder factuur worden geschat als Steam-uren x tarief.
+
+bellers:
+  Mart Blijleven:
+    aliassen: ["M. Blijleven", "Mart Blijleven"]
+    factuur_afzenders: ["Mart Blijleven"]
+    type: ZZP
+    tarief_nu: 25
+    tarief_nieuw: 36
+    ingang_nieuw: null
+    actief: true
+
+  Senna Valk:
+    aliassen: ["Senna Valk"]
+    factuur_afzenders: ["SVV Ecommerce"]   # aanname: SVV Ecommerce = Senna Valk; graag bevestigen
+    type: ZZP
+    tarief_nu: 25
+    tarief_nieuw: 36
+    ingang_nieuw: null
+    actief: true
+
+  Madelon de Winter:
+    aliassen: []          # nog onbekend: vul in zodra zij in een export staat
+    type: ZZP
+    tarief_nu: 25
+    tarief_nieuw: 36
+    ingang_nieuw: null
+    actief: true
+
+  Hens Boer:
+    aliassen: ["Hens Boer", "H. Boer"]
+    type: eigenaar
+    tarief_nu: 0
+    tarief_nieuw: 0
+    ingang_nieuw: null
+    vaste_vergoeding_per_maand: 1500
+    vaste_vergoeding_vanaf: 2026-05-29   # eerste betaling; mei telt als volle maand
+    actief: true
+
+  Marnix Messemaker:
+    aliassen: ["Marnix Messemaker", "M. Messemaker"]
+    type: eigenaar
+    tarief_nu: 0
+    tarief_nieuw: 0
+    ingang_nieuw: null
+    vaste_vergoeding_per_maand: 1500
+    vaste_vergoeding_vanaf: 2026-05-29   # eerste betaling; mei telt als volle maand
+    actief: true
+    vertrokken_per: 2026-10-05

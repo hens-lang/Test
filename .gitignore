@@ -1,0 +1,10 @@
+# Ruwe exports en facturen bevatten persoonsgegevens: niet in git.
+data/inbox/*
+!data/inbox/.gitkeep
+data/link.db
+data/export/*
+!data/export/.gitkeep
+# Gegenereerd dashboard bevat bedrijfscijfers; wordt lokaal gebouwd met python run.py
+dashboard/index.html
+__pycache__/
+.pytest_cache/

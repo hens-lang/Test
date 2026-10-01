@@ -1,0 +1,39 @@
+# Algemene instellingen voor het LINK.-dashboard.
+
+# Werkperiodes van 4 weken voor het totaaloverzicht tellen vanaf deze maandag.
+# Per opdrachtgever tellen werkperiodes vanaf de eigen belstart.
+werkperiode_anker: 2026-08-03
+
+# Overige vaste kosten per maand (excl. btw). Worden per kalenderdag verdeeld
+# en naar rato van de toegerekende belkosten over opdrachtgevers verdeeld.
+# null = nog invullen.
+overige_kosten_per_maand:
+  Steam Connect licenties: null
+  Regionale nummers: null
+  Data AdHocData: null
+
+# Overige kosten gelden vanaf deze datum (eerdere dagen krijgen ze niet).
+overige_kosten_vanaf: 2026-07-01
+
+# Beldag voor de uur-van-de-dag-analyse.
+beldag_start_uur: 8
+beldag_eind_uur: 17
+
+# Focus-index: onder deze waarde kleurt hij rood.
+focus_drempel: 0.8
+
+# Stoplicht targets: prognose / target.
+stoplicht_groen: 1.0
+stoplicht_oranje: 0.8
+
+# Werkdagen per week voor prognoses en "benodigd per resterende werkdag".
+werkdagen_per_week: 5
+
+# Scenario-rekenaar
+scenario:
+  tarief_nu: 25
+  tarief_doel: 36
+
+# Facturen zonder weeknummer ("Betreft: Week 33") worden toegewezen aan:
+#   de week van de factuurdatum als die op do t/m zo valt, anders aan de week ervoor.
+factuur_zelfde_week_vanaf_weekdag: 4   # 1 = maandag ... 7 = zondag
