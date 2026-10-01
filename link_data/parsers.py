@@ -7,6 +7,8 @@ Type A  belexport (Management module, tabel idTableRapportage, loadRecord per ri
 Type B  urenexport (PayableHoursPerDay: één rij per beller per dag)
 Type C  historie-export (één rij per belpoging), herkend aan de kolommen
 Type F  factuur van een beller (PDF): nummer, datum, week, uren, bedrag excl. btw
+Type V  verkoopfactuur van LINK. aan een opdrachtgever (PDF): één regel per factuurregel,
+        met werkperiode-nummer en periode
 
 De genormaliseerde kolommen van A en C zijn gelijk (CONTACT_KOLOMMEN), zodat het model
 en de wekelijkse klantrapportages dezelfde functies kunnen gebruiken.
@@ -48,6 +50,9 @@ UREN_KOLOMMEN = ["datum", "agent_raw", "afdeling", *UREN_TELKOLOMMEN.values(), *
 FACTUUR_KOLOMMEN = ["sleutel", "afzender", "factuurnr", "factuurdatum", "week_genoemd", "uren",
                     "tarief", "bedrag_excl", "omschrijving"]
 
+VERKOOP_KOLOMMEN = ["sleutel", "factuurnr", "klant_naam", "debiteurnr", "factuurdatum", "regel",
+                    "omschrijving", "werkperiode_nr", "periode_van", "periode_tot", "bedrag_excl", "is_lead", "bron"]
+
 # Kolomnamen (lowercase) die in Type C kunnen voorkomen, per genormaliseerd veld.
 C_ALIASSEN = {
     "agent_raw": ["naam agent", "agent", "medewerker", "gebruiker"],
@@ -67,7 +72,7 @@ C_ALIASSEN = {
 }
 
 
-EXTENSIES = (".xls", ".html", ".htm", ".pdf")
+EXTENSIES = (".xls", ".html", ".htm", ".pdf", ".csv")
 
 
 @dataclass
@@ -324,10 +329,61 @@ def parse_factuur_tekst(tekst: str, bestandsnaam: str = "") -> dict | None:
             "bedrag_excl": bedrag, "omschrijving": schoon(m.group(1)) if m else None}
 
 
+def _bedrag_flex(s: str) -> float:
+    """'2,000.00' en '2.000,00' -> 2000.0"""
+    s = s.strip()
+    if "," in s and "." in s:
+        s = s.replace(",", "") if s.rfind(".") > s.rfind(",") else s.replace(".", "").replace(",", ".")
+    elif "," in s:
+        s = s.replace(",", ".") if len(s.split(",")[-1]) == 2 else s.replace(",", "")
+    return float(s)
+
+
+def _d(s):
+    return dt.datetime.strptime(s, "%d-%m-%Y").date().isoformat()
+
+
+def parse_verkoopfactuur_tekst(tekst: str) -> list[dict] | None:
+    """Verkoopfactuur van LINK. (herkend aan 'Debiteurnummer'). Eén dict per factuurregel."""
+    if "Debiteurnummer" not in tekst:
+        return None
+    t = re.sub(r"(\d)-\s*\n\s*(\d)", r"\1-\2", tekst.replace("\xa0", " "))  # datums over regels heen
+    klant = schoon(t.strip().splitlines()[0])
+    nr = re.search(r"Factuurnummer\s+(\S+)", t)
+    datum = re.search(r"Factuurdatum\s+(\d{2}-\d{2}-\d{4})", t)
+    deb = re.search(r"Debiteurnummer\s+(\S+)", t)
+    if not (nr and datum):
+        return None
+    start = t.find("btw)", t.find("Beschrijving"))
+    eind = t.find("btw naam", start)
+    blok = t[start + 4: eind if eind > 0 else None]
+    regels = []
+    for i, m in enumerate(re.finditer(r"(?ms)^\s*(\d+(?:[.,]\d+)?)\s+(.*?)€\s*([\d.,]+)[^\n€]*?€\s*([\d.,]+)", blok)):
+        oms = schoon(m.group(2))
+        wp = re.search(r"werkperiode\s+(\d+)", oms, re.I)
+        per = re.search(r"(\d{2}-\d{2}-\d{4})\s*t/m\s*(\d{2}-\d{2}-\d{4})", oms)
+        regels.append({
+            "sleutel": f"{nr.group(1)}|{i + 1}", "factuurnr": nr.group(1), "klant_naam": klant,
+            "debiteurnr": deb.group(1) if deb else None, "factuurdatum": _d(datum.group(1)), "regel": i + 1,
+            "omschrijving": oms, "werkperiode_nr": int(wp.group(1)) if wp else None,
+            "periode_van": _d(per.group(1)) if per else None, "periode_tot": _d(per.group(2)) if per else None,
+            "bedrag_excl": _bedrag_flex(m.group(4)),
+            "is_lead": bool(re.search(r"\blead|overdracht", oms, re.I)) and not re.search(r"retainer", oms, re.I),
+            "bron": "pdf",
+        })
+    return regels or None
+
+
 def _parse_factuur(pad: Path) -> Export:
     ruw = pad.read_bytes()
     sha = hashlib.sha256(ruw).hexdigest()
-    r = parse_factuur_tekst(_pdf_tekst(pad), pad.name)
+    tekst = _pdf_tekst(pad)
+    verkoop = parse_verkoopfactuur_tekst(tekst)
+    if verkoop:
+        df = pd.DataFrame(verkoop, columns=VERKOOP_KOLOMMEN)
+        df["datum"] = df["factuurdatum"]
+        return Export(pad, "V", df, sha, VERKOOP_KOLOMMEN)
+    r = parse_factuur_tekst(tekst, pad.name)
     if r is None:
         return Export(pad, "onbekend", pd.DataFrame(), sha, [], "PDF zonder herkenbare factuur")
     df = pd.DataFrame([r], columns=FACTUUR_KOLOMMEN)
@@ -337,10 +393,44 @@ def _parse_factuur(pad: Path) -> Export:
 
 # ---------------------------------------------------------------- publiek
 
+def _parse_verkoop_csv(pad: Path) -> Export:
+    """Lijst verkoopfacturen (bv. uit de mailbox): factuurnr;factuurdatum;debiteur;bedrag_incl[;bedrag_excl;opmerking].
+    Bedragen incl. 21% btw worden omgerekend naar excl. Een PDF van dezelfde factuur gaat voor."""
+    ruw = pad.read_bytes()
+    sha = hashlib.sha256(ruw).hexdigest()
+    df = pd.read_csv(pad, sep=";", dtype=str, encoding="utf-8-sig").fillna("")
+    kol = {c.lower().strip() for c in df.columns}
+    if not {"factuurnr", "factuurdatum", "debiteur"} <= kol:
+        return Export(pad, "onbekend", pd.DataFrame(), sha, list(df.columns), "CSV zonder bekende kolommen")
+    df.columns = [c.lower().strip() for c in df.columns]
+    rijen, zonder_datum = [], []
+    for r in df.itertuples():
+        if not r.factuurdatum:
+            zonder_datum.append(r.factuurnr)
+            continue
+        if getattr(r, "bedrag_excl", ""):
+            excl = _bedrag_flex(r.bedrag_excl)
+        elif getattr(r, "bedrag_incl", ""):
+            excl = round(_bedrag_flex(r.bedrag_incl) / 1.21, 2)
+        else:
+            continue
+        rijen.append({"sleutel": f"{r.factuurnr}|1", "factuurnr": r.factuurnr, "klant_naam": schoon(r.debiteur),
+                      "debiteurnr": None, "factuurdatum": r.factuurdatum, "regel": 1,
+                      "omschrijving": getattr(r, "opmerking", "") or "", "werkperiode_nr": None,
+                      "periode_van": None, "periode_tot": None, "bedrag_excl": excl, "is_lead": False,
+                      "bron": "mail"})
+    out = pd.DataFrame(rijen, columns=VERKOOP_KOLOMMEN)
+    out["datum"] = out["factuurdatum"]
+    melding = f"overgeslagen zonder factuurdatum: {', '.join(zonder_datum)}" if zonder_datum else ""
+    return Export(pad, "V", out, sha, list(df.columns), melding)
+
+
 def parse_bestand(pad) -> Export:
     pad = Path(pad)
     if pad.suffix.lower() == ".pdf":
         return _parse_factuur(pad)
+    if pad.suffix.lower() == ".csv":
+        return _parse_verkoop_csv(pad)
     sha, soup = _lees(pad)
     type_, tabel = herken(soup, pad)
     if type_ == "B":

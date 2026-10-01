@@ -10,6 +10,8 @@ Alles draait op dezelfde dataset (`data/link.db`) en dezelfde configuratie (`con
    - urenexport (`PayableHoursPerDay_*.xls`)
    - historie-export met alle contactmomenten (zodra beschikbaar)
    - facturen van bellers (PDF)
+   - verkoopfacturen aan klanten (PDF), of een lijst `verkoopfacturen_mailbox.csv`
+     (`factuurnr;factuurdatum;debiteur;bedrag_incl;opmerking`)
 2. Draai:
 
    ```
@@ -34,7 +36,8 @@ pip install -r requirements.txt
 |---|---|
 | `config/klanten.yaml` | opdrachtgevers, campagne-PID's, fees, targets, belstart, wat telt als resultaat |
 | `config/bellers.yaml` | bellers, aliassen (zoals in de exports), tarieven, vaste vergoeding, factuurafzender |
-| `config/instellingen.yaml` | werkperiode-anker, overige kosten per maand, focusdrempel, scenario-tarieven |
+| `config/instellingen.yaml` | werkperiode-anker, overige kosten per maand, focusdrempel, scenario-tarieven, opbrengstbasis |
+| `config/kosten.yaml` | facturen voor overige kosten (Steam, AdHocData, Apollo, hosting) |
 | `link_data/parsers.py` | herkent en leest alle exporttypes (ook bruikbaar voor de klantrapportages) |
 | `link_data/store.py` | SQLite-opslag met ontdubbeling |
 | `link_data/model.py` | schone tabellen, kosten, verdeelsleutel, opbrengst, targets, datakwaliteit |
@@ -48,9 +51,11 @@ pip install -r requirements.txt
 - **Uren**: `Te betalen` uit de urenexport.
 - **Kosten ZZP**: voor een week mét factuur geldt het gefactureerde bedrag. Voor een week zonder factuur is het een schatting: Steam-uren x tarief. Facturen zonder weeknummer gaan naar de week van de factuurdatum (do t/m zo) of naar de week ervoor (ma t/m wo).
 - **Kosten eigenaren**: een vaste vergoeding per maand. Die wordt verdeeld over de betaalde uren van die maand.
-- **Overige kosten**: maandbedrag uit `instellingen.yaml`, per dag verdeeld en naar rato van de belkosten over opdrachtgevers.
 - **Verdeelsleutel**: Steam splitst uren niet per campagne. Daarom worden de uren van een beller op een dag verdeeld naar rato van zijn belregels per opdrachtgever die dag. Een dag zonder belregels komt op "Niet toegerekend".
-- **Opbrengst**: fee / 28 per kalenderdag vanaf de belstart, plus leads (code 101) x leadfee.
+- **Opbrengst**: wat echt gefactureerd is. Een verkoopfactuur telt verdeeld over zijn periode (een factuur zonder periode: 28 dagen vanaf de factuurdatum), tot de peildatum. Met `opbrengst_basis: facturen_en_schatting` vult het model dagen zonder factuur aan met fee / 28.
+- **Werkperiodes**: volgens de verkoopfactuur als die er is ("werkperiode 4, periode ..."), anders vanaf de belstart.
+- **Status klant**: `actief`, `pauze` of `gestopt`. Alleen actieve klanten tellen mee in targets en scenario.
+- **Overige kosten**: facturen uit `kosten.yaml` (een jaarlicentie wordt per dag verdeeld); maanden zonder factuur krijgen het laatst bekende bedrag als schatting.
 - **Resultaat**: per opdrachtgever volgens `telt_als_resultaat`.
 - **Werkperiode**: 4 weken. Per opdrachtgever tellen die vanaf de eigen belstart; in de filters vanaf `werkperiode_anker`.
 

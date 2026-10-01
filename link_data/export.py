@@ -11,7 +11,7 @@ from .config import Config
 from .model import NIET_TOEGEREKEND, Model
 
 
-KOSTENBASIS = {"geschat": 0, "factuur": 1, "vast": 2, "geen": 3}
+KOSTENBASIS = {"geschat": 0, "factuur": 1, "vast": 2, "geen": 3, "afspraak": 4}
 
 
 def csv_export(model: Model, map_: Path) -> list[Path]:
@@ -25,6 +25,7 @@ def csv_export(model: Model, map_: Path) -> list[Path]:
         "verdeelsleutel.csv": model.verdeling,
         "opbrengst_per_dag.csv": model.opbrengst,
         "overige_kosten_per_dag.csv": model.overig,
+        "verkoopfacturen.csv": model.verkoop,
         "targets_huidige_werkperiode.csv": model.targets,
     }
     # Weekoverzicht per opdrachtgever, handig voor het Omzet Dashboard.
@@ -64,7 +65,7 @@ def _schoon(v):
 
 def payload(model: Model, cfg: Config) -> dict:
     c, u, v, o, x = model.contacten, model.uren, model.verdeling, model.opbrengst, model.overig
-    alle = [s for s in (c["datum"], u["datum"], v["datum"], o["datum"]) if len(s)]
+    alle = [s for s in (c["datum"], u["datum"], v["datum"], o["datum"], x["datum"]) if len(s)]
     eerste = min(s.min() for s in alle)
     laatste = max(s.max() for s in alle)
     datums = [d.isoformat() for d in pd.date_range(eerste, laatste).date]
@@ -82,6 +83,7 @@ def payload(model: Model, cfg: Config) -> dict:
     labels.append(NIET_TOEGEREKEND)
     ki = {k: i for i, k in enumerate(labels)}
     projecten = sorted(c["project"].unique())
+    posten = sorted(x["post"].unique()) if len(x) else []
     pi = {p: i for i, p in enumerate(projecten)}
 
     klanten = []
@@ -92,6 +94,7 @@ def payload(model: Model, cfg: Config) -> dict:
             "fee": kc and kc.fee_per_4wk, "lead": kc and kc.extra_per_lead,
             "target": kc and kc.target_per_4wk, "deliverable": kc and kc.deliverable,
             "telt_als": kc.telt_als_resultaat if kc else [100, 101], "pids": kc.pids if kc else [],
+            "status": kc.status if kc else "onbekend",
         })
 
     feiten = {
@@ -105,8 +108,9 @@ def payload(model: Model, cfg: Config) -> dict:
               for r in u.itertuples()],
         "v": [[d(r.datum), bi.get(r.beller, -1), ki[r.klant], _r(r.uren, 4), _r(r.pogingen, 3), _r(r.kosten, 3)]
               for r in v.itertuples()],
-        "o": [[d(r.datum), ki[r.klant], _r(r.fee, 3), _r(r.leads_eur), int(r.leads)] for r in o.itertuples()],
-        "x": [[d(r.datum), _r(r.bedrag, 3)] for r in x.itertuples()],
+        "o": [[d(r.datum), ki[r.klant], _r(r.fee, 3), _r(r.leads_eur), int(r.leads), int(bool(r.gefactureerd))]
+              for r in o.itertuples()],
+        "x": [[d(r.datum), _r(r.bedrag, 3), posten.index(r.post), int(r.basis == "factuur")] for r in x.itertuples()],
     }
     inst = cfg.instellingen
     return {
@@ -126,6 +130,7 @@ def payload(model: Model, cfg: Config) -> dict:
                      "vast": cfg.bellers[b].vaste_vergoeding_per_maand} for b in bellers],
         "klanten": klanten,
         "projecten": projecten,
+        "kostenposten": posten,
         "feiten": feiten,
         "targets": [{k: _schoon(val) for k, val in r.items()} for r in model.targets.to_dict("records")],
         "dq": {k: ([{kk: _schoon(vv) for kk, vv in r.items()} for r in val] if isinstance(val, list)

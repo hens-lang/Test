@@ -65,9 +65,10 @@ def test_onbekende_pid_wordt_niet_gegokt(pipeline):
 
 def test_null_velden_crashen_niet(pipeline):
     *_, cfg, m = pipeline
-    assert any(o["veld"] == "fee_per_4wk" for o in m.dq["ontbrekende_config"])
+    assert any(o["veld"] == "target_per_4wk" for o in m.dq["ontbrekende_config"])
     t = m.targets.set_index("klant")
-    assert t.loc["KIK Ongediertebestrijding", "stoplicht"] == "startdatum ontbreekt"
+    assert t.loc["KIK Ongediertebestrijding", "stoplicht"] == "pauze"   # niet-actieve klant: geen stoplicht
+    assert t.loc["Helden Productions", "stoplicht"] == "gestopt"
     p = payload(m, cfg)
     assert p["feiten"]["c"] and p["feiten"]["u"]
 
@@ -112,3 +113,19 @@ def test_historie_export_type_c_wint_van_belexport(pipeline, tmp_path):
     assert c.loc[c["sleutel"] == a["sleutel"], "bron"].item() == "C"   # zelfde moment: C wint
     m = model.bouw(cfg, c, store.lees(con, "uren"))
     assert "C" in m.dq["bron_contacten"]
+
+
+def test_verkoopfacturen_bepalen_opbrengst(pipeline):
+    con, _, _, cfg, _ = pipeline
+    v = pd.DataFrame([{"sleutel": "T-1|1", "factuurnr": "T-1", "klant_naam": "GrowOn Agency B.V.", "debiteurnr": None,
+                       "factuurdatum": "2026-09-01", "regel": 1, "omschrijving": "Retainer werkperiode 2",
+                       "werkperiode_nr": 2, "periode_van": "2026-09-01", "periode_tot": "2026-09-28",
+                       "bedrag_excl": 1400.0, "is_lead": False, "bron": "pdf"}])
+    m = model.bouw(cfg, store.lees(con, "contactmomenten"), store.lees(con, "uren"), None, None, v)
+    o = m.opbrengst[m.opbrengst["klant"] == "GrowOn Agency"]
+    assert o["fee"].sum() == pytest.approx(1400.0 * min(28, (m.peildatum - pd.Timestamp("2026-09-01").date()).days + 1) / 28)
+    assert o["gefactureerd"].all()
+    assert all(c["ok"] for c in m.dq["controles"])
+    # startdatum afgeleid uit 'werkperiode 2'
+    t = m.targets.set_index("klant").loc["GrowOn Agency"]
+    assert t["start_bron"] in ("config", "verkoopfactuur")

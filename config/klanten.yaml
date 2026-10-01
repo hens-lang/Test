@@ -9,7 +9,14 @@
 #   target_per_4wk       aantal resultaten per werkperiode
 #   deliverable          omschrijving van wat we leveren
 #   telt_als_resultaat   welke resultaatcodes tellen voor deze klant als resultaat
-#   belstart             eerste beldag (jjjj-mm-dd); werkperiodes tellen vanaf hier
+#   belstart             eerste beldag (jjjj-mm-dd); werkperiodes tellen vanaf hier.
+#                        Leeg? Dan wordt hij afgeleid uit een verkoopfactuur ("werkperiode N, periode ...").
+#   factuur_namen        naam zoals op onze verkoopfactuur, als die niet al de klantnaam bevat
+#   status               actief (standaard), pauze of gestopt. Alleen actieve klanten tellen mee
+#                        in targets, stoplichten en de scenario-rekenaar; historie blijft zichtbaar.
+#
+# Verkoopfacturen (PDF in data/inbox) gaan voor: de opbrengst is dan het gefactureerde bedrag,
+# verdeeld over de factuurperiode. Dagen zonder factuur worden geschat als fee / 28.
 
 klanten:
   Moyee Coffee:
@@ -40,6 +47,7 @@ klanten:
     belstart: 2026-09-07
 
   Helden Productions:
+    status: gestopt
     pids: [1020]
     fee_per_4wk: 800
     extra_per_lead: 0
@@ -52,12 +60,13 @@ klanten:
     pids: [1021]
     fee_per_4wk: 1200
     extra_per_lead: 0
-    target_per_4wk: null
+    target_per_4wk: 4
     deliverable: afspraak + overdracht
     telt_als_resultaat: [100, 101]
     belstart: 2026-08-17
 
   Koeckebackers:
+    status: gestopt
     pids: []            # PID nog onbekend
     fee_per_4wk: 1500
     extra_per_lead: 0
@@ -67,6 +76,7 @@ klanten:
     belstart: 2026-08-17
 
   Reaction Security:
+    status: gestopt
     pids: []            # PID nog onbekend
     fee_per_4wk: 1800
     extra_per_lead: 0
@@ -79,12 +89,13 @@ klanten:
     pids: [1017]
     fee_per_4wk: 1600
     extra_per_lead: 0
-    target_per_4wk: null
+    target_per_4wk: 6
     deliverable: afspraak
     telt_als_resultaat: [100]
     belstart: 2026-08-10
 
   FairChain Workforce:
+    status: gestopt
     pids: [1013]
     fee_per_4wk: 1500
     extra_per_lead: 0
@@ -95,45 +106,68 @@ klanten:
 
   BuildingBricks:
     pids: [14]
-    fee_per_4wk: null
+    fee_per_4wk: 1500   # uit verkoopfactuur 2026-0092
     extra_per_lead: null
-    target_per_4wk: null
+    target_per_4wk: 4
     deliverable: afspraak
     telt_als_resultaat: [100]
     belstart: null
 
   GrowOn Agency:
     pids: [1016]
-    fee_per_4wk: null
+    fee_per_4wk: 1600   # uit verkoopfactuur 2026-0096
     extra_per_lead: null
-    target_per_4wk: null
+    target_per_4wk: 8
     deliverable: afspraak/lead
     telt_als_resultaat: [100, 101]
     belstart: 2026-08-03
 
   OK Creative Agency:
     pids: [1018]
-    fee_per_4wk: null
+    factuur_namen: ["Onze Kapel B.V."]   # aanname: Onze Kapel B.V. = OK Creative Agency; graag bevestigen
+    fee_per_4wk: 2000   # uit verkoopfactuur 2026-0095
     extra_per_lead: null
-    target_per_4wk: null
+    target_per_4wk: 6
     deliverable: afspraak
     telt_als_resultaat: [100]
     belstart: 2026-08-03
 
   MostWare (Heads Up):
     pids: [1015]        # uit de export: kolom Campagne = "MostWare", CampagnePID 1015
-    fee_per_4wk: null
+    fee_per_4wk: 2000   # uit verkoopfactuur 2026-0089
     extra_per_lead: null
-    target_per_4wk: null
+    target_per_4wk: 8
     deliverable: afspraak
     telt_als_resultaat: [100]
     belstart: null
 
   KIK Ongediertebestrijding:
+    status: pauze
     pids: []            # PID nog onbekend
     fee_per_4wk: null
     extra_per_lead: null
     target_per_4wk: null
     deliverable: overdracht (101)
     telt_als_resultaat: [101]
+    belstart: null
+
+  # Gevonden in de verkoopfacturen (mailbox), nog niet in de oorspronkelijke lijst:
+  Tragter Brandbeveiliging:
+    status: gestopt     # aanname: laatste factuur april 2026, creditnota juni
+    pids: []
+    fee_per_4wk: null
+    extra_per_lead: null
+    target_per_4wk: null
+    deliverable: null
+    telt_als_resultaat: [100, 101]
+    belstart: null
+
+  Monxs Smart Building Access:
+    status: gestopt     # aanname: alleen factuur juni 2026
+    pids: []
+    fee_per_4wk: null
+    extra_per_lead: null
+    target_per_4wk: null
+    deliverable: null
+    telt_als_resultaat: [100, 101]
     belstart: null

@@ -9,8 +9,10 @@ Tabellen in Model:
               (kostenbasis: factuur, geschat = uren x tarief, of vast = vaste vergoeding)
   facturen    facturen van bellers, met toegewezen week
   verdeling   verdeelsleutel: uren, pogingen en kosten per dag x beller x klant
-  opbrengst   per dag x klant: vaste fee (fee / 28 per kalenderdag) en leadfee
-  overig      overige kosten per dag
+  opbrengst   per dag x klant: gefactureerd (verkoopfactuur over zijn periode) of geschat (fee / 28)
+              plus leadfee
+  overig      overige kosten per dag, per kostenpost (factuur of geschat)
+  verkoop     verkoopfacturen aan opdrachtgevers
   targets     stand van de huidige werkperiode per klant
   dq          datakwaliteit (lijsten en controles)
 """
@@ -44,6 +46,7 @@ class Model:
     targets: pd.DataFrame
     peildatum: dt.date
     dq: dict = field(default_factory=dict)
+    verkoop: pd.DataFrame = field(default_factory=pd.DataFrame)
 
 
 # ---------------------------------------------------------------- hulpfuncties
@@ -147,10 +150,19 @@ def _facturen(f: pd.DataFrame, cfg: Config) -> pd.DataFrame:
     return f.sort_values(["beller", "week_start"]).reset_index(drop=True)
 
 
-def _pas_facturen_toe(uren: pd.DataFrame, facturen: pd.DataFrame):
-    """Weken met een factuur: kosten = gefactureerd bedrag, verdeeld over de Steam-uren van die week."""
+def _pas_facturen_toe(uren: pd.DataFrame, facturen: pd.DataFrame, cfg: Config):
+    """Weken met een factuur: kosten = gefactureerd bedrag, verdeeld over de Steam-uren van die week.
+    Weken zonder factuur van een beller met uren_per_week_afspraak: afspraak x tarief."""
     uren["kostenbasis"] = np.where(uren["tarief"].fillna(0) > 0, "geschat", "geen")
     uren["week_start"] = [_maandag(d) for d in uren["datum"]]
+    for b in cfg.bellers.values():
+        if not b.uren_per_week_afspraak:
+            continue
+        for w, g in uren[(uren["beller"] == b.naam) & (uren["kostenbasis"] == "geschat")].groupby("week_start"):
+            tot = g["te_betalen_s"].sum()
+            if tot > 0:
+                uren.loc[g.index, "kosten_uur"] = (b.uren_per_week_afspraak * g["tarief"] * g["te_betalen_s"] / tot)
+                uren.loc[g.index, "kostenbasis"] = "afspraak"
     extra = []
     for (b, w), g in facturen.dropna(subset=["beller"]).groupby(["beller", "week_start"]):
         bedrag = g["bedrag_excl"].sum()
@@ -167,7 +179,9 @@ def _pas_facturen_toe(uren: pd.DataFrame, facturen: pd.DataFrame):
 
 def _factuurvergelijking(uren: pd.DataFrame, facturen: pd.DataFrame, cfg: Config) -> list:
     zzp = {b.naam for b in cfg.bellers.values() if (b.tarief_nu or 0) > 0}
-    u = (uren[uren["beller"].isin(zzp)].assign(geschat=lambda x: x["uren"] * x["tarief"])
+    afspraak = {b.naam: b.uren_per_week_afspraak for b in cfg.bellers.values() if b.uren_per_week_afspraak}
+    u = (uren[uren["beller"].isin(zzp)]
+         .assign(geschat=lambda x: np.where(x["beller"].isin(afspraak), x["kosten_uur"], x["uren"] * x["tarief"]))
          .groupby(["beller", "week_start"]).agg(steam_uren=("uren", "sum"), geschat=("geschat", "sum")))
     f = (facturen.dropna(subset=["beller"]).groupby(["beller", "week_start"])
          .agg(factuur_uren=("uren", "sum"), gefactureerd=("bedrag_excl", "sum"),
@@ -180,6 +194,8 @@ def _factuurvergelijking(uren: pd.DataFrame, facturen: pd.DataFrame, cfg: Config
         heeft_u = pd.notna(r.steam_uren)
         status = ("gefactureerd" if heeft_f and heeft_u else "nog geen factuur" if heeft_u
                   else "factuur zonder Steam-uren")
+        if status == "nog geen factuur" and r.beller in afspraak:
+            status = f"nog geen factuur (geschat {afspraak[r.beller]:g} u/week)"
         iso = r.week_start.isocalendar()
         rijen.append({
             "beller": r.beller, "week": f"{iso[0]}-W{iso[1]:02d}", "week_start": str(r.week_start),
@@ -212,54 +228,156 @@ def _verdeling(uren: pd.DataFrame, contacten: pd.DataFrame, extra: pd.DataFrame)
     return v[["datum", "beller", "klant", "aandeel", "uren", "pogingen", "kosten", "basis"]]
 
 
-def _startdatum(klant, contacten) -> tuple[dt.date | None, str]:
+def _verkoop(v: pd.DataFrame, cfg: Config) -> pd.DataFrame:
+    kol = ["factuurnr", "klant_naam", "factuurdatum", "omschrijving", "werkperiode_nr", "periode_van",
+           "periode_tot", "bedrag_excl", "is_lead", "klant", "bron", "periode_afgeleid"]
+    if v is None or v.empty:
+        return pd.DataFrame(columns=kol)
+    v = v.copy()
+    v["klant"] = v["klant_naam"].map(cfg.klant_voor_debiteur)
+    for c in ("factuurdatum", "periode_van", "periode_tot"):
+        v[c] = pd.to_datetime(v[c]).dt.date
+    v["is_lead"] = v["is_lead"].fillna(False).astype(bool)
+    # Geen periode op de factuur (bv. alleen bekend uit de mail): 28 dagen vanaf de factuurdatum.
+    zonder = v["periode_van"].isna()
+    v["periode_afgeleid"] = zonder
+    v.loc[zonder, "periode_van"] = v.loc[zonder, "factuurdatum"]
+    v.loc[zonder, "periode_tot"] = [d + dt.timedelta(days=27) for d in v.loc[zonder, "factuurdatum"]]
+    return v.sort_values(["klant_naam", "factuurdatum"]).reset_index(drop=True)
+
+
+def _start_uit_factuur(klant: str, verkoop: pd.DataFrame):
+    v = verkoop[(verkoop["klant"] == klant) & verkoop["werkperiode_nr"].notna() & ~verkoop["periode_afgeleid"]]
+    if v.empty:
+        return None
+    r = v.iloc[0]
+    return r.periode_van - dt.timedelta(days=28 * (int(r.werkperiode_nr) - 1))
+
+
+def _startdatum(klant, contacten, verkoop=None) -> tuple[dt.date | None, str]:
     if klant.belstart:
         return klant.belstart, "config"
+    if verkoop is not None and len(verkoop):
+        s = _start_uit_factuur(klant.naam, verkoop)
+        if s:
+            return s, "verkoopfactuur"
     eigen = contacten[contacten["klant"] == klant.naam]
     if not eigen.empty:
         return eigen["datum"].min(), "eerste belregel"
     return None, "ontbreekt"
 
 
-def _opbrengst(cfg: Config, contacten: pd.DataFrame, peildatum: dt.date) -> pd.DataFrame:
+def _opbrengst(cfg: Config, contacten: pd.DataFrame, peildatum: dt.date, verkoop: pd.DataFrame) -> pd.DataFrame:
+    """Per dag: gefactureerd (verkoopfactuur, verdeeld over de periode) of geschat (fee / 28)."""
     rijen = []
     for k in cfg.klanten.values():
-        start, _ = _startdatum(k, contacten)
-        if k.fee_per_4wk and start and start <= peildatum:
+        eigen = verkoop[(verkoop["klant"] == k.naam) & ~verkoop["is_lead"]]
+        gedekt = set()
+        for r in eigen.itertuples():
+            if pd.notna(r.periode_van) and pd.notna(r.periode_tot):
+                dagen = pd.date_range(r.periode_van, r.periode_tot).date
+                for d in dagen:
+                    gedekt.add(d)
+                    if d <= peildatum:
+                        rijen.append({"datum": d, "klant": k.naam, "fee": r.bedrag_excl / len(dagen),
+                                      "leads_eur": 0.0, "leads": 0, "gefactureerd": True})
+            elif r.factuurdatum <= peildatum:
+                rijen.append({"datum": r.factuurdatum, "klant": k.naam, "fee": r.bedrag_excl, "leads_eur": 0.0,
+                              "leads": 0, "gefactureerd": True})
+        start, _ = _startdatum(k, contacten, verkoop)
+        schatten = cfg.instellingen.get("opbrengst_basis", "facturen") != "facturen" or (
+            eigen.empty and cfg.instellingen.get("schatten_zonder_enige_factuur", False))
+        if schatten and k.fee_per_4wk and start and start <= peildatum:
             for d in pd.date_range(start, peildatum).date:
-                rijen.append({"datum": d, "klant": k.naam, "fee": k.fee_per_4wk / 28, "leads_eur": 0.0, "leads": 0})
-        if k.extra_per_lead:
+                if d not in gedekt:
+                    rijen.append({"datum": d, "klant": k.naam, "fee": k.fee_per_4wk / 28, "leads_eur": 0.0,
+                                  "leads": 0, "gefactureerd": False})
+        lead_f = verkoop[(verkoop["klant"] == k.naam) & verkoop["is_lead"]]
+        for r in lead_f.itertuples():
+            if r.factuurdatum <= peildatum:
+                rijen.append({"datum": r.factuurdatum, "klant": k.naam, "fee": 0.0, "leads_eur": r.bedrag_excl,
+                              "leads": 0, "gefactureerd": True})
+        if schatten and k.extra_per_lead and lead_f.empty:
             leads = contacten[(contacten["klant"] == k.naam) & contacten["is_lead"]].groupby("datum").size()
             for d, n in leads.items():
                 rijen.append({"datum": d, "klant": k.naam, "fee": 0.0,
-                              "leads_eur": n * k.extra_per_lead, "leads": int(n)})
-    df = pd.DataFrame(rijen, columns=["datum", "klant", "fee", "leads_eur", "leads"])
-    return df.groupby(["datum", "klant"], as_index=False).sum()
+                              "leads_eur": n * k.extra_per_lead, "leads": int(n), "gefactureerd": False})
+    df = pd.DataFrame(rijen, columns=["datum", "klant", "fee", "leads_eur", "leads", "gefactureerd"])
+    return df.groupby(["datum", "klant", "gefactureerd"], as_index=False).sum()
 
 
 def _overig(cfg: Config, peildatum: dt.date, eerste: dt.date) -> pd.DataFrame:
-    posten = {p: b for p, b in (cfg.instellingen.get("overige_kosten_per_maand") or {}).items() if b}
-    totaal = sum(posten.values())
+    """Overige kosten per dag per kostenpost.
+    Maanden met een factuur (config/kosten.yaml): het factuurbedrag excl. btw, over de maand verdeeld.
+    Maanden zonder factuur: het vaste maandbedrag uit instellingen.yaml, of anders het laatst
+    bekende factuurbedrag van die post (geschat)."""
+    kol = ["datum", "post", "bedrag", "basis"]
     van = cfg.instellingen.get("overige_kosten_vanaf") or eerste
-    if not totaal or van > peildatum:
-        return pd.DataFrame(columns=["datum", "bedrag"])
-    dagen = pd.date_range(van, peildatum).date
-    return pd.DataFrame({"datum": dagen, "bedrag": [totaal / _dagen_in_maand(d) for d in dagen]})
+    vast = {p: b for p, b in (cfg.instellingen.get("overige_kosten_per_maand") or {}).items()}
+    alle = cfg.kosten
+    rijen = []
+    # Facturen met een periode (jaarlicentie, abonnement): per dag over de periode.
+    for f in [f for f in alle if f.get("periode_van") and f.get("periode_tot")]:
+        n = (f["periode_tot"] - f["periode_van"]).days + 1
+        for d in pd.date_range(max(f["periode_van"], van), min(f["periode_tot"], peildatum)).date:
+            rijen.append({"datum": d, "post": f["post"], "bedrag": f["bedrag_excl"] / n, "basis": "factuur"})
+    met_periode = {f["post"] for f in alle if f.get("periode_van")}
+    facturen = [f for f in alle if not f.get("periode_van")]
+    niet_doorschatten = {f["post"] for f in alle if f.get("doorschatten") is False} | met_periode
+    posten = sorted((set(vast) | {f["post"] for f in facturen}) - met_periode)
+    m = dt.date(van.year, van.month, 1)
+    while m <= peildatum:
+        dim = _dagen_in_maand(m)
+        laatste = min(dt.date(m.year, m.month, dim), peildatum)
+        for post in posten:
+            deze = [f for f in facturen if f["post"] == post and f["maand"] == (m.year, m.month)]
+            eerder = sorted([f for f in facturen if f["post"] == post and f["maand"] < (m.year, m.month)],
+                            key=lambda f: f["maand"])
+            if deze:
+                bedrag, basis = sum(f["bedrag_excl"] for f in deze), "factuur"
+            elif vast.get(post):
+                bedrag, basis = vast[post], "vast bedrag (config)"
+            elif eerder and cfg.instellingen.get("kosten_doorschatten", True) and post not in niet_doorschatten:
+                bedrag, basis = eerder[-1]["bedrag_excl"], "geschat (laatste factuur)"
+            else:
+                continue
+            for d in range(max(1, van.day if m == dt.date(van.year, van.month, 1) else 1), laatste.day + 1):
+                rijen.append({"datum": dt.date(m.year, m.month, d), "post": post, "bedrag": bedrag / dim,
+                              "basis": basis})
+        m = dt.date(m.year + (m.month == 12), m.month % 12 + 1, 1)
+    return pd.DataFrame(rijen, columns=kol)
 
 
-def _targets(cfg: Config, contacten: pd.DataFrame, peildatum: dt.date) -> pd.DataFrame:
+def _kosten_overzicht(overig: pd.DataFrame) -> list:
+    if overig.empty:
+        return []
+    o = overig.assign(maand=pd.to_datetime(overig["datum"]).dt.strftime("%Y-%m"))
+    g = o.groupby(["post", "maand", "basis"], as_index=False)["bedrag"].sum()
+    return [{"post": r.post, "maand": r.maand, "bedrag_excl": round(r.bedrag, 2), "basis": r.basis}
+            for r in g.sort_values(["post", "maand"]).itertuples()]
+
+
+def _targets(cfg: Config, contacten: pd.DataFrame, peildatum: dt.date, verkoop: pd.DataFrame) -> pd.DataFrame:
     groen = cfg.instellingen.get("stoplicht_groen", 1.0)
     oranje = cfg.instellingen.get("stoplicht_oranje", 0.8)
     rijen = []
     for k in cfg.klanten.values():
-        start, bron = _startdatum(k, contacten)
+        start, bron = _startdatum(k, contacten, verkoop)
         r = {"klant": k.naam, "target": k.target_per_4wk, "start": start, "start_bron": bron,
-             "telt_als": "+".join(map(str, k.telt_als_resultaat))}
+             "telt_als": "+".join(map(str, k.telt_als_resultaat)), "status": k.status}
         eigen = contacten[(contacten["klant"] == k.naam) & contacten["is_resultaat"]]
+        fp = verkoop[(verkoop["klant"] == k.naam) & ~verkoop["periode_afgeleid"]]
+        fp = fp[(fp["periode_van"] <= peildatum) & (fp["periode_tot"] >= peildatum)]
         if start and start <= peildatum:
             nr = (peildatum - start).days // 28
             p_van = start + dt.timedelta(days=28 * nr)
             p_tot = p_van + dt.timedelta(days=27)
+            r["periode_bron"] = "berekend"
+            if len(fp):
+                p_van, p_tot = fp.iloc[0].periode_van, fp.iloc[0].periode_tot
+                if pd.notna(fp.iloc[0].werkperiode_nr):
+                    nr = int(fp.iloc[0].werkperiode_nr) - 1
+                r["periode_bron"] = f"factuur {fp.iloc[0].factuurnr}"
             res = int(((eigen["datum"] >= p_van) & (eigen["datum"] <= p_tot)).sum())
             verstreken = werkdagen(p_van, peildatum)
             totaal = werkdagen(p_van, p_tot)
@@ -267,15 +385,17 @@ def _targets(cfg: Config, contacten: pd.DataFrame, peildatum: dt.date) -> pd.Dat
             prognose = res / verstreken * totaal if verstreken else None
             r.update(periode_nr=nr + 1, periode_van=p_van, periode_tot=p_tot, resultaten=res,
                      werkdagen_verstreken=verstreken, werkdagen_rest=rest, prognose=prognose)
-            if k.target_per_4wk:
+            if not k.actief:
+                r["stoplicht"] = k.status
+            elif k.target_per_4wk:
                 ratio = (prognose or 0) / k.target_per_4wk
                 r["stoplicht"] = "groen" if ratio >= groen else "oranje" if ratio >= oranje else "rood"
                 r["benodigd_per_werkdag"] = (max(0, k.target_per_4wk - res) / rest) if rest else None
             else:
                 r["stoplicht"] = "geen target"
         else:
-            r.update(stoplicht="nog niet gestart" if start else "startdatum ontbreekt",
-                     resultaten=int(len(eigen)))
+            r.update(stoplicht=(k.status if not k.actief else "nog niet gestart" if start
+                                else "startdatum ontbreekt"), resultaten=int(len(eigen)))
         rijen.append(r)
     return pd.DataFrame(rijen)
 
@@ -341,14 +461,67 @@ def _datakwaliteit(cfg, contacten, uren, bestanden, verdeling, ruwe_uren_s) -> d
     return dq
 
 
+def _dq_verkoop(cfg, verkoop, contacten, peildatum, opbrengst) -> dict:
+    dq = {}
+    dq["verkoopfacturen"] = [
+        {"factuurnr": r.factuurnr, "debiteur": r.klant_naam, "klant": r.klant or "niet gekoppeld",
+         "factuurdatum": str(r.factuurdatum), "werkperiode": int(r.werkperiode_nr) if pd.notna(r.werkperiode_nr) else None,
+         "periode": f"{r.periode_van} t/m {r.periode_tot}" + (" (aangenomen)" if r.periode_afgeleid else ""),
+         "bedrag_excl": r.bedrag_excl, "bron": r.bron}
+        for r in verkoop.itertuples()]
+    dq["verkoop_per_klant"] = [
+        {"debiteur": k, "facturen": len(g), "totaal_excl": round(g["bedrag_excl"].sum(), 2),
+         "eerste": str(g["factuurdatum"].min()), "laatste": str(g["factuurdatum"].max()),
+         "klant": g["klant"].iloc[0] or "niet gekoppeld"}
+        for k, g in verkoop.assign(k=verkoop["klant"].fillna(verkoop["klant_naam"])).groupby("k")]
+    # Verstreken werkperiodes zonder verkoopfactuur (mogelijk niet gefactureerd)
+    zonder = []
+    verschil = []
+    for k in cfg.klanten.values():
+        start, bron = _startdatum(k, contacten, verkoop)
+        if not (start and k.fee_per_4wk) or start > peildatum or not k.actief:
+            continue
+        eigen = verkoop[(verkoop["klant"] == k.naam) & verkoop["periode_van"].notna()]
+        p = start
+        nr = 1
+        while p <= peildatum:
+            t = p + dt.timedelta(days=27)
+            if eigen[(eigen["periode_van"] <= t) & (eigen["periode_tot"] >= p)].empty:
+                zonder.append({"klant": k.naam, "werkperiode": nr, "van": str(p), "tot": str(t),
+                               "verwacht_bedrag": k.fee_per_4wk, "start_volgens": bron})
+            p, nr = t + dt.timedelta(days=1), nr + 1
+        for r in eigen.itertuples():
+            if abs(r.bedrag_excl - k.fee_per_4wk) > 0.01:
+                verschil.append({"klant": k.naam, "factuurnr": r.factuurnr, "factuurbedrag": r.bedrag_excl,
+                                 "fee_in_config": k.fee_per_4wk})
+    dq["werkperiodes_zonder_verkoopfactuur"] = zonder
+    dq["fee_afwijkingen"] = verschil
+    totaal_gef = opbrengst.loc[opbrengst["gefactureerd"].astype(bool), ["fee", "leads_eur"]].sum().sum()
+    verwacht = 0.0
+    for r in verkoop[verkoop["klant"].notna()].itertuples():
+        if pd.notna(r.periode_van):
+            n = (r.periode_tot - r.periode_van).days + 1
+            binnen = max(0, (min(r.periode_tot, peildatum) - r.periode_van).days + 1)
+            verwacht += r.bedrag_excl * binnen / n
+        elif r.factuurdatum <= peildatum:
+            verwacht += r.bedrag_excl
+    dq["verkoop_controle"] = {"controle": "Opbrengst: gefactureerd in model = verkoopfacturen t/m peildatum (naar rato)",
+                              "dashboard": round(totaal_gef, 2), "bron": round(verwacht, 2),
+                              "ok": bool(abs(totaal_gef - verwacht) < 0.01)}
+    dq["vooruitgefactureerd"] = round(verkoop["bedrag_excl"].sum() - verwacht, 2) if len(verkoop) else 0
+    return dq
+
+
 # ---------------------------------------------------------------- publiek
 
 def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
-         bestanden: pd.DataFrame | None = None, facturen_raw: pd.DataFrame | None = None) -> Model:
+         bestanden: pd.DataFrame | None = None, facturen_raw: pd.DataFrame | None = None,
+         verkoop_raw: pd.DataFrame | None = None, kosten_facturen: list | None = None) -> Model:
     contacten = _contacten(contacten_raw, cfg)
     uren = _uren(uren_raw, cfg)
     facturen = _facturen(facturen_raw if facturen_raw is not None else pd.DataFrame(), cfg)
-    extra_f = _pas_facturen_toe(uren, facturen)
+    verkoop = _verkoop(verkoop_raw, cfg)
+    extra_f = _pas_facturen_toe(uren, facturen, cfg)
     # Peildatum = laatste dag met uren: kosten en opbrengst lopen dan over dezelfde periode.
     if len(uren):
         peildatum = uren["datum"].max()
@@ -370,9 +543,9 @@ def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
     contacten["met_uren"] = [(b, d) in dagen_met_uren for b, d in zip(contacten["beller"], contacten["datum"])]
 
     verdeling = _verdeling(uren, contacten, extra)
-    opbrengst = _opbrengst(cfg, contacten, peildatum)
+    opbrengst = _opbrengst(cfg, contacten, peildatum, verkoop)
     overig = _overig(cfg, peildatum, eerste)
-    targets = _targets(cfg, contacten, peildatum)
+    targets = _targets(cfg, contacten, peildatum, verkoop)
     dq = _datakwaliteit(cfg, contacten, uren,
                         bestanden if bestanden is not None else pd.DataFrame(columns=["naam"]),
                         verdeling, uren_raw["te_betalen_s"].sum())
@@ -395,7 +568,11 @@ def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
         dq["controles"].append({"controle": "Facturen: kosten in model = som gekoppelde facturen",
                                 "dashboard": round(in_model, 2), "bron": round(gekoppeld, 2),
                                 "ok": bool(abs(in_model - gekoppeld) < 0.01)})
-    return Model(contacten, uren, facturen, verdeling, opbrengst, overig, targets, peildatum, dq)
+    dq.update(_dq_verkoop(cfg, verkoop, contacten, peildatum, opbrengst))
+    if len(verkoop):
+        dq["controles"].append(dq["verkoop_controle"])
+    dq["kostenposten"] = _kosten_overzicht(overig)
+    return Model(contacten, uren, facturen, verdeling, opbrengst, overig, targets, peildatum, dq, verkoop)
 
 
 def resultaten_per_klant(model: Model) -> pd.Series:

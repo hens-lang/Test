@@ -5,7 +5,8 @@ Ontdubbeling:
                    inlezen geeft dus geen dubbele regels. Een historie-regel (bron C) wint van
                    een belexport-regel (bron A) met dezelfde sleutel.
   uren             (datum, agent_raw). Een nieuwere export overschrijft de oude regel.
-  facturen         afzender | factuurnummer.
+  facturen         afzender | factuurnummer (facturen van bellers).
+  verkoopfacturen  factuurnummer | regel (facturen van LINK. aan opdrachtgevers).
   bestanden        sha256 van de inhoud; hetzelfde bestand wordt één keer geregistreerd.
 """
 from __future__ import annotations
@@ -17,7 +18,8 @@ from pathlib import Path
 import pandas as pd
 
 from .config import ROOT
-from .parsers import CONTACT_KOLOMMEN, EXTENSIES, FACTUUR_KOLOMMEN, UREN_KOLOMMEN, Export, parse_bestand
+from .parsers import (CONTACT_KOLOMMEN, EXTENSIES, FACTUUR_KOLOMMEN, UREN_KOLOMMEN, VERKOOP_KOLOMMEN, Export,
+                      parse_bestand)
 
 DB_PAD = ROOT / "data" / "link.db"
 
@@ -39,11 +41,24 @@ def verbind(pad: Path | str = DB_PAD) -> sqlite3.Connection:
         CREATE TABLE IF NOT EXISTS facturen (sleutel TEXT PRIMARY KEY, afzender TEXT, factuurnr TEXT,
             factuurdatum TEXT, week_genoemd INTEGER, uren REAL, tarief REAL, bedrag_excl REAL,
             omschrijving TEXT, bestand TEXT);
+        CREATE TABLE IF NOT EXISTS verkoopfacturen (sleutel TEXT PRIMARY KEY, factuurnr TEXT, klant_naam TEXT,
+            debiteurnr TEXT, factuurdatum TEXT, regel INTEGER, omschrijving TEXT, werkperiode_nr INTEGER,
+            periode_van TEXT, periode_tot TEXT, bedrag_excl REAL, is_lead INTEGER, bron TEXT, bestand TEXT);
         CREATE TABLE IF NOT EXISTS bestanden (
             sha256 TEXT PRIMARY KEY, naam TEXT, type TEXT, rijen INTEGER,
             periode_van TEXT, periode_tot TEXT, kolommen INTEGER, ingelezen_op TEXT);
     """)
+    _migreer(con, "verkoopfacturen", {"bron": "TEXT"})
     return con
+
+
+def _migreer(con, tabel: str, kolommen: dict):
+    """Voegt kolommen toe die in een oudere link.db nog niet bestaan."""
+    bestaand = {r[1] for r in con.execute(f"PRAGMA table_info({tabel})")}
+    for k, t in kolommen.items():
+        if k not in bestaand:
+            con.execute(f"ALTER TABLE {tabel} ADD COLUMN {k} {t}")
+    con.commit()
 
 
 def _upsert(con, tabel, df: pd.DataFrame, sleutel: list[str], voorwaarde: str = ""):
@@ -76,6 +91,10 @@ def bewaar(con, exp: Export) -> int:
         _upsert(con, "uren", df, ["datum", "agent_raw"])
     elif exp.type == "F":
         _upsert(con, "facturen", df[FACTUUR_KOLOMMEN + ["bestand"]], ["sleutel"])
+    elif exp.type == "V":
+        # Een PDF (met periode en regels) gaat voor op een regel uit een lijst (CSV/mailbox).
+        _upsert(con, "verkoopfacturen", df[VERKOOP_KOLOMMEN + ["bestand"]], ["sleutel"],
+                "WHERE verkoopfacturen.bron = 'mail' OR excluded.bron = 'pdf'")
     con.commit()
     return len(exp.df)
 

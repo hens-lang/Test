@@ -10,6 +10,8 @@
 # factuur_afzenders: naam zoals die op de factuur staat (t.n.v. / Ten name van).
 #   Voor weken met een factuur gebruikt het model het gefactureerde bedrag als kosten;
 #   weken zonder factuur worden geschat als Steam-uren x tarief.
+# uren_per_week_afspraak: vaste afspraak in uren per week. Weken zonder factuur worden dan
+#   geschat als dit aantal uren x tarief in plaats van Steam-uren x tarief.
 
 bellers:
   Mart Blijleven:
@@ -23,7 +25,8 @@ bellers:
 
   Senna Valk:
     aliassen: ["Senna Valk"]
-    factuur_afzenders: ["SVV Ecommerce"]   # aanname: SVV Ecommerce = Senna Valk; graag bevestigen
+    factuur_afzenders: ["SVV Ecommerce"]   # facturen komen van sennavalkbusiness@gmail.com
+    uren_per_week_afspraak: 16
     type: ZZP
     tarief_nu: 25
     tarief_nieuw: 36
@@ -31,12 +34,13 @@ bellers:
     actief: true
 
   Madelon de Winter:
-    aliassen: []          # nog onbekend: vul in zodra zij in een export staat
+    aliassen: []          # staat in geen enkele Steam-export
+    factuur_afzenders: ["De Winter Solutions", "Madelon de Winter"]
     type: ZZP
     tarief_nu: 25
     tarief_nieuw: 36
     ingang_nieuw: null
-    actief: true
+    actief: false         # gestopt (laatste factuur 54, 30-9-2026); belde voor OK Creative Agency
 
   Hens Boer:
     aliassen: ["Hens Boer", "H. Boer"]

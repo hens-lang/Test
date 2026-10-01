@@ -6,14 +6,21 @@ werkperiode_anker: 2026-08-03
 
 # Overige vaste kosten per maand (excl. btw). Worden per kalenderdag verdeeld
 # en naar rato van de toegerekende belkosten over opdrachtgevers verdeeld.
-# null = nog invullen.
+# Echte facturen staan in config/kosten.yaml en gaan voor. null = nog invullen
+# (of: laat null als er facturen in kosten.yaml staan; dan wordt de laatste factuur doorgeschat).
 overige_kosten_per_maand:
-  Steam Connect licenties: null
-  Regionale nummers: null
-  Data AdHocData: null
+  Steam Connect: null         # facturen in kosten.yaml (licenties + nummers + minuten)
+  Data AdHocData: null        # jaarlicentie in kosten.yaml
+  Data Apollo.io: null        # facturen in kosten.yaml
 
 # Overige kosten gelden vanaf deze datum (eerdere dagen krijgen ze niet).
-overige_kosten_vanaf: 2026-07-01
+overige_kosten_vanaf: 2026-03-01
+
+# Maanden zonder factuur schatten met het laatst bekende factuurbedrag van dezelfde post.
+kosten_doorschatten: true
+
+# Omrekenkoers voor facturen in USD (Apollo, Laravel). Pas aan naar je boekhouding.
+wisselkoers_usd_eur: 0.86
 
 # Beldag voor de uur-van-de-dag-analyse.
 beldag_start_uur: 8
@@ -37,3 +44,10 @@ scenario:
 # Facturen zonder weeknummer ("Betreft: Week 33") worden toegewezen aan:
 #   de week van de factuurdatum als die op do t/m zo valt, anders aan de week ervoor.
 factuur_zelfde_week_vanaf_weekdag: 4   # 1 = maandag ... 7 = zondag
+
+# Opbrengst:
+#   facturen               = alleen wat echt gefactureerd is (verkoopfacturen in data/inbox: PDF of
+#                            verkoopfacturen_mailbox.csv). Een factuur zonder periode telt voor
+#                            28 dagen vanaf de factuurdatum.
+#   facturen_en_schatting  = dagen zonder factuur aanvullen met fee / 28 (en leads x leadfee).
+opbrengst_basis: facturen

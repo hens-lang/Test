@@ -96,10 +96,33 @@ ECHT = sorted(INBOX.glob("*")) if INBOX.exists() else []
 
 
 @pytest.mark.skipif(not ECHT, reason="geen bestanden in data/inbox")
-@pytest.mark.parametrize("pad", [p for p in ECHT if p.suffix.lower() in (".xls", ".pdf")], ids=lambda p: p.name)
+@pytest.mark.parametrize("pad", [p for p in ECHT if p.suffix.lower() in (".xls", ".pdf", ".csv")], ids=lambda p: p.name)
 def test_echte_inbox(pad):
     e = parse_bestand(pad)
-    assert e.type in ("A", "B", "C", "F"), f"{pad.name} niet herkend"
+    assert e.type in ("A", "B", "C", "F", "V"), f"{pad.name} niet herkend"
     assert len(e.df) > 0
     van, tot = e.periode
     assert van <= tot <= dt.date.today() + dt.timedelta(days=1)
+
+
+def test_verkoopfactuur_tekst():
+    from link_data.parsers import parse_verkoopfactuur_tekst
+    t = ("MostWare Automatisering B.V.\nT.a.v. X\nLINK.\nFactuur\nFactuurnummer 2026-0089 Factuurdatum 14-09-2026\n"
+         "Debiteurnummer 1008 Vervaldatum 28-09-2026\nHoeveelheid Beschrijving Prijs btw Totaal (excl. \nbtw)\n"
+         "1 Retainer werkperiode 4 - \nPeriode: 14-09-2026 t/m 11-\n10-2026\n€ 2,000.00 V Hoog € 2,000.00\n"
+         "btw naam btw % Basisbedrag btw bedrag\n")
+    r = parse_verkoopfactuur_tekst(t)
+    assert len(r) == 1 and r[0]["factuurnr"] == "2026-0089" and r[0]["klant_naam"] == "MostWare Automatisering B.V."
+    assert r[0]["werkperiode_nr"] == 4 and r[0]["periode_van"] == "2026-09-14" and r[0]["periode_tot"] == "2026-10-11"
+    assert r[0]["bedrag_excl"] == 2000.0
+
+
+def test_verkoop_csv(tmp_path):
+    p = tmp_path / "verkoop.csv"
+    p.write_text("factuurnr;factuurdatum;debiteur;bedrag_incl;opmerking\n"
+                 "2026-0070;2026-08-17;GrowOn Agency BV;968.00;\n2026-0057;2026-07-20;BuildingBricks BV;-1815.00;creditnota\n",
+                 encoding="utf-8")
+    e = parse_bestand(p)
+    assert e.type == "V"
+    assert e.df["bedrag_excl"].tolist() == [800.0, -1500.0]
+    assert (e.df["bron"] == "mail").all()

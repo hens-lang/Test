@@ -63,10 +63,13 @@ def main(argv=None):
                 extra = f" PID {', '.join(map(str, sorted(e.df['campagne_pid'].dropna().unique())))}"
             elif e.type == "F" and len(e.df):
                 extra = f" {e.df['afzender'].iloc[0]} € {e.df['bedrag_excl'].iloc[0]:.2f}"
+            elif e.type == "V" and len(e.df):
+                extra = f" {e.df['klant_naam'].iloc[0]} € {e.df['bedrag_excl'].sum():.2f}"
             print(f"  [{e.type}] {e.pad.name:55s} {len(e.df):5d} rijen  {van} t/m {tot}{extra} {e.melding}")
 
     m = model_mod.bouw(m_cfg, store.lees(con, "contactmomenten"), store.lees(con, "uren"),
-                       store.lees(con, "bestanden"), store.lees(con, "facturen"))
+                       store.lees(con, "bestanden"), store.lees(con, "facturen"),
+                       store.lees(con, "verkoopfacturen"))
     if exports:
         m.dq["controles"].extend(_resultaatcontrole(exports, m))
 
@@ -79,7 +82,8 @@ def main(argv=None):
     for c in m.dq["controles"]:
         print(f"  {'OK ' if c['ok'] else 'AFW'} {c['controle']}: dashboard {c['dashboard']} / bron {c['bron']}")
     for titel, sleutel in (("Niet gekoppelde PID's", "niet_gekoppelde_pids"),
-                           ("Niet gekoppelde agents", "niet_gekoppelde_agents")):
+                           ("Niet gekoppelde agents", "niet_gekoppelde_agents"),
+                           ("Werkperiodes zonder verkoopfactuur", "werkperiodes_zonder_verkoopfactuur")):
         if m.dq[sleutel]:
             print(f"{titel}: {m.dq[sleutel]}")
     print(f"\nDashboard: {pad.relative_to(ROOT)}")

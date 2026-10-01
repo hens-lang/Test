@@ -1,0 +1,46 @@
+# Facturen voor overige kosten (licenties, nummers, data, tools).
+# Bron: mailbox hens@linkgrp.nl (bedragen uit de mailtekst), 1-10-2026.
+#
+# Hoe het model rekent:
+#  - Met periode_van/periode_tot: bedrag excl. btw per dag over die periode (bv. jaarlicentie).
+#  - Zonder periode: telt voor de kalendermaand van de factuurdatum (of van 'maand').
+#  - Maanden zonder factuur: vast maandbedrag uit instellingen.yaml, of anders het laatst bekende
+#    factuurbedrag van dezelfde post (geschat). Uitzetten met kosten_doorschatten: false.
+#  - valuta USD wordt omgerekend met wisselkoers_usd_eur uit instellingen.yaml.
+#
+# Velden: post, leverancier, factuurnr, datum, bedrag, incl_btw, valuta, maand, periode_van,
+#         periode_tot, doorschatten (false = niet doorschatten naar maanden zonder factuur).
+
+facturen:
+  # Steam Connect: maandfactuur (licenties, nummers, belminuten). Bedrag uit de mail, vermoedelijk incl. btw.
+  - {post: Steam Connect, leverancier: Steam-connect Benelux B.V., factuurnr: "26000787", datum: 2026-04-07, bedrag: 972.54, incl_btw: true}
+  - {post: Steam Connect, leverancier: Steam-connect Benelux B.V., factuurnr: "26000969", datum: 2026-05-05, bedrag: 523.23, incl_btw: true}
+  - {post: Steam Connect, leverancier: Steam-connect Benelux B.V., factuurnr: "26001120", datum: 2026-06-02, bedrag: 465.60, incl_btw: true}
+  - {post: Steam Connect, leverancier: Steam-connect Benelux B.V., factuurnr: "26001366", datum: 2026-07-03, bedrag: 499.09, incl_btw: true}
+  - {post: Steam Connect, leverancier: Steam-connect Benelux B.V., factuurnr: "26001469", datum: 2026-08-03, bedrag: 578.39, incl_btw: true}
+  - {post: Steam Connect, leverancier: Steam-connect Benelux B.V., factuurnr: "26001630", datum: 2026-09-02, bedrag: 614.88, incl_btw: true}  # 2 herinneringen, lijkt onbetaald
+
+  # Ad Hoc Data: jaarlicentie + losse recordaankopen (bedragen incl. 21% btw).
+  - {post: Data AdHocData, leverancier: Ad Hoc Data, factuurnr: ZX4526421, datum: 2026-04-29, bedrag: 798.60, incl_btw: true, periode_van: 2026-04-29, periode_tot: 2027-04-28, doorschatten: false}  # Basis NL 2500, jaarlicentie
+  - {post: Data AdHocData records, leverancier: Ad Hoc Data, factuurnr: ZX4524582, datum: 2026-04-08, bedrag: 9.63, incl_btw: true, doorschatten: false}
+  - {post: Data AdHocData records, leverancier: Ad Hoc Data, factuurnr: ZX4524736, datum: 2026-04-10, bedrag: 42.45, incl_btw: true, doorschatten: false}
+  - {post: Data AdHocData records, leverancier: Ad Hoc Data, factuurnr: ZX4525019, datum: 2026-04-14, bedrag: 42.25, incl_btw: true, doorschatten: false}
+  - {post: Data AdHocData records, leverancier: Ad Hoc Data, factuurnr: ZX4525747, datum: 2026-04-21, bedrag: 21.73, incl_btw: true, doorschatten: false}
+  - {post: Data AdHocData records, leverancier: Ad Hoc Data, factuurnr: ZX4526155, datum: 2026-04-26, bedrag: 36.54, incl_btw: true, doorschatten: false}
+
+  # Apollo.io (ZenLeads): abonnement per maand, USD, geen btw op de receipt.
+  - {post: Data Apollo.io, leverancier: ZenLeads Inc. (Apollo.io), factuurnr: B3Y3O64H-0009, datum: 2026-03-30, bedrag: 69.00, valuta: USD, periode_van: 2026-03-29, periode_tot: 2026-04-28}
+  - {post: Data Apollo.io, leverancier: ZenLeads Inc. (Apollo.io), factuurnr: B3Y3O64H-0011, datum: 2026-04-29, bedrag: 69.00, valuta: USD, periode_van: 2026-04-29, periode_tot: 2026-05-28}
+  - {post: Data Apollo.io, leverancier: ZenLeads Inc. (Apollo.io), factuurnr: B3Y3O64H-0013, datum: 2026-05-29, bedrag: 69.00, valuta: USD, periode_van: 2026-05-29, periode_tot: 2026-06-28}
+  - {post: Data Apollo.io, leverancier: ZenLeads Inc. (Apollo.io), factuurnr: B3Y3O64H-0014, datum: 2026-06-24, bedrag: 15.00, valuta: USD, periode_van: 2026-06-24, periode_tot: 2026-06-28}
+  - {post: Data Apollo.io, leverancier: ZenLeads Inc. (Apollo.io), factuurnr: B3Y3O64H-0016, datum: 2026-06-29, bedrag: 84.00, valuta: USD, periode_van: 2026-06-29, periode_tot: 2026-07-28}
+  - {post: Data Apollo.io, leverancier: ZenLeads Inc. (Apollo.io), factuurnr: B3Y3O64H-0018, datum: 2026-07-29, bedrag: 59.00, valuta: USD, periode_van: 2026-07-29, periode_tot: 2026-08-28}
+  - {post: Data Apollo.io, leverancier: ZenLeads Inc. (Apollo.io), factuurnr: B3Y3O64H-0020, datum: 2026-08-29, bedrag: 59.00, valuta: USD, periode_van: 2026-08-29, periode_tot: 2026-09-28}
+  - {post: Data Apollo.io, leverancier: ZenLeads Inc. (Apollo.io), factuurnr: B3Y3O64H-0021, datum: 2026-09-22, bedrag: 10.00, valuta: USD, periode_van: 2026-09-22, periode_tot: 2026-09-28}
+  - {post: Data Apollo.io, leverancier: ZenLeads Inc. (Apollo.io), factuurnr: B3Y3O64H-0022, datum: 2026-09-25, bedrag: 15.00, valuta: USD, periode_van: 2026-09-25, periode_tot: 2026-09-28}
+  - {post: Data Apollo.io, leverancier: ZenLeads Inc. (Apollo.io), factuurnr: B3Y3O64H-0024, datum: 2026-09-29, bedrag: 84.00, valuta: USD, periode_van: 2026-09-29, periode_tot: 2026-10-28}
+
+  # Laravel Cloud (hosting tools), USD.
+  - {post: Software en hosting, leverancier: Laravel Cloud, factuurnr: LAR-D623-202607-155841, datum: 2026-07-18, bedrag: 4.66, valuta: USD}
+  - {post: Software en hosting, leverancier: Laravel Cloud, factuurnr: LAR-D623-202608-170127, datum: 2026-08-18, bedrag: 11.18, valuta: USD}
+  - {post: Software en hosting, leverancier: Laravel Cloud, factuurnr: LAR-D623-202609-184797, datum: 2026-09-18, bedrag: 13.28, valuta: USD}
