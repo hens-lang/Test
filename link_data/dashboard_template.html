@@ -143,7 +143,7 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
 
 <!-- KPI-NORMEN -->
 <section class="tab" id="tab-normen">
-  <p class="uitleg">Hoeveel uur mag je per opdrachtgever bellen en hoeveel uur mag één resultaat kosten, zodat zowel de marge als het target gehaald wordt. Pas de scenario's en het margedoel hieronder aan.</p>
+  <p class="uitleg">Per opdrachtgever: wat <b>moet</b> er gebeuren om bij € 36 per uur zowel het target als de marge te halen, tegenover wat het <b>nu</b> is.</p>
   <div class="filters" style="position:static;border:1px solid var(--rand);border-radius:10px;margin-bottom:12px" id="nInstel"></div>
   <div id="nInhoud"></div>
 </section>
@@ -705,122 +705,85 @@ function renderConclusies() {
   document.getElementById("cInhoud").innerHTML = blokken.join("");
 }
 
-// ---------- tab: KPI-normen per opdrachtgever
-const NS = {init: false};
-function renderNormen() {
+// ---------- tab: KPI-normen per opdrachtgever (vast tarief, Moet tegenover Nu)
+const NS = {marge: null, weken: null};
+function normenData() {
   const cfgN = M.normen || {};
-  if (!NS.init) {
-    NS.marge = cfgN.marge_doel ?? 0.4; NS.weken = cfgN.meetperiode_weken ?? 8;
-    NS.sc = (cfgN.scenarios && cfgN.scenarios.length ? cfgN.scenarios : [{tarief: 25, uren_per_dag: 8}, {tarief: 36, uren_per_dag: 6}]).map(x => ({tarief: x.tarief, upd: x.uren_per_dag}));
-    const inp = (id, lab, v, st, w) => `<label>${lab}<input type="number" id="${id}" value="${v}" step="${st}" style="width:${w || 90}px"></label>`;
-    document.getElementById("nInstel").innerHTML =
-      NS.sc.map((x, i) => `<div style="display:flex;gap:8px;align-items:end;padding-right:12px;border-right:1px solid var(--rand)"><b class="cond" style="align-self:center">${"AB"[i]}</b>${inp("nT" + i, "Tarief € per uur", x.tarief, 0.5)}${inp("nU" + i, "Uren per dag", x.upd, 0.5)}</div>`).join("")
-      + inp("nMarge", "Margedoel %", Math.round(NS.marge * 100), 1) + inp("nWeken", "Meetperiode (weken)", NS.weken, 1);
-    document.getElementById("nInstel").querySelectorAll("input").forEach(el => el.oninput = () => {
-      NS.sc.forEach((x, i) => { x.tarief = +document.getElementById("nT" + i).value || x.tarief; x.upd = +document.getElementById("nU" + i).value || x.upd; });
-      NS.marge = (+document.getElementById("nMarge").value || 0) / 100; NS.weken = Math.max(1, +document.getElementById("nWeken").value || 8); renderNormen(); });
-    NS.init = true;
-  }
-  // meetvenster
-  const t1 = peilIdx, v1 = Math.max(0, peilIdx - NS.weken * 7 + 1), inR = d => d >= v1 && d <= t1;
+  if (NS.marge == null) { NS.marge = cfgN.marge_doel ?? 0.4; NS.weken = cfgN.meetperiode_weken ?? 8; }
+  const tarief = M.tarief_doel;
+  const t1 = peilIdx, v1 = Math.max(0, peilIdx - NS.weken * 7 + 1), inR = d => d >= v1 && d <= t1, per4 = 4 / NS.weken;
   const act = D.klanten.map((k, i) => ({k, i})).filter(x => x.k.status === "actief" && x.k.config && (x.k.fee || x.k.target_wp));
-  // overige kosten per werkperiode, verdeeld over actieve opdrachtgevers naar rato van hun beluren (minimaal gelijk deel)
-  const overig4 = som(F.x.filter(r => inR(r[0])), 1) / (NS.weken / 4);
+  const overig4 = som(F.x.filter(r => inR(r[0])), 1) * per4;
   const urenK = new Map(); F.v.forEach(r => { if (inR(r[0])) urenK.set(r[2], (urenK.get(r[2]) || 0) + r[3]); });
   const urenAct = act.reduce((a, x) => a + (urenK.get(x.i) || 0), 0);
-  const kaarten = act.map(({k, i}) => {
+  return act.map(({k, i}) => {
     const C = F.c.filter(r => r[3] === i && inR(r[0])), f = funnel(C);
-    const uren = urenK.get(i) || 0, P = (F.p || []).filter(r => r[3] === i && inR(r[0]));
-    const res = f.res, pog = P.length || null, verb = P.filter(r => r[4]).length;
-    const rph = div(res, uren), pph = div(pog, uren), resPerPog = pog ? div(res, pog) : div(res, f.n);
-    const bereik = f.bereikRatio, conv = f.conversie, fout = f.foutRatio;
-    const tpc = k.targets_per_code || {}, extraCode = k.lead_code || 101;
-    const extra = (k.lead || 0) * (tpc[extraCode] ?? (extraCode === 101 ? 0 : 0));
+    const P = (F.p || []).filter(r => r[3] === i && inR(r[0]));
+    const uren = urenK.get(i) || 0, res = f.res, pog = P.length;
     const isPilot = (k.perioden || [])[0]?.label?.startsWith("Pilot");
-    const fee = k.fee || 0, opbr = fee + extra, target = isPilot ? (k.target_wp ? k.target_wp * 28 / ((k.perioden[0] && (new Date(k.perioden[0].tot) - new Date(k.perioden[0].van)) / DAG + 1) || 84) : null) : k.target_wp;
+    const tpc = k.targets_per_code || {}, extraN = tpc[k.lead_code || 101] || 0;
+    const extra = (k.lead || 0) * extraN, opbr = (k.fee || 0) + extra;
+    const target = k.target_wp != null ? (isPilot ? k.target_wp / 3 : k.target_wp) : null;
     const overig = urenAct ? overig4 * Math.max(div(uren, urenAct) || 0, 1 / act.length / 2) : overig4 / act.length;
-    const sc = NS.sc.map(x => {
-      const budget = opbr * (1 - NS.marge) - overig;
-      const maxUren = Math.max(0, div(budget, x.tarief) || 0);
-      const nodigRph = target ? div(target, maxUren) : null;
-      return {x, budget, maxUren, dagen: div(maxUren, x.upd), dagenWeek: div(maxUren, x.upd * 4),
-        nodigRph, nodigPph: nodigRph && resPerPog ? nodigRph / resPerPog : null,
-        nodigConv: nodigRph && pph && bereik && pog ? nodigRph / (pph * (verb / pog || bereik)) : (nodigRph && bereik ? null : null),
-        maxKpr: target ? div(opbr * (1 - NS.marge) - overig, target) : null,
-        haalbaar: nodigRph && rph != null ? rph / nodigRph : null};
-    });
-    const gesprPerPog = pog ? div(f.bereikt, pog) : bereik;
-    return {k, i, f, uren, res, rph, pph, pog, verb, resPerPog, bereik, conv, fout, opbr, fee, extra, target, overig, sc, isPilot, tpc, gesprPerPog,
-            extraAantal: (k.targets_per_code || {})[k.lead_code || 101] || 0};
+    const kostenMax = opbr * (1 - NS.marge), budget = kostenMax - overig, maxUren = Math.max(0, budget / tarief);
+    const maxUpr = target ? maxUren / target : null;
+    const resPerPog = pog ? res / pog : null;
+    const minPogU = maxUpr && resPerPog ? (1 / maxUpr) / resPerPog : null;
+    return {k, i, f, isPilot, tpc, extraN, extra, opbr, target, overig, kostenMax, budget, maxUren, maxUpr, resPerPog, minPogU, tarief,
+      nu: {urenW: uren * per4 / 4, resW: res * per4 / 4, pogU: uren && pog ? pog / uren : null, upr: res ? uren / res : null, fout: f.n ? f.foutRatio : null},
+      moet: {urenW: maxUren / 4, resW: target != null ? target / 4 : null, pogU: minPogU, upr: maxUpr, fout: 0.10}};
   });
-  const status = r => r == null ? "<span class='vs'>nog geen data</span>" : r >= 1 ? `<span class="stip groen">Haalbaar</span>` : r >= 0.8 ? `<span class="stip oranje">Krap</span>` : `<span class="stip rood">Niet haalbaar</span>`;
-  const upr = v => v == null || !isFinite(v) ? "<span class='vs'>-</span>" : `${nf(1).format(v)} uur`;
-  const kop = NS.sc.map((s2, j) => `<th colspan="3" style="text-align:center;border-left:2px solid var(--rand)">${"AB"[j]}: € ${s2.tarief} · ${nf(1).format(s2.upd)} u/dag (max.)</th>`).join("");
-  const sub = NS.sc.map(() => `<th style="border-left:2px solid var(--rand)">Uren /4 wk</th><th>Uren /resultaat</th><th class="l">Status</th>`).join("");
-  const rijen = kaarten.map(x => {
-    const nuUpr = x.res ? x.uren / x.res : null;
-    return `<tr><td class="l"><b>${esc(x.k.naam)}</b></td><td>${x.target != null ? num(x.target, x.target % 1 ? 1 : 0) : ontbreekt}</td><td><b>${upr(nuUpr)}</b></td>${
-      x.sc.map(s2 => `<td style="border-left:2px solid var(--rand)">${num(s2.maxUren, 0)} uur</td><td><b>${upr(s2.nodigRph ? 1 / s2.nodigRph : null)}</b></td><td class="l">${status(s2.haalbaar)}</td>`).join("")}</tr>`;
-  }).join("");
-  const samen = NS.sc.map((s2, j) => {
-    const tot = kaarten.reduce((a2, x) => a2 + x.sc[j].maxUren, 0);
-    const n = st2 => kaarten.filter(x => st2(x.sc[j].haalbaar)).length;
-    return `<div class="kaart"><h3>${"AB"[j]}: € ${s2.tarief} per uur, ${nf(1).format(s2.upd)} uur per dag</h3>
-      <p style="margin:0 0 6px">Binnen het margedoel kun je samen maximaal <b>${num(tot / 4, 0)} uur per week</b> bellen. Dat is ongeveer <b>${num(tot / 4 / (s2.upd * 5), 1)} bellers</b> die 5 dagen per week ${nf(1).format(s2.upd)} uur werken.</p>
-      <p style="margin:0"><span class="stip groen">${n(r => r != null && r >= 1)} haalbaar</span> &nbsp; <span class="stip oranje">${n(r => r != null && r >= .8 && r < 1)} krap</span> &nbsp; <span class="stip rood">${n(r => r != null && r < .8)} niet haalbaar</span></p></div>`;
-  }).join("");
-  const aandacht = kaarten.filter(x => x.sc.some(s2 => s2.haalbaar != null && s2.haalbaar < 0.8)).map(x => {
-    const s2 = x.sc[x.sc.length - 1], nu = x.res ? x.uren / x.res : null, moet = s2.nodigRph ? 1 / s2.nodigRph : null;
-    return `<li><b>${esc(x.k.naam)}</b>: nu 1 resultaat per ${upr(nu)}, bij scenario ${"AB"[x.sc.length - 1]} mag dat maximaal ${upr(moet)} zijn. ${x.fout > 0.1 ? "Veel foute nummers: eerst de bellijst verbeteren." : x.conv != null && x.conv < 0.04 ? "Lage conversie van gesprek naar resultaat: pitch en doelgroep aanscherpen." : "Meer gesprekken per uur nodig: minder voorbereiding en afhandeling, of een betere bellijst."}</li>`;
-  }).join("");
-  NS.keuze = NS.keuze ?? NS.sc.length - 1;
-  const sk = NS.keuze, SC = NS.sc[sk];
-  const weekRij = x => {
-    const s2 = x.sc[sk], r = s2.nodigRph;
-    const pogU = r && x.resPerPog ? r / x.resPerPog : null, gesU = r && x.conv ? r / x.conv : null;
-    const nu = v => v == null || v === "" || /ontbreekt|>-</.test(String(v)) ? "" : ` <span class="vs">nu ${v}</span>`;
-    return `<tr><td class="l"><b>${esc(x.k.naam)}</b></td><td>${num(s2.maxUren / 4, 1)} uur</td><td>${x.target != null ? num(x.target / 4, 1) : ontbreekt}</td>
-      <td>${num(pogU, 0)}${x.pph ? nu(num(x.pph, 0)) : ""}</td><td>${num(gesU, 1)}${x.uren && x.f.n ? nu(num(x.f.bereikt / x.uren, 1)) : ""}</td>
-      <td><b>${r ? nf(1).format(1 / r) + " uur" : "-"}</b>${x.res ? nu(nf(1).format(x.uren / x.res)) : ""}</td>
-      <td>${pct(x.conv, 1)}</td><td class="${x.fout > .1 ? "rood" : ""}">≤ 10%${x.f.n ? nu(pct(x.fout, 0)) : ""}</td></tr>`;
-  };
-  const berekening = x => {
-    const s2 = x.sc[sk], tc = x.extraAantal, kosten = x.opbr * (1 - NS.marge);
-    const ext = x.extra ? ` + ${num(tc, 0)} x ${eurT(x.k.lead)} extra per ${x.k.lead_code === 100 ? "afspraak" : "resultaat"} (${eurT(x.extra)})` : "";
-    const regel = (stap, uitkomst, bron) => `<tr><td class="l">${stap}</td><td><b>${uitkomst}</b></td><td class="l vs">${bron}</td></tr>`;
-    return `<details class="kaart" style="margin-bottom:8px"><summary style="cursor:pointer"><b class="cond" style="font-size:17px">${esc(x.k.naam)}</b> <span class="vs">hoe zijn de KPI's berekend (scenario ${"AB"[sk]})</span></summary>
-      <div class="tabelwrap"><table style="margin-top:8px"><thead><tr><th class="l">Stap</th><th>Uitkomst</th><th class="l">Bron</th></tr></thead><tbody>
-      ${regel(`1. Opbrengst per 4 weken: fee ${eurT(x.fee)}${ext}`, eurT(x.opbr), x.isPilot ? "klanten.yaml: pilot € 4.950 / 3 werkperiodes" : "klanten.yaml (fee, extra per resultaat), gecontroleerd met verkoopfacturen")}
-      ${regel(`2. Margedoel ${pct(NS.marge)}: maximaal ${pct(1 - NS.marge)} van de opbrengst aan kosten`, eurT(kosten), "instelling margedoel")}
-      ${regel(`3. Min overige kosten (Steam, data) naar rato van de beluren`, eurT(x.overig), `kosten.yaml, laatste ${NS.weken} weken`)}
-      ${regel(`4. Belbudget = ${eurT(kosten)} - ${eurT(x.overig)}`, eurT(s2.budget), "")}
-      ${regel(`5. Maximaal beluren = ${eurT(s2.budget)} / € ${SC.tarief} per uur`, `${num(s2.maxUren, 1)} uur per 4 weken = ${num(s2.maxUren / 4, 1)} uur per week`, `scenario ${"AB"[sk]}: tarief`)}
-      ${regel(`6. Beldagen = ${num(s2.maxUren, 1)} uur / ${nf(1).format(SC.upd)} uur per dag`, `${num(s2.dagen, 1)} dagen per 4 weken`, `scenario ${"AB"[sk]}: uren per dag`)}
-      ${regel(`7. Target per 4 weken`, x.target != null ? `${num(x.target, 1)} resultaten (${num(x.target / 4, 1)} per week)` : "ontbreekt", "klanten.yaml (target_per_4wk / targets_per_code)")}
-      ${regel(`8. Maximaal uren per resultaat = ${num(s2.maxUren, 1)} / ${num(x.target, 1)}`, s2.nodigRph ? `${nf(1).format(1 / s2.nodigRph)} uur (= ${num(s2.nodigRph, 2)} resultaten per uur)` : "-", "")}
-      ${regel(`9. Gemeten: resultaat per belpoging`, x.resPerPog != null ? `1 resultaat per ${num(1 / x.resPerPog, 0)} pogingen` : "-", `belexport (resultaten) en belpogingen (Call attempts), laatste ${NS.weken} weken`)}
-      ${regel(`10. Minimaal belpogingen per uur = ${num(s2.nodigRph, 2)} x ${x.resPerPog ? num(1 / x.resPerPog, 0) : "-"}`, num(s2.nodigRph && x.resPerPog ? s2.nodigRph / x.resPerPog : null, 0), "stap 8 x stap 9")}
-      ${regel(`11. Gemeten: conversie gesprek → resultaat`, pct(x.conv, 1), "belexport: resultaten / bereikte gesprekken (100, 101, 200, 201, 500, 501)")}
-      ${regel(`12. Minimaal gesprekken per uur = ${num(s2.nodigRph, 2)} / ${pct(x.conv, 1)}`, num(s2.nodigRph && x.conv ? s2.nodigRph / x.conv : null, 1), "stap 8 / stap 11")}
-      ${regel(`13. Nu: ${num(x.uren / (NS.weken / 4), 1)} beluren en ${num(x.res / (NS.weken / 4), 1)} resultaten per 4 weken`, x.res ? `${nf(1).format(x.uren / x.res)} uur per resultaat` : "-", `urenexport via verdeelsleutel, laatste ${NS.weken} weken`)}
-      ${regel(`14. Status = maximaal uren per resultaat / nu uren per resultaat`, s2.haalbaar != null ? pct(s2.haalbaar) : "-", "≥ 100% haalbaar, ≥ 80% krap")}
-      </tbody></table></div></details>`;
-  };
-  const keuze = NS.sc.map((s2, j) => `<button class="knop licht${j === sk ? " actief" : ""}" data-j="${j}">${"AB"[j]}: € ${s2.tarief} · ${nf(1).format(s2.upd)} u/dag</button>`).join("");
-  const weekblok = `<h2>Weeknormen om op te sturen</h2>
-    <div class="modus" id="nKeuze">${keuze}</div>
-    <div class="kaart tabelwrap"><table><thead><tr><th class="l">Opdrachtgever</th><th>Max. beluren /week</th><th>Min. resultaten /week</th><th>Min. belpogingen /uur</th><th>Min. gesprekken /uur</th><th>Max. uren /resultaat</th><th>Conversie gesprek → resultaat</th><th>Foute nummers</th></tr></thead><tbody>${kaarten.map(weekRij).join("")}</tbody></table>
-    <p class="uitleg" style="margin-top:8px">Alle normen zijn elke week te meten. Beluren: urenexport. Resultaten en gesprekken: belexport (custom). Belpogingen: Call attempts statuses. Foute nummers: resultaatcode 300. "Nu" = gemiddelde van de laatste ${NS.weken} weken. Gesprek = bereikt (100, 101, 200, 201, 500, 501).</p></div>
-    <h2>Hoe zijn de KPI's berekend?</h2><p class="uitleg">Per opdrachtgever stap voor stap, met de bron van elk getal. Klik open.</p>${kaarten.map(berekening).join("")}`;
-  document.getElementById("nInhoud").innerHTML = kaarten.length ? `
-    <div class="grid twee" style="margin-bottom:12px">${samen}</div>
-    <div class="kaart tabelwrap"><h3>Per opdrachtgever: wat mag een resultaat kosten?</h3>
-      <table><thead><tr><th class="l" rowspan="2">Opdrachtgever</th><th rowspan="2">Target /4 wk</th><th rowspan="2">Nu: uren /resultaat</th>${kop}</tr><tr>${sub}</tr></thead><tbody>${rijen}</tbody></table>
-      <p class="uitleg" style="margin-top:8px"><b>Hoe lees je dit?</b> "Max. uren per resultaat" is hoeveel betaalde uren er hooguit mogen zitten in één resultaat om zowel het target als het margedoel (${pct(NS.marge)}) te halen. "Nu" is wat het de afgelopen ${NS.weken} weken kostte. Is "nu" lager dan het maximum, dan is het haalbaar.</p></div>
-    ${aandacht ? `<div class="kaart" style="margin-top:12px"><h3>Waar moet het beter?</h3><ul style="margin:0;padding-left:18px">${aandacht}</ul></div>` : ""}
-    ${weekblok}`
+}
+function renderNormen() {
+  const data = normenData(), tarief = M.tarief_doel;
+  document.getElementById("nInstel").innerHTML = `<label>Margedoel %<input type="number" id="nMarge" value="${Math.round(NS.marge * 100)}" step="1" style="width:80px"></label>
+    <label>Meetperiode (weken)<input type="number" id="nWeken" value="${NS.weken}" step="1" style="width:80px"></label>
+    <div class="info">Tarief: <b>€ ${tarief} per uur</b> · "Nu" = gemiddelde van de laatste ${NS.weken} weken</div>`;
+  document.getElementById("nMarge").onchange = e => { NS.marge = (+e.target.value || 0) / 100; renderNormen(); };
+  document.getElementById("nWeken").onchange = e => { NS.weken = Math.max(1, +e.target.value || 8); renderNormen(); };
+  const ok = (nu, moet, max) => nu == null || moet == null ? null : max ? nu <= moet : nu >= moet;
+  const cel = (v, d, eenh) => v == null || !isFinite(v) ? "<span class='vs'>-</span>" : `${nf(d).format(v)}${eenh || ""}`;
+  const regels = [
+    ["Beluren per week", "max.", "urenW", 1, " uur", true],
+    ["Resultaten per week", "min.", "resW", 1, "", false],
+    ["Belpogingen per uur", "min.", "pogU", 0, "", false],
+    ["Uren per resultaat", "max.", "upr", 1, " uur", true],
+  ];
+  const kaarten = data.map(x => {
+    const geenData = !x.nu.urenW && !x.f.n;
+    const r = regels.map(([lab, mm, key, d, eenh, max]) => {
+      const g = geenData ? null : ok(x.nu[key], x.moet[key], max);
+      const nu = cel(x.nu[key], d, eenh);
+      return `<tr><td class="l">${lab}</td><td><b>${mm} ${cel(x.moet[key], d, eenh)}</b></td><td>${geenData ? "<span class='vs'>-</span>" : g == null ? nu : `<span class="stip ${g ? "groen" : "rood"}" title="${g ? "ok" : max ? "te hoog" : "te laag"}">${nu}</span>`}</td></tr>`;
+    }).join("") + (() => { const g = ok(x.nu.fout, 0.10, true); return `<tr><td class="l">Foute nummers</td><td><b>max. 10%</b></td><td>${x.nu.fout == null ? "<span class='vs'>-</span>" : `<span class="stip ${g ? "groen" : "rood"}">${pct(x.nu.fout)}</span>`}</td></tr>`; })();
+    // wat moet er gebeuren
+    const acties = [];
+    const n = x.nu, m = x.moet;
+    if (n.upr == null && !n.urenW) acties.push(`Nog geen beldata. Start met maximaal <b>${nf(1).format(m.urenW)} uur per week</b> en minimaal <b>${nf(1).format(m.resW || 0)} resultaten per week</b>.`);
+    else {
+      if (n.fout != null && n.fout > 0.10) acties.push(`<b>Bellijst opschonen.</b> ${pct(n.fout)} foute nummers, maximaal 10%. Betere data vragen bij AdHocData/Apollo of de lijst laten verrijken.`);
+      if (m.pogU && n.pogU != null && n.pogU < m.pogU * 0.95) acties.push(`<b>Tempo omhoog</b> van ${nf(0).format(n.pogU)} naar minimaal ${nf(0).format(m.pogU)} belpogingen per uur: minder tijd aan voorbereiden en afhandelen (Prepare en Finish).`);
+      if (m.upr && n.upr != null && n.upr > m.upr && !(m.pogU && n.pogU != null && n.pogU < m.pogU * 0.95)) acties.push(`<b>Meer resultaat per gesprek.</b> Nu ${nf(1).format(n.upr)} uur per resultaat, mag maximaal ${nf(1).format(m.upr)}. Pitch, doelgroep en bellijst aanscherpen.`);
+      if (n.urenW > m.urenW * 1.05) acties.push(`<b>Minder uren inzetten:</b> nu ${nf(1).format(n.urenW)} uur per week, maximaal ${nf(1).format(m.urenW)} om de marge te halen. Zet de uren in waar het per uur het meest oplevert.`);
+      if (m.resW != null && n.resW < m.resW && n.upr != null && m.upr != null && n.upr <= m.upr) acties.push(`<b>Meer uren inzetten.</b> Het tempo is goed, maar er wordt te weinig gebeld voor het target: ${nf(1).format(n.resW)} van de ${nf(1).format(m.resW)} resultaten per week. Ruimte tot ${nf(1).format(m.urenW)} uur per week.`);
+      if (!acties.length) acties.push(`<b>Op koers.</b> Zo doorgaan en niet boven ${nf(1).format(m.urenW)} uur per week bellen.`);
+    }
+    const goed = acties[0].startsWith("<b>Op koers"), nieuw = acties[0].startsWith("Nog geen beldata");
+    const ber = `<details style="margin-top:8px"><summary class="vs" style="cursor:pointer">Hoe berekend</summary><p class="uitleg" style="margin:6px 0 0">
+      Opbrengst per 4 weken ${eurT(x.opbr)} (fee ${eurT(x.k.fee || 0)}${x.extra ? ` + ${x.extraN} x ${eurT(x.k.lead)} extra` : ""}${x.isPilot ? ", pilot / 3" : ""}).
+      Margedoel ${pct(NS.marge)} → maximaal ${eurT(x.kostenMax)} kosten, min ${eurT(x.overig)} Steam en data → ${eurT(x.budget)} / € ${tarief} = ${nf(1).format(x.maxUren)} uur per 4 weken.
+      Target ${x.target != null ? nf(1).format(x.target) : "-"} per 4 weken → maximaal ${x.maxUpr ? nf(1).format(x.maxUpr) : "-"} uur per resultaat.
+      Gemeten 1 resultaat per ${x.resPerPog ? nf(0).format(1 / x.resPerPog) : "-"} belpogingen → minimaal ${x.minPogU ? nf(0).format(x.minPogU) : "-"} pogingen per uur.
+      Bronnen: klanten.yaml en verkoopfacturen (fee, target), kosten.yaml, urenexport, belexport, Call attempts statuses.</p></details>`;
+    return `<div class="kaart"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h3 style="margin:0">${esc(x.k.naam)}</h3>${goed ? '<span class="label goed">Op koers</span>' : nieuw ? '<span class="label info">Nog niet gestart</span>' : '<span class="label actie">Actie</span>'}</div>
+      <p class="uitleg" style="margin:4px 0 8px">Target ${x.target != null ? nf(1).format(x.target) : "-"} per 4 weken${x.isPilot ? " (pilot)" : ""} · opbrengst ${eurT(x.opbr)} per 4 weken</p>
+      <table style="table-layout:fixed"><colgroup><col style="width:46%"><col style="width:30%"><col style="width:24%"></colgroup><thead><tr><th class="l">KPI</th><th>Moet</th><th>Nu</th></tr></thead><tbody>${r}</tbody></table>
+      <div style="margin-top:10px;font-size:14px"><b>Wat moet er gebeuren?</b><ul style="margin:4px 0 0;padding-left:18px">${acties.map(a => `<li>${a}</li>`).join("")}</ul></div>${ber}</div>`;
+  });
+  const nOk = kaarten.filter(k => k.includes('label goed')).length, nNieuw = kaarten.filter(k => k.includes('label info')).length, nAct = kaarten.length - nOk - nNieuw;
+  document.getElementById("nInhoud").innerHTML = data.length ? `<div class="melding ${nAct === 0 ? "ok" : ""}">Bij € ${tarief} per uur en ${pct(NS.marge)} marge: <b>${nOk} op koers</b>, <b>${nAct} met actie nodig</b>${nNieuw ? `, ${nNieuw} nog niet gestart` : ""}. Per kaart staat wat er moet gebeuren.</div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr))">${kaarten.join("")}</div>`
     : "<p class='uitleg'>Geen actieve opdrachtgevers met fee of target.</p>";
-  const kz = document.getElementById("nKeuze"); if (kz) kz.onclick = e => { const b = e.target.closest("button"); if (b) { NS.keuze = +b.dataset.j; renderNormen(); } };
 }
 
 // ---------- tab: periodes
