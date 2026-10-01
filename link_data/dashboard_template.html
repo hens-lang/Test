@@ -100,6 +100,7 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
   <nav id="nav">
     <button data-tab="overzicht" class="actief">Overzicht</button>
     <button data-tab="conclusies">Conclusies</button>
+    <button data-tab="normen">KPI-normen</button>
     <button data-tab="resultaten">Resultaten per uur</button>
     <button data-tab="bellers">Bellers</button>
     <button data-tab="klanten">Opdrachtgevers</button>
@@ -138,6 +139,13 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
 <section class="tab" id="tab-conclusies">
   <p class="uitleg" id="cIntro"></p>
   <div id="cInhoud"></div>
+</section>
+
+<!-- KPI-NORMEN -->
+<section class="tab" id="tab-normen">
+  <p class="uitleg">Per actieve opdrachtgever: wat is er per werkperiode van 4 weken nodig om het margedoel én het target te halen. Opbrengst = fee per werkperiode + extra fee per resultaat bij het target. Kosten = beluren x tarief + overige kosten (Steam, data) naar rato. De vaste vergoeding van de eigenaren zit niet in de belkosten; het margedoel moet die dekken. Gemeten waarden over de laatste weken (alle bellers).</p>
+  <div class="filters" style="position:static;border:1px solid var(--rand);border-radius:10px;margin-bottom:12px" id="nInstel"></div>
+  <div id="nInhoud"></div>
 </section>
 
 <!-- RESULTATEN PER UUR -->
@@ -697,6 +705,86 @@ function renderConclusies() {
   document.getElementById("cInhoud").innerHTML = blokken.join("");
 }
 
+// ---------- tab: KPI-normen per opdrachtgever
+const NS = {init: false};
+function renderNormen() {
+  const cfgN = M.normen || {};
+  if (!NS.init) {
+    NS.marge = cfgN.marge_doel ?? 0.4; NS.weken = cfgN.meetperiode_weken ?? 8;
+    NS.sc = (cfgN.scenarios && cfgN.scenarios.length ? cfgN.scenarios : [{tarief: 25, uren_per_dag: 8}, {tarief: 36, uren_per_dag: 6}]).map(x => ({tarief: x.tarief, upd: x.uren_per_dag}));
+    const inp = (id, lab, v, st, w) => `<label>${lab}<input type="number" id="${id}" value="${v}" step="${st}" style="width:${w || 90}px"></label>`;
+    document.getElementById("nInstel").innerHTML =
+      NS.sc.map((x, i) => `<div style="display:flex;gap:8px;align-items:end;padding-right:12px;border-right:1px solid var(--rand)"><b class="cond" style="align-self:center">${"AB"[i]}</b>${inp("nT" + i, "Tarief € per uur", x.tarief, 0.5)}${inp("nU" + i, "Uren per dag", x.upd, 0.5)}</div>`).join("")
+      + inp("nMarge", "Margedoel %", Math.round(NS.marge * 100), 1) + inp("nWeken", "Meetperiode (weken)", NS.weken, 1);
+    document.getElementById("nInstel").querySelectorAll("input").forEach(el => el.oninput = () => {
+      NS.sc.forEach((x, i) => { x.tarief = +document.getElementById("nT" + i).value || x.tarief; x.upd = +document.getElementById("nU" + i).value || x.upd; });
+      NS.marge = (+document.getElementById("nMarge").value || 0) / 100; NS.weken = Math.max(1, +document.getElementById("nWeken").value || 8); renderNormen(); });
+    NS.init = true;
+  }
+  // meetvenster
+  const t1 = peilIdx, v1 = Math.max(0, peilIdx - NS.weken * 7 + 1), inR = d => d >= v1 && d <= t1;
+  const act = D.klanten.map((k, i) => ({k, i})).filter(x => x.k.status === "actief" && x.k.config && (x.k.fee || x.k.target_wp));
+  // overige kosten per werkperiode, verdeeld over actieve opdrachtgevers naar rato van hun beluren (minimaal gelijk deel)
+  const overig4 = som(F.x.filter(r => inR(r[0])), 1) / (NS.weken / 4);
+  const urenK = new Map(); F.v.forEach(r => { if (inR(r[0])) urenK.set(r[2], (urenK.get(r[2]) || 0) + r[3]); });
+  const urenAct = act.reduce((a, x) => a + (urenK.get(x.i) || 0), 0);
+  const kaarten = act.map(({k, i}) => {
+    const C = F.c.filter(r => r[3] === i && inR(r[0])), f = funnel(C);
+    const uren = urenK.get(i) || 0, P = (F.p || []).filter(r => r[3] === i && inR(r[0]));
+    const res = f.res, pog = P.length || null, verb = P.filter(r => r[4]).length;
+    const rph = div(res, uren), pph = div(pog, uren), resPerPog = pog ? div(res, pog) : div(res, f.n);
+    const bereik = f.bereikRatio, conv = f.conversie, fout = f.foutRatio;
+    const tpc = k.targets_per_code || {}, extraCode = k.lead_code || 101;
+    const extra = (k.lead || 0) * (tpc[extraCode] ?? (extraCode === 101 ? 0 : 0));
+    const isPilot = (k.perioden || [])[0]?.label?.startsWith("Pilot");
+    const fee = k.fee || 0, opbr = fee + extra, target = isPilot ? (k.target_wp ? k.target_wp * 28 / ((k.perioden[0] && (new Date(k.perioden[0].tot) - new Date(k.perioden[0].van)) / DAG + 1) || 84) : null) : k.target_wp;
+    const overig = urenAct ? overig4 * Math.max(div(uren, urenAct) || 0, 1 / act.length / 2) : overig4 / act.length;
+    const sc = NS.sc.map(x => {
+      const budget = opbr * (1 - NS.marge) - overig;
+      const maxUren = Math.max(0, div(budget, x.tarief) || 0);
+      const nodigRph = target ? div(target, maxUren) : null;
+      return {x, budget, maxUren, dagen: div(maxUren, x.upd), dagenWeek: div(maxUren, x.upd * 4),
+        nodigRph, nodigPph: nodigRph && resPerPog ? nodigRph / resPerPog : null,
+        nodigConv: nodigRph && pph && bereik && pog ? nodigRph / (pph * (verb / pog || bereik)) : (nodigRph && bereik ? null : null),
+        maxKpr: target ? div(opbr * (1 - NS.marge) - overig, target) : null,
+        haalbaar: nodigRph && rph != null ? rph / nodigRph : null};
+    });
+    return {k, i, f, uren, res, rph, pph, pog, verb, resPerPog, bereik, conv, fout, opbr, fee, extra, target, overig, sc, isPilot, tpc};
+  });
+  const st = r => r == null ? "<span class='vs'>-</span>" : `<span class="stip ${r >= 1 ? "groen" : r >= 0.8 ? "oranje" : "rood"}">${pct(r)}</span>`;
+  const rijT = (l, ...v) => `<tr><td class="l">${l}</td>${v.map(x => `<td>${x}</td>`).join("")}</tr>`;
+  const html = kaarten.map(x => {
+    const tdet = Object.keys(x.tpc).length ? " (" + Object.entries(x.tpc).map(([c, t]) => `${num(+t, 0)} x ${c}`).join(" + ") + ")" : "";
+    return `<details class="kaart" style="margin-bottom:8px"><summary style="cursor:pointer"><b class="cond" style="font-size:18px">${esc(x.k.naam)}</b>${x.isPilot ? " <span class='vs'>pilot, omgerekend naar 4 weken</span>" : ""} <span class="vs">details</span></summary>
+    <p class="uitleg">Opbrengst per werkperiode ${eurT(x.opbr)} (fee ${eurT(x.fee)}${x.extra ? ` + extra ${eurT(x.extra)}` : ""}) · target ${x.target != null ? num(x.target, 1) : ontbreekt}${tdet} · overige kosten ${eurT(x.overig)} · margedoel ${pct(NS.marge)} = ${eurT(x.opbr * NS.marge)}</p>
+    <div class="tabelwrap"><table><thead><tr><th class="l">KPI per werkperiode (4 weken)</th>${x.sc.map((s, j) => `<th>${"AB"[j]}: € ${nf(2).format(s.x.tarief).replace(",00", "")} · ${nf(1).format(s.x.upd)} u/dag</th>`).join("")}<th>Gemeten (${NS.weken} wk)</th></tr></thead><tbody>
+      ${rijT("Maximaal belbudget", ...x.sc.map(s => eur(s.budget)), "")}
+      ${rijT("Maximaal aantal beluren", ...x.sc.map(s => `<b>${num(s.maxUren, 1)}</b>`), num(x.uren / (NS.weken / 4), 1))}
+      ${rijT("= beldagen per werkperiode", ...x.sc.map(s => num(s.dagen, 1)), "")}
+      ${rijT("= beldagen per week", ...x.sc.map(s => num(s.dagenWeek, 1)), "")}
+      ${rijT("Benodigd: resultaten per betaald uur", ...x.sc.map(s => `<b>${num(s.nodigRph, 2)}</b>`), num(x.rph, 2))}
+      ${rijT("Benodigd: belpogingen per uur (bij gemeten resultaat per poging)", ...x.sc.map(s => num(s.nodigPph, 1)), num(x.pph, 1))}
+      ${rijT("Benodigd: resultaat per 100 pogingen (bij gemeten tempo)", ...x.sc.map(s => num(s.nodigRph && x.pph ? s.nodigRph / x.pph * 100 : null, 2)), num(x.resPerPog != null ? x.resPerPog * 100 : null, 2))}
+      ${rijT("Maximale kosten per resultaat", ...x.sc.map(s => eur(s.maxKpr)), eur(div(x.uren / (NS.weken / 4) * NS.sc[0].tarief + x.overig, x.target ? x.res / (NS.weken / 4) : null)))}
+      ${rijT("Haalbaar met huidig tempo", ...x.sc.map(s => st(s.haalbaar)), "")}
+      ${rijT("Kwaliteit: bereik (bereikt / belregels)", ...x.sc.map(() => ""), pct(x.bereik))}
+      ${rijT("Kwaliteit: conversie bereikt → resultaat", ...x.sc.map(() => ""), pct(x.conv, 1))}
+      ${rijT("Kwaliteit: data-fout (300)", ...x.sc.map(() => ""), `<span class="${x.fout > .1 ? "rood" : ""}">${pct(x.fout, 1)}</span>`)}
+      ${rijT("Kwaliteit: verbonden-ratio pogingen", ...x.sc.map(() => ""), pct(div(x.verb, x.pog)))}
+    </tbody></table></div></details>`;
+  }).join("");
+  const kop = NS.sc.map((s2, j) => `<th colspan="3" style="text-align:center">${"AB"[j]}: € ${s2.tarief} · ${nf(1).format(s2.upd)} u/dag</th>`).join("");
+  const sub = NS.sc.map(() => "<th>Max uren/WP</th><th>Nodig res./uur</th><th>Haalbaar</th>").join("");
+  const overzicht = `<div class="kaart tabelwrap" style="margin-bottom:12px"><h3>Overzicht per opdrachtgever (per werkperiode van 4 weken)</h3><table><thead><tr><th class="l" rowspan="2">Opdrachtgever</th><th rowspan="2">Opbrengst</th><th rowspan="2">Target</th>${kop}<th rowspan="2">Gemeten res./uur</th><th rowspan="2">Gemeten uren/WP</th></tr><tr>${sub}</tr></thead><tbody>${
+    kaarten.map(x => `<tr><td class="l">${esc(x.k.naam)}</td><td>${eur(x.opbr)}</td><td>${x.target != null ? num(x.target, 1) : ontbreekt}</td>${x.sc.map(s2 => `<td>${num(s2.maxUren, 1)}</td><td><b>${num(s2.nodigRph, 2)}</b></td><td class="l">${st(s2.haalbaar)}</td>`).join("")}<td>${num(x.rph, 2)}</td><td>${num(x.uren / (NS.weken / 4), 1)}</td></tr>`).join("")}</tbody></table>
+    <p class="uitleg" style="margin-top:8px">Max uren/WP = uren die passen binnen het margedoel. Haalbaar = gemeten resultaten per uur gedeeld door het benodigde aantal (groen ≥ 100%, oranje ≥ 80%). Klik hieronder een opdrachtgever open voor tempo, conversie, kosten per resultaat en kwaliteit.</p></div>`;
+  const sam = NS.sc.map((s, j) => {
+    const tot = kaarten.reduce((a, x) => ({uren: a.uren + x.sc[j].maxUren, opbr: a.opbr + x.opbr, target: a.target + (x.target || 0)}), {uren: 0, opbr: 0, target: 0});
+    return `<div class="kaart kpi"><div class="l">${"AB"[j]}: € ${s.tarief} per uur, ${nf(1).format(s.upd)} uur per dag</div><div class="w">${num(tot.uren / 4, 1)} uur/week</div><div class="s">${num(tot.uren / s.upd / 4, 1)} beldagen per week over alle opdrachtgevers · gemiddeld ${num(div(tot.target, tot.uren), 2)} resultaten per uur nodig</div></div>`;
+  }).join("");
+  document.getElementById("nInhoud").innerHTML = `<div class="grid kpis" style="margin-bottom:12px">${sam}</div>${kaarten.length ? overzicht + html : "<p class='uitleg'>Geen actieve opdrachtgevers met fee of target.</p>"}`;
+}
+
 // ---------- tab: periodes
 function renderPeriodes() {
   const pk = document.getElementById("pKlant");
@@ -1115,7 +1203,7 @@ let actieveTab = "overzicht";
 function render() {
   const n = S.tot - S.van + 1;
   document.getElementById("fInfo").textContent = `${dmy(D.datums[S.van])} t/m ${dmy(D.datums[S.tot])} · ${n} dagen`;
-  ({overzicht: renderOverzicht, conclusies: renderConclusies, periodes: renderPeriodes, resultaten: renderResultaten, bellers: renderBellers, klanten: renderKlanten, focus: renderFocus, scenario: renderScenario, dq: renderDQ})[actieveTab]();
+  ({overzicht: renderOverzicht, conclusies: renderConclusies, normen: renderNormen, periodes: renderPeriodes, resultaten: renderResultaten, bellers: renderBellers, klanten: renderKlanten, focus: renderFocus, scenario: renderScenario, dq: renderDQ})[actieveTab]();
 }
 document.getElementById("nav").onclick = e => {
   const t = e.target.closest("button"); if (!t) return;

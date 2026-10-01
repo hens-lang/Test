@@ -82,3 +82,11 @@ memo_afspraak_patronen:
 # Tijdzones. De export "Call attempts statuses" staat in UTC; die wordt omgerekend naar lokale tijd.
 tijdzone: Europe/Amsterdam
 belpogingen_tijdzone: UTC
+
+# KPI-normen per opdrachtgever (tabblad KPI-normen). Alles is in het dashboard aan te passen.
+normen:
+  marge_doel: 0.40          # gewenste marge op de opbrengst per opdrachtgever
+  meetperiode_weken: 8      # gemeten waarden over de laatste N weken
+  scenarios:
+    - {naam: "€ 25 per uur, 8 uur per dag", tarief: 25, uren_per_dag: 8}
+    - {naam: "€ 36 per uur, 6 uur per dag", tarief: 36, uren_per_dag: 6}
