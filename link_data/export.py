@@ -97,6 +97,8 @@ def payload(model: Model, cfg: Config) -> dict:
             "target": kc and kc.target_per_4wk, "deliverable": kc and kc.deliverable,
             "telt_als": kc.telt_als_resultaat if kc else [100, 101], "pids": kc.pids if kc else [],
             "status": kc.status if kc else "onbekend", "lead_code": kc.extra_code if kc else 101,
+            "target_wp": (kc.pilot_target if kc and kc.pilot_weken else kc.target_per_4wk) if kc else None,
+            "perioden": (model.dq.get("klant_perioden") or {}).get(k, []),
         })
 
     feiten = {

@@ -96,11 +96,12 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
     <button data-tab="focus">Focus over de dag</button>
     <button data-tab="scenario">Scenario € 36</button>
     <button data-tab="dq">Datakwaliteit</button>
+    <button data-tab="periodes">Periodes</button>
   </nav>
 </header>
 <div class="filters">
   <label>Periode<select id="fPeriodeType">
-    <option value="alles">Alles</option><option value="week">Week</option><option value="wp">Werkperiode (4 wk)</option>
+    <option value="alles">Alles</option><option value="week">Week</option><option value="wp">Werkperiode (van de gekozen opdrachtgever)</option>
     <option value="maand">Maand</option><option value="eigen">Eigen bereik</option></select></label>
   <label id="lPeriodeWaarde">Kies<select id="fPeriodeWaarde"></select></label>
   <label id="lVan">Van<input type="date" id="fVan"></label>
@@ -219,6 +220,19 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
   <div class="kaart tabelwrap" id="scKlanten"></div>
 </section>
 
+<!-- PERIODES -->
+<section class="tab" id="tab-periodes">
+  <p class="uitleg">Per opdrachtgever per eigen werkperiode (vanaf hun belstart of volgens de factuur) of per week. Het beller- en meetbaar-filter tellen mee, de periodefilter bovenin niet: hier staan alle periodes onder elkaar.</p>
+  <div class="filters" style="position:static;border:1px solid var(--rand);border-radius:10px;margin-bottom:12px">
+    <label>Opdrachtgever<select id="pKlant"></select></label>
+    <label>Indeling<select id="pIndeling"><option value="wp">Werkperiode</option><option value="week">Week</option></select></label>
+    <label style="flex-direction:row;align-items:center;gap:6px;color:var(--tekst);font-size:14px"><input type="checkbox" id="pBellers" checked> Uitsplitsen naar beller</label>
+  </div>
+  <div class="grid kpis" id="pKpis"></div>
+  <div class="kaart" style="margin-top:12px"><h3>Resultaten tegenover target</h3><div class="chart"><canvas id="cPeriodes"></canvas></div></div>
+  <div class="kaart tabelwrap" style="margin-top:12px" id="tPeriodes"></div>
+</section>
+
 <!-- DATAKWALITEIT -->
 <section class="tab" id="tab-dq"><div id="dqInhoud"></div></section>
 </main>
@@ -257,11 +271,23 @@ const wpVan = datumObj.map(d => Math.floor((d.getTime() - ankerT) / (28 * DAG)))
 const maandVan = D.datums.map(s => s.slice(0, 7));
 const MAANDEN = ["jan","feb","mrt","apr","mei","jun","jul","aug","sep","okt","nov","dec"];
 
+function klantPerioden(ki) {
+  // Eigen werkperiodes van een opdrachtgever als index-bereik in D.datums
+  return (D.klanten[ki]?.perioden || []).map(p => {
+    let van = D.datums.indexOf(p.van), tot = D.datums.indexOf(p.tot);
+    if (van < 0) van = p.van < D.datums[0] ? 0 : D.datums.length;
+    if (tot < 0) tot = p.tot > D.datums[D.datums.length - 1] ? D.datums.length - 1 : -1;
+    return {...p, vanI: van, totI: tot};
+  }).filter(p => p.vanI <= p.totI);
+}
 function periodeOpties(type) {
+  if (type === "wp" && S.k >= 0 && klantPerioden(S.k).length) {
+    return klantPerioden(S.k).map(p => [`k${S.k}-${p.nr}`, {lab: `${p.label}: ${dmy(p.van)} t/m ${dmy(p.tot)}`, van: p.vanI, tot: p.totI}]).reverse();
+  }
   const opts = new Map();
   D.datums.forEach((s, i) => {
     let k, lab;
-    if (type === "week") { k = weekVan[i]; lab = "Week " + +k.slice(6) + " (" + k.slice(0, 4) + ")"; }
+    if (type === "week") { k = weekVan[i]; const ma = new Date(datumObj[i].getTime() - ((datumObj[i].getDay() + 6) % 7) * DAG), zo = new Date(ma.getTime() + 6 * DAG); lab = `Week ${+k.slice(6)} (${ma.getDate()}-${ma.getMonth()+1} t/m ${zo.getDate()}-${zo.getMonth()+1})`; }
     else if (type === "wp") { k = wpVan[i]; const v = new Date(ankerT + k * 28 * DAG), t = new Date(v.getTime() + 27 * DAG); lab = `WP ${k >= 0 ? k + 1 : k}: ${v.getDate()}-${v.getMonth()+1} t/m ${t.getDate()}-${t.getMonth()+1}-${t.getFullYear()}`; }
     else if (type === "maand") { k = maandVan[i]; lab = MAANDEN[+k.slice(5) - 1] + " " + k.slice(0, 4); }
     if (!opts.has(k)) opts.set(k, {lab, van: i, tot: i}); else opts.get(k).tot = i;
@@ -277,13 +303,14 @@ const meetbareKlanten = () => new Set(F.c.filter(r => inP(r[0])).map(r => r[3])
 
 function initFilters() {
   const fb = document.getElementById("fBeller"), fk = document.getElementById("fKlant");
+  const pt = document.getElementById("fPeriodeType");
   fb.innerHTML = "<option value='-1'>Alle bellers</option>" + D.bellers.map((b, i) => `<option value="${i}">${esc(b.naam)}</option>`).join("");
   const opt = (k, i) => `<option value="${i}">${esc(k.naam)}${k.status && k.status !== "actief" && k.status !== "onbekend" ? " (" + k.status + ")" : ""}</option>`;
   const actiefK = D.klanten.map((k, i) => [k, i]).filter(([k]) => k.status === "actief" || k.status === "onbekend");
   const overigK = D.klanten.map((k, i) => [k, i]).filter(([k]) => !(k.status === "actief" || k.status === "onbekend"));
   fk.innerHTML = "<option value='-1'>Alle opdrachtgevers</option>" + actiefK.map(([k, i]) => opt(k, i)).join("")
     + (overigK.length ? `<optgroup label="Gestopt / pauze">${overigK.map(([k, i]) => opt(k, i)).join("")}</optgroup>` : "");
-  const pt = document.getElementById("fPeriodeType"), pw = document.getElementById("fPeriodeWaarde");
+  const pw = document.getElementById("fPeriodeWaarde");
   const van = document.getElementById("fVan"), tot = document.getElementById("fTot");
   van.min = tot.min = D.datums[0]; van.max = tot.max = D.datums[D.datums.length - 1];
   const zichtbaar = () => {
@@ -311,7 +338,7 @@ function initFilters() {
   };
   pw.onchange = van.onchange = tot.onchange = zetPeriode;
   fb.onchange = () => { S.b = +fb.value; render(); };
-  fk.onchange = () => { S.k = +fk.value; render(); };
+  fk.onchange = () => { S.k = +fk.value; if (pt.value === "wp") pt.onchange(); else render(); };
   const fm = document.getElementById("fMeetbaar");
   try { const v = localStorage.getItem("link-meetbaar"); if (v !== null) fm.checked = v === "1"; } catch (_) {}
   S.meetbaar = fm.checked;
@@ -518,6 +545,67 @@ function renderResultaten() {
     <p class="uitleg" style="margin-top:8px">Resultaten van een beller zonder toegerekende uren bij die opdrachtgever (bijvoorbeeld belregels op een dag zonder uren) tellen mee in het aantal, niet in "per uur". Belpogingen uit "Call attempts statuses".</p>`;
 }
 document.getElementById("rGroep").onclick = e => { const b = e.target.closest("button"); if (b) { resGroep = b.dataset.g; renderResultaten(); } };
+
+// ---------- tab: periodes
+function renderPeriodes() {
+  const pk = document.getElementById("pKlant");
+  if (!pk.options.length) {
+    const act = D.klanten.map((k, i) => [k, i]).filter(([k]) => k.config && (k.perioden || []).length);
+    pk.innerHTML = act.map(([k, i]) => `<option value="${i}">${esc(k.naam)}${k.status !== "actief" ? " (" + k.status + ")" : ""}</option>`).join("");
+    const eerste = act.find(([k]) => k.status === "actief"); if (eerste) pk.value = String(eerste[1]);
+    pk.onchange = document.getElementById("pIndeling").onchange = document.getElementById("pBellers").onchange = renderPeriodes;
+  }
+  if (S.k >= 0 && [...pk.options].some(o => +o.value === S.k) && pk.dataset.volg !== String(S.k)) { pk.value = String(S.k); pk.dataset.volg = String(S.k); }
+  const ki = +pk.value, K = D.klanten[ki], ind = document.getElementById("pIndeling").value, metB = document.getElementById("pBellers").checked;
+  let perioden;
+  if (ind === "wp") perioden = klantPerioden(ki).map(p => ({label: `${p.label}`, sub: `${dmy(p.van)} t/m ${dmy(p.tot)}`, van: p.vanI, tot: p.totI, target: K.target_wp}));
+  else {
+    const kp = klantPerioden(ki); const v0 = kp.length ? kp[0].vanI : 0;
+    const m = new Map(); D.datums.forEach((d, i) => { if (i < v0) return; const w = weekVan[i]; if (!m.has(w)) m.set(w, {van: i, tot: i}); else m.get(w).tot = i; });
+    perioden = [...m.entries()].map(([w, x]) => ({label: "Week " + +w.slice(6), sub: `${dmy(D.datums[x.van])} t/m ${dmy(D.datums[x.tot])}`, van: x.van, tot: x.tot, target: K.target_wp && !K.perioden?.[0]?.label?.startsWith("Pilot") ? K.target_wp / 4 : null}));
+  }
+  const MK = S.meetbaar ? null : null;
+  const bOk = b => S.b < 0 || b === S.b;
+  const XtotAll = F.x, Valle = F.v;
+  const cel = () => ({res: 0, a100: 0, a101: 0, uren: 0, kosten: 0, pog: 0, opbr: 0});
+  const rijen = perioden.map(p => {
+    const inR = d => d >= p.van && d <= p.tot;
+    const per = new Map(), t = cel();
+    const get = b => { if (!per.has(b)) per.set(b, cel()); return per.get(b); };
+    F.c.forEach(r => { if (r[3] !== ki || !inR(r[0]) || !bOk(r[2]) || !r[7]) return; for (const c of [t, get(r[2])]) { c.res++; if (r[4] === 100) c.a100++; if (r[4] === 101) c.a101++; } });
+    let kostAll = 0; Valle.forEach(r => { if (inR(r[0])) kostAll += r[5]; });
+    const xs = XtotAll.reduce((a, r) => a + (inR(r[0]) ? r[1] : 0), 0);
+    F.v.forEach(r => { if (r[2] !== ki || !inR(r[0]) || !bOk(r[1])) return; const k = r[5] + (kostAll ? xs * r[5] / kostAll : 0); for (const c of [t, get(r[1])]) { c.uren += r[3]; c.kosten += k; } });
+    (F.p || []).forEach(r => { if (r[3] !== ki || !inR(r[0]) || !bOk(r[2])) return; t.pog++; get(r[2]).pog++; });
+    F.o.forEach(r => { if (r[1] === ki && inR(r[0])) t.opbr += r[2] + r[3]; });
+    if (p.van <= peilIdx && p.tot >= peilIdx) p.sub += " · lopend";
+    return {p, t, per};
+  }).filter(x => x.t.res || x.t.uren > 0.05 || x.t.pog || x.t.opbr);
+  const T = rijen.reduce((a, x) => { for (const k in a) a[k] += x.t[k]; return a; }, cel());
+  const kaart = (l, w, sub) => `<div class="kaart kpi"><div class="l">${l}</div><div class="w">${w}</div><div class="s">${sub}</div></div>`;
+  document.getElementById("pKpis").innerHTML = [
+    kaart("Resultaten", num(T.res), `${num(T.a100)} afspraken · ${num(T.a101)} overdrachten`),
+    kaart("Betaalde uren", num(T.uren, 1), `${rijen.length} ${ind === "wp" ? "werkperiodes" : "weken"}`),
+    kaart("Resultaten per uur", num(div(T.res, T.uren), 2), "toegerekende uren"),
+    kaart("Kosten per resultaat", eur(div(T.kosten, T.res)), `kosten ${eurT(T.kosten)}`),
+    kaart("Opbrengst", eur(T.opbr), `marge ${eurT(T.opbr - T.kosten)}`),
+  ].join("");
+  const s8 = SERIES();
+  grafiek("cPeriodes", {type: "bar", data: {labels: rijen.map(x => x.p.label), datasets: [
+    {label: "Resultaten", data: rijen.map(x => x.t.res), backgroundColor: s8[0], borderRadius: 4, maxBarThickness: 36},
+    ...(rijen.some(x => x.p.target) ? [{type: "line", label: "Target", data: rijen.map(x => x.p.target), borderColor: s8[1], backgroundColor: s8[1], borderWidth: 2, pointRadius: 0, stepped: "middle"}] : [])]},
+    options: {scales: {y: {beginAtZero: true, ticks: {precision: 0}}, x: {grid: {display: false}}}}});
+  const stip = (res, tg) => { if (!tg) return "<span class='vs'>-</span>"; const r = res / tg; const c = r >= 1 ? "groen" : r >= .8 ? "oranje" : "rood"; return `<span class="stip ${c}">${pct(r)}</span>`; };
+  const rij = (naam, sub, c, tg, hoofd) => `<tr${hoofd ? ' style="font-weight:600;background:var(--surface-2)"' : ""}><td class="l">${hoofd ? "" : "&nbsp;&nbsp;&nbsp;"}${esc(naam)}${sub ? ` <span class="vs">${sub}</span>` : ""}</td>
+    <td>${num(c.res)}</td><td>${num(c.a100)}</td><td>${num(c.a101)}</td><td>${tg ? num(tg, 1) : "<span class='vs'>-</span>"}</td><td class="l">${hoofd ? stip(c.res, tg) : ""}</td>
+    <td>${num(c.uren, 1)}</td><td><b>${num(div(c.res, c.uren), 2)}</b></td><td>${num(div(c.uren, c.res), 1)}</td><td>${eur(c.kosten)}</td><td>${eur(div(c.kosten, c.res))}</td>
+    <td>${hoofd ? eur(c.opbr) : ""}</td><td class="${hoofd ? (c.opbr - c.kosten >= 0 ? "pos" : "neg") : ""}">${hoofd ? eur(c.opbr - c.kosten) : ""}</td><td>${num(c.pog)}</td></tr>`;
+  document.getElementById("tPeriodes").innerHTML = `<table><thead><tr><th class="l">${ind === "wp" ? "Werkperiode" : "Week"}${metB ? " / beller" : ""}</th><th>Resultaten</th><th>Afspraken (100)</th><th>Overdrachten (101)</th><th>Target</th><th class="l">Behaald</th><th>Betaalde uren</th><th>Res. per uur</th><th>Uren per res.</th><th>Kosten</th><th>Kosten per res.</th><th>Opbrengst</th><th>Marge</th><th>Belpogingen</th></tr></thead><tbody>${
+    [...rijen].reverse().map(x => rij(x.p.label, x.p.sub, x.t, x.p.target, true) + (metB ? [...x.per.entries()].filter(([, c]) => c.res || c.uren > 0.05 || c.pog).sort((a, b) => b[1].res - a[1].res || b[1].uren - a[1].uren)
+      .map(([b, c]) => rij(D.bellers[b]?.naam ?? "Onbekend", "", c, null, false)).join("") : "")).join("")}
+    ${rij("Totaal", "", T, null, true)}</tbody></table>
+    <p class="uitleg" style="margin-top:8px">Target per week = target per werkperiode / 4. "Lopend" = periode loopt nog, behaald is de stand tot nu. Opbrengst = verkoopfacturen verdeeld over hun periode. Uren per beller volgen de verdeelsleutel (gekalibreerd op Steam-beltijd over de hele periode); bij een beller met weinig uren bij deze klant kan "per uur" daardoor hoog uitvallen. Nieuwste periode bovenaan.</p>`;
+}
 
 // ---------- tab: bellers
 function bellerStats(sel, bi) {
@@ -874,7 +962,7 @@ let actieveTab = "overzicht";
 function render() {
   const n = S.tot - S.van + 1;
   document.getElementById("fInfo").textContent = `${dmy(D.datums[S.van])} t/m ${dmy(D.datums[S.tot])} · ${n} dagen`;
-  ({overzicht: renderOverzicht, resultaten: renderResultaten, bellers: renderBellers, klanten: renderKlanten, focus: renderFocus, scenario: renderScenario, dq: renderDQ})[actieveTab]();
+  ({overzicht: renderOverzicht, periodes: renderPeriodes, resultaten: renderResultaten, bellers: renderBellers, klanten: renderKlanten, focus: renderFocus, scenario: renderScenario, dq: renderDQ})[actieveTab]();
 }
 document.getElementById("nav").onclick = e => {
   const t = e.target.closest("button"); if (!t) return;

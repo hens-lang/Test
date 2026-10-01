@@ -505,6 +505,28 @@ def _kosten_overzicht(overig: pd.DataFrame) -> list:
             for r in g.sort_values(["post", "maand"]).itertuples()]
 
 
+def klant_perioden(cfg: Config, contacten: pd.DataFrame, verkoop: pd.DataFrame, peildatum: dt.date) -> dict:
+    """Werkperiodes per opdrachtgever: blokken van 28 dagen vanaf de startdatum (config, factuur of eerste
+    belregel) t/m de periode waarin de peildatum valt. Een pilot is één periode van zijn looptijd."""
+    uit = {}
+    for k in cfg.klanten.values():
+        start, bron = _startdatum(k, contacten, verkoop)
+        if not start:
+            continue
+        if k.pilot_weken:
+            uit[k.naam] = [{"nr": 1, "van": start, "tot": start + dt.timedelta(days=7 * int(k.pilot_weken) - 1),
+                            "label": f"Pilot {k.pilot_weken} weken"}]
+            continue
+        p, nr, lijst = start, 1, []
+        eind = max(peildatum, start)
+        while p <= eind:
+            t = p + dt.timedelta(days=27)
+            lijst.append({"nr": nr, "van": p, "tot": t, "label": f"WP {nr}"})
+            p, nr = t + dt.timedelta(days=1), nr + 1
+        uit[k.naam] = lijst
+    return uit
+
+
 def _targets(cfg: Config, contacten: pd.DataFrame, peildatum: dt.date, verkoop: pd.DataFrame) -> pd.DataFrame:
     groen = cfg.instellingen.get("stoplicht_groen", 1.0)
     oranje = cfg.instellingen.get("stoplicht_oranje", 0.8)
@@ -886,6 +908,8 @@ def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
                                 "dashboard": round(in_model, 2), "bron": round(gekoppeld, 2),
                                 "ok": bool(abs(in_model - gekoppeld) < 0.01)})
     dq.update(_dq_verkoop(cfg, verkoop, contacten, peildatum, opbrengst))
+    dq["klant_perioden"] = {k: [{**p, "van": str(p["van"]), "tot": str(p["tot"])} for p in v]
+                            for k, v in klant_perioden(cfg, contacten, verkoop, peildatum).items()}
     if len(verkoop):
         dq["controles"].append(dq["verkoop_controle"])
     dq["kostenposten"] = _kosten_overzicht(overig)
