@@ -20,7 +20,7 @@ import pandas as pd
 
 from .config import ROOT
 from .parsers import (CONTACT_KOLOMMEN, EXTENSIES, FACTUUR_KOLOMMEN, STATS_KOLOMMEN, UREN_KOLOMMEN,
-                      VERKOOP_KOLOMMEN, Export,
+                      VERKOOP_KOLOMMEN, RESULTATEN_KOLOMMEN, Export,
                       parse_bestand)
 
 DB_PAD = ROOT / "data" / "link.db"
@@ -51,6 +51,10 @@ def verbind(pad: Path | str = DB_PAD) -> sqlite3.Connection:
             campagne TEXT, project TEXT, contactpogingen INTEGER, calls INTEGER, hits INTEGER, afgehandeld INTEGER,
             recordtijd_s INTEGER, wachten_s INTEGER, laden_s INTEGER, prepare_s INTEGER, dial_s INTEGER,
             gesprek_s INTEGER, finish_s INTEGER, bestand TEXT);
+        CREATE TABLE IF NOT EXISTS campagneresultaten (sleutel TEXT PRIMARY KEY, exportdatum TEXT, campagne TEXT,
+            periode_van TEXT, periode_tot TEXT, agentfilter TEXT, adressen INTEGER, onaangeraakt INTEGER,
+            niet_afgehandeld INTEGER, contactpogingen INTEGER, code INTEGER, omschrijving TEXT, aantal INTEGER,
+            bestand TEXT);
         CREATE TABLE IF NOT EXISTS bestanden (
             sha256 TEXT PRIMARY KEY, naam TEXT, type TEXT, rijen INTEGER,
             periode_van TEXT, periode_tot TEXT, kolommen INTEGER, ingelezen_op TEXT);
@@ -103,6 +107,8 @@ def bewaar(con, exp: Export) -> int:
         _upsert(con, "facturen", df[FACTUUR_KOLOMMEN + ["bestand"]], ["sleutel"])
     elif exp.type == "S":
         _upsert(con, "steamstats", df[STATS_KOLOMMEN + ["bestand"]], ["sleutel"])
+    elif exp.type == "R":
+        _upsert(con, "campagneresultaten", df[RESULTATEN_KOLOMMEN + ["bestand"]], ["sleutel"])
     elif exp.type == "V":
         # Een PDF (met periode en regels) gaat voor op een regel uit een lijst (CSV/mailbox).
         _upsert(con, "verkoopfacturen", df[VERKOOP_KOLOMMEN + ["bestand"]], ["sleutel"],

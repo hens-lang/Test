@@ -663,6 +663,37 @@ def _dq_verkoop(cfg, verkoop, contacten, peildatum, opbrengst) -> dict:
     return dq
 
 
+def _campagnerapport(cr: pd.DataFrame | None, cfg: Config, contacten, verdeling, overig) -> list:
+    """Per opdrachtgever: alle pogingen en resultaten uit het Steam-rapport Contactresultaten, voorraad van
+    de bellijst, en kosten per resultaat over dezelfde (hele) periode."""
+    if cr is None or cr.empty:
+        return []
+    cr = cr[cr["exportdatum"] == cr.groupby("campagne")["exportdatum"].transform("max")].copy()
+    cr["klant"] = cr["campagne"].map(cfg.klant_voor_campagne)
+    kost = verdeling.groupby("klant")["kosten"].sum()
+    ov = overig["bedrag"].sum() if len(overig) else 0
+    ov_k = kost / kost.sum() * ov if kost.sum() else kost * 0
+    rijen = []
+    for camp, g in cr.groupby("campagne"):
+        k = g["klant"].iloc[0]
+        kl = cfg.klanten.get(k)
+        telt = set(kl.telt_als_resultaat) if kl else {100, 101}
+        n = lambda cs: int(g.loc[g["code"].isin(cs), "aantal"].sum())
+        pog = int(g["contactpogingen"].iloc[0])
+        res = n(telt)
+        dash = int(contacten[(contacten["klant"] == k) & contacten["is_resultaat"]].shape[0])
+        kosten = float(kost.get(k, 0) + ov_k.get(k, 0)) if k else 0.0
+        rijen.append({
+            "klant": k or camp, "status": kl.status if kl else "onbekend", "campagne": camp,
+            "periode": f"{g['periode_van'].iloc[0]} t/m {g['periode_tot'].iloc[0]}", "agentfilter": g["agentfilter"].iloc[0],
+            "adressen": int(g["adressen"].iloc[0]), "onaangeraakt": int(g["onaangeraakt"].iloc[0]),
+            "niet_afgehandeld": int(g["niet_afgehandeld"].iloc[0]), "pogingen": pog,
+            "bereikt": n(codes.BEREIKT), "afspraken_100": n([100]), "overdrachten_101": n([101]),
+            "resultaten_steam": res, "resultaten_dashboard": dash, "data_fout": n([300]),
+            "kosten": round(kosten, 2), "kosten_per_resultaat": round(kosten / res, 2) if res else None})
+    return sorted(rijen, key=lambda r: (r["status"] != "actief", r["klant"]))
+
+
 def _dq_stats(stats, contacten, uren, verdeling) -> dict:
     if stats is None or stats.empty:
         return {"stats_peildatum": None, "stats_controle": []}
@@ -685,7 +716,8 @@ def _dq_stats(stats, contacten, uren, verdeling) -> dict:
 
 def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
          bestanden: pd.DataFrame | None = None, facturen_raw: pd.DataFrame | None = None,
-         verkoop_raw: pd.DataFrame | None = None, stats_raw: pd.DataFrame | None = None) -> Model:
+         verkoop_raw: pd.DataFrame | None = None, stats_raw: pd.DataFrame | None = None,
+         campagne_raw: pd.DataFrame | None = None) -> Model:
     contacten = _contacten(contacten_raw, cfg)
     uren = _uren(uren_raw, cfg)
     facturen = _facturen(facturen_raw if facturen_raw is not None else pd.DataFrame(), cfg)
@@ -748,6 +780,7 @@ def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
         dq["controles"].append(dq["verkoop_controle"])
     dq["kostenposten"] = _kosten_overzicht(overig)
     dq.update(_dq_stats(stats, contacten, uren, verdeling))
+    dq["campagnerapport"] = _campagnerapport(campagne_raw, cfg, contacten, verdeling, overig)
     return Model(contacten, uren, facturen, verdeling, opbrengst, overig, targets, peildatum, dq, verkoop, stats)
 
 

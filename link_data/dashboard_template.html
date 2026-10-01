@@ -143,6 +143,9 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
     <div class="kaart"><h3>Uitkomst van de belregels per opdrachtgever</h3><p class="uitleg">Aandeel per funnelgroep. Veel data-fout (300) = slechte bellijst.</p><div class="chart" id="wFunnel"><canvas id="cFunnel"></canvas></div></div>
     <div class="kaart"><h3>Pijplijn</h3><p class="uitleg">Terugbelafspraken (500) en infomails (501) die nog opvolging nodig hebben.</p><div class="tabelwrap" id="tPijplijn"></div></div>
   </div>
+  <h2>Steam-campagnerapport: alle pogingen</h2>
+  <p class="uitleg">Uit het rapport Contactresultaten per campagne (hele periode, niet afhankelijk van de datumfilter). Telt álle pogingen van alle bellers. Kosten = alle toegerekende kosten van deze opdrachtgever in het dashboard. Voorraad = onaangeraakte + niet afgehandelde adressen. Wijkt "resultaten dashboard" af, dan mist de belexport regels (bijvoorbeeld gefilterd op één beller).</p>
+  <div class="kaart tabelwrap" id="tCampagne"></div>
   <h2>Debiteuren en te versturen</h2>
   <p class="uitleg">Uit de verkoopfacturen (bedragen incl. btw, zoals in de boekhouding). Stand van de laatst ingelezen lijst, niet afhankelijk van de filters.</p>
   <div class="kaart tabelwrap" id="tDebiteuren"></div>
@@ -510,6 +513,9 @@ function renderKlanten() {
   document.getElementById("tPijplijn").innerHTML = `<table><thead><tr><th>Opdrachtgever</th><th>Terugbel (500)</th><th>Infomail (501)</th><th>Totaal</th></tr></thead><tbody>${
     mf.filter(r => r.f.c500 + r.f.c501).map(r => `<tr><td>${esc(r.k.naam)}</td><td>${r.f.c500}</td><td>${r.f.c501}</td><td><b>${r.f.c500 + r.f.c501}</b></td></tr>`).join("")}</tbody></table>`;
 
+  const cr = (D.dq.campagnerapport || []).filter(r => toonAlles || r.status === "actief" || r.status === "onbekend");
+  document.getElementById("tCampagne").innerHTML = cr.length ? `<table><thead><tr><th>Opdrachtgever</th><th>Pogingen</th><th>Bereik</th><th>Afspraken (100)</th><th>Overdrachten (101)</th><th>Resultaten Steam</th><th>Resultaten dashboard</th><th>Res. per 100 pog.</th><th>Data-fout</th><th>Kosten</th><th>Kosten/resultaat</th><th>Adressen</th><th>Onaangeraakt</th><th>Niet afgehandeld</th></tr></thead><tbody>${
+    cr.map(r => `<tr><td>${esc(r.klant)}</td><td>${num(r.pogingen)}</td><td>${pct(div(r.bereikt, r.pogingen))}</td><td>${num(r.afspraken_100)}</td><td>${num(r.overdrachten_101)}</td><td><b>${num(r.resultaten_steam)}</b></td><td class="${r.resultaten_dashboard < r.resultaten_steam ? "rood" : ""}">${num(r.resultaten_dashboard)}</td><td>${num(div(r.resultaten_steam * 100, r.pogingen), 2)}</td><td class="${div(r.data_fout, r.pogingen) > .1 ? "rood" : ""}">${pct(div(r.data_fout, r.pogingen), 1)}</td><td>${eur(r.kosten)}</td><td>${eur(r.kosten_per_resultaat)}</td><td>${num(r.adressen)}</td><td>${num(r.onaangeraakt)}</td><td>${num(r.niet_afgehandeld)}</td></tr>`).join("")}</tbody></table>` : "<p class='uitleg'>Geen campagnerapporten ingelezen (Steam: Contactresultaten, bestand callresults_*.xls).</p>";
   const deb = (D.dq.debiteuren || []), sd = k => deb.reduce((a, r) => a + (r[k] || 0), 0);
   document.getElementById("tDebiteuren").innerHTML = deb.length ? `<table><thead><tr><th>Opdrachtgever</th><th>Open</th><th>Vervallen</th><th>Te versturen</th><th class="l">Facturen</th></tr></thead><tbody>${
     deb.map(r => `<tr><td>${esc(r.klant)}</td><td>${r.open ? eur(r.open, 2) : ""}</td><td class="${r.vervallen ? "rood" : ""}">${r.vervallen ? eur(r.vervallen, 2) : ""}</td><td>${r.te_versturen ? eur(r.te_versturen, 2) : ""}</td><td class="l vs">${esc(r.facturen)}</td></tr>`).join("")}

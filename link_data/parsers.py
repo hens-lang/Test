@@ -9,6 +9,8 @@ Type C  historie-export (één rij per belpoging), herkend aan de kolommen
 Type F  factuur van een beller (PDF): nummer, datum, week, uren, bedrag excl. btw
 Type S  contactstatistieken per agent x campagne x bellijst (Excel-XML, "contactstatistics_agents"):
         alle contactpogingen, hits, afgehandeld en de beltijd per campagne
+Type R  contactresultaten per campagne ("callresults"): aantal pogingen per resultaatcode over alle
+        pogingen, plus voorraad van de bellijst (totaal, onaangeraakt, niet afgehandeld)
 Type V  verkoopfactuur van LINK. aan een opdrachtgever (PDF): één regel per factuurregel,
         met werkperiode-nummer en periode
 
@@ -58,6 +60,10 @@ VERKOOP_KOLOMMEN = ["sleutel", "factuurnr", "klant_naam", "debiteurnr", "factuur
 STATS_KOLOMMEN = ["sleutel", "peildatum", "agent_raw", "campagne", "project", "contactpogingen", "calls", "hits",
                   "afgehandeld", "recordtijd_s", "wachten_s", "laden_s", "prepare_s", "dial_s", "gesprek_s",
                   "finish_s"]
+
+RESULTATEN_KOLOMMEN = ["sleutel", "exportdatum", "campagne", "periode_van", "periode_tot", "agentfilter",
+                       "adressen", "onaangeraakt", "niet_afgehandeld", "contactpogingen", "code", "omschrijving",
+                       "aantal"]
 
 # Kolomnamen (lowercase) die in Type C kunnen voorkomen, per genormaliseerd veld.
 C_ALIASSEN = {
@@ -480,6 +486,32 @@ def _parse_stats(pad: Path, ruw: bytes) -> Export:
     return Export(pad, "S", df, sha, kop)
 
 
+def _parse_callresults(pad: Path, soup: BeautifulSoup, sha: str) -> Export:
+    tekst = schoon(soup.body.get_text(" ") if soup.body else soup.get_text(" "))
+    g = lambda pat: (re.search(pat, tekst) or [None, None])[1]
+    campagne = schoon(g(r"Campagne:\s*(.+?)\s*\(Aantal adressen"))
+    van, tot = parse_datumtijd(g(r"Startdatum:\s*(\S+)")), parse_datumtijd(g(r"Einddatum:\s*(\S+)"))
+    agent = schoon(g(r"Agent:\s*(.*?)\s*Totaal aantal adressen")) or None
+    m = re.search(r"callresults_(\d{1,2})-(\d{1,2})-(\d{4})", pad.name)
+    export = dt.date(int(m.group(3)), int(m.group(2)), int(m.group(1))).isoformat() if m else None
+    getal = lambda pat: _int(g(pat)) or 0
+    basis = {"exportdatum": export, "campagne": campagne, "periode_van": van and van.date().isoformat(),
+             "periode_tot": tot and tot.date().isoformat(), "agentfilter": agent,
+             "adressen": getal(r"Totaal aantal adressen:\s*(\d+)"), "onaangeraakt": getal(r"Onaangeraakte adressen:\s*(\d+)"),
+             "niet_afgehandeld": getal(r"Niet afgehandeld:\s*(\d+)"), "contactpogingen": getal(r"# Contactpogingen:\s*(\d+)")}
+    rijen, gezien = [], set()
+    for tr in soup.find_all("tr"):
+        c = [schoon(x.get_text(" ")) for x in tr.find_all(["td", "th"])]
+        if len(c) >= 3 and re.fullmatch(r"(MAX-)?\d{3}", c[0]) and c[0] not in gezien:
+            gezien.add(c[0])
+            code, _ = codes.normaliseer(c[0])
+            rijen.append({**basis, "sleutel": f"{campagne}|{basis['periode_van']}|{basis['periode_tot']}|{agent}|{c[0]}",
+                          "code": code, "omschrijving": c[1], "aantal": _int(c[2]) or 0})
+    df = pd.DataFrame(rijen, columns=RESULTATEN_KOLOMMEN)
+    df["datum"] = export
+    return Export(pad, "R", df, sha, ["Rc", "", "Aantal"])
+
+
 def parse_bestand(pad) -> Export:
     pad = Path(pad)
     begin = pad.read_bytes()[:400]
@@ -492,6 +524,9 @@ def parse_bestand(pad) -> Export:
     if pad.suffix.lower() == ".csv":
         return _parse_verkoop_csv(pad)
     sha, soup = _lees(pad)
+    if "callresults" in pad.name.lower() or re.search(r"Afgehandeld positief", soup.get_text()[:20000] or ""):
+        if soup.find(string=re.compile("Contactpogingen")) and soup.find(string=re.compile("Onaangeraakte adressen")):
+            return _parse_callresults(pad, soup, sha)
     type_, tabel = herken(soup, pad)
     if type_ == "B":
         df, kop = _parse_uren(tabel)

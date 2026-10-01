@@ -99,7 +99,7 @@ ECHT = sorted(INBOX.glob("*")) if INBOX.exists() else []
 @pytest.mark.parametrize("pad", [p for p in ECHT if p.suffix.lower() in (".xls", ".pdf", ".csv")], ids=lambda p: p.name)
 def test_echte_inbox(pad):
     e = parse_bestand(pad)
-    assert e.type in ("A", "B", "C", "F", "S", "V"), f"{pad.name} niet herkend"
+    assert e.type in ("A", "B", "C", "F", "R", "S", "V"), f"{pad.name} niet herkend"
     assert len(e.df) > 0
     van, tot = e.periode
     assert van <= tot
@@ -140,3 +140,13 @@ def test_steam_contactstatistieken():
     # duur in Excel-XML: '1900-01-01T15:04' = 39 uur 4 minuten
     r = e.df[(e.df.agent_raw == "Hens Boer") & (e.df.project == "Moyee Coffee")].iloc[0]
     assert r["recordtijd_s"] == 39 * 3600 + 4 * 60
+
+
+def test_campagnerapport_callresults():
+    e = parse_bestand(FIXTURES / "callresults_bloei.xls")
+    assert e.type == "R"
+    d = e.df
+    assert d["campagne"].iloc[0] == "Bloei Interieurbeplanting"
+    assert d["aantal"].sum() == d["contactpogingen"].iloc[0] == 624   # alle pogingen
+    assert d.set_index("code").loc[101, "aantal"] == 7
+    assert d["onaangeraakt"].iloc[0] == 0 and d["niet_afgehandeld"].iloc[0] == 271

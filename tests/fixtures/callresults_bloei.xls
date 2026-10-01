@@ -1,0 +1,86 @@
+
+
+
+<html>
+<head>
+	<link rel="icon" href="/inc/assets/image/steam-logo/Icon/favicon.svg" type="image/x-icon">
+<title> Management module</title>
+
+<script type='text/javascript' src='/inc//lang/lang_be.js'></script>
+<script type='text/javascript' src='/inc/functions.js'></script>
+<script type='text/javascript' src='/inc/prototype.js'></script>
+<script type="text/javascript" src="/inc/scriptaculous/scriptaculous.js"></script>
+<script type='text/javascript' src='/inc/sorttable.js'></script>
+
+<style type='text/css'>
+
+	.tdhover {
+		background-color: #fee !important;
+	}
+
+	body {
+		font-family: Consolas;
+	}
+
+	.disabled {
+		color: #888 !important;
+		font-size: 11px !important;
+		background-color: #f8f8f8 !important;
+	}
+
+	.specInfo {
+		border: 1px solid #666;
+		padding: 10px;
+		font-size: 14px;
+		font-family: Consolas;
+		background-color: white !important;
+	}
+
+	.tblRapport {
+		font-family: Consolas;
+		font-size: 12px;
+	}
+
+	.ar {
+		font-family: Consolas;
+		text-align: right;
+		font-size: 11px;
+	}
+
+	.ac {
+		font-family: Consolas;
+		text-align: center;
+		font-size: 11px;
+		color: #aaa;
+	}
+
+	.tblRapport th {
+		font-size: 10px;
+		font-family: Arial;
+		writing-mode: tb-rl;
+		filter: flipv fliph;
+		text-align: left;
+	}
+
+	.subtotal {
+		border-top: 1px solid #ccc;
+		background-color: #EFE9EF;
+		color: #555;
+		text-align: right;
+	}
+
+</style>
+
+</head>
+<body id='idBody' onload='jsOnLoad()' style='margin: 5px; scroll=yes'>
+
+<form method="POST" name='frmMain' >
+
+<iframe id='iframecmd' style='display: none;'></iframe>
+<input type='hidden' name='afdelingpid' value='-1'><input type='hidden' name='agentpid' value='-2'><input type='hidden' name='onlyEndResult' value='0'><input type='hidden' name='datumvan' value='1-1-2026'><input type='hidden' name='datumtm' value='31-12-2026'><input type='hidden' name='campagnepid' value='1021'><input type='hidden' name='projectPID' value='1047'><input type='hidden' name='belbestandpid' value='2100,2101'><br><table class='tblRapport' cellpadding=6 cellspacing=0 id='idTableRapportage' style='display: block !important'><tr><td colspan=7 class='specInfo' id='tdSpecInfo' style='background-color: #dfd;'>Campagne: <b>&nbsp;Bloei Interieurbeplanting (Aantal adressen: 302)</b><br>Project: &nbsp; <b>[Bloei 1] Noord-Holland: SBI: 62,691,70,74,79,82 (302 adressen) </b><br>Afdelingen:<b>Agents<br><br># Contactpogingen: <b>&nbsp;624</b><br>Startdatum: <b>&nbsp;1-1-2026</b><br>Einddatum: <b>&nbsp;31-12-2026</b><br><br>Agent: <b> </b><br><table><tr><td width=155 colspan=2>Totaal aantal adressen: </td><td>302</td></tr><tr><td width=155 colspan=2>Onaangeraakte adressen: </td><td>0</td></tr><tr><td colspan=2>Niet afgehandeld: </td><td>271</td></tr></table></td></tr></table><table></td></tr><tr><td colspan=7></td></tr><tr><th>Rc</th><th></th><th>Aantal</th><th>% Totaal</th><th>% Contactpogingen</th><th>% Afgehandeld</th><th>% effectief</th><th>Max contactpogingen</th></tr><tr style='height: 20px; background-color: #cfbecf;'><td colspan=11>Opvolging (standaard)</td></tr><tr style='height: 20px; background-color: white'><td class='ar'>400</td><td>Geen gehoor                                       </td><td class='ar'>172</td><td class='ar'>56,95%</td><td class='ar'>27,56%</td><td class='ac' style='text-align: center;'>-</td><td class='ac' style='text-align: center;'>-<td class='ar'>2</td></tr><tr style='height: 20px; background-color: #f3f3f3'><td class='ar'>401</td><td>Voicemail                                         </td><td class='ar'>11</td><td class='ar'>3,64%</td><td class='ar'>1,76%</td><td class='ac' style='text-align: center;'>-</td><td class='ac' style='text-align: center;'>-<td class='ar'>0</td></tr><tr style='height: 20px; background-color: white'><td class='ar'>402</td><td>Bezet                                             </td><td class='ar'>32</td><td class='ar'>10,6%</td><td class='ar'>5,13%</td><td class='ac' style='text-align: center;'>-</td><td class='ac' style='text-align: center;'>-<td class='ar'>0</td></tr><tr style='height: 20px; background-color: #f3f3f3'><td class='ar'>403</td><td>Nabellen volgende dag                             </td><td class='ar'>15</td><td class='ar'>4,97%</td><td class='ar'>2,4%</td><td class='ac' style='text-align: center;'>-</td><td class='ac' style='text-align: center;'>-<td class='ar'>0</td></tr><tr style='height: 20px; '><td colspan=2 class='subtotal' style='color: #888'>Subtotaal</td><td class='subtotal'>230</td><td class='subtotal'>76,16%</td><td class='subtotal'>36,86%</td><td class='subtotal' style='text-align: center;'>-</td><td class='subtotal' style='text-align: center;'>-<td class='subtotal'>2</td></tr><tr style='height: 20px; background-color: #cfbecf;'><td colspan=11>Opvolging (tijd invoeren)</td></tr><tr style='height: 20px; background-color: white'><td class='ar'>500</td><td>Terugbelafspraak                                  </td><td class='ar'>156</td><td class='ar'>51,66%</td><td class='ar'>25%</td><td class='ac' style='text-align: center;'>-</td><td class='ac' style='text-align: center;'>-<td class='ar'>0</td></tr><tr style='height: 20px; background-color: #f3f3f3'><td class='ar'>501</td><td>Informatiemail sturen                             </td><td class='ar'>34</td><td class='ar'>11,26%</td><td class='ar'>5,45%</td><td class='ac' style='text-align: center;'>-</td><td class='ac' style='text-align: center;'>-<td class='ar'>0</td></tr><tr style='height: 20px; background-color: white'><td class='ar'>502</td><td>Terugbelverzoek achtergelaten                     </td><td class='ar'>2</td><td class='ar'>0,66%</td><td class='ar'>0,32%</td><td class='ac' style='text-align: center;'>-</td><td class='ac' style='text-align: center;'>-<td class='ar'>0</td></tr><tr style='height: 20px; '><td colspan=2 class='subtotal' style='color: #888'>Subtotaal</td><td class='subtotal'>192</td><td class='subtotal'>63,58%</td><td class='subtotal'>30,77%</td><td class='subtotal' style='text-align: center;'>-</td><td class='subtotal' style='text-align: center;'>-<td class='subtotal'>2</td></tr><tr style='height: 20px; background-color: #cfbecf;'><td colspan=11>Afgehandeld negatief</td></tr><tr style='height: 20px; background-color: #f3f3f3'><td class='ar'>200</td><td>Geen interesse                                    </td><td class='ar'>93</td><td class='ar'>30,79%</td><td class='ar'>14,9%</td><td class='ar'>46,04%</td><td class='ar'>55,69%<td class='ac' style='text-align: center;'>-</td></tr><tr style='height: 20px; background-color: white'><td class='ar'>201</td><td>Al voorzien                                       </td><td class='ar'>6</td><td class='ar'>1,99%</td><td class='ar'>0,96%</td><td class='ar'>2,97%</td><td class='ar'>3,59%<td class='ac' style='text-align: center;'>-</td></tr><tr style='height: 20px; background-color: #f3f3f3'><td class='ar'>202</td><td>Niet geschikt                                     </td><td class='ar'>61</td><td class='ar'>20,2%</td><td class='ar'>9,78%</td><td class='ar'>30,2%</td><td class='ar'>36,53%<td class='ac' style='text-align: center;'>-</td></tr><tr style='height: 20px; '><td colspan=2 class='subtotal' style='color: #888'>Subtotaal</td><td class='subtotal'>160</td><td class='subtotal'>52,98%</td><td class='subtotal'>25,64%</td><td class='subtotal'>79,21%</td><td class='subtotal'>95,81%<td class='subtotal'  style='text-align: center;'>-</td></tr><tr style='height: 20px; background-color: #cfbecf;'><td colspan=11>Afgehandeld positief</td></tr><tr style='height: 20px; background-color: white'><td class='ar'>101</td><td>Overdragen aan Bloei Interieurbeplanting          </td><td class='ar'>7</td><td class='ar'>2,32%</td><td class='ar'>1,12%</td><td class='ar'>3,47%</td><td class='ar'>4,19%<td class='ac' style='text-align: center;'>-</td></tr><tr style='height: 20px; '><td colspan=2 class='subtotal' style='color: #888'>Subtotaal</td><td class='subtotal'>7</td><td class='subtotal'>2,32%</td><td class='subtotal'>1,12%</td><td class='subtotal'>3,47%</td><td class='subtotal'>4,19%<td class='subtotal'  style='text-align: center;'>-</td></tr><tr style='height: 20px; background-color: #cfbecf;'><td colspan=11>Afgehandeld neutraal</td></tr><tr style='height: 20px; background-color: #f3f3f3'><td class='ar'>300</td><td>Onjuist telefoonnummer                            </td><td class='ar'>35</td><td class='ar'>11,59%</td><td class='ar'>5,61%</td><td class='ar'>17,33%</td><td class='ac' style='text-align: center;'>-<td class='ac' style='text-align: center;'>-</td></tr><tr style='height: 20px; '><td colspan=2 class='subtotal' style='color: #888'>Subtotaal</td><td class='subtotal'>35</td><td class='subtotal'>11,59%</td><td class='subtotal'>5,61%</td><td class='subtotal'>17,33%</td><td class='subtotal' style='text-align: center;'>-<td class='subtotal'  style='text-align: center;'>-</td></tr><tr><td colspan=2>Afgehandeld max contactpog.: </td><td align='right'>2</td></tr><tr><td colspan=2>Afgehandeld negatief: </td><td align=right> 160 </td><td align=right>25,64%</td></tr><tr><td colspan=2>Afgehandeld positief: </td><td align=right> 7 </td><td align=right>1,12%</td></tr><tr><td colspan=2>Afgehandeld effectief: </td><td align=right>167 </td><td align=right>26,76%</td></tr><tr><td colspan=2>Afgehandeld neutraal: </td><td align=right> 35 </td><td align=right>5,61%</td></tr></table><script type='text/javascript'>
+	$('tdSpecInfo').innerHTML = $('tdSpecInfo').innerHTML + '<table><tr><td colspan=2>Afgehandeld negatief: </td><td align=right> 160 </td><td align=right>25,64%</td></tr><tr><td colspan=2>Afgehandeld positief: </td><td align=right> 7 </td><td align=right>1,12%</td></tr><tr><td colspan=2>Afgehandeld effectief: </td><td align=right>167 </td><td align=right>26,76%</td></tr><tr><td colspan=2>Afgehandeld neutraal: </td><td align=right> 35 </td><td align=right>5,61%</td></tr></table>'
+	</script>
+	
+</form>
+</body>
+</html>
