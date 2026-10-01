@@ -124,7 +124,7 @@ klanten:
 
   OK Creative Agency:
     pids: [1018]
-    factuur_namen: ["Onze Kapel B.V."]   # aanname: Onze Kapel B.V. = OK Creative Agency; graag bevestigen
+    factuur_namen: ["Onze Kapel B.V."]   # bevestigd door Hens
     fee_per_4wk: 2000   # uit verkoopfactuur 2026-0095
     extra_per_lead: null
     target_per_4wk: 6
@@ -153,7 +153,7 @@ klanten:
 
   # Gevonden in de verkoopfacturen (mailbox), nog niet in de oorspronkelijke lijst:
   Tragter Brandbeveiliging:
-    status: gestopt     # aanname: laatste factuur april 2026, creditnota juni
+    status: gestopt     # bevestigd: laatste factuur april 2026, creditnota juni
     pids: []
     fee_per_4wk: null
     extra_per_lead: null
@@ -163,7 +163,7 @@ klanten:
     belstart: null
 
   Monxs Smart Building Access:
-    status: gestopt     # aanname: alleen factuur juni 2026
+    status: gestopt     # bevestigd: alleen factuur juni 2026
     pids: []
     fee_per_4wk: null
     extra_per_lead: null
