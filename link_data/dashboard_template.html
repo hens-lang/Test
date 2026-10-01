@@ -75,6 +75,15 @@ tr:hover td{background:var(--surface-2)}
 .slider input[type=range]{grid-column:1/3;width:100%;accent-color:var(--cyaan-donker)}
 .slider .v{font:600 18px "Barlow Condensed"}
 .slider .n{grid-column:1/3;font-size:12px;color:var(--tekst-3)}
+.punt{display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:start;padding:10px 0;border-bottom:1px solid var(--rand)}
+.punt:last-child{border-bottom:0}
+.label{font:600 12px Barlow;padding:2px 8px;border-radius:10px;white-space:nowrap;margin-top:2px}
+.label.actie{background:color-mix(in srgb,var(--slecht) 15%,transparent);color:var(--slecht)}
+.label.letop{background:color-mix(in srgb,var(--let-op) 18%,transparent);color:var(--let-op)}
+.label.goed{background:color-mix(in srgb,var(--goed) 15%,transparent);color:var(--goed)}
+.label.info{background:var(--surface-2);color:var(--tekst-2)}
+.punt .t{font-weight:600}.punt .d{font-size:13px;color:var(--tekst-2);grid-column:2/4}
+.punt .g{font:600 18px "Barlow Condensed";white-space:nowrap}
 .knop{font:600 14px Barlow;background:var(--navy);color:#fff;border:0;border-radius:6px;padding:7px 12px;cursor:pointer}
 .knop.licht{background:var(--surface-2);color:var(--tekst)}
 .modus{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
@@ -90,6 +99,7 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
   <div class="kop"><div class="logo">LINK<b>.</b></div><div class="sub">Belprestaties en kostprijs · peildatum <span id="peildatum"></span> · gegenereerd <span id="gegenereerd"></span></div></div>
   <nav id="nav">
     <button data-tab="overzicht" class="actief">Overzicht</button>
+    <button data-tab="conclusies">Conclusies</button>
     <button data-tab="resultaten">Resultaten per uur</button>
     <button data-tab="bellers">Bellers</button>
     <button data-tab="klanten">Opdrachtgevers</button>
@@ -122,6 +132,12 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
   <h2>Targets huidige werkperiode</h2>
   <p class="uitleg">Actieve opdrachtgevers, stand op de peildatum. Werkperiode volgens de verkoopfactuur als die er is, anders vanaf de belstart. Niet afhankelijk van de filters.</p>
   <div class="kaart tabelwrap" id="tTargets"></div>
+</section>
+
+<!-- CONCLUSIES -->
+<section class="tab" id="tab-conclusies">
+  <p class="uitleg" id="cIntro"></p>
+  <div id="cInhoud"></div>
 </section>
 
 <!-- RESULTATEN PER UUR -->
@@ -546,6 +562,141 @@ function renderResultaten() {
 }
 document.getElementById("rGroep").onclick = e => { const b = e.target.closest("button"); if (b) { resGroep = b.dataset.g; renderResultaten(); } };
 
+// ---------- tab: conclusies (berekend uit de data, laatste 4 weken t/m peildatum)
+function venster(van, tot) {
+  const inR = d => d >= van && d <= tot;
+  const ok = {};
+  const r = {res: 0, a100: 0, a101: 0, uren: 0, kosten: 0, overig: 0, opbr: 0, pog: 0, verb: 0, perK: new Map(), perB: new Map(), perKB: new Map()};
+  const cel = () => ({res: 0, uren: 0, kosten: 0, opbr: 0, pog: 0});
+  const g = (m, k) => { if (!m.has(k)) m.set(k, cel()); return m.get(k); };
+  F.c.forEach(x => { if (!inR(x[0]) || !x[7]) return; r.res++; if (x[4] === 100) r.a100++; if (x[4] === 101) r.a101++; g(r.perK, x[3]).res++; g(r.perB, x[2]).res++; g(r.perKB, x[3] + "|" + x[2]).res++; });
+  F.v.forEach(x => { if (!inR(x[0])) return; r.uren += x[3]; r.kosten += x[5]; for (const [m, k] of [[r.perK, x[2]], [r.perB, x[1]], [r.perKB, x[2] + "|" + x[1]]]) { const c = g(m, k); c.uren += x[3]; c.kosten += x[5]; } });
+  F.x.forEach(x => { if (inR(x[0])) r.overig += x[1]; });
+  F.o.forEach(x => { if (!inR(x[0])) return; r.opbr += x[2] + x[3]; g(r.perK, x[1]).opbr += x[2] + x[3]; });
+  (F.p || []).forEach(x => { if (!inR(x[0])) return; r.pog++; if (x[4]) r.verb++; g(r.perB, x[2]).pog++; g(r.perK, x[3]).pog++; });
+  const fac = r.kosten ? (r.kosten + r.overig) / r.kosten : 1;
+  for (const m of [r.perK, r.perB, r.perKB]) m.forEach(c => c.kosten *= fac);
+  r.kosten += r.overig;
+  r.U = F.u.filter(x => inP2(x[0], van, tot));
+  return r;
+}
+const inP2 = (d, van, tot) => d >= van && d <= tot;
+function renderConclusies() {
+  const t1 = peilIdx, v1 = Math.max(0, peilIdx - 27), t0 = v1 - 1, v0 = Math.max(0, v1 - 28);
+  const W = venster(v1, t1), V = venster(v0, t0);
+  const actief = i => D.klanten[i] && (D.klanten[i].status === "actief");
+  const naamK = i => D.klanten[i]?.naam ?? "?", naamB = i => D.bellers[i]?.naam ?? "Onbekend";
+  const norm = scenarioBasis().normResPerUurA;
+  const rpu = c => div(c.res, c.uren);
+  const delta = (a, b, d = 0, pctMode, lagerBeter) => { if (a == null || b == null || !isFinite(a) || !isFinite(b) || !b) return ""; const x = pctMode ? (a - b) / Math.abs(b) : a - b;
+    const nul = Math.abs(pctMode ? x * 100 : x) < (pctMode ? 0.5 : Math.pow(10, -d) / 2);
+    const t = nul ? "gelijk" : (x >= 0 ? "+" : "") + (pctMode ? nf(0).format(x * 100) + "%" : nf(d).format(x));
+    const cls = nul ? "vs" : ((x >= 0) !== !!lagerBeter ? "pos" : "neg");
+    return ` <span class="${cls}">(${t} t.o.v. 4 weken ervoor)</span>`; };
+  document.getElementById("cIntro").innerHTML = `Automatisch berekend uit de data. Laatste 4 weken: <b>${dmy(D.datums[v1])} t/m ${dmy(D.datums[t1])}</b>, vergeleken met ${dmy(D.datums[v0])} t/m ${dmy(D.datums[Math.max(0, t0)])}. Filters bovenin tellen hier niet mee.`;
+  const blokken = [];
+  const punt = (soort, titel, getal, detail) => ({soort, titel, getal, detail});
+  const lab = {actie: "Actie", letop: "Let op", goed: "Goed", info: "Info"};
+  const blok = (titel, punten) => punten.length ? `<h2>${titel}</h2><div class="kaart">${punten.map(p => `<div class="punt"><span class="label ${p.soort}">${lab[p.soort]}</span><div class="t">${p.titel}</div><div class="g">${p.getal || ""}</div>${p.detail ? `<div class="d">${p.detail}</div>` : ""}</div>`).join("")}</div>` : "";
+
+  // 1. Kernpunten
+  const k = [];
+  const marge = W.opbr - W.kosten, margeV = V.opbr - V.kosten;
+  k.push(punt(marge >= 0 ? "goed" : "actie", `Marge laatste 4 weken: ${eurT(marge)} (${pct(div(marge, W.opbr))} van de opbrengst)`, eurT(marge),
+    `Opbrengst ${eurT(W.opbr)}, kosten ${eurT(W.kosten)}.${delta(marge, margeV, 0, true)}`));
+  const r1 = rpu(W), r0 = rpu(V);
+  k.push(punt(norm && r1 >= norm ? "goed" : r1 >= (r0 || 0) ? "letop" : "actie", `Resultaten per betaald uur: ${num(r1, 2)}`, num(r1, 2),
+    `${W.res} resultaten (${W.a100} afspraken, ${W.a101} overdrachten) in ${num(W.uren, 0)} uur.${delta(r1, r0, 2)} Norm bij € ${M.tarief_doel} met gelijk budget: ${num(norm, 2)} per uur${norm && r1 ? `, nu ${pct(r1 / norm)} daarvan` : ""}.`));
+  k.push(punt(div(W.kosten, W.res) <= div(V.kosten, V.res) ? "goed" : "letop", `Kosten per resultaat: ${eurT(div(W.kosten, W.res))}`, eurT(div(W.kosten, W.res)),
+    `Inclusief vaste vergoeding eigenaren en overige kosten.${delta(div(W.kosten, W.res), div(V.kosten, V.res), 0, true, true)}`));
+  blokken.push(blok("Kernpunten", k));
+
+  // 2. Opdrachtgevers
+  const o = [];
+  const tg = D.targets.filter(t => t.status === "actief" && t.periode_van);
+  const rood = tg.filter(t => t.stoplicht === "rood"), oranje = tg.filter(t => t.stoplicht === "oranje"), groen = tg.filter(t => t.stoplicht === "groen");
+  rood.forEach(t => o.push(punt("actie", `${esc(t.klant)} haalt het target niet`, `${t.resultaten} / ${num(t.target, 0)}`,
+    `Lopende periode ${dmy(t.periode_van)} t/m ${dmy(t.periode_tot)}: prognose ${num(t.prognose, 1)}. Nodig: ${num(t.benodigd_per_werkdag, 2)} resultaten per resterende werkdag (${t.werkdagen_rest} werkdagen).${t.detail ? " " + esc(t.detail) + "." : ""}`)));
+  oranje.forEach(t => o.push(punt("letop", `${esc(t.klant)} zit krap op target`, `${t.resultaten} / ${num(t.target, 0)}`, `Prognose ${num(t.prognose, 1)}; nodig ${num(t.benodigd_per_werkdag, 2)} per werkdag.`)));
+  if (groen.length) o.push(punt("goed", `Op koers voor target: ${groen.map(t => esc(t.klant)).join(", ")}`, `${groen.length}`, ""));
+  const kl = [...W.perK.entries()].filter(([i, c]) => actief(i) && c.uren >= 8).map(([i, c]) => ({i, c, r: rpu(c), kpr: div(c.kosten, c.res), m: c.opbr - c.kosten}));
+  if (kl.length >= 2) {
+    const s = [...kl].sort((a, b) => (b.r || 0) - (a.r || 0));
+    o.push(punt("goed", `Beste rendement per uur: ${esc(naamK(s[0].i))}`, num(s[0].r, 2) + "/u", `${s[0].c.res} resultaten in ${num(s[0].c.uren, 0)} uur, ${eurT(s[0].kpr)} per resultaat.`));
+    const z = s[s.length - 1];
+    o.push(punt(z.r < (norm || 0) / 2 ? "actie" : "letop", `Laagste rendement per uur: ${esc(naamK(z.i))}`, num(z.r, 2) + "/u", `${z.c.res} resultaten in ${num(z.c.uren, 0)} uur, ${z.kpr ? eurT(z.kpr) + " per resultaat" : "geen resultaten"}. Bekijk de bellijst, het script en wie er belt.`));
+    kl.filter(x => x.m < 0 && x.c.opbr > 0).forEach(x => o.push(punt("actie", `${esc(naamK(x.i))} kost meer dan het oplevert`, eurT(x.m), `Opbrengst ${eurT(x.c.opbr)}, toegerekende kosten ${eurT(x.c.kosten)} (${num(x.c.uren, 0)} uur).`)));
+  }
+  (D.dq.campagnerapport || []).filter(r => r.status === "actief").forEach(r => {
+    const vrij = r.onaangeraakt;
+    if (vrij < 50) o.push(punt("actie", `Bellijst ${esc(r.klant)} is bijna op`, `${num(vrij)} nieuw`, `Nog ${num(vrij)} onaangeraakte en ${num(r.niet_afgehandeld)} niet afgehandelde adressen van ${num(r.adressen)}. Nieuwe data inladen.`));
+    if (r.pogingen > 100 && div(r.data_fout, r.pogingen) > 0.1) o.push(punt("letop", `Veel foute nummers bij ${esc(r.klant)}`, pct(div(r.data_fout, r.pogingen)), `${num(r.data_fout)} keer 'onjuist telefoonnummer'. Lijstkwaliteit of bron (AdHocData/Apollo) checken.`));
+  });
+  blokken.push(blok("Opdrachtgevers", o));
+
+  // 3. Bellers
+  const b = [];
+  const zzp = new Set(D.bellers.map((x, i) => i).filter(i => D.bellers[i].type === "ZZP"));
+  const bl = [...W.perB.entries()].filter(([i, c]) => i >= 0 && c.uren >= 8).map(([i, c]) => ({i, c, r: rpu(c), pph: div(c.pog, c.uren)}));
+  bl.sort((a, b2) => (b2.r || 0) - (a.r || 0)).forEach(x => {
+    const v = V.perB.get(x.i), rv = v ? rpu(v) : null;
+    const soort = norm && x.r >= norm ? "goed" : zzp.has(x.i) && norm && x.r < norm / 2 ? "actie" : "letop";
+    b.push(punt(soort, `${esc(naamB(x.i))}: ${num(x.r, 2)} resultaten per uur`, num(x.r, 2) + "/u",
+      `${x.c.res} resultaten in ${num(x.c.uren, 0)} uur, ${num(x.pph, 1)} belpogingen per uur, ${x.c.res ? eurT(div(x.c.kosten, x.c.res)) + " per resultaat" : "geen resultaten"}.${rv != null ? delta(x.r, rv, 2) : ""}${norm ? ` Norm € ${M.tarief_doel}: ${num(norm, 2)}.` : ""}`));
+  });
+  const combi = [...W.perKB.entries()].map(([key, c]) => { const [ki, bi] = key.split("|").map(Number); return {ki, bi, c, r: rpu(c)}; }).filter(x => x.c.uren >= 6 && x.c.res >= 2 && actief(x.ki));
+  if (combi.length) {
+    combi.sort((a, b2) => b2.r - a.r);
+    const top = combi.slice(0, 3).map(x => `${esc(naamB(x.bi))} bij ${esc(naamK(x.ki))} (${num(x.r, 2)}/u)`).join(", ");
+    b.push(punt("goed", "Sterkste combinaties beller en opdrachtgever", "", `${top}. Zet deze bellers vaker op deze klanten.`));
+  }
+  const zwak = [...W.perKB.entries()].map(([key, c]) => { const [ki, bi] = key.split("|").map(Number); return {ki, bi, c}; }).filter(x => x.c.uren >= 10 && x.c.res === 0 && actief(x.ki));
+  zwak.forEach(x => b.push(punt("actie", `${esc(naamB(x.bi))} bij ${esc(naamK(x.ki))}: geen resultaat`, `${num(x.c.uren, 0)} uur`, `${num(x.c.uren, 1)} betaalde uur zonder resultaat in de laatste 4 weken.`)));
+  const P1 = (F.p || []).filter(x => inP2(x[0], v1, t1));
+  if (P1.length) {
+    const fi = D.bellers.map((x, i) => ({i, f: focusIndex(P1.filter(r => r[2] === i))})).filter(x => x.f.index != null && x.f.dagen >= 3);
+    fi.filter(x => x.f.index < M.focus_drempel).forEach(x => b.push(punt("actie", `${esc(naamB(x.i))} zakt weg in de laatste 2 uur`, num(x.f.index, 2), `Focus-index onder ${nf(1).format(M.focus_drempel)} over ${x.f.dagen} dagen.`)));
+    if (fi.length && fi.every(x => x.f.index >= M.focus_drempel)) b.push(punt("goed", "Focus in de laatste 2 uur is bij iedereen op peil", "", fi.map(x => `${esc(naamB(x.i))} ${num(x.f.index, 2)}`).join(", ") + "."));
+  }
+  const tv = [...perSleutel(W.U, r => r[1], () => []).entries()].map(([i, U]) => ({i, verlies: div(som(U, 8) + som(U, 11), som(U, 2)), talk: div(som(U, 10), som(U, 2))})).filter(x => x.i >= 0 && x.verlies != null);
+  tv.filter(x => x.verlies > 0.35).forEach(x => b.push(punt("letop", `${esc(naamB(x.i))}: veel verloren tijd (Prepare + Finish)`, pct(x.verlies), `Gesprekstijd ${pct(x.talk)} van de betaalde tijd. Kortere voorbereiding en afhandeling geven direct meer pogingen per uur.`)));
+  blokken.push(blok("Bellers", b));
+
+  // 4. Geld
+  const g = [];
+  const deb = D.dq.debiteuren || [], sd = k2 => deb.reduce((a, r) => a + (r[k2] || 0), 0);
+  if (sd("vervallen") > 0) g.push(punt("actie", "Vervallen facturen", eurT(sd("vervallen")), deb.filter(r => r.vervallen).map(r => `${esc(r.klant)} ${eurT(r.vervallen)}`).join(", ") + " (incl. btw). Herinnering sturen."));
+  if (sd("open") > 0) g.push(punt("info", "Openstaand, nog niet vervallen", eurT(sd("open")), ""));
+  if (sd("te_versturen") > 0) g.push(punt("info", "Klaar om te versturen", eurT(sd("te_versturen")), "Facturen die klaarstaan in de boekhouding (incl. btw)."));
+  const lopendeWeek = weekVan[peilIdx];
+  const nf_ = (D.dq.factuurvergelijking || []).filter(r => String(r.status).startsWith("nog geen factuur") && r.week < lopendeWeek);
+  if (nf_.length) g.push(punt("letop", "Bellerfacturen ontbreken", `${nf_.length} weken`, [...perSleutel(nf_, r => r.beller, () => []).entries()].map(([bb, A]) => `${esc(bb)}: ${A.map(r => "wk " + +r.week.slice(6)).join(", ")}`).join(" · ") + ". Kosten zijn voor deze weken geschat."));
+  const vk = (D.dq.verkoop_per_klant || []).filter(r => r.verschil && Math.abs(r.verschil) > 1);
+  if (vk.length) g.push(punt("letop", "Omzet sluit niet aan met de boekhouding", "", vk.map(r => `${esc(r.debiteur)} ${eurT(r.verschil)}`).join(", ")));
+  blokken.push(blok("Geld", g));
+
+  // 5. Scenario
+  const B = scenarioBasis();
+  if (B.uren4) {
+    const urenA = B.budget4 / M.tarief_doel;
+    blokken.push(blok(`Scenario € ${M.tarief_doel} per uur`, [
+      punt("info", `Met hetzelfde budget: ${num(urenA / 4, 1)} uur per week in plaats van ${num(B.uren4 / 4, 1)}`, `${pct(M.tarief_nu / M.tarief_doel)}`, `Huidig ZZP-budget ${eurT(B.budget4)} per werkperiode.`),
+      punt(B.rph >= B.normResPerUurA ? "goed" : "actie", `Nodig: ${num(B.normResPerUurA, 2)} resultaten per uur (nu ${num(B.rph, 2)})`, pct(div(B.rph, B.normResPerUurA)),
+        `Dat is ${num(div(B.normResPerUurA, B.bereik * B.conv), 1)} belregels per uur bij het huidige bereik en de huidige conversie, of een conversie van ${pct(div(B.normResPerUurA, B.bph * B.bereik), 1)} bij het huidige tempo. Bij gelijke kostprijs per resultaat: ${num(B.normResPerUurB, 2)} per uur.`)]));
+  }
+
+  // 6. Datakwaliteit
+  const q = [], dqq = D.dq;
+  (dqq.niet_gekoppelde_agents || []).forEach(r => q.push(punt("actie", `Onbekende beller in de exports: ${esc(r.agent)}`, `${r.rijen}`, "Toevoegen in bellers.yaml (alias, type, tarief).")));
+  (dqq.niet_gekoppelde_pids || []).forEach(r => q.push(punt("actie", `Onbekende campagne-PID ${r.pid}`, `${r.rijen}`, `Campagne volgens export: ${esc(r.campagne_in_export)}. Toevoegen in klanten.yaml.`)));
+  (dqq.campagnerapport || []).filter(r => r.status === "actief" && r.resultaten_steam - r.resultaten_dashboard >= 3).forEach(r => q.push(punt("letop", `${esc(r.klant)}: belexport mist resultaten`, `${r.resultaten_dashboard} / ${r.resultaten_steam}`, "Steam telt meer resultaten dan de belexport. Exporteer opnieuw zonder filter op beller.")));
+  if (!(dqq.controles || []).every(c => c.ok)) q.push(punt("actie", "Een somcontrole wijkt af", "", "Zie Datakwaliteit."));
+  else q.push(punt("goed", "Alle somcontroles kloppen", "", "Uren, kosten, facturen, opbrengst en resultaten sluiten aan op de bronnen."));
+  blokken.push(blok("Datakwaliteit", q));
+
+  document.getElementById("cInhoud").innerHTML = blokken.join("");
+}
+
 // ---------- tab: periodes
 function renderPeriodes() {
   const pk = document.getElementById("pKlant");
@@ -814,12 +965,14 @@ function scenarioBasis() {
   const kostenZ = klanten.reduce((a, k) => a + k.urenZ, 0);
   klanten.forEach(k => k.overig = overig4 * (div(k.urenZ, kostenZ) || 0));
   const uren4 = uren * per4, res4 = f.res * per4;
+  const eigUren4 = som(F.u.filter(r => inP(r[0]) && r[1] >= 0 && !isZ.has(r[1])), 2) / 3600 * per4;
   const targetSom = D.klanten.reduce((a, k) => a + (k.status === "actief" ? (k.target || 0) : 0), 0);
   const tn = M.tarief_nu, td = M.tarief_doel;
   const budget4 = uren4 * tn;
   const urenA = budget4 / td;
-  const normResPerUurA = div(targetSom, urenA);
-  return {sv, st, weken, per4, uren4, res4, f, bph, bereik, conv, rph: div(f.res, uren), bellers, klanten, targetSom, budget4, urenA, normResPerUurA,
+  // Norm voor het hele team: targets / (ZZP-uren binnen budget bij doeltarief + uren eigenaren)
+  const normResPerUurA = div(targetSom, urenA + eigUren4);
+  return {sv, st, weken, per4, eigUren4, uren4, res4, f, bph, bereik, conv, rph: div(f.res, uren), bellers, klanten, targetSom, budget4, urenA, normResPerUurA,
     kostprijsRes: div(budget4, res4), normResPerUurB: div(td, div(budget4, res4))};
 }
 
@@ -885,12 +1038,12 @@ function rekenScenario(B) {
   const kostprijs = div(budget4, B.res4);
   let tekst, normRph;
   if (m === "a") {
-    normRph = div(B.targetSom, urenA);
+    normRph = div(B.targetSom, urenA + B.eigUren4);
     tekst = `<p>Huidig urenbudget ZZP: <b>${eurT(budget4)}</b> per werkperiode (${n1(B.uren4)} uur x € ${tn}). Bij € ${td} is dat <b>${n1(urenA)} uur</b> per werkperiode (${n1(urenA / 4)} per week, ${pct(tn / td)} van nu).</p>
-      <p>Som van alle ingevulde targets: <b>${num(B.targetSom)}</b> resultaten per werkperiode. Nodig: <b>${num(normRph, 2)} resultaten per betaald uur</b> (nu ${num(B.rph, 2)}).</p>
+      <p>Som van de targets van actieve opdrachtgevers: <b>${num(B.targetSom)}</b> resultaten per werkperiode. Met ${n1(urenA)} ZZP-uur plus ${n1(B.eigUren4)} uur van de eigenaren is dat <b>${num(normRph, 2)} resultaten per betaald uur</b> voor het hele team (ZZP nu ${num(B.rph, 2)}).</p>
       <p>Bij gemeten bereik (${pct(B.bereik, 1)}) en conversie (${pct(B.conv, 1)}) zijn dat <b>${num(div(normRph, B.bereik * B.conv), 1)} belregels per uur</b> (nu ${num(B.bph, 1)}).<br>
       Of, bij gemeten tempo (${num(B.bph, 1)}/uur) en bereik: een conversie van <b>${pct(div(normRph, B.bph * B.bereik), 1)}</b> (nu ${pct(B.conv, 1)}).</p>
-      <p class="vs">Aanname: alle targets worden met ZZP-uren gehaald. Met de huidige productiviteit levert ${n1(urenA)} uur ${n1(urenA * (B.rph || 0))} resultaten per werkperiode op. Targets die nog op null staan tellen niet mee.</p>`;
+      <p class="vs">Aanname: de eigenaren blijven evenveel uren bellen. Met de huidige productiviteit levert ${n1(urenA)} uur ${n1(urenA * (B.rph || 0))} resultaten per werkperiode op. Targets die nog op null staan tellen niet mee.</p>`;
   } else {
     normRph = div(td, kostprijs);
     tekst = `<p>Huidige kostprijs per resultaat (ZZP-uren): <b>${eurT(kostprijs)}</b>. Om die gelijk te houden bij € ${td} moet een beller <b>${num(normRph, 2)} resultaten per uur</b> halen (nu ${num(B.rph, 2)}, +${pct(td / tn - 1)}).</p>
@@ -962,7 +1115,7 @@ let actieveTab = "overzicht";
 function render() {
   const n = S.tot - S.van + 1;
   document.getElementById("fInfo").textContent = `${dmy(D.datums[S.van])} t/m ${dmy(D.datums[S.tot])} · ${n} dagen`;
-  ({overzicht: renderOverzicht, periodes: renderPeriodes, resultaten: renderResultaten, bellers: renderBellers, klanten: renderKlanten, focus: renderFocus, scenario: renderScenario, dq: renderDQ})[actieveTab]();
+  ({overzicht: renderOverzicht, conclusies: renderConclusies, periodes: renderPeriodes, resultaten: renderResultaten, bellers: renderBellers, klanten: renderKlanten, focus: renderFocus, scenario: renderScenario, dq: renderDQ})[actieveTab]();
 }
 document.getElementById("nav").onclick = e => {
   const t = e.target.closest("button"); if (!t) return;
