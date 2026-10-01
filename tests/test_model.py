@@ -65,7 +65,7 @@ def test_onbekende_pid_wordt_niet_gegokt(pipeline):
 
 def test_null_velden_crashen_niet(pipeline):
     *_, cfg, m = pipeline
-    assert any(o["veld"] == "target_per_4wk" for o in m.dq["ontbrekende_config"])
+    assert any(o["veld"] == "belstart" for o in m.dq["ontbrekende_config"])
     t = m.targets.set_index("klant")
     assert t.loc["KIK Ongediertebestrijding", "stoplicht"] == "pauze"   # niet-actieve klant: geen stoplicht
     assert t.loc["Helden Productions", "stoplicht"] == "gestopt"

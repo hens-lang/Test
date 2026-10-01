@@ -11,6 +11,9 @@
 #   telt_als_resultaat   welke resultaatcodes tellen voor deze klant als resultaat
 #   targets_per_code     optioneel, bv. {100: 4, 101: 10}: target per resultaatcode per 4 weken.
 #                        Het stoplicht kijkt dan naar het onderdeel dat het meest achterloopt.
+#   extra_code           resultaatcode waarvoor extra_per_lead betaald wordt (standaard 101; Moyee: 100)
+#   pilot                {weken: 12, target: 10, fee: 4950}: pilot met vaste looptijd; target en
+#                        voortgang over de hele pilot in plaats van per 4 weken
 #   memo_classificatie   true: een resultaat met een afspraak in de memo telt als 100 (afspraak),
 #                        anders als 101 (lead). Patronen in instellingen.yaml.
 #   belstart             eerste beldag (jjjj-mm-dd); werkperiodes tellen vanaf hier.
@@ -29,7 +32,8 @@ klanten:
     omzet_boekhouding: 12600
     pids: [11]
     fee_per_4wk: 1500
-    extra_per_lead: 150
+    extra_per_lead: 150   # per ingeplande afspraak (100), niet per lead met kortingscode
+    extra_code: 100
     target_per_4wk: 14
     targets_per_code: {100: 4, 101: 10}   # 1 afspraak per week + ca. 2-3 leads per week
     memo_classificatie: true   # bellers zetten alles op 101; afspraak wordt herkend uit de memo
@@ -193,18 +197,20 @@ klanten:
   # Nieuw, gezien in "te versturen" in de boekhouding (1-10-2026):
   MostWare Next:
     pids: []            # PID volgt zodra de campagne in Steam staat
-    fee_per_4wk: null   # eerste factuur 5-10-2026: € 5.989,50 incl. (= € 4.950 excl.)
-    extra_per_lead: null
-    target_per_4wk: null
-    deliverable: null
+    pilot: {weken: 12, target: 10, fee: 4950}   # 10 gekwalificeerde afspraken in 12 weken, € 4.950 excl.
+    fee_per_4wk: 1650   # 4950 / 3 werkperiodes
+    extra_per_lead: 0
+    target_per_4wk: 3.33   # 10 / 3 werkperiodes
+    deliverable: gekwalificeerde afspraak (100)
     telt_als_resultaat: [100]
     belstart: 2026-10-05
 
   Kubus Heerenveen:
     pids: []            # pilot; PID volgt zodra de campagne in Steam staat
-    fee_per_4wk: null   # eerste factuur 5-10-2026: € 5.989,50 incl. (= € 4.950 excl.)
-    extra_per_lead: null
-    target_per_4wk: null
-    deliverable: null
+    pilot: {weken: 12, target: 10, fee: 4950}   # 10 gekwalificeerde afspraken in 12 weken, € 4.950 excl.
+    fee_per_4wk: 1650   # 4950 / 3 werkperiodes
+    extra_per_lead: 0
+    target_per_4wk: 3.33   # 10 / 3 werkperiodes
+    deliverable: gekwalificeerde afspraak (100)
     telt_als_resultaat: [100]
     belstart: 2026-10-05

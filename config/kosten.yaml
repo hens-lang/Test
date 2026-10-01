@@ -43,7 +43,5 @@ facturen:
   - {post: Data Apollo.io, leverancier: ZenLeads Inc. (Apollo.io), factuurnr: B3Y3O64H-0022, datum: 2026-09-25, bedrag: 15.00, valuta: USD, periode_van: 2026-09-25, periode_tot: 2026-09-28}
   - {post: Data Apollo.io, leverancier: ZenLeads Inc. (Apollo.io), factuurnr: B3Y3O64H-0024, datum: 2026-09-29, bedrag: 84.00, valuta: USD, periode_van: 2026-09-29, periode_tot: 2026-10-28}
 
-  # Laravel Cloud (hosting tools), USD.
-  - {post: Software en hosting, leverancier: Laravel Cloud, factuurnr: LAR-D623-202607-155841, datum: 2026-07-18, bedrag: 4.66, valuta: USD}
-  - {post: Software en hosting, leverancier: Laravel Cloud, factuurnr: LAR-D623-202608-170127, datum: 2026-08-18, bedrag: 11.18, valuta: USD}
-  - {post: Software en hosting, leverancier: Laravel Cloud, factuurnr: LAR-D623-202609-184797, datum: 2026-09-18, bedrag: 13.28, valuta: USD}
+  # Laravel Cloud, website en andere algemene kosten tellen bewust niet mee: alleen kosten die direct
+  # met bellen te maken hebben (Steam, data, Apollo) horen in de kostprijs.

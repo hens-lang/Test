@@ -38,6 +38,10 @@ class Klant:
     steam_campagnes: list = field(default_factory=list)
     targets_per_code: dict = field(default_factory=dict)
     memo_classificatie: bool = False
+    extra_code: int = 101                 # resultaatcode waarvoor extra_per_lead geldt
+    pilot_weken: int | None = None        # pilot met vaste looptijd
+    pilot_target: float | None = None     # target over de hele pilot
+    pilot_fee: float | None = None
 
     @property
     def actief(self) -> bool:
@@ -68,6 +72,7 @@ class Beller:
     vaste_vergoeding_vanaf: dt.date | None = None
     factuur_afzenders: list = field(default_factory=list)
     uren_per_week_afspraak: float | None = None
+    uren_buiten_steam: dict | None = None
 
     def tarief_op(self, datum: dt.date) -> float | None:
         if self.ingang_nieuw and datum >= self.ingang_nieuw:
@@ -172,6 +177,10 @@ def laad(config_dir: Path | str = CONFIG_DIR) -> Config:
             steam_campagnes=list(v.get("steam_campagnes") or []),
             targets_per_code={int(c): float(t) for c, t in (v.get("targets_per_code") or {}).items()},
             memo_classificatie=bool(v.get("memo_classificatie", False)),
+            extra_code=int(v.get("extra_code", 101)),
+            pilot_weken=(v.get("pilot") or {}).get("weken"),
+            pilot_target=(v.get("pilot") or {}).get("target"),
+            pilot_fee=(v.get("pilot") or {}).get("fee"),
         )
 
     bellers = {}
@@ -195,6 +204,7 @@ def laad(config_dir: Path | str = CONFIG_DIR) -> Config:
             vaste_vergoeding_vanaf=_datum(v.get("vaste_vergoeding_vanaf")),
             factuur_afzenders=list(v.get("factuur_afzenders") or []),
             uren_per_week_afspraak=v.get("uren_per_week_afspraak"),
+            uren_buiten_steam=v.get("uren_buiten_steam"),
         )
 
     for post, bedrag in (inst.get("overige_kosten_per_maand") or {}).items():

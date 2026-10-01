@@ -96,7 +96,7 @@ def payload(model: Model, cfg: Config) -> dict:
             "fee": kc and kc.fee_per_4wk, "lead": kc and kc.extra_per_lead,
             "target": kc and kc.target_per_4wk, "deliverable": kc and kc.deliverable,
             "telt_als": kc.telt_als_resultaat if kc else [100, 101], "pids": kc.pids if kc else [],
-            "status": kc.status if kc else "onbekend",
+            "status": kc.status if kc else "onbekend", "lead_code": kc.extra_code if kc else 101,
         })
 
     feiten = {

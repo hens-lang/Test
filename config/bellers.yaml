@@ -10,6 +10,8 @@
 # factuur_afzenders: naam zoals die op de factuur staat (t.n.v. / Ten name van).
 #   Voor weken met een factuur gebruikt het model het gefactureerde bedrag als kosten;
 #   weken zonder factuur worden geschat als Steam-uren x tarief.
+# uren_buiten_steam: uren die niet in de urenexport staan (bv. {totaal: 24, tot: 2026-09-30}). Ze worden
+#   verdeeld over de dagen met belpogingen van deze beller (t/m 'tot'), naar rato van het aantal pogingen.
 # uren_per_week_afspraak: vaste afspraak in uren per week. Weken zonder factuur worden dan
 #   geschat als dit aantal uren x tarief in plaats van Steam-uren x tarief.
 
@@ -44,9 +46,10 @@ bellers:
 
   Matthijs van Beest:
     aliassen: ["Matthijs van Beest"]   # gevonden in de belpogingen (OK Creative, 443 pogingen)
-    factuur_afzenders: []              # factuur nog niet gevonden
+    factuur_afzenders: []              # nog geen factuur ontvangen
+    uren_buiten_steam: {totaal: 24, tot: 2026-09-30}   # 3 x 8 uur volgens Hens; niet in de urenexport
     type: ZZP
-    tarief_nu: 25                      # aanname: standaardtarief ZZP; aanpassen als het anders is
+    tarief_nu: 25
     tarief_nieuw: 36
     ingang_nieuw: null
     actief: true

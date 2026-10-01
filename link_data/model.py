@@ -147,6 +147,39 @@ def _vaste_vergoedingen(uren: pd.DataFrame, cfg: Config, peildatum: dt.date):
     return pd.DataFrame(zonder_uren)
 
 
+def _uren_buiten_steam(uren: pd.DataFrame, pogingen: pd.DataFrame, cfg: Config) -> pd.DataFrame:
+    """Uren die niet in de urenexport staan (bellers.yaml: uren_buiten_steam) verdelen over de dagen met
+    belpogingen van die beller, naar rato van het aantal pogingen."""
+    uren["bron"] = "urenexport"
+    extra = []
+    for b in cfg.bellers.values():
+        ub = b.uren_buiten_steam or {}
+        if not ub.get("totaal") or not len(pogingen):
+            continue
+        tot = ub.get("tot")
+        tot = dt.date.fromisoformat(str(tot)) if tot else None
+        van = ub.get("van")
+        van = dt.date.fromisoformat(str(van)) if van else None
+        p = pogingen[(pogingen["beller"] == b.naam)]
+        if tot:
+            p = p[p["datum"] <= tot]
+        if van:
+            p = p[p["datum"] >= van]
+        n = p.groupby("datum").size()
+        if n.empty:
+            continue
+        for d, k in n.items():
+            u = float(ub["totaal"]) * k / n.sum()
+            extra.append({"datum": d, "agent_raw": b.naam, "beller": b.naam, "afdeling": "buiten Steam",
+                          "pogingen": int(k), "te_betalen_s": int(round(u * 3600)), "uren": u,
+                          "tarief": b.tarief_op(d), "kosten_uur": u * (b.tarief_op(d) or 0), "kosten_vast": 0.0,
+                          "bron": "uren_buiten_steam"})
+    if not extra:
+        return uren
+    return pd.concat([uren, pd.DataFrame(extra)], ignore_index=True).fillna(
+        {c: 0 for c in uren.columns if c.endswith("_s") or c in ("records", "hits", "afgehandeld")})
+
+
 def _maandag(d: dt.date) -> dt.date:
     return d - dt.timedelta(days=d.weekday())
 
@@ -288,11 +321,19 @@ def _kalibreer(v: pd.DataFrame, stats: pd.DataFrame, rondes: int = 2000, eps: fl
 
 
 def _verdeling(uren: pd.DataFrame, contacten: pd.DataFrame, extra: pd.DataFrame,
-               stats: pd.DataFrame | None = None, kalibreren: bool = True) -> pd.DataFrame:
+               stats: pd.DataFrame | None = None, kalibreren: bool = True,
+               pogingen: pd.DataFrame | None = None) -> pd.DataFrame:
     """Verdeelsleutel: uren/kosten per beller per dag naar rato van contactmomenten per klant.
     Dagen zonder belregels: naar rato van de beltijd per campagne uit de Steam-contactstatistieken."""
     tel = (contacten.dropna(subset=["beller"]).groupby(["datum", "beller", "klant_label"])
            .size().rename("n").reset_index())
+    if pogingen is not None and len(pogingen):
+        # Dagen zonder belregels: verdelen naar rato van de belpogingen per klant die dag
+        pt = (pogingen.dropna(subset=["beller"]).assign(klant_label=lambda x: x["klant"].fillna(NIET_TOEGEREKEND))
+              .groupby(["datum", "beller", "klant_label"]).size().rename("n").reset_index())
+        al = set(zip(tel["datum"], tel["beller"]))
+        pt = pt[[(d, b) not in al for d, b in zip(pt["datum"], pt["beller"])]]
+        tel = pd.concat([tel, pt], ignore_index=True)
     tel["aandeel"] = tel["n"] / tel.groupby(["datum", "beller"])["n"].transform("sum")
     u = uren.dropna(subset=["beller"]).groupby(["datum", "beller"], as_index=False).agg(
         uren=("uren", "sum"), pogingen=("pogingen", "sum"), kosten=("kosten", "sum"))
@@ -405,7 +446,7 @@ def _opbrengst(cfg: Config, contacten: pd.DataFrame, peildatum: dt.date, verkoop
                 rijen.append({"datum": r.factuurdatum, "klant": k.naam, "fee": 0.0, "leads_eur": r.bedrag_excl,
                               "leads": 0, "gefactureerd": True})
         if schatten and k.extra_per_lead and lead_f.empty:
-            leads = contacten[(contacten["klant"] == k.naam) & contacten["is_lead"]].groupby("datum").size()
+            leads = contacten[(contacten["klant"] == k.naam) & (contacten["code_eff"] == k.extra_code)].groupby("datum").size()
             for d, n in leads.items():
                 rijen.append({"datum": d, "klant": k.naam, "fee": 0.0,
                               "leads_eur": n * k.extra_per_lead, "leads": int(n), "gefactureerd": False})
@@ -480,7 +521,12 @@ def _targets(cfg: Config, contacten: pd.DataFrame, peildatum: dt.date, verkoop: 
             p_van = start + dt.timedelta(days=28 * nr)
             p_tot = p_van + dt.timedelta(days=27)
             r["periode_bron"] = "berekend"
-            if len(fp):
+            if k.pilot_weken:
+                nr, p_van = 0, start
+                p_tot = start + dt.timedelta(days=7 * int(k.pilot_weken) - 1)
+                r["periode_bron"] = f"pilot {k.pilot_weken} weken"
+                r["target"] = k.pilot_target
+            elif len(fp):
                 p_van, p_tot = fp.iloc[0].periode_van, fp.iloc[0].periode_tot
                 if pd.notna(fp.iloc[0].werkperiode_nr):
                     nr = int(fp.iloc[0].werkperiode_nr) - 1
@@ -509,13 +555,17 @@ def _targets(cfg: Config, contacten: pd.DataFrame, peildatum: dt.date, verkoop: 
                 rest_nodig = sum(max(0, t - int(((in_p["code_eff"] == c) & in_p["is_resultaat"]).sum()))
                                  for c, t in k.targets_per_code.items())
                 r["benodigd_per_werkdag"] = rest_nodig / rest if rest else None
-            elif k.target_per_4wk:
-                ratio = (prognose or 0) / k.target_per_4wk
+            elif r.get("target") or k.target_per_4wk:
+                doel = r.get("target") or k.target_per_4wk
+                ratio = (prognose or 0) / doel
                 r["stoplicht"] = "groen" if ratio >= groen else "oranje" if ratio >= oranje else "rood"
-                r["benodigd_per_werkdag"] = (max(0, k.target_per_4wk - res) / rest) if rest else None
+                r["benodigd_per_werkdag"] = (max(0, doel - res) / rest) if rest else None
             else:
                 r["stoplicht"] = "geen target"
         else:
+            if k.pilot_weken and start:
+                r.update(periode_van=start, periode_tot=start + dt.timedelta(days=7 * int(k.pilot_weken) - 1),
+                         periode_bron=f"pilot {k.pilot_weken} weken", target=k.pilot_target)
             r.update(stoplicht=(k.status if not k.actief else "nog niet gestart" if start
                                 else "startdatum ontbreekt"), resultaten=int(len(eigen)))
         rijen.append(r)
@@ -573,12 +623,13 @@ def _datakwaliteit(cfg, contacten, uren, bestanden, verdeling, ruwe_uren_s) -> d
                    if k.naam not in set(contacten["klant"].dropna())]
     dq["klanten_zonder_beldata"] = zonder_data
 
-    # Somcontroles
+    # Somcontroles (uren buiten Steam tellen apart)
     totaal_model = verdeling["uren"].sum()
+    extra_uren = uren.loc[uren.get("bron", pd.Series("urenexport", index=uren.index)) == "uren_buiten_steam", "uren"].sum()
     dq["controles"] = [
         {"controle": "Betaalde uren: dashboard = som urenexport",
-         "dashboard": round(totaal_model, 2), "bron": round(ruwe_uren_s / 3600, 2),
-         "ok": bool(abs(totaal_model - ruwe_uren_s / 3600) < 0.01)},
+         "dashboard": round(totaal_model - extra_uren, 2), "bron": round(ruwe_uren_s / 3600, 2),
+         "ok": bool(abs(totaal_model - extra_uren - ruwe_uren_s / 3600) < 0.01)},
     ]
     return dq
 
@@ -776,6 +827,8 @@ def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
          sessies_raw: pd.DataFrame | None = None) -> Model:
     contacten = _contacten(contacten_raw, cfg)
     uren = _uren(uren_raw, cfg)
+    pogingen = _pogingen(pogingen_raw, cfg)
+    uren = _uren_buiten_steam(uren, pogingen, cfg)
     facturen = _facturen(facturen_raw if facturen_raw is not None else pd.DataFrame(), cfg)
     verkoop = _verkoop(verkoop_raw, cfg)
     stats = _stats(stats_raw, cfg)
@@ -801,7 +854,8 @@ def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
     contacten["met_uren"] = [(b, d) in dagen_met_uren for b, d in zip(contacten["beller"], contacten["datum"])]
 
     verdeling = _verdeling(uren, contacten, extra, stats,
-                           cfg.instellingen.get("verdeelsleutel", "steam_gekalibreerd") == "steam_gekalibreerd")
+                           cfg.instellingen.get("verdeelsleutel", "steam_gekalibreerd") == "steam_gekalibreerd",
+                           pogingen)
     opbrengst = _opbrengst(cfg, contacten, peildatum, verkoop)
     overig = _overig(cfg, peildatum, eerste)
     targets = _targets(cfg, contacten, peildatum, verkoop)
@@ -837,7 +891,6 @@ def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
     dq["kostenposten"] = _kosten_overzicht(overig)
     dq.update(_dq_stats(stats, contacten, uren, verdeling))
     dq["campagnerapport"] = _campagnerapport(campagne_raw, cfg, contacten, verdeling, overig)
-    pogingen = _pogingen(pogingen_raw, cfg)
     if len(pogingen):
         bekend = {r["agent"] for r in dq["niet_gekoppelde_agents"]}
         for a, g in pogingen[pogingen["beller"].isna()].groupby("agent_raw"):
