@@ -952,6 +952,13 @@ function stuurRegels() {
   return data.map(x => ({x, t: T.get(x.k.naam), m: marge4(x.i)}));
 }
 function margeKleur(p) { return p == null ? "grijs" : p >= NS.marge ? "groen" : p >= 0 ? "oranje" : "rood"; }
+// Melding: data na de peildatum wacht op de urenexport
+function naPeilMelding() {
+  const na = D.dq.na_peildatum || {}, b = na.bronnen || {};
+  if (!Object.keys(b).length) return "";
+  const tot = Object.values(b).sort().pop(), res = na.resultaten || {}, nRes = Object.values(res).reduce((a, v) => a + v, 0);
+  return `<div class="melding"><b>Alles telt tot en met ${dmy(M.peildatum)}</b>, de laatste dag in de urenexport. Er zijn al belexports tot ${dmy(tot)} (${num(na.belregels)} belregels, ${num(nRes)} resultaten${nRes ? ": " + Object.entries(res).map(([k, v]) => `${esc(k)} ${v}`).join(", ") : ""}). Die tellen mee zodra <b>PayableHoursPerDay t/m ${dmy(tot)}</b> in de inbox staat; dan schuiven resultaten, uren, kosten en opbrengst samen op.</div>`;
+}
 function renderStuur() {
   const R = stuurRegels(), tot = marge4(null);
   const metT = R.filter(r => r.t && r.t.target), opT = metT.filter(r => r.t.stoplicht === "groen").length;
@@ -977,7 +984,7 @@ function renderStuur() {
   }).join("");
   const S4 = R.reduce((a, r) => ({opbr: a.opbr + r.m.opbr, kosten: a.kosten + r.m.kosten}), {opbr: 0, kosten: 0});
   const rest = {opbr: tot.opbr - S4.opbr, kosten: tot.kosten - S4.kosten};
-  document.getElementById("stInhoud").innerHTML = `<p class="uitleg">Stand op ${dmy(M.peildatum)}. Bedragen per 4 weken = gemiddelde van de laatste ${NS.weken} weken. Normen bij € ${M.tarief_doel} per uur en ${pct(NS.marge)} marge. Klik op een opdrachtgever voor alle details.</p>
+  document.getElementById("stInhoud").innerHTML = naPeilMelding() + `<p class="uitleg">Stand op ${dmy(M.peildatum)}. Bedragen per 4 weken = gemiddelde van de laatste ${NS.weken} weken. Normen bij € ${M.tarief_doel} per uur en ${pct(NS.marge)} marge. Klik op een opdrachtgever voor alle details.</p>
     <div class="grid kpis">${tegels.join("")}</div>
     <div class="kaart tabelwrap" style="margin-top:12px"><h3>Opdrachtgevers</h3><table class="stapel"><thead><tr><th class="l">Opdrachtgever</th><th class="l">Target werkperiode</th><th>Marge per 4 weken</th><th>Uren per beldag</th><th>Resultaten per beldag</th><th class="l">Wat moet er gebeuren</th></tr></thead>
     <tbody>${rijen}</tbody><tfoot>
@@ -1016,7 +1023,7 @@ function renderKlant() {
     const upr = c.res ? c.uren / c.res : null, ok = x.moet.upr == null || upr == null ? null : upr <= x.moet.upr;
     return `<tr><td class="l">${esc(D.bellers[b].naam)}</td><td>${num(c.uren, 1)}</td><td>${num(c.res)}</td><td><span class="stip ${ok == null ? "grijs" : ok ? "groen" : "rood"}">${upr != null ? nf(1).format(upr) : "-"}</span></td><td>${c.uren > 0.5 && c.pog ? nf(0).format(c.pog / c.uren) : "-"}</td></tr>`; }).join("");
   const bd = beldagKaart(x.i, x, v1, t1, -1);
-  document.getElementById("kInhoud").innerHTML = `<div class="grid kpis">${tegels.join("")}</div>
+  document.getElementById("kInhoud").innerHTML = naPeilMelding() + `<div class="grid kpis">${tegels.join("")}</div>
     <div class="grid twee" style="margin-top:12px">${normKaart(x)}
       <div class="kaart tabelwrap"><h3>Werkperiodes</h3>${wpT}
         <h3 style="margin-top:16px">Bellers, laatste ${NS.weken} weken</h3>${belT ? `<table><thead><tr><th class="l">Beller</th><th>Uren</th><th>Resultaten</th><th>Uren per res.</th><th>Pog./uur</th></tr></thead><tbody>${belT}</tbody></table><p class="uitleg" style="margin:6px 0 0">Uren per resultaat: max. ${n1(x.moet.upr)}.</p>` : "<p class='uitleg'>Geen uren in deze periode.</p>"}</div>

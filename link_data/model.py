@@ -862,6 +862,19 @@ def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
         peildatum = contacten["datum"].max()
     else:
         peildatum = dt.date.today()
+    # Eén peildatum voor alles: belregels en belpogingen van na de laatste urendag tellen pas mee
+    # zodra de urenexport die dagen ook bevat (anders resultaten zonder kosten in dezelfde week).
+    na = {"peildatum": peildatum.isoformat(), "bronnen": {}, "resultaten": {}, "belregels": 0}
+    if len(uren):
+        laat = contacten[contacten["datum"] > peildatum]
+        na["belregels"] = int(len(laat))
+        na["resultaten"] = {str(k): int(v) for k, v in laat[laat["is_resultaat"]].groupby("klant_label").size().items()}
+        for naam, df in (("belexport", contacten), ("belpogingen", pogingen)):
+            if len(df) and df["datum"].max() > peildatum:
+                na["bronnen"][naam] = df["datum"].max().isoformat()
+        contacten = contacten[contacten["datum"] <= peildatum].copy()
+        if len(pogingen):
+            pogingen = pogingen[pogingen["datum"] <= peildatum].copy()
     eerste = min([d for d in (contacten["datum"].min() if len(contacten) else None,
                               uren["datum"].min() if len(uren) else None) if d] or [peildatum])
 
@@ -880,9 +893,7 @@ def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
                            pogingen)
     opbrengst = _opbrengst(cfg, contacten, peildatum, verkoop)
     overig = _overig(cfg, peildatum, eerste)
-    # Targets tellen tot de laatste dag met belregels: belexports lopen vaak een paar dagen voor op de urenexport
-    stand = max(peildatum, contacten["datum"].max()) if len(contacten) else peildatum
-    targets = _targets(cfg, contacten, min(stand, dt.date.today()), verkoop)
+    targets = _targets(cfg, contacten, peildatum, verkoop)
     dq = _datakwaliteit(cfg, contacten, uren,
                         bestanden if bestanden is not None else pd.DataFrame(columns=["naam"]),
                         verdeling, uren_raw["te_betalen_s"].sum())
@@ -923,6 +934,9 @@ def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
             if a not in bekend:
                 dq["niet_gekoppelde_agents"].append({"agent": a, "bron": "belpogingen", "rijen": len(g)})
     werkdagen_ = _werkdagen(sessies_raw, pogingen, cfg)
+    if len(werkdagen_):
+        werkdagen_ = werkdagen_[pd.to_datetime(werkdagen_["datum"]).dt.date <= peildatum]
+    dq["na_peildatum"] = na
     dq["werkdag_bron"] = "in- en uitlogtijden" if len(werkdagen_) else "eerste en laatste belpoging"
     dq["pogingen_dekking"] = [
         {"klant": k, "pogingen": len(g), "van": str(g["datum"].min()), "tot": str(g["datum"].max()),

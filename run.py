@@ -26,6 +26,7 @@ def _resultaatcontrole(exports, m) -> list[dict]:
     if ruw.empty:
         return []
     ruw = ruw.drop_duplicates("sleutel")
+    ruw = ruw[pd.to_datetime(ruw["datum"]).dt.date <= m.peildatum]   # zelfde peildatum als het model
     pid_map = m_cfg.pid_naar_klant
     telt = {k.naam: set(k.telt_als_resultaat) for k in m_cfg.klanten.values()}
     ruw["klant"] = ruw["campagne_pid"].map(lambda p: pid_map.get(int(p), model_mod.niet_gekoppeld_label(int(p))))
@@ -79,7 +80,12 @@ def main(argv=None):
     pad = bouw_dashboard(m, m_cfg)
     csvs = csv_export(m, EXPORT)
 
-    print(f"\nPeildatum: {m.peildatum}")
+    print(f"\nPeildatum: {m.peildatum} (laatste dag in de urenexport; alles telt tot en met deze dag)")
+    na = m.dq.get("na_peildatum") or {}
+    if na.get("bronnen"):
+        bronnen = ", ".join(f"{b} t/m {d}" for b, d in na["bronnen"].items())
+        print(f"  Wacht op urenexport: {bronnen}. {na['belregels']} belregels "
+              f"({sum(na['resultaten'].values())} resultaten) tellen mee zodra PayableHoursPerDay die dagen bevat.")
     print("Controles:")
     for c in m.dq["controles"]:
         print(f"  {'OK ' if c['ok'] else 'AFW'} {c['controle']}: dashboard {c['dashboard']} / bron {c['bron']}")

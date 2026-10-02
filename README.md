@@ -49,6 +49,7 @@ pip install -r requirements.txt
 
 ## Hoe het rekent
 
+- **Peildatum**: de laatste dag in de urenexport. Alles (resultaten, uren, kosten, opbrengst, targets) telt tot en met die dag. Belexports en belpogingen van later wachten tot de urenexport die dagen ook bevat; het Stuurscherm en `run.py` melden dat.
 - **Uren**: `Te betalen` uit de urenexport.
 - **Kosten ZZP**: voor een week mét factuur geldt het gefactureerde bedrag. Voor een week zonder factuur is het een schatting: Steam-uren x tarief. Facturen zonder weeknummer gaan naar de week van de factuurdatum (do t/m zo) of naar de week ervoor (ma t/m wo).
 - **Kosten eigenaren**: een vaste vergoeding per maand. Die wordt verdeeld over de betaalde uren van die maand.
