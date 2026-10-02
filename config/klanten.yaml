@@ -21,6 +21,8 @@
 #   factuur_namen        naam zoals op onze verkoopfactuur, als die niet al de klantnaam bevat
 #   omzet_boekhouding    controlecijfer: omzet excl. btw volgens de boekhouding (top 10, laatste 12 mnd,
 #                        stand 1-10-2026). Datakwaliteit toont het verschil met de ingelezen facturen.
+#   beldagen_per_week    vast belrooster, bv. 1 (één dag per week) of 0.5 (een ochtend). Leeg: het
+#                        dashboard meet het uit de belpogingen. KPI's per beldag rekenen hiermee.
 #   status               actief (standaard), pauze of gestopt. Alleen actieve klanten tellen mee
 #                        in targets, stoplichten en de scenario-rekenaar; historie blijft zichtbaar.
 #
@@ -34,6 +36,7 @@ klanten:
     fee_per_4wk: 1500
     extra_per_lead: 150   # per ingeplande afspraak (100), niet per lead met kortingscode
     extra_code: 100
+    beldagen_per_week: 1   # vaste beldag
     target_per_4wk: 14
     targets_per_code: {100: 4, 101: 10}   # 1 afspraak per week + ca. 2-3 leads per week
     memo_classificatie: true   # bellers zetten alles op 101; afspraak wordt herkend uit de memo

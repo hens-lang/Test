@@ -101,6 +101,7 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
     <button data-tab="overzicht" class="actief">Overzicht</button>
     <button data-tab="conclusies">Conclusies</button>
     <button data-tab="normen">KPI-normen</button>
+    <button data-tab="beldagen">Beldagen</button>
     <button data-tab="resultaten">Resultaten per uur</button>
     <button data-tab="bellers">Bellers</button>
     <button data-tab="klanten">Opdrachtgevers</button>
@@ -146,6 +147,12 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
   <p class="uitleg">Per opdrachtgever: wat <b>moet</b> er gebeuren om bij € 36 per uur zowel het target als de marge te halen, tegenover wat het <b>nu</b> is.</p>
   <div class="filters" style="position:static;border:1px solid var(--rand);border-radius:10px;margin-bottom:12px" id="nInstel"></div>
   <div id="nInhoud"></div>
+</section>
+
+<!-- BELDAGEN -->
+<section class="tab" id="tab-beldagen">
+  <p class="uitleg">Per opdrachtgever elke beldag tegenover de norm bij € 36 per uur (zelfde normen als KPI-normen). Een beldag is een dag met minimaal 15 belpogingen voor die opdrachtgever (of, waar geen belpogingen-export is, minimaal 1 uur volgens de verdeelsleutel). Uren per dag = betaalde uren van de beller die dag, verdeeld naar zijn belpogingen per opdrachtgever. Waarde per beldag = opbrengst per 4 weken / beldagen per 4 weken.</p>
+  <div id="bdInhoud"></div>
 </section>
 
 <!-- RESULTATEN PER UUR -->
@@ -705,6 +712,48 @@ function renderConclusies() {
   document.getElementById("cInhoud").innerHTML = blokken.join("");
 }
 
+
+// ---------- beldagen: per opdrachtgever per dag (betaalde uren van de beller, gesplitst naar belpogingen)
+const BDcache = new Map();
+function beldagIndex(bf = -1) {
+  if (BDcache.has(bf)) return BDcache.get(bf);
+  const vBD = new Map(), pBD = new Map(), dagK = new Map();
+  F.v.forEach(r => { if (bf >= 0 && r[1] !== bf) return; const key = r[0] + "|" + r[1]; let x = vBD.get(key);
+    if (!x) vBD.set(key, x = {d: r[0], b: r[1], uren: 0, kosten: 0, vk: new Map()});
+    x.uren += r[3]; x.kosten += r[5]; x.vk.set(r[2], (x.vk.get(r[2]) || 0) + r[3]); });
+  (F.p || []).forEach(r => { if (bf >= 0 && r[2] !== bf) return; const key = r[0] + "|" + r[2]; let m = pBD.get(key);
+    if (!m) pBD.set(key, m = new Map()); const a = m.get(r[3]) || [0, 0]; a[0]++; a[1] += r[4]; m.set(r[3], a); });
+  const rij = (d, k) => { const key = d + "|" + k; let x = dagK.get(key);
+    if (!x) dagK.set(key, x = {d, k, uren: 0, kosten: 0, pog: 0, verb: 0, bellers: new Map(), res: 0, a100: 0, a101: 0, metUren: false, vsUren: 0}); return x; };
+  const voeg = (d, k, b, u, ko, pog, verb, vs) => { const x = rij(d, k); x.uren += u; if (vs) x.vsUren += u; x.kosten += ko; x.pog += pog; x.verb += verb;
+    if (u > 0) x.metUren = true; if (u > 0.05 || pog) x.bellers.set(b, (x.bellers.get(b) || 0) + u); };
+  for (const [key, x] of vBD) {
+    const pm = pBD.get(key), tot = pm ? [...pm.values()].reduce((a, v) => a + v[0], 0) : 0;
+    if (tot >= 10) for (const [k, [pog, verb]] of pm) voeg(x.d, k, x.b, x.uren * pog / tot, x.kosten * pog / tot, pog, verb);
+    else for (const [k, u] of x.vk) voeg(x.d, k, x.b, u, x.uren ? x.kosten * u / x.uren : 0, 0, 0, true);
+  }
+  for (const [key, pm] of pBD) if (!vBD.has(key)) { const [d, b] = key.split("|").map(Number); for (const [k, [pog, verb]] of pm) voeg(d, k, b, 0, 0, pog, verb); }
+  F.c.forEach(r => { if (!r[7] || (bf >= 0 && r[2] !== bf)) return; const x = rij(r[0], r[3]); x.res++; if (r[4] === 100) x.a100++; if (r[4] === 101) x.a101++; });
+  // beldag: minimaal 15 belpogingen, of (zonder belpogingen-export van die beller) minimaal 1 uur volgens de verdeelsleutel
+  const perK = new Map();
+  for (const x of dagK.values()) { x.beldag = x.pog >= 15 || x.vsUren >= 1; if (!perK.has(x.k)) perK.set(x.k, []); perK.get(x.k).push(x); }
+  perK.forEach(A => A.sort((a, b) => b.d - a.d));
+  BDcache.set(bf, perK); return perK;
+}
+function beldagen(ki, v1, t1, bf = -1) {
+  const A = (beldagIndex(bf).get(ki) || []).filter(x => x.d >= v1 && x.d <= t1);
+  const dagen = A.filter(x => x.beldag), rest = A.filter(x => !x.beldag);
+  const somB = L => L.reduce((t, x) => ({uren: t.uren + x.uren, kosten: t.kosten + x.kosten, pog: t.pog + x.pog, verb: t.verb + x.verb, res: t.res + x.res, a100: t.a100 + x.a100, a101: t.a101 + x.a101}),
+    {uren: 0, kosten: 0, pog: 0, verb: 0, res: 0, a100: 0, a101: 0});
+  return {dagen, rest, tot: somB(dagen), overig: somB(rest), dagenMetUren: dagen.filter(x => x.metUren)};
+}
+// beldagen per week: vast rooster uit klanten.yaml, anders gemeten (afgerond op een halve dag)
+function beldagenPW(k, gemetenPW) {
+  if (k.beldagen_pw) return {pw: k.beldagen_pw, bron: "rooster"};
+  if (!gemetenPW) return {pw: null, bron: "geen"};
+  return {pw: Math.max(0.5, Math.round(gemetenPW * 2) / 2), bron: "gemeten"};
+}
+
 // ---------- tab: KPI-normen per opdrachtgever (vast tarief, Moet tegenover Nu)
 const NS = {marge: null, weken: null};
 function normenData() {
@@ -729,9 +778,16 @@ function normenData() {
     const maxUpr = target ? maxUren / target : null;
     const resPerPog = pog ? res / pog : null;
     const minPogU = maxUpr && resPerPog ? (1 / maxUpr) / resPerPog : null;
+    // per beldag
+    const bd = beldagen(i, v1, t1), gemetenPW = bd.dagen.length / NS.weken, rooster = beldagenPW(k, gemetenPW), bd4 = rooster.pw ? rooster.pw * 4 : null;
+    const urenBD = bd.dagenMetUren.reduce((a, x) => a + x.uren, 0);
     return {k, i, f, isPilot, tpc, extraN, extra, opbr, target, overig, kostenMax, budget, maxUren, maxUpr, resPerPog, minPogU, tarief,
-      nu: {urenW: uren * per4 / 4, resW: res * per4 / 4, pogU: uren && pog ? pog / uren : null, upr: res ? uren / res : null, fout: f.n ? f.foutRatio : null},
-      moet: {urenW: maxUren / 4, resW: target != null ? target / 4 : null, pogU: minPogU, upr: maxUpr, fout: 0.10}};
+      rooster, bd4, bd, waardeD: bd4 ? opbr / bd4 : null, overigD: bd4 ? overig / bd4 : null,
+      nu: {urenW: uren * per4 / 4, resW: res * per4 / 4, pogU: uren && pog ? pog / uren : null, upr: res ? uren / res : null, fout: f.n ? f.foutRatio : null,
+        dagenW: bd.dagen.length ? gemetenPW : null, urenD: bd.dagenMetUren.length ? urenBD / bd.dagenMetUren.length : null,
+        resD: bd.dagen.length ? (bd.tot.res + bd.overig.res) / bd.dagen.length : null},
+      moet: {urenW: maxUren / 4, resW: target != null ? target / 4 : null, pogU: minPogU, upr: maxUpr, fout: 0.10,
+        dagenW: rooster.bron === "rooster" ? rooster.pw : null, urenD: bd4 ? maxUren / bd4 : null, resD: target != null && bd4 ? target / bd4 : null}};
   });
 }
 function renderNormen() {
@@ -741,38 +797,43 @@ function renderNormen() {
     <div class="info">Tarief: <b>€ ${tarief} per uur</b> · "Nu" = gemiddelde van de laatste ${NS.weken} weken</div>`;
   document.getElementById("nMarge").onchange = e => { NS.marge = (+e.target.value || 0) / 100; renderNormen(); };
   document.getElementById("nWeken").onchange = e => { NS.weken = Math.max(1, +e.target.value || 8); renderNormen(); };
-  const ok = (nu, moet, max) => nu == null || moet == null ? null : max ? nu <= moet : nu >= moet;
+  const ok = (nu, moet, max, key) => nu == null || moet == null ? null : key === "dagenW" ? nu <= moet * 1.25 : max ? nu <= moet : nu >= moet;
   const cel = (v, d, eenh) => v == null || !isFinite(v) ? "<span class='vs'>-</span>" : `${nf(d).format(v)}${eenh || ""}`;
   const regels = [
-    ["Beluren per week", "max.", "urenW", 1, " uur", true],
-    ["Resultaten per week", "min.", "resW", 1, "", false],
+    ["Beldagen per week", "", "dagenW", 1, "", true],
+    ["Beluren per beldag", "max.", "urenD", 1, " uur", true],
+    ["Resultaten per beldag", "min.", "resD", 1, "", false],
     ["Belpogingen per uur", "min.", "pogU", 0, "", false],
     ["Uren per resultaat", "max.", "upr", 1, " uur", true],
   ];
   const kaarten = data.map(x => {
     const geenData = !x.nu.urenW && !x.f.n;
     const r = regels.map(([lab, mm, key, d, eenh, max]) => {
-      const g = geenData ? null : ok(x.nu[key], x.moet[key], max);
+      const g = geenData ? null : ok(x.nu[key], x.moet[key], max, key);
       const nu = cel(x.nu[key], d, eenh);
-      return `<tr><td class="l">${lab}</td><td><b>${mm} ${cel(x.moet[key], d, eenh)}</b></td><td>${geenData ? "<span class='vs'>-</span>" : g == null ? nu : `<span class="stip ${g ? "groen" : "rood"}" title="${g ? "ok" : max ? "te hoog" : "te laag"}">${nu}</span>`}</td></tr>`;
+      return `<tr><td class="l">${lab}</td><td><b>${x.moet[key] == null ? (key === "dagenW" && x.rooster.pw ? `<span class="vs">geen rooster</span>` : "<span class='vs'>-</span>") : mm + " " + cel(x.moet[key], d, eenh)}</b></td><td>${geenData ? "<span class='vs'>-</span>" : g == null ? nu : `<span class="stip ${g ? "groen" : "rood"}" title="${g ? "ok" : max ? "te hoog" : "te laag"}">${nu}</span>`}</td></tr>`;
     }).join("") + (() => { const g = ok(x.nu.fout, 0.10, true); return `<tr><td class="l">Foute nummers</td><td><b>max. 10%</b></td><td>${x.nu.fout == null ? "<span class='vs'>-</span>" : `<span class="stip ${g ? "groen" : "rood"}">${pct(x.nu.fout)}</span>`}</td></tr>`; })();
     // wat moet er gebeuren
     const acties = [];
     const n = x.nu, m = x.moet;
-    if (n.upr == null && !n.urenW) acties.push(`Nog geen beldata. Start met maximaal <b>${nf(1).format(m.urenW)} uur per week</b> en minimaal <b>${nf(1).format(m.resW || 0)} resultaten per week</b>.`);
+    const perD = m.urenD != null, uLab = perD ? "uur per beldag" : "uur per week";
+    const uNu = perD ? n.urenD : n.urenW, uMax = perD ? m.urenD : m.urenW, rNu = perD ? n.resD : n.resW, rMin = perD ? m.resD : m.resW, rLab = perD ? "resultaten per beldag" : "resultaten per week";
+    if (n.upr == null && !n.urenW && !n.dagenW) acties.push(`Nog geen beldata. Start met maximaal <b>${nf(1).format(uMax)} ${uLab}</b> en minimaal <b>${nf(1).format(rMin || 0)} ${rLab}</b>.`);
     else {
       if (n.fout != null && n.fout > 0.10) acties.push(`<b>Bellijst opschonen.</b> ${pct(n.fout)} foute nummers, maximaal 10%. Betere data vragen bij AdHocData/Apollo of de lijst laten verrijken.`);
       if (m.pogU && n.pogU != null && n.pogU < m.pogU * 0.95) acties.push(`<b>Tempo omhoog</b> van ${nf(0).format(n.pogU)} naar minimaal ${nf(0).format(m.pogU)} belpogingen per uur: minder tijd aan voorbereiden en afhandelen (Prepare en Finish).`);
       if (m.upr && n.upr != null && n.upr > m.upr && !(m.pogU && n.pogU != null && n.pogU < m.pogU * 0.95)) acties.push(`<b>Meer resultaat per gesprek.</b> Nu ${nf(1).format(n.upr)} uur per resultaat, mag maximaal ${nf(1).format(m.upr)}. Pitch, doelgroep en bellijst aanscherpen.`);
-      if (n.urenW > m.urenW * 1.05) acties.push(`<b>Minder uren inzetten:</b> nu ${nf(1).format(n.urenW)} uur per week, maximaal ${nf(1).format(m.urenW)} om de marge te halen. Zet de uren in waar het per uur het meest oplevert.`);
-      if (m.resW != null && n.resW < m.resW && n.upr != null && m.upr != null && n.upr <= m.upr) acties.push(`<b>Meer uren inzetten.</b> Het tempo is goed, maar er wordt te weinig gebeld voor het target: ${nf(1).format(n.resW)} van de ${nf(1).format(m.resW)} resultaten per week. Ruimte tot ${nf(1).format(m.urenW)} uur per week.`);
-      if (!acties.length) acties.push(`<b>Op koers.</b> Zo doorgaan en niet boven ${nf(1).format(m.urenW)} uur per week bellen.`);
+      if (m.dagenW != null && n.dagenW != null && n.dagenW > m.dagenW * 1.25) acties.push(`<b>Houd je aan het belrooster:</b> nu ${nf(1).format(n.dagenW)} beldagen per week, rooster ${nf(1).format(m.dagenW)}.`);
+      if (uNu != null && uNu > uMax * 1.05) acties.push(`<b>Minder uren inzetten:</b> nu ${nf(1).format(uNu)} ${uLab}, maximaal ${nf(1).format(uMax)} om de marge te halen.`);
+      if (rMin != null && rNu != null && rNu < rMin && n.upr != null && m.upr != null && n.upr <= m.upr) acties.push(`<b>Meer uren inzetten.</b> Het tempo is goed, maar er wordt te weinig gebeld voor het target: ${nf(1).format(rNu)} van de ${nf(1).format(rMin)} ${rLab}. Ruimte tot ${nf(1).format(uMax)} ${uLab}.`);
+      if (!acties.length) acties.push(`<b>Op koers.</b> Zo doorgaan en niet boven ${nf(1).format(uMax)} ${uLab} bellen.`);
     }
     const goed = acties[0].startsWith("<b>Op koers"), nieuw = acties[0].startsWith("Nog geen beldata");
     const ber = `<details style="margin-top:8px"><summary class="vs" style="cursor:pointer">Hoe berekend</summary><p class="uitleg" style="margin:6px 0 0">
       Opbrengst per 4 weken ${eurT(x.opbr)} (fee ${eurT(x.k.fee || 0)}${x.extra ? ` + ${x.extraN} x ${eurT(x.k.lead)} extra` : ""}${x.isPilot ? ", pilot / 3" : ""}).
       Margedoel ${pct(NS.marge)} → maximaal ${eurT(x.kostenMax)} kosten, min ${eurT(x.overig)} Steam en data → ${eurT(x.budget)} / € ${tarief} = ${nf(1).format(x.maxUren)} uur per 4 weken.
       Target ${x.target != null ? nf(1).format(x.target) : "-"} per 4 weken → maximaal ${x.maxUpr ? nf(1).format(x.maxUpr) : "-"} uur per resultaat.
+      Beldagen per week: ${x.rooster.pw ? nf(1).format(x.rooster.pw) + (x.rooster.bron === "rooster" ? " (rooster)" : " (gemeten, geen rooster in klanten.yaml)") : "-"} → ${x.bd4 ? nf(0).format(x.bd4) : "-"} beldagen per 4 weken → maximaal ${x.moet.urenD != null ? nf(1).format(x.moet.urenD) : "-"} uur en minimaal ${x.moet.resD != null ? nf(1).format(x.moet.resD) : "-"} resultaten per beldag.
       Gemeten 1 resultaat per ${x.resPerPog ? nf(0).format(1 / x.resPerPog) : "-"} belpogingen → minimaal ${x.minPogU ? nf(0).format(x.minPogU) : "-"} pogingen per uur.
       Bronnen: klanten.yaml en verkoopfacturen (fee, target), kosten.yaml, urenexport, belexport, Call attempts statuses.</p></details>`;
     return `<div class="kaart"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h3 style="margin:0">${esc(x.k.naam)}</h3>${goed ? '<span class="label goed">Op koers</span>' : nieuw ? '<span class="label info">Nog niet gestart</span>' : '<span class="label actie">Actie</span>'}</div>
@@ -784,6 +845,58 @@ function renderNormen() {
   document.getElementById("nInhoud").innerHTML = data.length ? `<div class="melding ${nAct === 0 ? "ok" : ""}">Bij € ${tarief} per uur en ${pct(NS.marge)} marge: <b>${nOk} op koers</b>, <b>${nAct} met actie nodig</b>${nNieuw ? `, ${nNieuw} nog niet gestart` : ""}. Per kaart staat wat er moet gebeuren.</div>
     <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr))">${kaarten.join("")}</div>`
     : "<p class='uitleg'>Geen actieve opdrachtgevers met fee of target.</p>";
+}
+
+
+// ---------- tab: beldagen (KPI's per beldag per opdrachtgever)
+function renderBeldagen() {
+  const norm = new Map(normenData().map(x => [x.i, x]));
+  const ks = [...norm.keys()].filter(i => S.k < 0 || i === S.k);
+  if (S.k >= 0 && !norm.has(S.k)) ks.push(S.k);
+  const stip = (g, t) => `<span class="stip ${g == null ? "grijs" : g ? "groen" : "rood"}">${t}</span>`;
+  const n1 = v => v == null || !isFinite(v) ? "<span class='vs'>-</span>" : nf(1).format(v);
+  const overzicht = [], kaarten = [];
+  for (const ki of ks) {
+    const x = norm.get(ki), K = D.klanten[ki], bd = beldagen(ki, S.van, S.tot, S.b);
+    if (!bd.dagen.length && !bd.rest.length) continue;
+    const mU = x?.moet.urenD, mR = x?.moet.resD, mP = x?.moet.pogU, wD = x?.waardeD, oD = x?.overigD || 0;
+    const nD = bd.dagen.length, mU_ = bd.dagenMetUren;
+    const gemU = mU_.length ? mU_.reduce((a, d) => a + d.uren, 0) / mU_.length : null;
+    const gemR = nD ? bd.tot.res / nD : null, gemK = mU_.length ? mU_.reduce((a, d) => a + d.kosten, 0) / mU_.length : null;
+    const opT = nD && mR != null ? bd.dagen.filter(d => d.res >= mR - 1e-9).length / nD : null;
+    const tpc = K.targets_per_code || {}, split = Object.keys(tpc).length > 1;
+    overzicht.push(`<tr><td class="l">${esc(K.naam)}</td><td>${nD}</td><td>${x?.rooster.pw ? n1(x.rooster.pw) + (x.rooster.bron === "rooster" ? "" : "<span class='vs'> gem.</span>") : "-"}</td>
+      <td>${n1(mU)}</td><td>${stip(gemU == null || mU == null ? null : gemU <= mU * 1.05, n1(gemU))}</td>
+      <td>${n1(mR)}</td><td>${stip(gemR == null || mR == null ? null : gemR >= mR, n1(gemR))}</td>
+      <td>${wD != null ? eurT(wD) : "-"}</td><td>${gemK != null ? eurT(gemK) : "-"}</td>
+      <td>${wD != null && gemK != null ? `<span class="${wD - gemK - oD >= 0 ? "pos" : "neg"}">${eurT(wD - gemK - oD)}</span>` : "-"}</td><td>${opT != null ? pct(opT) : "-"}</td></tr>`);
+    const rij = d => {
+      const pu = d.uren > 0.05 ? d.pog / d.uren : null, marge = wD != null && d.metUren ? wD - d.kosten - oD : null;
+      const gU = mU == null || !d.metUren ? null : d.uren <= mU * 1.05, gR = mR == null ? null : d.res >= mR - 1e-9;
+      const kleur = gR == null ? "grijs" : gR && gU !== false ? "groen" : gR || gU ? "oranje" : "rood";
+      const dt = datumObj[d.d], bel = [...d.bellers.entries()].filter(([b]) => b >= 0).sort((a, b) => b[1] - a[1]).map(([b]) => esc(D.bellers[b].naam.split(" ")[0])).join(", ");
+      return `<tr><td class="l">${WEEKDAGEN[dt.getDay()]} ${dmy(D.datums[d.d])}</td><td class="l">${bel || "-"}</td>
+        <td>${d.metUren ? stip(gU, n1(d.uren)) : "<span class='vs'>geen uren</span>"}</td><td>${d.pog ? num(d.pog) : "<span class='vs'>-</span>"}</td>
+        <td>${pu != null ? stip(mP ? pu >= mP * 0.95 : null, nf(0).format(pu)) : "-"}</td><td>${num(d.verb)}</td>
+        <td>${stip(gR, num(d.res))}${split && d.res ? `<span class="vs"> (${d.a100}/${d.a101})</span>` : ""}</td>
+        <td>${d.metUren ? eurT(d.kosten) : "-"}</td><td>${marge != null ? `<span class="${marge >= 0 ? "pos" : "neg"}">${eurT(marge)}</span>` : "-"}</td>
+        <td class="l"><span class="stip ${kleur}"></span></td></tr>`;
+    };
+    const kop = `<thead><tr><th class="l">Beldag</th><th class="l">Beller</th><th>Uren</th><th>Pogingen</th><th>Pog./uur</th><th>Verbonden</th><th>Resultaten${split ? " (100/101)" : ""}</th><th>Kosten</th><th>Marge</th><th></th></tr>
+      <tr class="vs"><td class="l">Moet</td><td></td><td>max. ${n1(mU)}</td><td></td><td>${mP ? "min. " + nf(0).format(mP) : "-"}</td><td></td><td>min. ${n1(mR)}</td><td></td><td>${wD != null ? "waarde " + eurT(wD) : ""}</td><td></td></tr></thead>`;
+    const eerste = bd.dagen.slice(0, 10).map(rij).join(""), meer = bd.dagen.slice(10).map(rij).join("");
+    const r = bd.overig;
+    kaarten.push(`<div class="kaart" style="margin-top:12px"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap"><h3 style="margin:0">${esc(K.naam)}</h3>
+      <span class="vs">${nD} beldagen · ${x?.rooster.pw ? `${n1(x.rooster.pw)} per week (${x.rooster.bron === "rooster" ? "rooster" : "gemeten"})` : "geen norm"} · target ${x?.target != null ? n1(x.target) : "-"} per 4 weken</span></div>
+      <div class="tabelwrap"><table>${kop}<tbody>${eerste || "<tr><td class='l' colspan='10'><span class='vs'>Geen beldagen in deze periode.</span></td></tr>"}</tbody></table></div>
+      ${meer ? `<details><summary class="vs" style="cursor:pointer;margin-top:6px">Toon ${bd.dagen.length - 10} eerdere beldagen</summary><div class="tabelwrap"><table>${kop}<tbody>${meer}</tbody></table></div></details>` : ""}
+      ${bd.rest.length && (r.res || r.uren > 0.5 || r.pog) ? `<p class="uitleg" style="margin:8px 0 0">Buiten de beldagen: ${bd.rest.length} dagen met ${nf(1).format(r.uren)} uur, ${num(r.pog)} pogingen en ${num(r.res)} resultaten (terugbellen, losse pogingen).</p>` : ""}</div>`);
+  }
+  document.getElementById("bdInhoud").innerHTML = overzicht.length ? `<div class="kaart tabelwrap"><h3>Gemiddeld per beldag in de gekozen periode</h3>
+    <table><thead><tr><th class="l">Opdrachtgever</th><th>Beldagen</th><th>Per week</th><th>Max. uren</th><th>Uren</th><th>Min. resultaten</th><th>Resultaten</th><th>Waarde</th><th>Kosten</th><th>Marge</th><th>Beldagen op target</th></tr></thead>
+    <tbody>${overzicht.join("")}</tbody></table>
+    <p class="uitleg" style="margin:8px 0 0">Norm: € ${M.tarief_doel} per uur en ${pct(NS.marge)} marge (instelbaar op KPI-normen). Marge per beldag = waarde − kosten bellers − overige kosten per beldag. Vast belrooster per opdrachtgever: <code>beldagen_per_week</code> in klanten.yaml; zonder rooster is het aantal beldagen gemeten over de laatste ${NS.weken} weken.</p></div>${kaarten.join("")}`
+    : "<p class='uitleg'>Geen beldagen in deze selectie.</p>";
 }
 
 // ---------- tab: periodes
@@ -1204,7 +1317,7 @@ let actieveTab = "overzicht";
 function render() {
   const n = S.tot - S.van + 1;
   document.getElementById("fInfo").textContent = `${dmy(D.datums[S.van])} t/m ${dmy(D.datums[S.tot])} · ${n} dagen`;
-  ({overzicht: renderOverzicht, conclusies: renderConclusies, normen: renderNormen, periodes: renderPeriodes, resultaten: renderResultaten, bellers: renderBellers, klanten: renderKlanten, focus: renderFocus, scenario: renderScenario, dq: renderDQ})[actieveTab]();
+  ({overzicht: renderOverzicht, conclusies: renderConclusies, normen: renderNormen, beldagen: renderBeldagen, periodes: renderPeriodes, resultaten: renderResultaten, bellers: renderBellers, klanten: renderKlanten, focus: renderFocus, scenario: renderScenario, dq: renderDQ})[actieveTab]();
 }
 document.getElementById("nav").onclick = e => {
   const t = e.target.closest("button"); if (!t) return;
