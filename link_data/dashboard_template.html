@@ -41,7 +41,7 @@ header{background:var(--navy);color:#fff;padding:14px 16px 0}
 nav{display:flex;gap:2px;overflow-x:auto;margin-top:10px;scrollbar-width:none}
 nav button{background:none;border:0;color:#b8c2d9;font:600 16px "Barlow Condensed";padding:10px 14px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
 nav button.actief{color:#fff;border-color:var(--cyaan)}
-.filters{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--rand);padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+.filters{position:sticky;top:env(safe-area-inset-top, 0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--rand);padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:end}
 .filters label{display:flex;flex-direction:column;font-size:12px;color:var(--tekst-3);gap:2px}
 select,input[type=date],input[type=number]{font:inherit;color:var(--tekst);background:var(--surface);border:1px solid var(--rand);border-radius:6px;padding:6px 8px;min-width:0}
 .filters .info{font-size:13px;color:var(--tekst-2);margin-left:auto}

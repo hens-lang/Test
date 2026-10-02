@@ -6,5 +6,6 @@ data/export/*
 !data/export/.gitkeep
 # Gegenereerd dashboard bevat bedrijfscijfers; wordt lokaal gebouwd met python run.py
 dashboard/index.html
+dashboard/link-dashboard.html
 __pycache__/
 .pytest_cache/
