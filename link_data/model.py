@@ -9,7 +9,7 @@ Tabellen in Model:
               (kostenbasis: factuur, geschat = uren x tarief, of vast = vaste vergoeding)
   facturen    facturen van bellers, met toegewezen week
   verdeling   verdeelsleutel: uren, pogingen en kosten per dag x beller x klant
-  opbrengst   per dag x klant: gefactureerd (verkoopfactuur over zijn periode) of geschat (fee / 28)
+  opbrengst   per dag x klant: gefactureerd (verkoopfactuur over zijn periode) of geschat (fee / 20 per werkdag)
               plus leadfee
   overig      overige kosten per dag, per kostenpost (factuur of geschat)
   verkoop     verkoopfacturen aan opdrachtgevers
@@ -61,6 +61,13 @@ def werkdagen(van: dt.date, tot: dt.date) -> int:
     if tot < van:
         return 0
     return int(np.busday_count(van, tot + dt.timedelta(days=1)))
+
+
+def _werkdagen_in(van: dt.date, tot: dt.date) -> list:
+    """Ma t/m vr tussen van en tot (inclusief); zonder werkdag: alle dagen. Opbrengst en vaste kosten
+    worden hierover verdeeld, net als de uren: een week is dan altijd ma t/m vr."""
+    alle = list(pd.date_range(van, tot).date)
+    return [d for d in alle if d.weekday() < 5] or alle
 
 
 def _dagen_in_maand(d: dt.date) -> int:
@@ -416,14 +423,14 @@ def _startdatum(klant, contacten, verkoop=None) -> tuple[dt.date | None, str]:
 
 
 def _opbrengst(cfg: Config, contacten: pd.DataFrame, peildatum: dt.date, verkoop: pd.DataFrame) -> pd.DataFrame:
-    """Per dag: gefactureerd (verkoopfactuur, verdeeld over de periode) of geschat (fee / 28)."""
+    """Per dag: gefactureerd (verkoopfactuur, verdeeld over de periode) of geschat (fee / 20 per werkdag)."""
     rijen = []
     for k in cfg.klanten.values():
         eigen = verkoop[(verkoop["klant"] == k.naam) & ~verkoop["is_lead"]]
         gedekt = set()
         for r in eigen.itertuples():
             if pd.notna(r.periode_van) and pd.notna(r.periode_tot):
-                dagen = pd.date_range(r.periode_van, r.periode_tot).date
+                dagen = _werkdagen_in(r.periode_van, r.periode_tot)
                 for d in dagen:
                     gedekt.add(d)
                     if d <= peildatum:
@@ -436,9 +443,9 @@ def _opbrengst(cfg: Config, contacten: pd.DataFrame, peildatum: dt.date, verkoop
         schatten = cfg.instellingen.get("opbrengst_basis", "facturen") != "facturen" or (
             eigen.empty and cfg.instellingen.get("schatten_zonder_enige_factuur", False))
         if schatten and k.fee_per_4wk and start and start <= peildatum:
-            for d in pd.date_range(start, peildatum).date:
+            for d in _werkdagen_in(start, peildatum):
                 if d not in gedekt:
-                    rijen.append({"datum": d, "klant": k.naam, "fee": k.fee_per_4wk / 28, "leads_eur": 0.0,
+                    rijen.append({"datum": d, "klant": k.naam, "fee": k.fee_per_4wk / 20, "leads_eur": 0.0,
                                   "leads": 0, "gefactureerd": False})
         lead_f = verkoop[(verkoop["klant"] == k.naam) & verkoop["is_lead"]]
         for r in lead_f.itertuples():
@@ -466,8 +473,8 @@ def _overig(cfg: Config, peildatum: dt.date, eerste: dt.date) -> pd.DataFrame:
     rijen = []
     # Facturen met een periode (jaarlicentie, abonnement): per dag over de periode.
     for f in [f for f in alle if f.get("periode_van") and f.get("periode_tot")]:
-        n = (f["periode_tot"] - f["periode_van"]).days + 1
-        for d in pd.date_range(max(f["periode_van"], van), min(f["periode_tot"], peildatum)).date:
+        n = len(_werkdagen_in(f["periode_van"], f["periode_tot"]))
+        for d in [d for d in pd.date_range(max(f["periode_van"], van), min(f["periode_tot"], peildatum)).date if d.weekday() < 5]:
             rijen.append({"datum": d, "post": f["post"], "bedrag": f["bedrag_excl"] / n, "basis": "factuur"})
     met_periode = {f["post"] for f in alle if f.get("periode_van")}
     facturen = [f for f in alle if not f.get("periode_van")]
@@ -477,6 +484,7 @@ def _overig(cfg: Config, peildatum: dt.date, eerste: dt.date) -> pd.DataFrame:
     while m <= peildatum:
         dim = _dagen_in_maand(m)
         laatste = min(dt.date(m.year, m.month, dim), peildatum)
+        wd = len(_werkdagen_in(m, dt.date(m.year, m.month, dim)))
         for post in posten:
             deze = [f for f in facturen if f["post"] == post and f["maand"] == (m.year, m.month)]
             eerder = sorted([f for f in facturen if f["post"] == post and f["maand"] < (m.year, m.month)],
@@ -490,8 +498,9 @@ def _overig(cfg: Config, peildatum: dt.date, eerste: dt.date) -> pd.DataFrame:
             else:
                 continue
             for d in range(max(1, van.day if m == dt.date(van.year, van.month, 1) else 1), laatste.day + 1):
-                rijen.append({"datum": dt.date(m.year, m.month, d), "post": post, "bedrag": bedrag / dim,
-                              "basis": basis})
+                if dt.date(m.year, m.month, d).weekday() < 5:
+                    rijen.append({"datum": dt.date(m.year, m.month, d), "post": post, "bedrag": bedrag / wd,
+                                  "basis": basis})
         m = dt.date(m.year + (m.month == 12), m.month % 12 + 1, 1)
     return pd.DataFrame(rijen, columns=kol)
 
@@ -725,10 +734,9 @@ def _dq_verkoop(cfg, verkoop, contacten, peildatum, opbrengst) -> dict:
     totaal_gef = opbrengst.loc[opbrengst["gefactureerd"].astype(bool), ["fee", "leads_eur"]].sum().sum()
     verwacht = 0.0
     for r in verkoop[verkoop["klant"].notna()].itertuples():
-        if pd.notna(r.periode_van):
-            n = (r.periode_tot - r.periode_van).days + 1
-            binnen = max(0, (min(r.periode_tot, peildatum) - r.periode_van).days + 1)
-            verwacht += r.bedrag_excl * binnen / n
+        if pd.notna(r.periode_van) and not r.is_lead:
+            wd = _werkdagen_in(r.periode_van, r.periode_tot)
+            verwacht += r.bedrag_excl * sum(d <= peildatum for d in wd) / len(wd)
         elif r.factuurdatum <= peildatum:
             verwacht += r.bedrag_excl
     dq["verkoop_controle"] = {"controle": "Opbrengst: gefactureerd in model = verkoopfacturen t/m peildatum (naar rato)",

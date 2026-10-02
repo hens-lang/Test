@@ -152,7 +152,7 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
 <section class="tab" id="tab-overzicht">
   <div class="grid kpis" id="kpis"></div>
   <div class="grid twee" style="margin-top:12px">
-    <div class="kaart"><h3>Kosten en opbrengst per week</h3><p class="uitleg">Kosten = bellerfacturen (of uren x tarief) + vaste vergoedingen + overige kosten. Opbrengst = verkoopfacturen, verdeeld over hun periode.</p><div class="chart"><canvas id="cTrendEuro"></canvas></div></div>
+    <div class="kaart"><h3>Kosten en opbrengst per week</h3><p class="uitleg">Kosten = bellerfacturen (of uren x tarief) + vaste vergoedingen + overige kosten. Opbrengst = verkoopfacturen, verdeeld over hun periode. Een week met dagen erbij (bijv. "t/m wo") is nog niet compleet.</p><div class="chart"><canvas id="cTrendEuro"></canvas></div></div>
     <div class="kaart"><h3>Resultaten per week</h3><p class="uitleg">Resultaat volgens <code>telt_als_resultaat</code> per opdrachtgever.</p><div class="chart"><canvas id="cTrendRes"></canvas></div></div>
   </div>
   <h2>Targets huidige werkperiode</h2>
@@ -324,6 +324,18 @@ const weekVan = datumObj.map(d => { const [y, w] = isoWeek(d); return y + "-W" +
 const ankerT = new Date(M.anker + "T12:00:00").getTime();
 const wpVan = datumObj.map(d => Math.floor((d.getTime() - ankerT) / (28 * DAG)));
 const maandVan = D.datums.map(s => s.slice(0, 7));
+// Weeklabel; een onvolledige week (begin of eind van de selectie, of de peildatum) krijgt de dagen erbij
+function weekLab(w) {
+  const eind = Math.min(S.tot, peilIdx);
+  let v = -1, t = -1; for (let i = S.van; i <= eind; i++) if (weekVan[i] === w) { if (v < 0) v = i; t = i; }
+  const lab = "wk " + +w.slice(6);
+  if (v < 0) return lab;
+  const dv = datumObj[v].getDay(), dt_ = datumObj[t].getDay();
+  if (dv !== 1 && dt_ !== 0) return `${lab} (${WEEKDAGEN[dv]} t/m ${WEEKDAGEN[dt_]})`;
+  if (dt_ !== 0) return `${lab} (t/m ${WEEKDAGEN[dt_]})`;
+  if (dv !== 1) return `${lab} (vanaf ${WEEKDAGEN[dv]})`;
+  return lab;
+}
 const MAANDEN = ["jan","feb","mrt","apr","mei","jun","jul","aug","sep","okt","nov","dec"];
 
 function klantPerioden(ki) {
@@ -493,13 +505,13 @@ function renderOverzicht() {
     `opbrengst / kosten niet meegeteld (${nf(1).format(sel.buiten.uren)} uur): ${sel.buiten.klanten.map(esc).join(", ")}`]);
   document.getElementById("kpis").innerHTML = kaarten.map(([l, w, s]) => `<div class="kaart kpi"><div class="l">${l}</div><div class="w">${w}</div><div class="s">${s}</div></div>`).join("");
 
-  const weken = [...new Set(weekVan.slice(S.van, S.tot + 1))];
+  const weken = [...new Set(weekVan.slice(S.van, Math.min(S.tot, peilIdx) + 1))];
   const wk = r => weekVan[r[0]];
   const agg = (A, fn) => { const m = new Map(weken.map(w => [w, 0])); A.forEach(r => m.set(wk(r), m.get(wk(r)) + fn(r))); return weken.map(w => m.get(w)); };
   const kosten = agg(sel.V, r => r[5]).map((v, i) => v + agg(sel.X, r => r[1])[i]);
   const opbr = agg(sel.O, r => r[2] + r[3]);
   const res = agg(sel.C, r => r[7]);
-  const lab = weken.map(w => "wk " + +w.slice(6));
+  const lab = weken.map(weekLab);
   const s = SERIES();
   grafiek("cTrendEuro", {type: "line", data: {labels: lab, datasets: [
     {label: "Kosten", data: kosten, borderColor: s[1], backgroundColor: s[1], borderWidth: 2, pointRadius: 3},
@@ -578,11 +590,11 @@ function renderResultaten() {
       const x = perK[c.dataIndex]; return `${nf(2).format(c.parsed.x || 0)} per uur · ${x.t.res} resultaten in ${nf(1).format(x.t.uren)} uur`; }}}},
       scales: {x: {beginAtZero: true}, y: {grid: {display: false}}}}});
 
-  const weken = [...new Set(weekVan.slice(S.van, S.tot + 1))];
+  const weken = [...new Set(weekVan.slice(S.van, Math.min(S.tot, peilIdx) + 1))];
   const rw = new Map(weken.map(w => [w, {res: 0, uren: 0}]));
   sel.C.forEach(r => { if (r[7] && rw.has(weekVan[r[0]])) rw.get(weekVan[r[0]]).res++; });
   sel.V.forEach(r => { if (rw.has(weekVan[r[0]])) rw.get(weekVan[r[0]]).uren += r[3]; });
-  grafiek("cResUurTrend", {type: "line", data: {labels: weken.map(w => "wk " + +w.slice(6)), datasets: [{label: "Resultaten per betaald uur", data: weken.map(w => { const x = rw.get(w); return x.uren >= 2 ? div(x.res, x.uren) : null; }), borderColor: s8[0], backgroundColor: s8[0], borderWidth: 2, pointRadius: 3, spanGaps: true}]},
+  grafiek("cResUurTrend", {type: "line", data: {labels: weken.map(weekLab), datasets: [{label: "Resultaten per betaald uur", data: weken.map(w => { const x = rw.get(w); return x.uren >= 2 ? div(x.res, x.uren) : null; }), borderColor: s8[0], backgroundColor: s8[0], borderWidth: 2, pointRadius: 3, spanGaps: true}]},
     options: {plugins: {legend: {display: false}, tooltip: {callbacks: {label: c => { const x = rw.get(weken[c.dataIndex]); return `${nf(2).format(c.parsed.y)} per uur · ${x.res} resultaten / ${nf(1).format(x.uren)} uur`; }}}}, scales: {y: {beginAtZero: true}, x: {}}}});
 
   document.querySelectorAll("#rGroep button").forEach(b => b.classList.toggle("actief", b.dataset.g === resGroep));
@@ -1039,7 +1051,7 @@ function periodeRijen(ki, ind) {
   if (ind === "wp") perioden = klantPerioden(ki).map(p => ({label: `${p.label}`, sub: `${dmy(p.van)} t/m ${dmy(p.tot)}`, van: p.vanI, tot: p.totI, target: K.target_wp}));
   else {
     const kp = klantPerioden(ki); const v0 = kp.length ? kp[0].vanI : 0;
-    const m = new Map(); D.datums.forEach((d, i) => { if (i < v0) return; const w = weekVan[i]; if (!m.has(w)) m.set(w, {van: i, tot: i}); else m.get(w).tot = i; });
+    const m = new Map(); D.datums.forEach((d, i) => { if (i < v0 || i > peilIdx) return; const w = weekVan[i]; if (!m.has(w)) m.set(w, {van: i, tot: i}); else m.get(w).tot = i; });
     perioden = [...m.entries()].map(([w, x]) => ({label: "Week " + +w.slice(6), sub: `${dmy(D.datums[x.van])} t/m ${dmy(D.datums[x.tot])}`, van: x.van, tot: x.tot, target: K.target_wp && !K.perioden?.[0]?.label?.startsWith("Pilot") ? K.target_wp / 4 : null}));
   }
   const MK = S.meetbaar ? null : null;
@@ -1142,8 +1154,8 @@ function renderBellers() {
     options: {indexAxis: "y", interaction: {mode: "nearest", intersect: true}, scales: {x: {stacked: true, max: 1, ticks: pctTick}, y: {stacked: true, grid: {display: false}}},
       plugins: {tooltip: {callbacks: {label: c => c.dataset.label + ": " + nf(1).format(c.parsed.x * 100) + "%"}}}}});
 
-  const weken = [...new Set(weekVan.slice(S.van, S.tot + 1))];
-  grafiek("cBellerTrend", {type: "line", data: {labels: weken.map(w => "wk " + +w.slice(6)), datasets: met.map((x, j) => {
+  const weken = [...new Set(weekVan.slice(S.van, Math.min(S.tot, peilIdx) + 1))];
+  grafiek("cBellerTrend", {type: "line", data: {labels: weken.map(weekLab), datasets: met.map((x, j) => {
     const m = perSleutel(x.s.U, r => weekVan[r[0]], () => []);
     return {label: x.b.naam, data: weken.map(w => m.has(w) ? div(som(m.get(w), 3), som(m.get(w), 2) / 3600) : null), borderColor: s[x.i % 8], backgroundColor: s[x.i % 8], borderWidth: 2, pointRadius: 3, spanGaps: true};
   })}, options: {scales: {y: {beginAtZero: true}, x: {}}, plugins: {tooltip: {callbacks: {label: c => c.dataset.label + ": " + nf(1).format(c.parsed.y)}}}}});
@@ -1432,7 +1444,7 @@ function renderDQ() {
   h += `<h2>Verkoopfacturen</h2><p class="uitleg">Status: betaald, open, vervallen of te versturen (concept). Opbrengst = gefactureerd bedrag, verdeeld over de factuurperiode (tot de peildatum). Vooruitgefactureerd na de peildatum: ${eurT(q.vooruitgefactureerd || 0)}.</p><div class="kaart">${tabel(q.verkoopfacturen, [["factuurnr","Factuur"],["debiteur","Debiteur"],["klant","Opdrachtgever"],["factuurdatum","Datum"],["werkperiode","WP"],["periode","Periode"],["bedrag_excl","Bedrag excl."],["status","Status"]])}</div>`;
   h += `<h2>Aansluiting met de boekhouding</h2><p class="uitleg">Ingelezen verkoopfacturen tegenover de omzet in de boekhouding (<code>omzet_boekhouding</code> in klanten.yaml). Een positief verschil betekent dat er nog facturen ontbreken in <code>data/inbox/</code>.</p><div class="kaart">${tabel(q.verkoop_per_klant, [["debiteur","Opdrachtgever"],["facturen","Facturen"],["totaal_excl","Ingelezen excl."],["boekhouding","Boekhouding"],["verschil","Verschil"],["eerste","Eerste"],["laatste","Laatste"]])}</div>`;
   if ((q.verkoopfacturen || []).some(f => f.klant === "niet gekoppeld")) h += `<div class="melding fout">Verkoopfactuur van onbekende debiteur. Voeg de naam toe als <code>factuur_namen</code> in klanten.yaml.</div>`;
-  h += `<h2>Werkperiodes zonder verkoopfactuur</h2><p class="uitleg">Verstreken werkperiodes (vanaf belstart) waarvoor geen factuur in de inbox staat. Controleer of ze gefactureerd zijn, of zet de factuur in <code>data/inbox/</code>. Hier telt de opbrengst als schatting (fee / 28 per dag).</p><div class="kaart" style="max-height:420px;overflow:auto">${tabel(q.werkperiodes_zonder_verkoopfactuur, [["klant","Opdrachtgever"],["werkperiode","WP"],["van","Van"],["tot","Tot"],["verwacht_bedrag","Fee"],["start_volgens","Start volgens"]])}</div>`;
+  h += `<h2>Werkperiodes zonder verkoopfactuur</h2><p class="uitleg">Verstreken werkperiodes (vanaf belstart) waarvoor geen factuur in de inbox staat. Controleer of ze gefactureerd zijn, of zet de factuur in <code>data/inbox/</code>. Hier telt de opbrengst als schatting (fee / 20 per werkdag).</p><div class="kaart" style="max-height:420px;overflow:auto">${tabel(q.werkperiodes_zonder_verkoopfactuur, [["klant","Opdrachtgever"],["werkperiode","WP"],["van","Van"],["tot","Tot"],["verwacht_bedrag","Fee"],["start_volgens","Start volgens"]])}</div>`;
   if ((q.fee_afwijkingen || []).length) h += `<h2>Factuurbedrag wijkt af van fee in config</h2><div class="kaart">${tabel(q.fee_afwijkingen, [["klant","Opdrachtgever"],["factuurnr","Factuur"],["factuurbedrag","Factuur"],["fee_in_config","Config"]])}</div>`;
   h += `<h2>Overige kosten per maand</h2><p class="uitleg">Uit <code>config/kosten.yaml</code> (facturen) en <code>instellingen.yaml</code>. Maanden zonder factuur: laatste factuurbedrag doorgeschat.</p><div class="kaart">${tabel(q.kostenposten, [["post","Post"],["maand","Maand"],["bedrag_excl","Bedrag excl."],["basis","Basis"]])}</div>`;
   if ((q.stats_controle || []).length) h += `<h2>Steam-statistieken tegenover de rest</h2><p class="uitleg">Contactpogingen uit de statistieken horen gelijk te zijn aan Pogingen in de urenexport. Hits (Steam) tegenover resultaten (dashboard, volgens telt_als_resultaat).</p><div class="kaart">${tabel(q.stats_controle, [["beller","Beller"],["contactpogingen_steam","Pogingen Steam-statistiek"],["pogingen_urenexport","Pogingen urenexport"],["hits_steam","Hits Steam"],["resultaten_dashboard","Resultaten dashboard"]])}</div><h3 style="margin-top:12px">Beltijd per opdrachtgever</h3><div class="kaart">${tabel(q.stats_tijd_per_klant, [["klant","Opdrachtgever"],["beltijd_steam_uur","Beltijd Steam (u)"],["uren_verdeelsleutel","Betaalde uren verdeelsleutel"]])}</div>`;

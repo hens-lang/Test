@@ -56,7 +56,7 @@ pip install -r requirements.txt
 - **Verdeelsleutel**: Steam splitst uren niet per campagne. De verdeling per dag volgt de belregels; het totaal per beller per opdrachtgever wordt gekalibreerd op de beltijd per campagne uit de contactstatistieken (`verdeelsleutel: steam_gekalibreerd`). Zonder contactstatistieken: alleen belregels.
 - **Resultaat uit de memo**: bij `memo_classificatie: true` (Moyee) telt een overdracht (101) met een afspraak of ingeplande tasting in de memo als afspraak (100). Patronen in `instellingen.yaml`; controle op het tabblad Datakwaliteit.
 - **Alleen meetbaar werk** (schakelaar, standaard aan): alleen opdrachtgevers met belregels of door Steam gemeten beltijd in de periode.
-- **Opbrengst**: wat echt gefactureerd is. Een verkoopfactuur telt verdeeld over zijn periode (een factuur zonder periode: 28 dagen vanaf de factuurdatum), tot de peildatum. Met `opbrengst_basis: facturen_en_schatting` vult het model dagen zonder factuur aan met fee / 28.
+- **Opbrengst**: wat echt gefactureerd is. Een verkoopfactuur telt verdeeld over de werkdagen (ma t/m vr) van zijn periode (een factuur zonder periode: 28 dagen vanaf de factuurdatum), tot de peildatum. Met `opbrengst_basis: facturen_en_schatting` vult het model werkdagen zonder factuur aan met fee / 20. Overige kosten worden ook over werkdagen verdeeld, zodat een week altijd ma t/m vr is.
 - **Werkperiodes**: volgens de verkoopfactuur als die er is ("werkperiode 4, periode ..."), anders vanaf de belstart.
 - **Status klant**: `actief`, `pauze` of `gestopt`. Alleen actieve klanten tellen mee in targets en scenario.
 - **Overige kosten**: facturen uit `kosten.yaml` (een jaarlicentie wordt per dag verdeeld); maanden zonder factuur krijgen het laatst bekende bedrag als schatting.
