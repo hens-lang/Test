@@ -172,15 +172,29 @@ def _uren_buiten_steam(uren: pd.DataFrame, pogingen: pd.DataFrame, cfg: Config) 
             p = p[p["datum"] <= tot]
         if van:
             p = p[p["datum"] >= van]
-        n = p.groupby("datum").size()
-        if n.empty:
+        # Uren die Steam inmiddels wel registreert, tellen mee in het totaal; de rest gaat naar de
+        # dagen met belpogingen zonder Steam-uren.
+        steam = uren[(uren["beller"] == b.naam) & uren["datum"].isin(set(p["datum"]))]
+        rest = float(ub["totaal"]) - steam["uren"].sum()
+        n = p[~p["datum"].isin(set(steam["datum"]))].groupby("datum").size()
+        if n.empty or rest <= 0:
             continue
         for d, k in n.items():
-            u = float(ub["totaal"]) * k / n.sum()
+            u = rest * k / n.sum()
             extra.append({"datum": d, "agent_raw": b.naam, "beller": b.naam, "afdeling": "buiten Steam",
                           "pogingen": int(k), "te_betalen_s": int(round(u * 3600)), "uren": u,
                           "tarief": b.tarief_op(d), "kosten_uur": u * (b.tarief_op(d) or 0), "kosten_vast": 0.0,
                           "bron": "uren_buiten_steam"})
+    # Verwachte uren (bellers.yaml: uren_verwacht) voor dagen die nog niet in de urenexport staan
+    bekend = set(zip(uren["beller"], uren["datum"]))
+    for b in cfg.bellers.values():
+        for d, u in (b.uren_verwacht or {}).items():
+            if (b.naam, d) in bekend:
+                continue
+            extra.append({"datum": d, "agent_raw": b.naam, "beller": b.naam, "afdeling": "verwacht",
+                          "pogingen": 0, "te_betalen_s": int(round(u * 3600)), "uren": u,
+                          "tarief": b.tarief_op(d), "kosten_uur": u * (b.tarief_op(d) or 0), "kosten_vast": 0.0,
+                          "bron": "verwacht"})
     if not extra:
         return uren
     return pd.concat([uren, pd.DataFrame(extra)], ignore_index=True).fillna(
@@ -656,9 +670,9 @@ def _datakwaliteit(cfg, contacten, uren, bestanden, verdeling, ruwe_uren_s) -> d
 
     # Somcontroles (uren buiten Steam tellen apart)
     totaal_model = verdeling["uren"].sum()
-    extra_uren = uren.loc[uren.get("bron", pd.Series("urenexport", index=uren.index)) == "uren_buiten_steam", "uren"].sum()
+    extra_uren = uren.loc[uren.get("bron", pd.Series("urenexport", index=uren.index)) .isin(["uren_buiten_steam", "verwacht"]), "uren"].sum()
     dq["controles"] = [
-        {"controle": "Betaalde uren: dashboard = som urenexport",
+        {"controle": "Betaalde uren: dashboard = som urenexport (excl. uren buiten Steam en verwachte uren)",
          "dashboard": round(totaal_model - extra_uren, 2), "bron": round(ruwe_uren_s / 3600, 2),
          "ok": bool(abs(totaal_model - extra_uren - ruwe_uren_s / 3600) < 0.01)},
     ]
@@ -945,6 +959,8 @@ def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
     if len(werkdagen_):
         werkdagen_ = werkdagen_[pd.to_datetime(werkdagen_["datum"]).dt.date <= peildatum]
     dq["na_peildatum"] = na
+    vw = uren[uren.get("bron", pd.Series("", index=uren.index)) == "verwacht"]
+    dq["uren_verwacht"] = [{"datum": str(r.datum), "beller": r.beller, "uren": float(r.uren)} for r in vw.itertuples()]
     dq["werkdag_bron"] = "in- en uitlogtijden" if len(werkdagen_) else "eerste en laatste belpoging"
     dq["pogingen_dekking"] = [
         {"klant": k, "pogingen": len(g), "van": str(g["datum"].min()), "tot": str(g["datum"].max()),

@@ -74,6 +74,7 @@ class Beller:
     factuur_afzenders: list = field(default_factory=list)
     uren_per_week_afspraak: float | None = None
     uren_buiten_steam: dict | None = None
+    uren_verwacht: dict = field(default_factory=dict)   # {datum: uren} nog niet in de urenexport
 
     def tarief_op(self, datum: dt.date) -> float | None:
         if self.ingang_nieuw and datum >= self.ingang_nieuw:
@@ -207,6 +208,7 @@ def laad(config_dir: Path | str = CONFIG_DIR) -> Config:
             factuur_afzenders=list(v.get("factuur_afzenders") or []),
             uren_per_week_afspraak=v.get("uren_per_week_afspraak"),
             uren_buiten_steam=v.get("uren_buiten_steam"),
+            uren_verwacht={_datum(d): float(u) for d, u in (v.get("uren_verwacht") or {}).items()},
         )
 
     for post, bedrag in (inst.get("overige_kosten_per_maand") or {}).items():

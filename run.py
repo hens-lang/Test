@@ -80,7 +80,9 @@ def main(argv=None):
     pad = bouw_dashboard(m, m_cfg)
     csvs = csv_export(m, EXPORT)
 
-    print(f"\nPeildatum: {m.peildatum} (laatste dag in de urenexport; alles telt tot en met deze dag)")
+    print(f"\nPeildatum: {m.peildatum} (laatste dag met uren; alles telt tot en met deze dag)")
+    for v in m.dq.get("uren_verwacht") or []:
+        print(f"  Verwachte uren (nog niet in de urenexport): {v['beller']} {v['datum']} {v['uren']:g} uur")
     na = m.dq.get("na_peildatum") or {}
     if na.get("bronnen"):
         bronnen = ", ".join(f"{b} t/m {d}" for b, d in na["bronnen"].items())

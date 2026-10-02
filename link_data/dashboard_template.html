@@ -966,10 +966,11 @@ function stuurRegels() {
 function margeKleur(p) { return p == null ? "grijs" : p >= NS.marge ? "groen" : p >= 0 ? "oranje" : "rood"; }
 // Melding: data na de peildatum wacht op de urenexport
 function naPeilMelding() {
-  const na = D.dq.na_peildatum || {}, b = na.bronnen || {};
-  if (!Object.keys(b).length) return "";
+  const na = D.dq.na_peildatum || {}, b = na.bronnen || {}, vw = D.dq.uren_verwacht || [];
+  const vwT = vw.length ? `<div class="melding">Geschatte uren, nog niet in de urenexport: ${vw.map(v => `${esc(v.beller)} ${dmy(v.datum)} ${nf(1).format(v.uren)} uur`).join(", ")}. Ze worden vervangen zodra de urenexport die dag bevat.</div>` : "";
+  if (!Object.keys(b).length) return vwT;
   const tot = Object.values(b).sort().pop(), res = na.resultaten || {}, nRes = Object.values(res).reduce((a, v) => a + v, 0);
-  return `<div class="melding"><b>Alles telt tot en met ${dmy(M.peildatum)}</b>, de laatste dag in de urenexport. Er zijn al belexports tot ${dmy(tot)} (${num(na.belregels)} belregels, ${num(nRes)} resultaten${nRes ? ": " + Object.entries(res).map(([k, v]) => `${esc(k)} ${v}`).join(", ") : ""}). Die tellen mee zodra <b>PayableHoursPerDay t/m ${dmy(tot)}</b> in de inbox staat; dan schuiven resultaten, uren, kosten en opbrengst samen op.</div>`;
+  return `<div class="melding"><b>Alles telt tot en met ${dmy(M.peildatum)}</b>, de laatste dag met uren. Er zijn al belexports tot ${dmy(tot)} (${num(na.belregels)} belregels, ${num(nRes)} resultaten${nRes ? ": " + Object.entries(res).map(([k, v]) => `${esc(k)} ${v}`).join(", ") : ""}). Die tellen mee zodra <b>PayableHoursPerDay t/m ${dmy(tot)}</b> in de inbox staat; dan schuiven resultaten, uren, kosten en opbrengst samen op.</div>` + vwT;
 }
 function renderStuur() {
   const R = stuurRegels(), tot = marge4(null);

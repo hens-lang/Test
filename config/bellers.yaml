@@ -10,6 +10,8 @@
 # factuur_afzenders: naam zoals die op de factuur staat (t.n.v. / Ten name van).
 #   Voor weken met een factuur gebruikt het model het gefactureerde bedrag als kosten;
 #   weken zonder factuur worden geschat als Steam-uren x tarief.
+# uren_verwacht: {jjjj-mm-dd: uren} voor een dag die nog niet in de urenexport staat (geschat, uren x tarief);
+#   vervalt vanzelf zodra de urenexport die dag bevat.
 # uren_buiten_steam: uren die niet in de urenexport staan (bv. {totaal: 24, tot: 2026-09-30}). Ze worden
 #   verdeeld over de dagen met belpogingen van deze beller (t/m 'tot'), naar rato van het aantal pogingen.
 # uren_per_week_afspraak: vaste afspraak in uren per week. Weken zonder factuur worden dan
@@ -24,6 +26,7 @@ bellers:
     tarief_nieuw: 36
     ingang_nieuw: null
     actief: true
+    uren_verwacht: {2026-10-02: 6}   # vrijdag 2-10 nog niet in de urenexport; vervalt zodra die dag erin staat
 
   Senna Valk:
     aliassen: ["Senna Valk"]
@@ -47,7 +50,7 @@ bellers:
   Matthijs van Beest:
     aliassen: ["Matthijs van Beest", "Mathijs van Beest"]   # belpogingen en belexport (OK Creative)
     factuur_afzenders: []              # nog geen factuur ontvangen
-    uren_buiten_steam: {totaal: 24, tot: 2026-09-30}   # 3 x 8 uur volgens Hens; niet in de urenexport
+    uren_buiten_steam: {totaal: 24, tot: 2026-09-30}   # 3 x 8 uur volgens Hens; uren die Steam wel registreert (28 en 29-9) gaan eraf
     type: ZZP
     tarief_nu: 25
     tarief_nieuw: 36
