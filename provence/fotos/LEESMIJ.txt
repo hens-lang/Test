@@ -8,6 +8,8 @@ Zet hier jullie foto's met deze namen (jpg, png of webp mag; hoofdletters maakt 
   6-slaapkamer1.jpg     groot bed (180) met houten balk
   7-badkamer.jpg        lavabo met spiegel en bamboeladder
   8-slaapkamer2.jpg     bed (160) met blauw-wit dekbed
+  10-zonsondergang-1.jpg  zonsondergang, oranje wolken (eerste beeld bovenaan)
+  11-zonsondergang-2.jpg  avondgloed met tuinlampjes (slotbeeld)
   9-buitenkant.jpg      zijkant met oleanders en wijnvat
 
 Extra foto's met een andere naam komen automatisch mee in de galerij (categorie "Overig").

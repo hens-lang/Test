@@ -143,7 +143,7 @@
       "x": 10,
       "y": 10,
       "b": 200,
-      "h": 170
+      "h": 100
     },
     {
       "id": "slaap2",
@@ -153,7 +153,7 @@
       "x": 210,
       "y": 10,
       "b": 180,
-      "h": 170
+      "h": 100
     },
     {
       "id": "bad",
@@ -161,32 +161,38 @@
       "naam": "Badkamer",
       "tekst": "Badkamer met douche en lavabo.",
       "x": 10,
-      "y": 180,
-      "b": 200,
-      "h": 95
+      "y": 110,
+      "b": 120,
+      "h": 70
     },
     {
       "id": "wc1",
       "verdieping": 1,
       "naam": "Toilet",
       "tekst": "Apart toilet op de eerste verdieping.",
-      "x": 210,
-      "y": 180,
-      "b": 90,
-      "h": 95
+      "x": 130,
+      "y": 110,
+      "b": 70,
+      "h": 70
     },
     {
       "id": "overloop",
       "verdieping": 1,
       "naam": "Overloop & trap",
       "tekst": "De trap komt uit in de woonkamer.",
-      "x": 300,
-      "y": 180,
-      "b": 90,
-      "h": 95
+      "x": 200,
+      "y": 110,
+      "b": 190,
+      "h": 70
     }
   ],
   "galerij": [
+    {
+      "bestand": "10-zonsondergang-1.jpg",
+      "titel": "Zonsondergang boven de Provence",
+      "categorie": "Buiten",
+      "ruimte": null
+    },
     {
       "bestand": "1-gevel-terras.jpg",
       "titel": "Zonneterras onder de moerbeiboom",
@@ -249,6 +255,12 @@
       "categorie": "Buiten",
       "ruimte": "terras",
       "stijl": "gevel"
+    },
+    {
+      "bestand": "11-zonsondergang-2.jpg",
+      "titel": "Avondlicht over het domein",
+      "categorie": "Buiten",
+      "ruimte": null
     }
   ],
   "omgeving": [
@@ -588,11 +600,12 @@
   },
   "slogan": "Wakker worden tussen de wijngaarden",
   "heroFotos": [
+    "10-zonsondergang-1.jpg",
     "2-zwembad.jpg",
     "1-gevel-terras.jpg",
     "3-eethoek.jpg",
     "6-slaapkamer1.jpg",
-    "9-buitenkant.jpg"
+    "11-zonsondergang-2.jpg"
   ],
   "dag": [
     {
@@ -638,8 +651,8 @@
     {
       "tijd": "18:30",
       "titel": "Apéro bij de wijnboer",
-      "tekst": "Proeven in Sablet, Gigondas of Vacqueyras, terwijl de Dentelles de Montmirail roze kleuren in de avondzon.",
-      "foto": null,
+      "tekst": "Proeven in Sablet, Gigondas of Vacqueyras. Terug op het domein kleurt de lucht boven de cipressen oranje en roze.",
+      "foto": "10-zonsondergang-1.jpg",
       "lucht": [
         "#e8a77f",
         "#9d7fa6"
@@ -647,14 +660,15 @@
     },
     {
       "tijd": "21:30",
-      "titel": "Sterren boven de Ventoux",
-      "tekst": "De krekels vallen stil, de lucht wordt inktblauw. Nog één glas op het terras.",
-      "foto": null,
+      "titel": "Lichtjes in de tuin",
+      "tekst": "De laatste gloed boven de horizon, de tuinlampjes gaan aan. Nog één glas op het terras.",
+      "foto": "11-zonsondergang-2.jpg",
       "lucht": [
         "#141a2e",
         "#3b3557"
       ]
     }
   ],
-  "coordinatenTekst": "44°11′ N · 5°00′ O"
+  "coordinatenTekst": "44°11′ N · 5°00′ O",
+  "slotFoto": "11-zonsondergang-2.jpg"
 }
