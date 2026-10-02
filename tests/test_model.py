@@ -1,4 +1,5 @@
 """Pipeline: ingest -> SQLite -> model, op de fixtures. Controleert ontdubbeling en somregels."""
+import datetime as dt
 import shutil
 
 import pandas as pd
@@ -243,3 +244,20 @@ def test_dashboard_javascript_is_geldig(pipeline, tmp_path):
     js.write_text(html.split("<script>")[-1].split("</script>")[0], encoding="utf-8")
     r = subprocess.run(["node", "--check", str(js)], capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
+
+
+def test_creditfactuur_valt_weg_tegen_gecrediteerde_factuur():
+    cfg = config.laad()
+    k = next(iter(cfg.klanten.values()))
+    d = lambda s: dt.date.fromisoformat(s)
+    v = pd.DataFrame([
+        {"factuurnr": "A1", "klant_naam": k.naam, "factuurdatum": d("2026-08-03"), "periode_van": d("2026-08-03"),
+         "periode_tot": d("2026-08-30"), "bedrag_excl": 750.0, "is_lead": False, "status": "betaald", "werkperiode_nr": None, "omschrijving": "", "bron": "test"},
+        {"factuurnr": "C1", "klant_naam": k.naam, "factuurdatum": d("2026-09-11"), "periode_van": None,
+         "periode_tot": None, "bedrag_excl": -750.0, "is_lead": False, "status": "betaald", "werkperiode_nr": None, "omschrijving": "", "bron": "test"},
+    ])
+    vk = model._verkoop(v, cfg)
+    c = vk[vk["factuurnr"] == "C1"].iloc[0]
+    assert c["crediteert"] == "A1" and c["periode_van"] == d("2026-08-03") and c["periode_tot"] == d("2026-08-30")
+    o = model._opbrengst(cfg, pd.DataFrame(columns=["klant", "datum", "code_eff"]), d("2026-10-02"), vk)
+    assert abs(o.loc[o["klant"] == k.naam, "fee"].sum()) < 0.01

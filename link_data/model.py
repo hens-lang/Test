@@ -411,7 +411,7 @@ def _verdeling(uren: pd.DataFrame, contacten: pd.DataFrame, extra: pd.DataFrame,
 
 def _verkoop(v: pd.DataFrame, cfg: Config) -> pd.DataFrame:
     kol = ["factuurnr", "klant_naam", "factuurdatum", "omschrijving", "werkperiode_nr", "periode_van",
-           "periode_tot", "bedrag_excl", "is_lead", "klant", "bron", "periode_afgeleid", "status"]
+           "periode_tot", "bedrag_excl", "is_lead", "klant", "bron", "periode_afgeleid", "status", "crediteert"]
     if v is None or v.empty:
         return pd.DataFrame(columns=kol)
     v = v.copy()
@@ -440,6 +440,24 @@ def _verkoop(v: pd.DataFrame, cfg: Config) -> pd.DataFrame:
     v["periode_afgeleid"] = zonder
     v.loc[zonder, "periode_van"] = v.loc[zonder, "factuurdatum"]
     v.loc[zonder, "periode_tot"] = [d + dt.timedelta(days=27) for d in v.loc[zonder, "factuurdatum"]]
+    # Een creditfactuur krijgt de periode van de factuur die hij crediteert (zelfde klant, zelfde bedrag,
+    # eerder gefactureerd): dan vallen ze per dag precies tegen elkaar weg. Geen match: alles op de creditdatum.
+    v["crediteert"] = None
+    gebruikt = set()
+    for i, r in v[(v["bedrag_excl"] < 0) & ~v["is_lead"]].sort_values("factuurdatum").iterrows():
+        k = r["klant"] if pd.notna(r["klant"]) else None
+        kand = v[(((v["klant"] == k) if k else (v["klant_naam"] == r["klant_naam"])))
+                 & ((v["bedrag_excl"] + r["bedrag_excl"]).abs() < 0.01) & ~v["is_lead"]
+                 & (v["factuurdatum"] <= r["factuurdatum"]) & (v["status"] != "te_versturen")
+                 & ~v.index.isin(list(gebruikt))].sort_values("factuurdatum")
+        if len(kand):
+            j = kand.index[-1]
+            gebruikt.add(j)
+            v.at[i, "periode_van"], v.at[i, "periode_tot"] = v.at[j, "periode_van"], v.at[j, "periode_tot"]
+            v.at[i, "crediteert"] = v.at[j, "factuurnr"]
+        else:
+            v.at[i, "periode_van"] = v.at[i, "periode_tot"] = r["factuurdatum"]
+        v.at[i, "periode_afgeleid"] = True
     return v.sort_values(["klant_naam", "factuurdatum"]).reset_index(drop=True)
 
 
