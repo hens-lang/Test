@@ -49,6 +49,8 @@ pip install -r requirements.txt
 
 ## Hoe het rekent
 
+- **Handmatige resultaten**: `config/handmatig.yaml` voor een resultaat dat nog niet in een belexport staat. Telt direct mee en vervalt vanzelf zodra een belexport voor die opdrachtgever, dag en code hem bevat.
+- **Verwachte uren**: `uren_verwacht` in `bellers.yaml` voor een dag die nog niet in de urenexport staat (uren x tarief); vervalt vanzelf zodra de urenexport die dag bevat.
 - **Peildatum**: de laatste dag in de urenexport. Alles (resultaten, uren, kosten, opbrengst, targets) telt tot en met die dag. Belexports en belpogingen van later wachten tot de urenexport die dagen ook bevat; het Stuurscherm en `run.py` melden dat.
 - **Uren**: `Te betalen` uit de urenexport.
 - **Kosten ZZP**: voor een week mét factuur geldt het gefactureerde bedrag. Voor een week zonder factuur is het een schatting: Steam-uren x tarief. Facturen zonder weeknummer gaan naar de week van de factuurdatum (do t/m zo) of naar de week ervoor (ma t/m wo).

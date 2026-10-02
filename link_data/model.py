@@ -111,6 +111,34 @@ def _contacten(df: pd.DataFrame, cfg: Config) -> pd.DataFrame:
     return df.sort_values("contact_dt").reset_index(drop=True)
 
 
+def _handmatig(contacten: pd.DataFrame, cfg: Config) -> pd.DataFrame:
+    """Resultaten uit config/handmatig.yaml die nog niet in een belexport staan. Een handmatige regel
+    vervalt zodra de belexporten voor die opdrachtgever, dag en code minstens evenveel resultaten bevatten."""
+    if not cfg.handmatig:
+        return contacten
+    rijen, teller = [], {}
+    for r in cfg.handmatig:
+        k = cfg.klanten[r["klant"]]
+        code = int(r.get("code", 101))
+        sleutel = (k.naam, r["datum"], code)
+        teller[sleutel] = teller.get(sleutel, 0) + 1
+        in_export = 0 if contacten.empty else int(((contacten["klant"] == k.naam) & (contacten["datum"] == r["datum"])
+                                                   & (contacten["code_eff"] == code)).sum())
+        if in_export >= teller[sleutel]:
+            continue
+        b = cfg.beller_voor(r["beller"]) if r.get("beller") else None
+        rijen.append({"sleutel": f"handmatig|{k.naam}|{r['datum']}|{code}|{teller[sleutel]}", "bron": "handmatig",
+                      "campagne_pid": k.pids[0] if k.pids else None, "agent_raw": r.get("beller") or "(handmatig)",
+                      "contact_dt": pd.Timestamp(r["datum"]) + pd.Timedelta(hours=12), "datum": r["datum"], "uur": 12,
+                      "code": code, "code_raw": str(code), "is_max": False, "project": "(handmatig)",
+                      "memo": r.get("notitie"), "beller": b, "klant": k.naam, "klant_label": k.naam,
+                      "is_resultaat": code in k.telt_als_resultaat, "code_eff": code, "code_reden": "handmatig",
+                      "is_lead": code == codes.LEAD, "groep": codes.groep(code)})
+    if not rijen:
+        return contacten
+    return pd.concat([contacten, pd.DataFrame(rijen)], ignore_index=True)
+
+
 def _uren(df: pd.DataFrame, cfg: Config) -> pd.DataFrame:
     df = df.copy()
     df["beller"] = df["agent_raw"].map(cfg.beller_voor)
@@ -639,7 +667,7 @@ def _datakwaliteit(cfg, contacten, uren, bestanden, verdeling, ruwe_uren_s) -> d
          "van": str(g["datum"].min()), "tot": str(g["datum"].max())}
         for p, g in ng.groupby("campagne_pid")]
 
-    agents = pd.concat([contacten[["agent_raw", "beller"]].assign(bron="belexport"),
+    agents = pd.concat([contacten.loc[contacten["bron"] != "handmatig", ["agent_raw", "beller"]].assign(bron="belexport"),
                         uren[["agent_raw", "beller"]].assign(bron="urenexport")])
     dq["niet_gekoppelde_agents"] = [
         {"agent": a, "bron": ", ".join(sorted(set(g["bron"]))), "rijen": len(g)}
@@ -869,7 +897,7 @@ def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
          verkoop_raw: pd.DataFrame | None = None, stats_raw: pd.DataFrame | None = None,
          campagne_raw: pd.DataFrame | None = None, pogingen_raw: pd.DataFrame | None = None,
          sessies_raw: pd.DataFrame | None = None) -> Model:
-    contacten = _contacten(contacten_raw, cfg)
+    contacten = _handmatig(_contacten(contacten_raw, cfg), cfg)
     uren = _uren(uren_raw, cfg)
     pogingen = _pogingen(pogingen_raw, cfg)
     uren = _uren_buiten_steam(uren, pogingen, cfg)
@@ -960,6 +988,9 @@ def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
         werkdagen_ = werkdagen_[pd.to_datetime(werkdagen_["datum"]).dt.date <= peildatum]
     dq["na_peildatum"] = na
     vw = uren[uren.get("bron", pd.Series("", index=uren.index)) == "verwacht"]
+    hm = contacten[contacten["bron"] == "handmatig"]
+    dq["handmatig"] = [{"datum": str(r.datum), "klant": r.klant, "code": int(r.code), "notitie": r.memo or ""}
+                       for r in hm.itertuples()]
     dq["uren_verwacht"] = [{"datum": str(r.datum), "beller": r.beller, "uren": float(r.uren)} for r in vw.itertuples()]
     dq["werkdag_bron"] = "in- en uitlogtijden" if len(werkdagen_) else "eerste en laatste belpoging"
     dq["pogingen_dekking"] = [
@@ -971,5 +1002,6 @@ def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
 
 
 def resultaten_per_klant(model: Model) -> pd.Series:
+    """Resultaten uit de belexports (handmatige regels tellen apart, zie Datakwaliteit)."""
     c = model.contacten
-    return c[c["is_resultaat"]].groupby("klant_label").size()
+    return c[c["is_resultaat"] & (c["bron"] != "handmatig")].groupby("klant_label").size()

@@ -1,0 +1,7 @@
+# Resultaten die al binnen zijn maar nog niet in een belexport staan (bv. vandaag na de laatste export).
+# Ze tellen direct mee in resultaten, targets en per-uur-cijfers. Een regel vervalt vanzelf zodra een
+# belexport voor dezelfde opdrachtgever, dag en code minstens evenveel resultaten bevat: dan telt de export.
+# Velden: datum, klant (zoals in klanten.yaml), code (100 afspraak, 101 lead/overdracht), beller (optioneel),
+# notitie (optioneel).
+resultaten:
+  - {datum: 2026-10-02, klant: Bloei Interieurbeplanting, code: 101, notitie: "lead doorgegeven door Hens"}

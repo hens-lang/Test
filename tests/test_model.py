@@ -18,6 +18,9 @@ def pipeline(tmp_path):
     con = store.verbind(tmp_path / "test.db")
     exports = store.ingest(inbox, con)
     cfg = config.laad()
+    cfg.handmatig = []                       # tests los van de handmatige invoer van deze week
+    for b in cfg.bellers.values():
+        b.uren_verwacht = {}
     m = model.bouw(cfg, store.lees(con, "contactmomenten"), store.lees(con, "uren"),
                    store.lees(con, "bestanden"), store.lees(con, "facturen"))
     return con, inbox, exports, cfg, m
@@ -208,3 +211,20 @@ def test_belpogingen_utc_en_werkdag_uit_inlog(pipeline, tmp_path):
     assert w["start"] == 8.5
     assert w["eind_bron"] == "laatste belpoging"              # uitlog om 23:59 is onbetrouwbaar
     assert abs(w["eind"] - (13 + 55 / 60)) < 0.01             # laatste poging 11:55 UTC = 13:55
+
+
+def test_handmatig_resultaat_vervalt_als_export_hem_bevat(pipeline):
+    con, inbox, exports, cfg, m = pipeline
+    c = m.contacten[m.contacten["is_resultaat"]].iloc[0]
+    k, d, code = c["klant"], c["datum"], int(c["code_eff"])
+    bouw = lambda: model.bouw(cfg, store.lees(con, "contactmomenten"), store.lees(con, "uren"))
+    try:
+        cfg.handmatig = [{"datum": d, "klant": k, "code": code}]       # staat al in de export: vervalt
+        assert (bouw().contacten["bron"] == "handmatig").sum() == 0
+        n = int(((m.contacten["klant"] == k) & (m.contacten["datum"] == d) & (m.contacten["code_eff"] == code)).sum())
+        cfg.handmatig = [{"datum": d, "klant": k, "code": code}] * (n + 1)   # een meer dan de export: telt
+        m2 = bouw()
+        assert (m2.contacten["bron"] == "handmatig").sum() == 1
+        assert m2.contacten["is_resultaat"].sum() == m.contacten["is_resultaat"].sum() + 1
+    finally:
+        cfg.handmatig = []

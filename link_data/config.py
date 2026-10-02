@@ -89,6 +89,7 @@ class Config:
     instellingen: dict
     ontbrekend: list = field(default_factory=list)  # (onderwerp, veld)
     kosten: list = field(default_factory=list)       # facturen overige kosten (kosten.yaml)
+    handmatig: list = field(default_factory=list)    # resultaten die nog niet in een belexport staan (handmatig.yaml)
 
     @property
     def pid_naar_klant(self) -> dict:
@@ -234,4 +235,11 @@ def laad(config_dir: Path | str = CONFIG_DIR) -> Config:
     ontbrekend = [(o, v) for o, v in ontbrekend if not (o == "Overige kosten" and v in met_factuur)]
     inst["werkperiode_anker"] = _datum(inst.get("werkperiode_anker")) or dt.date(2026, 8, 3)
     inst["overige_kosten_vanaf"] = _datum(inst.get("overige_kosten_vanaf"))
-    return Config(klanten=klanten, bellers=bellers, instellingen=inst, ontbrekend=ontbrekend, kosten=kosten)
+    hm_pad = config_dir / "handmatig.yaml"
+    hm = (yaml.safe_load(hm_pad.read_text(encoding="utf-8")) or {}) if hm_pad.exists() else {}
+    handmatig = [{**r, "datum": _datum(r.get("datum"))} for r in (hm.get("resultaten") or [])]
+    for r in handmatig:
+        if r.get("klant") not in klanten:
+            raise ValueError(f"handmatig.yaml: onbekende opdrachtgever '{r.get('klant')}'")
+    return Config(klanten=klanten, bellers=bellers, instellingen=inst, ontbrekend=ontbrekend, kosten=kosten,
+                  handmatig=handmatig)
