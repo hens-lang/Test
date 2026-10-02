@@ -880,7 +880,9 @@ def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
                            pogingen)
     opbrengst = _opbrengst(cfg, contacten, peildatum, verkoop)
     overig = _overig(cfg, peildatum, eerste)
-    targets = _targets(cfg, contacten, peildatum, verkoop)
+    # Targets tellen tot de laatste dag met belregels: belexports lopen vaak een paar dagen voor op de urenexport
+    stand = max(peildatum, contacten["datum"].max()) if len(contacten) else peildatum
+    targets = _targets(cfg, contacten, min(stand, dt.date.today()), verkoop)
     dq = _datakwaliteit(cfg, contacten, uren,
                         bestanden if bestanden is not None else pd.DataFrame(columns=["naam"]),
                         verdeling, uren_raw["te_betalen_s"].sum())

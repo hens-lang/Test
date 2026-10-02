@@ -45,7 +45,7 @@ bellers:
     actief: false         # gestopt (laatste factuur 54, 30-9-2026); belde voor OK Creative Agency
 
   Matthijs van Beest:
-    aliassen: ["Matthijs van Beest"]   # gevonden in de belpogingen (OK Creative, 443 pogingen)
+    aliassen: ["Matthijs van Beest", "Mathijs van Beest"]   # belpogingen en belexport (OK Creative)
     factuur_afzenders: []              # nog geen factuur ontvangen
     uren_buiten_steam: {totaal: 24, tot: 2026-09-30}   # 3 x 8 uur volgens Hens; niet in de urenexport
     type: ZZP
