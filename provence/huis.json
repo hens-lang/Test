@@ -1,7 +1,7 @@
 {
   "_uitleg": "Dit is het ENIGE bestand met gegevens. Pas hier teksten, prijzen, contact en foto's aan en draai daarna: python3 bouw.py  -> dat maakt Sablet-VI.html (één bestand om te delen).",
   "naam": "Sablet VI",
-  "ondertitel": "Jouw Provençaalse thuis aan de voet van de Mont Ventoux",
+  "ondertitel": "Moderne vakantiewoning voor vier, met verwarmd zwembad, in het hart van een Provençaals wijndorp aan de voet van de Mont Ventoux.",
   "plaats": "Sablet",
   "regio": "Vaucluse · Provence · Frankrijk",
   "coordinaten": {
@@ -13,22 +13,23 @@
     {
       "icoon": "gasten",
       "waarde": 4,
-      "label": "personen"
+      "label": "Personen"
     },
     {
       "icoon": "bed",
       "waarde": 2,
-      "label": "slaapkamers"
+      "label": "Slaapkamers"
+    },
+    {
+      "icoon": "douche",
+      "waarde": 1,
+      "label": "Badkamer + 2 toiletten"
     },
     {
       "icoon": "zwembad",
       "waarde": 16,
-      "label": "meter zwembad"
-    },
-    {
-      "icoon": "auto",
-      "waarde": 2,
-      "label": "parkeerplaatsen"
+      "eenheid": "m",
+      "label": "Verwarmd zwembad"
     }
   ],
   "voorzieningen": [
@@ -250,7 +251,6 @@
       "stijl": "gevel"
     }
   ],
-  "heroFoto": "2-zwembad.jpg",
   "omgeving": [
     {
       "naam": "Séguret",
@@ -585,5 +585,13 @@
       "Café en restaurant in het centrum van Sablet",
       "Verschillende restaurants, bistro's en cafés in Vaison-la-Romaine (10 km)"
     ]
-  }
+  },
+  "slogan": "Wakker worden tussen de wijngaarden",
+  "heroFotos": [
+    "2-zwembad.jpg",
+    "1-gevel-terras.jpg",
+    "3-eethoek.jpg",
+    "6-slaapkamer1.jpg",
+    "9-buitenkant.jpg"
+  ]
 }

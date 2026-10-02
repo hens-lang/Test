@@ -26,11 +26,15 @@ template.html┘
 3. `bezet`: geboekte weken, bv. `{ "van": "2027-07-04", "tot": "2027-07-18" }`. Die worden doorstreept in de kalender.
 
 ## Wat zit erin
-- Bewegend Provence-landschap met parallax, dag/nacht-knop en krekelgeluid
-- Klikbaar plattegrond (2 verdiepingen) met foto's per ruimte
-- Fotogalerij met filters en vergrootweergave (swipen, pijltjestoetsen)
-- Draaikaarten met voorzieningen
+- Diashow met jullie foto's bovenaan, rustige animaties bij het scrollen
+- Rondleiding per verdieping: klik op een ruimte in de lijst of op het plan en zie de foto's van die ruimte
+- Fotogalerij met grote weergave (pijltjes, vegen, miniaturen)
+- Voorzieningen, het verhaal van het dorp, winkels en eten & drinken
 - Interactieve kaart met afstanden en rijtijden, filters en route via Google Maps
-- Klimaatgrafiek per maand met seizoensprijs
-- Tarieven met seizoensbalk, kalender per week (zondag–zondag), prijsberekening en aanvraag via WhatsApp/e-mail
+- Per maand: weer, wat er te beleven valt en de prijs in die periode
+- Tarieven met seizoensbalk, kalender per week (zondag–zondag) met prijsberekening en aanvraagbericht
 - Reviews en praktische info
+- Werkt op telefoon, tablet en computer
+
+Tip: de foto's zijn nu 588 × 441 pixels (zoals ze uit de chat kwamen). Grotere originelen in `fotos/`
+zetten (zelfde namen) en `python3 bouw.py` draaien maakt de site nog scherper.
