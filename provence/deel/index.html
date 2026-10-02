@@ -1,8 +1,3 @@
-<!doctype html>
-<html lang="nl">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sablet VI</title>
 <meta name="description" content="Een moderne vakantiewoning voor maximaal 4 personen op een klein, omheind domein van 9 huisjes met een groot verwarmd gemeenschappelijk zwembad, in het hart van het Provençaalse wijndorpje Sablet, aan de voet van de Mont Ventoux.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -454,8 +449,8 @@ footer .onder{grid-column:1/-1;border-top:1px solid var(--lijn-licht);padding-to
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}#korrel{display:none}}
 </style>
-</head>
-<body>
+
+
 <canvas id="korrelBron" width="160" height="160" hidden></canvas>
 <div id="korrel" aria-hidden="true"></div>
 <div id="cursor" aria-hidden="true"><div class="ring"></div><div class="lbl" id="cursorLbl">Bekijk</div></div>
@@ -981,5 +976,3 @@ $("#hamburger").onclick=()=>{const o=document.body.classList.toggle("menu-open")
 $$("#menu a").forEach(a=>a.onclick=()=>document.body.classList.remove("menu-open"));
 })();
 </script>
-</body>
-</html>

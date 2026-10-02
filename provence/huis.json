@@ -593,5 +593,68 @@
     "3-eethoek.jpg",
     "6-slaapkamer1.jpg",
     "9-buitenkant.jpg"
-  ]
+  ],
+  "dag": [
+    {
+      "tijd": "08:00",
+      "titel": "Croissants van de bakker",
+      "tekst": "Wandel het dorp in naar een van de bakkers en ontbijt op het zonneterras onder de moerbeiboom.",
+      "foto": "1-gevel-terras.jpg",
+      "lucht": [
+        "#f3d9b8",
+        "#b9c9d8"
+      ]
+    },
+    {
+      "tijd": "10:30",
+      "titel": "Markt in Vaison-la-Romaine",
+      "tekst": "Op dinsdag een van de mooiste markten van de Provence: lavendel, geitenkaas, olijven en abrikozen, op tien kilometer.",
+      "foto": null,
+      "lucht": [
+        "#bcd3e6",
+        "#e9eef2"
+      ]
+    },
+    {
+      "tijd": "13:00",
+      "titel": "Lunch in de schaduw",
+      "tekst": "Tomaten, tapenade, vers brood en een koele rosé aan de tafel achter het huis.",
+      "foto": "9-buitenkant.jpg",
+      "lucht": [
+        "#8fb5d6",
+        "#dfe9f1"
+      ]
+    },
+    {
+      "tijd": "15:30",
+      "titel": "Baantjes in het zwembad",
+      "tekst": "Het verwarmde zwembad van zestien meter ligt op een paar stappen van de voordeur.",
+      "foto": "2-zwembad.jpg",
+      "lucht": [
+        "#7aa7cf",
+        "#cfe2ef"
+      ]
+    },
+    {
+      "tijd": "18:30",
+      "titel": "Apéro bij de wijnboer",
+      "tekst": "Proeven in Sablet, Gigondas of Vacqueyras, terwijl de Dentelles de Montmirail roze kleuren in de avondzon.",
+      "foto": null,
+      "lucht": [
+        "#e8a77f",
+        "#9d7fa6"
+      ]
+    },
+    {
+      "tijd": "21:30",
+      "titel": "Sterren boven de Ventoux",
+      "tekst": "De krekels vallen stil, de lucht wordt inktblauw. Nog één glas op het terras.",
+      "foto": null,
+      "lucht": [
+        "#141a2e",
+        "#3b3557"
+      ]
+    }
+  ],
+  "coordinatenTekst": "44°11′ N · 5°00′ O"
 }

@@ -4,7 +4,8 @@
     huis.json  (alle gegevens)
   + fotos/     (jullie foto's, namen zoals in huis.json -> galerij)
   + template.html
-  = Sablet-VI.html  (één bestand, foto's zitten erin: zo door te sturen)
+  = Sablet-VI.html     (één bestand, foto's zitten erin: zo door te sturen)
+  + deel/index.html    (dezelfde pagina, klaar om als gedeelde link te publiceren)
 
 Gebruik:  python3 bouw.py
 Pillow (pip install pillow) is optioneel: daarmee worden foto's verkleind
@@ -25,7 +26,7 @@ KWALITEIT = 80
 EXTENSIES = {".jpg", ".jpeg", ".png", ".webp"}
 
 try:
-    from PIL import Image, ImageOps
+    from PIL import Image, ImageFilter, ImageOps
 except ImportError:
     Image = None
 
@@ -34,6 +35,11 @@ def foto_naar_data_uri(pad: Path) -> str:
     if Image is not None:
         with Image.open(pad) as im:
             im = ImageOps.exif_transpose(im).convert("RGB")
+            if max(im.size) < 1000:
+                # Kleine foto's (bv. uit een chat) 2x vergroten met Lanczos en licht verscherpen,
+                # zodat ze op grote schermen minder zacht ogen.
+                im = im.resize((im.width * 2, im.height * 2), Image.LANCZOS)
+                im = im.filter(ImageFilter.UnsharpMask(radius=1.6, percent=70, threshold=2))
             im.thumbnail((MAX_PX, MAX_PX))
             buf = io.BytesIO()
             im.save(buf, "JPEG", quality=KWALITEIT, optimize=True, progressive=True)
@@ -91,11 +97,16 @@ def main():
         return json.dumps(obj, ensure_ascii=False).replace("</", "<\\/")
 
     html = template.replace("/*HUIS*/null", js(huis)).replace("/*FOTOS*/{}", js(fotos))
-    html = html.replace("__TITEL__", f"{huis['naam']} · {huis['plaats']}, Provence")
     html = html.replace("__OMSCHRIJVING__", re.sub(r'["<>]', "", huis["intro"]))
 
     uit = MAP / f"{re.sub(r'[^A-Za-z0-9]+', '-', huis['naam']).strip('-')}.html"
     uit.write_text(html, encoding="utf-8")
+
+    # Versie voor een gedeelde link (claude.ai Artifact): zonder eigen document-skelet.
+    deel = re.sub(r"(?is)<!doctype html>\s*|</?html[^>]*>|</?head>|</?body>", "", html)
+    deel = re.sub(r'(?i)<meta charset="utf-8">\s*|<meta name="viewport"[^>]*>\s*', "", deel)
+    (MAP / "deel").mkdir(exist_ok=True)
+    (MAP / "deel" / "index.html").write_text(deel.strip() + "\n", encoding="utf-8")
 
     print(f"✓ {uit.name} gemaakt ({uit.stat().st_size / 1e6:.1f} MB, {len(fotos)} foto's)")
     if ontbreekt:

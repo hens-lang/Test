@@ -1,7 +1,8 @@
 # Sablet VI – deelbare website
 
-Eén HTML-bestand (`Sablet-VI.html`) dat je kunt doorsturen via WhatsApp, e-mail, WeTransfer of een USB-stick.
-Je hoeft niets te hosten: dubbelklikken en het opent in elke browser, op telefoon en computer.
+Twee manieren om te delen:
+- **Link**: `deel/index.html` is gepubliceerd als claude.ai-pagina. Zet hem via de knop *Delen* op die pagina open voor anderen en stuur de link door.
+- **Bestand**: `Sablet-VI.html` is één bestand (foto's zitten erin) dat je via WhatsApp, e-mail of WeTransfer kunt doorsturen. Dubbelklikken en het opent in elke browser.
 
 ## Zo hangt alles samen
 
