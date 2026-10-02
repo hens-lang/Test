@@ -143,7 +143,7 @@ section{position:relative}
 .scroll-wijzer{position:absolute;left:50%;bottom:20px;width:1px;height:46px;background:rgba(248,247,243,.25);overflow:hidden;z-index:2}
 .scroll-wijzer::after{content:"";position:absolute;left:0;right:0;top:-50%;height:50%;background:var(--wit);animation:val 2.2s var(--ease) infinite}
 @keyframes val{to{top:110%}}
-@media (max-width:760px){.opening{height:135svh}.opening-voet{grid-template-columns:1fr}.teller .balk{width:70px}.opening-tekst .boven span:last-child{display:none}.scroll-wijzer{display:none}}
+@media (max-width:760px){.opening{height:135svh}.opening-voet{grid-template-columns:1fr}.teller .balk{width:70px}.scroll-wijzer{display:none}}
 
 /* ---------- manifest ---------- */
 .manifest{padding-block:clamp(110px,15vw,210px) clamp(70px,9vw,120px)}
@@ -218,7 +218,7 @@ section{position:relative}
 .ruimte-tekst h3{font-size:clamp(2rem,3vw,2.8rem);margin-bottom:12px}
 .ruimte-tekst p{color:var(--steen);font-weight:300;max-width:58ch}
 .inval{animation:op .9s var(--ease)}
-@media (max-width:960px){.verkenner{grid-template-columns:minmax(0,1fr)}.verkenner .links{order:2}.ruimte-tekst{grid-template-columns:minmax(0,1fr);gap:6px}}
+@media (max-width:960px){.verkenner{grid-template-columns:minmax(0,1fr)}.ruimte-tekst{grid-template-columns:minmax(0,1fr);gap:6px}}
 
 /* ---------- een dag ---------- */
 .dag{background:var(--nacht);color:var(--wit)}
@@ -236,7 +236,7 @@ section{position:relative}
 .dag-foto .zon{position:absolute;inset:0;display:grid;place-items:center}
 .dag-foto .zon i{width:42%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(255,245,220,.95),rgba(255,226,170,.25) 60%,transparent 70%);transition:transform 1.2s var(--ease)}
 .dag-stippen{display:flex;gap:10px;margin-top:30px}
-.dag-stippen button{width:46px;height:2px;border:0;padding:8px 0;background:linear-gradient(rgba(248,247,243,.3),rgba(248,247,243,.3)) center/100% 2px no-repeat}
+.dag-stippen button{width:46px;height:30px;border:0;padding:0;background:linear-gradient(rgba(248,247,243,.3),rgba(248,247,243,.3)) center/100% 2px no-repeat}
 .dag-stippen button.actief{background-image:linear-gradient(var(--wit),var(--wit))}
 .dag-wissel{animation:op .8s var(--ease)}
 @media (max-width:860px){.dag-binnen{grid-template-columns:minmax(0,1fr);align-content:center;gap:24px}.dag-foto{max-height:34svh;aspect-ratio:16/10;justify-self:stretch}.dag-tijd{font-size:clamp(4.4rem,22vw,7rem)}}
@@ -397,8 +397,10 @@ section{position:relative}
 .citaat blockquote::before{content:"“";display:block;font-size:5rem;line-height:.5;color:var(--volet);margin-bottom:12px}
 .citaat cite{font-style:normal;color:var(--mist)}
 .gasten .stippen{display:flex;justify-content:center;gap:12px;margin-top:36px}
-.gasten .stippen button{width:9px;height:9px;border-radius:50%;border:1px solid var(--kalk);background:none;padding:0}
-.gasten .stippen button.actief{background:var(--kalk)}
+.gasten .stippen{gap:2px!important}
+.gasten .stippen button{width:32px;height:32px;border:0;background:none;padding:0;position:relative}
+.gasten .stippen button::after{content:"";position:absolute;inset:11px;border:1px solid var(--kalk);border-radius:50%;transition:background .3s}
+.gasten .stippen button.actief::after{background:var(--kalk)}
 
 /* ---------- vragen ---------- */
 .vragen{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 70px}
@@ -431,12 +433,12 @@ footer .onder{grid-column:1/-1;border-top:1px solid var(--lijn-licht);padding-to
 @media (max-width:760px){.mobiel-cta{display:flex;position:fixed;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:50;transform:translateY(170%);transition:transform .7s var(--ease)}.mobiel-cta.zichtbaar{transform:none}.mobiel-cta .knop{width:100%;box-shadow:0 14px 34px -12px rgba(0,0,0,.5)}}
 
 /* ---------- lichtbak ---------- */
-#lichtbak{position:fixed;inset:0;z-index:100;background:rgba(12,16,22,.97);color:var(--wit);display:grid;grid-template-rows:auto minmax(0,1fr) auto;opacity:0;pointer-events:none;transition:opacity .5s}
+#lichtbak{position:fixed;inset:0;z-index:100;background:rgba(12,16,22,.97);color:var(--wit);display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;opacity:0;pointer-events:none;transition:opacity .5s}
 #lichtbak.open{opacity:1;pointer-events:auto}
 .lb-kop{display:flex;justify-content:space-between;align-items:center;padding:calc(20px + env(safe-area-inset-top,0px)) var(--gutter) 20px}
 .lb-kop button{background:none;border:1px solid rgba(248,247,243,.4);border-radius:999px;color:var(--wit);padding:9px 18px;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase}
 .lb-midden{position:relative;display:grid;place-items:center;min-height:0;padding:0 90px}
-.lb-midden img{max-width:100%;max-height:100%;object-fit:contain;transition:opacity .35s,transform .7s var(--ease)}
+.lb-midden img{max-width:100%;max-height:calc(100svh - 230px);width:auto;height:auto;object-fit:contain;transition:opacity .35s,transform .7s var(--ease)}
 .lb-midden img.weg{opacity:0;transform:scale(.97)}
 .lb-pijl{position:absolute;top:50%;transform:translateY(-50%);width:58px;height:58px;border-radius:50%;border:1px solid rgba(248,247,243,.3);background:none;color:var(--wit)}
 .lb-pijl:hover{background:rgba(248,247,243,.08)}
@@ -494,10 +496,10 @@ html.lenis,html.lenis body{height:auto}
 .maquette{position:relative;aspect-ratio:1/.92;max-width:100%;background:radial-gradient(ellipse at 50% 60%,var(--wit),var(--kalk-2) 75%);border:1px solid var(--lijn);overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab}
 .maquette:active{cursor:grabbing}
 .mq-scene{position:absolute;left:50%;top:52%;width:400px;height:390px;transform-style:preserve-3d;will-change:transform}
-.mq-grond{position:absolute;left:-30px;top:-30px;width:460px;height:450px;background:rgba(20,25,32,.04);border:1px dashed rgba(20,25,32,.18);transform:translateZ(-1px)}
-.mq-vl{position:absolute;inset:0;transform-style:preserve-3d;transition:transform 1s var(--ease),opacity .6s}
+.mq-grond{pointer-events:none;position:absolute;left:-30px;top:-30px;width:460px;height:450px;background:rgba(20,25,32,.04);border:1px dashed rgba(20,25,32,.18);transform:translateZ(-1px)}
+.mq-vl{position:absolute;inset:0;pointer-events:none;transform-style:preserve-3d;transition:transform 1s var(--ease),opacity .6s}
 .mq-vl.gedimd{opacity:.22}
-.rm{position:absolute;transform-style:preserve-3d;cursor:pointer}
+.rm{position:absolute;transform-style:preserve-3d;cursor:pointer;pointer-events:auto}
 .rm .v,.rm .m{position:absolute;box-sizing:border-box}
 .rm .v{inset:0;background:var(--wit);border:1px solid rgba(20,25,32,.35);display:grid;place-items:center;text-align:center;padding:4px;transition:background .5s}
 .rm .v span{font-family:var(--mono);font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:var(--steen);line-height:1.3;transition:color .5s}
@@ -523,6 +525,14 @@ html.lenis,html.lenis body{height:auto}
 /* ---------- magnetische knoppen ---------- */
 .knop{transition:color .5s var(--ease),border-color .5s,transform .5s var(--ease)}
 
+@media (max-width:1100px){.mono,.oog,.mq-hint,.mq-ui .mono,.mq-ui button,.kaart .schakel button,.filters button,.dagen .wd,.balkmaanden span,.plan .noot,.maanden .mono,.tabs button{font-size:.72rem!important}}
+@media (max-width:760px){
+  .tabs{flex-wrap:wrap}.tabs button{padding:10px 14px}
+  .kaart .schakel button,.filters button,.mq-ui button{min-height:36px}
+  .ruimte-pills button{min-height:40px}
+  .maand-detail .stats{gap:22px}
+  .opening-tekst .boven{flex-direction:column;gap:6px}
+}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}#korrel,#intro{display:none}}
 </style>
 
@@ -902,16 +912,17 @@ function bouwMaquette(){[0,1].forEach(v=>{$("#mqVl"+v).innerHTML=HUIS.kamers.fil
     const buiten=/terras/.test(k.id),water=/zwembad/.test(k.id),w=!(buiten||water);
     const muren=w?`<div class="m" style="left:0;top:0;width:${k.b}px;height:${MURE}px;transform:rotateX(90deg)"></div><div class="m" style="left:0;top:${k.h}px;width:${k.b}px;height:${MURE}px;transform:rotateX(90deg)"></div><div class="m" style="left:0;top:0;width:${MURE}px;height:${k.h}px;transform:rotateY(-90deg)"></div><div class="m" style="left:${k.b}px;top:0;width:${MURE}px;height:${k.h}px;transform:rotateY(-90deg)"></div>`:"";
     return `<div class="rm ${buiten?"buiten":""} ${water?"water":""}" data-id="${k.id}" style="left:${k.x}px;top:${k.y}px;width:${k.b}px;height:${k.h}px"><div class="v"><span>${esc(k.naam).replace(" &amp; ","<br>&amp; ")}</span></div>${muren}</div>`}).join("")});
-  $$("#maquette .rm").forEach(r=>r.addEventListener("click",()=>{if(!mq.gesleept)kies(r.dataset.id)}))}
-const mq={rz:-38,rx:58,doelRz:-38,doelRx:58,uit:0,doelUit:0,handUit:false,gesleept:false,laatsteInput:0};
+  $$("#maquette .rm").forEach(r=>{r.addEventListener("pointerdown",()=>{mq.doel=r.dataset.id});r.addEventListener("click",()=>{if(!mq.gesleept)kies(mq.doel||r.dataset.id);mq.doel=null})})}
+const mq={touch:matchMedia("(hover:none)").matches,doel:null,rz:-38,rx:58,doelRz:-38,doelRx:58,uit:0,doelUit:0,handUit:false,gesleept:false,laatsteInput:0};
 function zetMq(){const box=$("#maquette"),sc=Math.min(box.clientWidth/520,box.clientHeight/470);
   $("#mqScene").style.transform=`translate(-50%,-50%) scale(${sc}) rotateX(${mq.rx}deg) rotateZ(${mq.rz}deg)`;
   const z1=MURE+6+mq.uit*130+(vd===0?150:0);$("#mqVl1").style.transform=`translateZ(${z1}px)`;
   $("#mqVl0").classList.toggle("gedimd",vd===1);$("#mqVl1").classList.toggle("gedimd",vd===0)}
 (function mqLus(t){mq.rz+=(mq.doelRz-mq.rz)*.08;mq.rx+=(mq.doelRx-mq.rx)*.08;mq.uit+=(mq.doelUit-mq.uit)*.07;
-  if(!rustig&&performance.now()-mq.laatsteInput>4000)mq.doelRz+=.05;zetMq();requestAnimationFrame(mqLus)})();
+  if(!rustig&&!mq.touch&&!mq.erboven&&performance.now()-mq.laatsteInput>5000)mq.doelRz+=.05;zetMq();requestAnimationFrame(mqLus)})();
 (function(){const box=$("#maquette");let sx=0,sy=0,actief=false,horizontaal=null;
-  box.addEventListener("pointerdown",e=>{actief=true;mq.gesleept=false;horizontaal=null;sx=e.clientX;sy=e.clientY;mq.laatsteInput=performance.now()});
+  box.addEventListener("pointerenter",()=>{mq.erboven=true;mq.doelRz=mq.rz});box.addEventListener("pointerleave",()=>{mq.erboven=false;mq.laatsteInput=performance.now()});
+  box.addEventListener("pointerdown",e=>{mq.doelRz=mq.rz;actief=true;mq.gesleept=false;horizontaal=null;sx=e.clientX;sy=e.clientY;mq.laatsteInput=performance.now()});
   addEventListener("pointermove",e=>{if(!actief)return;const dx=e.clientX-sx,dy=e.clientY-sy;
     if(horizontaal===null&&(Math.abs(dx)>6||Math.abs(dy)>6))horizontaal=e.pointerType!=="touch"||Math.abs(dx)>Math.abs(dy);
     if(!horizontaal)return;mq.gesleept=true;mq.doelRz-=dx*.4;mq.doelRx=klem(mq.doelRx-dy*.25,25,75);sx=e.clientX;sy=e.clientY;mq.laatsteInput=performance.now()});
