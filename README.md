@@ -59,6 +59,7 @@ pip install -r requirements.txt
 - **Werkperiodes**: volgens de verkoopfactuur als die er is ("werkperiode 4, periode ..."), anders vanaf de belstart.
 - **Status klant**: `actief`, `pauze` of `gestopt`. Alleen actieve klanten tellen mee in targets en scenario.
 - **Overige kosten**: facturen uit `kosten.yaml` (een jaarlicentie wordt per dag verdeeld); maanden zonder factuur krijgen het laatst bekende bedrag als schatting.
+- **Indeling dashboard**: Stuurscherm (per opdrachtgever één regel: target, marge, uren en resultaten per beldag, actie), Per opdrachtgever (alles van één klant), Bellers. De rest staat onder "Meer details".
 - **Beldagen**: een beldag is een dag met minimaal 15 belpogingen voor een opdrachtgever (zonder belpogingen-export: minimaal 1 uur volgens de verdeelsleutel). De betaalde uren van de beller die dag worden verdeeld naar zijn belpogingen per opdrachtgever. Normen per beldag = normen per 4 weken / beldagen per 4 weken. Vast rooster: `beldagen_per_week` in `klanten.yaml`, anders gemeten over de meetperiode.
 - **Resultaat**: per opdrachtgever volgens `telt_als_resultaat`.
 - **Werkperiode**: 4 weken. Per opdrachtgever tellen die vanaf de eigen belstart; in de filters vanaf `werkperiode_anker`.
