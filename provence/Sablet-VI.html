@@ -1,0 +1,918 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sablet VI · Sablet, Provence</title>
+<meta name="description" content="Een moderne vakantiewoning voor maximaal 4 personen op een klein, omheind domein van 9 huisjes met een groot verwarmd gemeenschappelijk zwembad, in het hart van het Provençaalse wijndorpje Sablet, aan de voet van de Mont Ventoux.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --creme:#fbf6ec; --zand:#f2e7d3; --oker:#e0a84f; --terra:#c8693f; --lavendel:#7d6fb3;
+  --lavendel-licht:#e9e4f6; --olijf:#6b7a3a; --blauw:#2f6f8f; --diep:#22313f; --tekst:#2b2a27;
+  --zacht:#6d665b; --kaart:#ffffff; --lijn:rgba(43,42,39,.12);
+  --schaduw:0 10px 30px -12px rgba(60,40,10,.25);
+  --radius:18px;
+  --serif:"Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --sans:"Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+body.nacht{
+  --creme:#141a24; --zand:#1b2330; --tekst:#efe9de; --zacht:#a9a294; --kaart:#1f2836;
+  --lijn:rgba(255,255,255,.1); --lavendel-licht:#2a2840; --diep:#0d121a;
+  --schaduw:0 10px 30px -12px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--sans);color:var(--tekst);background:var(--creme);line-height:1.6;transition:background .8s,color .8s;overflow-x:hidden}
+img{max-width:100%;display:block}
+h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.1;margin:0}
+h2{font-size:clamp(2.2rem,5vw,3.4rem)}
+a{color:inherit}
+button{font:inherit;cursor:pointer}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+section{padding:clamp(70px,10vw,120px) 0;position:relative}
+.kicker{font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;color:var(--terra);font-weight:800;margin-bottom:12px;display:block}
+.lead{font-size:1.12rem;color:var(--zacht);max-width:680px}
+.sectie-kop{margin-bottom:44px}
+
+/* voortgang + nav */
+#voortgang{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--lavendel),var(--terra),var(--oker));width:0;z-index:100}
+nav.top{position:fixed;top:0;left:0;right:0;z-index:90;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;transition:background .4s,box-shadow .4s,padding .4s}
+nav.top.vast{background:color-mix(in srgb,var(--creme) 88%,transparent);backdrop-filter:blur(12px);box-shadow:0 1px 0 var(--lijn);padding:10px 22px}
+nav.top .logo{font-family:var(--serif);font-size:1.6rem;font-weight:700;color:#fff;text-decoration:none;transition:color .4s}
+nav.top.vast .logo{color:var(--tekst)}
+nav.top .links{display:flex;gap:4px}
+nav.top .links a{text-decoration:none;color:#fff;font-weight:700;font-size:.9rem;padding:8px 12px;border-radius:99px;transition:background .3s,color .3s}
+nav.top.vast .links a{color:var(--tekst)}
+nav.top .links a.actief,nav.top .links a:hover{background:var(--lavendel);color:#fff!important}
+.knoppen-rechts{display:flex;gap:8px}
+.rond{width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.22);color:#fff;display:grid;place-items:center;backdrop-filter:blur(6px);transition:transform .3s,background .3s}
+nav.top.vast .rond{background:var(--zand);color:var(--tekst)}
+.rond:hover{transform:scale(1.1) rotate(-8deg)}
+.rond.aan{background:var(--oker)!important;color:#fff!important}
+.rond svg{width:20px;height:20px}
+#menuKnop{display:none}
+@media (max-width:900px){
+  nav.top .links{position:fixed;inset:0 0 auto 0;top:62px;flex-direction:column;background:var(--creme);padding:12px;box-shadow:var(--schaduw);transform:translateY(-130%);transition:transform .4s}
+  nav.top .links.open{transform:none}
+  nav.top .links a{color:var(--tekst)}
+  #menuKnop{display:grid}
+}
+
+/* hero */
+#hero{height:100svh;min-height:560px;padding:0;overflow:hidden;color:#fff;display:grid;place-items:center;text-align:center}
+#landschap{position:absolute;inset:0;width:100%;height:100%}
+#landschap .laag{transition:transform .2s linear}
+#heroFoto{position:absolute;inset:0;background-size:cover;background-position:center;animation:kenburns 26s ease-in-out infinite alternate;opacity:0;transition:opacity 1.5s}
+#heroFoto.zichtbaar{opacity:1}
+body.nacht #heroFoto{filter:brightness(.5) saturate(.7) hue-rotate(200deg)}
+#heroFoto{transition:opacity 1.5s,filter 1.5s}
+@keyframes kenburns{from{transform:scale(1.05)}to{transform:scale(1.18) translate(-2%,-1%)}}
+#hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,20,40,.25),rgba(20,20,40,.05) 40%,rgba(20,15,10,.45));pointer-events:none}
+.hero-inhoud{position:relative;z-index:2;padding:0 20px}
+.hero-inhoud .plaats{letter-spacing:.35em;text-transform:uppercase;font-weight:800;font-size:.85rem;opacity:.95}
+.hero-inhoud h1{font-size:clamp(4rem,14vw,10rem);text-shadow:0 6px 30px rgba(0,0,0,.35);margin:6px 0}
+.hero-inhoud h1 span{display:inline-block;opacity:0;transform:translateY(40px) rotate(6deg);animation:letter .9s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes letter{to{opacity:1;transform:none}}
+.hero-inhoud p{font-family:var(--serif);font-style:italic;font-size:clamp(1.25rem,2.6vw,1.9rem);margin:0 auto 30px;max-width:720px;text-shadow:0 2px 14px rgba(0,0,0,.4)}
+.cta{display:inline-flex;align-items:center;gap:10px;background:var(--terra);color:#fff;border:0;border-radius:99px;padding:15px 28px;font-weight:800;text-decoration:none;box-shadow:0 10px 25px -8px rgba(200,105,63,.7);transition:transform .3s,box-shadow .3s}
+.cta:hover{transform:translateY(-3px);box-shadow:0 16px 30px -8px rgba(200,105,63,.8)}
+.cta.licht{background:rgba(255,255,255,.18);backdrop-filter:blur(8px);box-shadow:none;border:1.5px solid rgba(255,255,255,.6)}
+.cta[disabled]{opacity:.45;pointer-events:none}
+.scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:2;width:28px;height:46px;border:2px solid rgba(255,255,255,.8);border-radius:20px}
+.scroll-hint::after{content:"";position:absolute;left:50%;top:8px;width:4px;height:9px;margin-left:-2px;background:#fff;border-radius:2px;animation:scrollen 1.8s infinite}
+@keyframes scrollen{0%{opacity:0;transform:translateY(0)}40%{opacity:1}100%{opacity:0;transform:translateY(16px)}}
+.vlinder{position:absolute;z-index:1;pointer-events:none;font-size:20px}
+
+/* kerncijfers */
+#cijfers{padding:0;margin-top:-60px;z-index:3}
+.cijferbalk{display:grid;grid-template-columns:repeat(4,1fr);background:var(--kaart);border-radius:var(--radius);box-shadow:var(--schaduw);overflow:hidden}
+.cijfer{padding:26px 16px;text-align:center;border-right:1px solid var(--lijn);transition:background .3s}
+.cijfer:last-child{border:0}
+.cijfer:hover{background:var(--lavendel-licht)}
+.cijfer svg{width:30px;height:30px;color:var(--lavendel)}
+.cijfer b{display:block;font-family:var(--serif);font-size:2.8rem;line-height:1;margin-top:6px}
+.cijfer small{color:var(--zacht);font-weight:700}
+@media (max-width:700px){.cijferbalk{grid-template-columns:repeat(2,1fr)}.cijfer:nth-child(2){border-right:0}.cijfer:nth-child(-n+2){border-bottom:1px solid var(--lijn)}}
+
+/* intro */
+.intro-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:center}
+.intro-grid h2 em{color:var(--lavendel);font-style:italic}
+.fotostapel{position:relative;height:460px}
+.fotostapel .f{position:absolute;border-radius:14px;overflow:hidden;box-shadow:var(--schaduw);border:6px solid var(--kaart);transition:transform .6s cubic-bezier(.2,.8,.2,1);cursor:pointer;background-size:cover;background-position:center}
+.fotostapel .f1{width:68%;height:62%;top:0;left:0;transform:rotate(-4deg)}
+.fotostapel .f2{width:60%;height:55%;bottom:0;right:0;transform:rotate(5deg)}
+.fotostapel .f3{width:42%;height:40%;top:30%;left:38%;transform:rotate(-1deg);z-index:2}
+.fotostapel:hover .f1{transform:rotate(-8deg) translate(-14px,-10px)}
+.fotostapel:hover .f2{transform:rotate(9deg) translate(14px,10px)}
+.fotostapel:hover .f3{transform:scale(1.08)}
+.stempel{position:absolute;right:-10px;top:-20px;z-index:3;width:120px;height:120px;animation:draai 20s linear infinite}
+@keyframes draai{to{transform:rotate(360deg)}}
+.mini-review{margin-top:28px;padding:20px 24px;border-left:4px solid var(--lavendel);background:var(--lavendel-licht);border-radius:0 14px 14px 0;font-family:var(--serif);font-size:1.3rem;font-style:italic}
+.mini-review small{display:block;font-family:var(--sans);font-style:normal;font-size:.85rem;color:var(--zacht);margin-top:6px}
+@media (max-width:900px){.intro-grid{grid-template-columns:1fr}.fotostapel{height:360px}}
+
+/* interactief huis */
+#huis{background:var(--zand)}
+.huis-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.tabs{display:inline-flex;background:var(--kaart);border-radius:99px;padding:5px;margin-bottom:20px;box-shadow:var(--schaduw)}
+.tabs button{border:0;background:none;padding:10px 20px;border-radius:99px;font-weight:800;color:var(--zacht);transition:all .3s}
+.tabs button.actief{background:var(--lavendel);color:#fff}
+.plan{background:var(--kaart);border-radius:var(--radius);padding:18px;box-shadow:var(--schaduw)}
+.plan svg{width:100%;height:auto;display:block}
+.plan .kamer{cursor:pointer;transition:all .35s}
+.plan .kamer rect{fill:var(--creme);stroke:var(--tekst);stroke-width:2.5;transition:fill .35s}
+.plan .kamer text{font-family:var(--sans);font-weight:800;font-size:12px;fill:var(--tekst);pointer-events:none}
+.plan .kamer:hover rect{fill:var(--lavendel-licht)}
+.plan .kamer.actief rect{fill:var(--lavendel)}
+.plan .kamer.actief text{fill:#fff}
+.plan .kamer.water rect{fill:#bfe3ee}
+.plan .kamer.water.actief rect{fill:var(--blauw)}
+.plan .kamer.buiten rect{fill:#e3ead0;stroke-dasharray:6 5}
+.plan .kamer.buiten.actief rect{fill:var(--olijf)}
+.plan .noot{font-size:.78rem;color:var(--zacht);margin-top:10px;text-align:center}
+.kamerinfo{background:var(--kaart);border-radius:var(--radius);box-shadow:var(--schaduw);overflow:hidden;min-height:420px}
+.kamerinfo .beeld{height:260px;background-size:cover;background-position:center;position:relative;transition:background-image .5s}
+.kamerinfo .beeld .pijlen{position:absolute;bottom:12px;right:12px;display:flex;gap:6px}
+.kamerinfo .beeld .pijlen button{width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.9);font-weight:800}
+.kamerinfo .tekst{padding:24px 28px}
+.kamerinfo h3{font-size:2rem;margin-bottom:8px}
+.fade-in{animation:fadein .5s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (max-width:900px){.huis-grid{grid-template-columns:1fr}}
+
+/* galerij */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+.chip{border:1.5px solid var(--lijn);background:var(--kaart);color:var(--tekst);border-radius:99px;padding:8px 18px;font-weight:700;transition:all .3s}
+.chip.actief,.chip:hover{background:var(--tekst);color:var(--creme);border-color:var(--tekst)}
+.galerij{display:grid;grid-auto-flow:dense;grid-template-columns:repeat(4,1fr);grid-auto-rows:200px;gap:14px}
+.galerij .item{position:relative;border-radius:14px;overflow:hidden;cursor:zoom-in;background-size:cover;background-position:center;transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .4s;box-shadow:var(--schaduw)}
+.galerij .item:nth-child(5n+1){grid-column:span 2;grid-row:span 2}
+.galerij .item:nth-child(5n+4){grid-row:span 2}
+.galerij .item .bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .8s}
+.galerij .item:hover .bg{transform:scale(1.08)}
+.galerij .item figcaption{position:absolute;left:0;right:0;bottom:0;padding:30px 16px 12px;color:#fff;font-weight:700;background:linear-gradient(transparent,rgba(0,0,0,.6));transform:translateY(100%);transition:transform .4s}
+.galerij .item:hover figcaption{transform:none}
+.galerij .item.weg{display:none}
+@media (max-width:800px){.galerij{grid-template-columns:repeat(2,1fr);grid-auto-rows:150px}}
+#lightbox{position:fixed;inset:0;background:rgba(10,10,15,.93);z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column}
+#lightbox.open{display:flex}
+#lightbox img{max-width:92vw;max-height:78vh;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:fadein .4s}
+#lightbox .onderschrift{color:#fff;margin-top:16px;font-family:var(--serif);font-size:1.4rem}
+#lightbox .teller{color:#aaa;font-size:.85rem}
+#lightbox button{position:absolute;background:rgba(255,255,255,.12);color:#fff;border:0;width:54px;height:54px;border-radius:50%;font-size:1.6rem;transition:background .3s}
+#lightbox button:hover{background:rgba(255,255,255,.3)}
+#lbVorige{left:20px}#lbVolgende{right:20px}#lbSluit{top:20px;right:20px}
+
+/* voorzieningen */
+#voorzieningen{background:var(--diep);color:#f4eee2}
+#voorzieningen .lead{color:#c9c2b4}
+.vz-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.flip{perspective:900px;height:190px;cursor:pointer}
+.flip-binnen{position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d}
+.flip:hover .flip-binnen,.flip.om .flip-binnen{transform:rotateY(180deg)}
+.flip .kant{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--radius);padding:22px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.flip .voor{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+.flip .voor svg{width:44px;height:44px;color:var(--oker);margin-bottom:12px}
+.flip .voor h3{font-size:1.45rem}
+.flip .achter{background:linear-gradient(135deg,var(--lavendel),var(--terra));transform:rotateY(180deg);font-weight:600}
+@media (max-width:900px){.vz-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* kaart */
+.kaart-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:30px}
+.kaartvak{background:#dfe9ef;border-radius:var(--radius);overflow:hidden;position:relative;box-shadow:var(--schaduw);aspect-ratio:1/1}
+body.nacht .kaartvak{background:#1c2a38}
+.kaartvak svg{width:100%;height:100%;display:block}
+.kaartvak .zoom{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:6px}
+.kaartvak .zoom button{border:0;background:var(--kaart);color:var(--tekst);border-radius:10px;padding:6px 12px;font-weight:800;box-shadow:var(--schaduw);font-size:.82rem}
+.kaartvak .zoom button.actief{background:var(--tekst);color:var(--creme)}
+#kaartSvg{transition:none}
+.pin{cursor:pointer}
+.pin circle.punt{transition:r .3s}
+.pin:hover circle.punt,.pin.actief circle.punt{r:9}
+.pin text.verborgen{opacity:0;transition:opacity .2s}.pin:hover text.verborgen{opacity:1}
+.pin text{font-family:var(--sans);font-weight:800;paint-order:stroke;stroke:#fff;stroke-width:4px;fill:#2b2a27;pointer-events:none}
+.huispin{animation:pulse 2s infinite;transform-origin:center;transform-box:fill-box}
+@keyframes pulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(3.5);opacity:0}}
+.plekken{max-height:560px;overflow:auto;padding-right:6px}
+.plek{display:flex;gap:14px;align-items:center;padding:12px 14px;border-radius:14px;cursor:pointer;transition:background .3s;border:1px solid transparent}
+.plek:hover,.plek.actief{background:var(--kaart);border-color:var(--lijn);box-shadow:var(--schaduw)}
+.plek .stip{width:14px;height:14px;border-radius:50%;flex:none}
+.plek b{display:block}
+.plek .afstand{margin-left:auto;text-align:right;font-size:.82rem;color:var(--zacht);white-space:nowrap;font-weight:700}
+.plek p{margin:2px 0 0;font-size:.88rem;color:var(--zacht);display:none}
+.plek.actief p{display:block}
+@media (max-width:900px){.kaart-grid{grid-template-columns:1fr}}
+
+/* wanneer */
+#wanneer{background:linear-gradient(180deg,var(--creme),var(--lavendel-licht))}
+.maand-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center}
+.grafiek{background:var(--kaart);border-radius:var(--radius);padding:22px;box-shadow:var(--schaduw)}
+.grafiek svg{width:100%;height:auto}
+.grafiek .staaf{cursor:pointer;transition:opacity .3s}
+.grafiek text{font-family:var(--sans);font-size:11px;fill:var(--zacht);font-weight:700}
+input[type=range]{width:100%;accent-color:var(--terra);margin-top:14px}
+.maandkaart{background:var(--kaart);border-radius:var(--radius);padding:30px;box-shadow:var(--schaduw);position:relative;overflow:hidden}
+.maandkaart h3{font-size:2.6rem;text-transform:capitalize}
+.maandkaart .seizoen{display:inline-block;background:var(--oker);color:#fff;font-weight:800;font-size:.78rem;padding:4px 12px;border-radius:99px;letter-spacing:.06em;text-transform:uppercase}
+.maandkaart .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.maandkaart .stats div{background:var(--zand);border-radius:12px;padding:12px;text-align:center}
+.maandkaart .stats b{display:block;font-size:1.5rem;font-family:var(--serif)}
+.maandkaart .stats small{color:var(--zacht);font-weight:700;font-size:.75rem}
+.maandkaart .zon{position:absolute;right:-30px;top:-30px;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,#ffd57a,#f2a93b);opacity:.35;transition:transform .6s}
+@media (max-width:900px){.maand-grid{grid-template-columns:1fr}}
+
+/* reviews */
+.reviews{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;padding:10px 4px 20px}
+.review{flex:0 0 min(520px,88%);scroll-snap-align:start;background:var(--kaart);border-radius:var(--radius);padding:32px;box-shadow:var(--schaduw);position:relative}
+.review .score{position:absolute;top:22px;right:24px;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:conic-gradient(var(--lavendel) calc(var(--p)*1%),var(--lavendel-licht) 0)}
+.review .score span{width:50px;height:50px;border-radius:50%;background:var(--kaart);display:grid;place-items:center;font-size:.95rem}
+.review blockquote{font-family:var(--serif);font-size:1.45rem;font-style:italic;margin:30px 0 16px;line-height:1.35}
+.review .wie{font-weight:800}.review .wie small{display:block;color:var(--zacht);font-weight:600}
+.sterren{color:var(--oker);letter-spacing:2px}
+
+/* boeken */
+#boeken{background:var(--zand)}
+.boek-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:30px;align-items:start}
+.kalender{background:var(--kaart);border-radius:var(--radius);padding:22px;box-shadow:var(--schaduw)}
+.kal-kop{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.kal-kop button{border:0;background:var(--zand);color:var(--tekst);width:40px;height:40px;border-radius:50%;font-size:1.2rem}
+.kal-maanden{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.kal-maand h4{margin:0 0 8px;text-align:center;font-family:var(--serif);font-size:1.4rem;text-transform:capitalize}
+.kal-dagen{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
+.kal-dagen .wd{font-size:.72rem;font-weight:800;color:var(--zacht);padding:4px 0}
+.dag{aspect-ratio:1;border:0;background:none;border-radius:10px;font-weight:700;color:var(--tekst);font-size:.9rem;transition:background .2s,transform .2s;position:relative}
+.dag:hover:not(:disabled){background:var(--lavendel-licht);transform:scale(1.08)}
+.dag:disabled{color:var(--zacht);opacity:.35;cursor:default}
+.dag.bezet{text-decoration:line-through;background:repeating-linear-gradient(45deg,transparent 0 4px,rgba(200,105,63,.15) 4px 8px)}
+.dag.in{background:var(--lavendel-licht);border-radius:0}
+.dag.start,.dag.eind{background:var(--lavendel);color:#fff;border-radius:10px}
+.dag.vandaag::after{content:"";position:absolute;bottom:4px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--terra)}
+.legenda{display:flex;gap:16px;font-size:.8rem;color:var(--zacht);margin-top:12px;flex-wrap:wrap}
+.legenda i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+@media (max-width:900px){.boek-grid{grid-template-columns:1fr}.aanvraag{position:static}}
+@media (max-width:700px){.kal-maanden{grid-template-columns:1fr}.kal-maand:nth-child(2){display:none}}
+.aanvraag{background:var(--kaart);border-radius:var(--radius);padding:26px;box-shadow:var(--schaduw);position:sticky;top:80px}
+.aanvraag h3{font-size:1.9rem;margin-bottom:14px}
+.regel{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed var(--lijn)}
+.regel b{font-weight:800}
+.stepper{display:flex;align-items:center;gap:10px}
+.stepper button{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--lijn);background:none;color:var(--tekst);font-weight:800}
+.melding{font-size:.85rem;color:var(--terra);font-weight:700;min-height:1.3em;margin:10px 0}
+.knoppenrij{display:grid;gap:10px;margin-top:10px}
+.knoppenrij .cta{justify-content:center}
+.cta.groen{background:#25a35a;box-shadow:0 10px 25px -8px rgba(37,163,90,.6)}
+.cta.donker{background:var(--tekst);color:var(--creme);box-shadow:none}
+
+/* dorp */
+.dorp-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:16px;margin-bottom:34px}
+.dorp-kaart{background:var(--kaart);border-radius:var(--radius);padding:24px;box-shadow:var(--schaduw)}
+.dorp-kaart h3{font-size:1.6rem;margin-bottom:8px;display:flex;gap:10px;align-items:center}
+.dorp-kaart h3 svg{width:26px;height:26px;color:var(--terra)}
+.dorp-kaart p{margin:0;color:var(--zacht)}
+.dorp-kaart .meer{max-height:7.5em;overflow:hidden;position:relative;transition:max-height .6s}
+.dorp-kaart .meer::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3em;background:linear-gradient(transparent,var(--kaart))}
+.dorp-kaart.open .meer{max-height:40em}.dorp-kaart.open .meer::after{display:none}
+.dorp-kaart ul{margin:0;padding-left:18px;color:var(--zacht)}.dorp-kaart li{margin-bottom:6px}
+.linkknop{background:none;border:0;color:var(--lavendel);font-weight:800;padding:8px 0 0}
+.route{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.route a{font-size:.85rem;padding:10px 16px}
+@media (max-width:900px){.dorp-grid{grid-template-columns:1fr}}
+/* tarieven */
+.tijdlijn{background:var(--kaart);border-radius:var(--radius);padding:24px 24px 16px;box-shadow:var(--schaduw);margin-bottom:22px}
+.tijdlijn .balk{position:relative;height:46px;border-radius:12px;background:repeating-linear-gradient(45deg,var(--zand) 0 8px,transparent 8px 16px);overflow:hidden}
+.tijdlijn .blok{position:absolute;top:0;bottom:0;display:grid;place-items:center;color:#fff;font-weight:800;font-size:.85rem;cursor:pointer;transition:filter .3s,transform .3s;border-right:2px solid var(--kaart);white-space:nowrap;overflow:hidden}
+.tijdlijn .blok:hover{filter:brightness(1.12)}
+.tijdlijn .nu{position:absolute;top:-4px;bottom:-4px;width:3px;background:var(--terra);border-radius:2px}
+.tijdlijn .nu::after{content:"vandaag";position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:.7rem;font-weight:800;color:var(--terra)}
+.tijdlijn .maanden{display:grid;grid-template-columns:repeat(12,1fr);font-size:.75rem;color:var(--zacht);font-weight:700;margin-top:6px;text-align:center}
+.tijdlijn .jaar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.tijdlijn .jaar strong{font-family:var(--serif);font-size:1.6rem}
+.tarief-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:22px}
+.tarief{background:var(--kaart);border-radius:var(--radius);padding:24px;box-shadow:var(--schaduw);border-top:6px solid var(--k);cursor:pointer;transition:transform .35s}
+.tarief:hover{transform:translateY(-6px)}
+.tarief .naam{font-weight:800;color:var(--k);text-transform:uppercase;letter-spacing:.08em;font-size:.8rem}
+.tarief .bedrag{font-family:var(--serif);font-size:2.8rem;line-height:1.1;margin:6px 0}
+.tarief .bedrag small{font-size:1rem;color:var(--zacht);font-family:var(--sans)}
+.tarief .wanneer{color:var(--zacht);font-size:.9rem}
+.kosten-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.kosten-grid ul{list-style:none;padding:0;margin:10px 0 0}
+.kosten-grid li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dashed var(--lijn)}
+.kosten-grid li b{white-space:nowrap}
+@media (max-width:800px){.kosten-grid{grid-template-columns:1fr}}
+.optie{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--lijn);cursor:pointer;font-size:.92rem}
+.optie input{accent-color:var(--lavendel);width:18px;height:18px;margin-top:3px}
+.regel.totaal{border-bottom:0;font-size:1.15rem}.regel.totaal b{font-family:var(--serif);font-size:1.6rem}
+.regel.sub{font-size:.9rem;color:var(--zacht);padding:6px 0}
+.klein{font-size:.78rem;color:var(--zacht)}
+.dag.wissel{font-weight:900;color:var(--lavendel)}
+.dag.start,.dag.eind{color:#fff!important}
+
+/* faq */
+.faq{max-width:820px}
+details{background:var(--kaart);border-radius:14px;margin-bottom:10px;box-shadow:0 2px 0 var(--lijn);overflow:hidden}
+summary{padding:18px 22px;font-weight:800;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:1.5rem;color:var(--lavendel);transition:transform .3s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{padding:0 22px 18px;margin:0;color:var(--zacht);animation:fadein .4s}
+
+footer{background:var(--diep);color:#c9c2b4;text-align:center;padding:50px 20px;font-size:.9rem}
+footer .logo{font-family:var(--serif);font-size:2.2rem;color:#fff}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.8,.2,1)}
+.reveal.zien{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}.hero-inhoud h1 span{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="voortgang"></div>
+
+<nav class="top" id="nav">
+  <a href="#hero" class="logo" id="navLogo"></a>
+  <div class="links" id="navLinks">
+    <a href="#huis">Het huis</a>
+    <a href="#galerij">Foto's</a>
+    <a href="#omgeving">Omgeving</a>
+    <a href="#wanneer">Wanneer</a>
+    <a href="#tarieven">Tarieven</a>
+    <a href="#boeken">Beschikbaarheid</a>
+  </div>
+  <div class="knoppen-rechts">
+    <button class="rond" id="geluidKnop" title="Krekels aan/uit" aria-label="Krekelgeluid aan of uit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg></button>
+    <button class="rond" id="nachtKnop" title="Dag / nacht" aria-label="Dag of nacht"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button class="rond" id="menuKnop" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+  </div>
+</nav>
+
+<header id="hero">
+  <svg id="landschap" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="lucht" x1="0" y1="0" x2="0" y2="1">
+        <stop id="lucht1" offset="0" stop-color="#5b8fc7"/><stop id="lucht2" offset=".6" stop-color="#f6c58f"/><stop id="lucht3" offset="1" stop-color="#f7a76c"/>
+      </linearGradient>
+      <radialGradient id="zonGloed"><stop offset="0" stop-color="#fff6d5"/><stop offset=".35" stop-color="#ffd27a"/><stop offset="1" stop-color="#ffd27a" stop-opacity="0"/></radialGradient>
+      <pattern id="lavendelRijen" width="40" height="18" patternUnits="userSpaceOnUse"><path d="M0 9 Q10 0 20 9 T40 9" stroke="#8a72c0" stroke-width="7" fill="none"/></pattern>
+    </defs>
+    <rect width="1600" height="900" fill="url(#lucht)"/>
+    <g id="sterren" opacity="0"></g>
+    <g class="laag" data-diepte="0.2"><circle id="zon" cx="1150" cy="330" r="190" fill="url(#zonGloed)"/><circle id="zonKern" cx="1150" cy="330" r="55" fill="#fff3cf"/></g>
+    <g class="laag" data-diepte="0.5" id="wolken" opacity=".85"></g>
+    <g class="laag" data-diepte="0.8">
+      <path d="M0 560 L220 520 L420 470 L640 420 L800 330 L860 300 L900 310 L1040 390 L1220 450 L1400 480 L1600 500 L1600 900 L0 900Z" fill="#9aa7c4" opacity=".75"/>
+      <path d="M800 330 L860 300 L900 310 L940 335 L880 345 L830 350Z" fill="#f4f2ee" opacity=".9"/>
+    </g>
+    <g class="laag" data-diepte="1.4">
+      <path d="M0 610 L120 590 L180 540 L200 560 L230 500 L250 545 L275 480 L300 540 L320 505 L345 560 L380 520 L420 575 L560 600 L760 590 L980 610 L1200 585 L1400 600 L1600 590 L1600 900 L0 900Z" fill="#7e8aa0"/>
+    </g>
+    <g class="laag" data-diepte="2.2">
+      <path d="M0 680 Q300 630 620 665 T1200 650 T1600 660 L1600 900 L0 900Z" fill="#6f8a4a"/>
+      <g id="dorp" fill="#e8c9a0"></g>
+    </g>
+    <g class="laag" data-diepte="3.2">
+      <path d="M0 740 Q400 700 800 735 T1600 720 L1600 900 L0 900Z" fill="#59733a"/>
+      <rect x="0" y="745" width="1600" height="160" fill="url(#lavendelRijen)" opacity=".85"/>
+      <g id="cipressen" fill="#2f4a26"></g>
+    </g>
+  </svg>
+  <div id="heroFoto"></div>
+  <div class="hero-inhoud">
+    <div class="plaats" id="heroPlaats"></div>
+    <h1 id="heroTitel"></h1>
+    <p id="heroSub"></p>
+    <a href="#boeken" class="cta">Bekijk beschikbaarheid →</a>
+    <a href="#galerij" class="cta licht" style="margin:10px 0 0 8px">Foto's</a>
+  </div>
+  <div class="scroll-hint"></div>
+</header>
+
+<section id="cijfers"><div class="wrap"><div class="cijferbalk" id="cijferbalk"></div></div></section>
+
+<section id="intro">
+  <div class="wrap intro-grid">
+    <div class="reveal">
+      <span class="kicker">Welkom in de Provence</span>
+      <h2>Wakker worden tussen <em>wijngaarden</em> en krekels</h2>
+      <p class="lead" id="introTekst"></p>
+      <div class="mini-review" id="miniReview"></div>
+    </div>
+    <div class="fotostapel reveal" id="fotostapel">
+      <svg class="stempel" viewBox="0 0 120 120"><defs><path id="cirkel" d="M60 60 m-46 0 a46 46 0 1 1 92 0 a46 46 0 1 1 -92 0"/></defs><circle cx="60" cy="60" r="58" fill="var(--oker)"/><text font-size="11.5" font-weight="800" fill="#fff" letter-spacing="2.5" font-family="Nunito Sans,sans-serif"><textPath href="#cirkel" id="stempelTekst"></textPath></text><text x="60" y="68" text-anchor="middle" font-size="26" fill="#fff">☀</text></svg>
+    </div>
+  </div>
+</section>
+
+<section id="huis">
+  <div class="wrap">
+    <div class="sectie-kop reveal"><span class="kicker">Rondleiding</span><h2>Wandel door het huis</h2><p class="lead">Klik op een ruimte in het plan en ontdek wat er te vinden is.</p></div>
+    <div class="huis-grid">
+      <div class="reveal">
+        <div class="tabs" id="verdiepingTabs"><button data-v="0" class="actief">Benedenverdieping</button><button data-v="1">Eerste verdieping</button></div>
+        <div class="plan"><svg viewBox="0 0 400 390" id="planSvg"></svg><div class="noot">Schematisch plan · niet op schaal</div></div>
+      </div>
+      <div class="kamerinfo reveal" id="kamerInfo"></div>
+    </div>
+  </div>
+</section>
+
+<section id="galerij">
+  <div class="wrap">
+    <div class="sectie-kop reveal"><span class="kicker">Foto's</span><h2>Een kijkje binnen en buiten</h2></div>
+    <div class="filters" id="galerijFilters"></div>
+    <div class="galerij" id="galerijGrid"></div>
+  </div>
+</section>
+<div id="lightbox" role="dialog" aria-modal="true"><button id="lbSluit" aria-label="Sluiten">✕</button><button id="lbVorige" aria-label="Vorige">‹</button><img id="lbImg" alt=""><div class="onderschrift" id="lbTitel"></div><div class="teller" id="lbTeller"></div><button id="lbVolgende" aria-label="Volgende">›</button></div>
+
+<section id="voorzieningen">
+  <div class="wrap">
+    <div class="sectie-kop reveal"><span class="kicker">Comfort</span><h2>Alles wat je nodig hebt</h2><p class="lead">Beweeg over (of tik op) een kaart.</p></div>
+    <div class="vz-grid" id="vzGrid"></div>
+  </div>
+</section>
+
+<section id="omgeving">
+  <div class="wrap">
+    <div class="sectie-kop reveal"><span class="kicker">Omgeving</span><h2>Sablet als uitvalsbasis</h2><p class="lead">Klik op een plek op de kaart of in de lijst. Afstanden zijn hemelsbreed berekend vanaf het huis, met een schatting van de rijtijd.</p></div>
+    <div class="dorp-grid reveal" id="dorpGrid"></div>
+    <div class="filters" id="kaartFilters"></div>
+    <div class="kaart-grid">
+      <div class="kaartvak reveal"><svg id="kaartSvg" viewBox="0 0 600 600"></svg><div class="zoom"><button data-zoom="nabij" class="actief">In de buurt</button><button data-zoom="regio">Hele regio</button></div></div>
+      <div class="plekken reveal" id="plekken"></div>
+    </div>
+  </div>
+</section>
+
+<section id="wanneer">
+  <div class="wrap">
+    <div class="sectie-kop reveal"><span class="kicker">Het klimaat</span><h2>Wanneer ga jij?</h2><p class="lead">Schuif door het jaar of klik op een maand.</p></div>
+    <div class="maand-grid">
+      <div class="grafiek reveal"><svg id="klimaatSvg" viewBox="0 0 600 300"></svg><input type="range" min="0" max="11" id="maandSlider" aria-label="Kies een maand"></div>
+      <div class="maandkaart reveal" id="maandKaart"></div>
+    </div>
+  </div>
+</section>
+
+<section id="reviews">
+  <div class="wrap">
+    <div class="sectie-kop reveal"><span class="kicker">Gasten aan het woord</span><h2 id="reviewKop">Wat gasten zeggen</h2></div>
+    <div class="reviews" id="reviewLijst"></div>
+  </div>
+</section>
+
+<section id="tarieven">
+  <div class="wrap">
+    <div class="sectie-kop reveal"><span class="kicker">Tarieven</span><h2>Prijzen per week</h2><p class="lead" id="tariefLead"></p></div>
+    <div class="tijdlijn reveal" id="tijdlijn"></div>
+    <div class="tarief-grid" id="tariefKaarten"></div>
+    <div class="kosten-grid reveal" id="kostenGrid"></div>
+  </div>
+</section>
+
+<section id="boeken">
+  <div class="wrap">
+    <div class="sectie-kop reveal"><span class="kicker">Beschikbaarheid</span><h2>Plan je verblijf</h2><p class="lead" id="boekLead"></p></div>
+    <div class="boek-grid">
+      <div class="kalender reveal">
+        <div class="kal-kop"><button id="kalVorige" aria-label="Vorige maand">‹</button><strong id="kalTitel"></strong><button id="kalVolgende" aria-label="Volgende maand">›</button></div>
+        <div class="kal-maanden" id="kalMaanden"></div>
+        <div class="legenda"><span><i style="background:var(--lavendel)"></i>jouw keuze</span><span><i style="background:repeating-linear-gradient(45deg,#fff 0 3px,rgba(200,105,63,.4) 3px 6px)"></i>bezet</span><span id="seizoenLegenda"></span></div>
+      </div>
+      <div class="aanvraag reveal" id="aanvraag">
+        <h3>Jouw aanvraag</h3>
+        <div class="regel"><span>Aankomst</span><b id="aAankomst">—</b></div>
+        <div class="regel"><span>Vertrek</span><b id="aVertrek">—</b></div>
+        <div class="regel"><span>Duur</span><b id="aNachten">—</b></div>
+        <div class="regel"><span>Personen</span><div class="stepper"><button id="pMin" aria-label="Minder">−</button><b id="aPersonen">2</b><button id="pPlus" aria-label="Meer">+</button></div></div>
+        <div class="regel"><span>Seizoen</span><b id="aSeizoen">—</b></div>
+        <div id="aPrijsRegels"></div>
+        <label class="optie" id="linnenOptie"><input type="checkbox" id="aLinnen"> <span id="linnenTekst"></span></label>
+        <div class="regel totaal"><span>Totaal</span><b id="aPrijs">—</b></div>
+        <div class="klein" id="aKlein"></div>
+        <div class="melding" id="aMelding"></div>
+        <div class="knoppenrij" id="aKnoppen"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="info">
+  <div class="wrap">
+    <div class="sectie-kop reveal"><span class="kicker">Goed om te weten</span><h2>Praktische info</h2></div>
+    <div class="faq" id="faq"></div>
+  </div>
+</section>
+
+<footer><div class="logo" id="footLogo"></div><p id="footTekst"></p></footer>
+
+<script>
+const HUIS = {"_uitleg": "Dit is het ENIGE bestand met gegevens. Pas hier teksten, prijzen, contact en foto's aan en draai daarna: python3 bouw.py  -> dat maakt Sablet-VI.html (één bestand om te delen).", "naam": "Sablet VI", "ondertitel": "Jouw Provençaalse thuis aan de voet van de Mont Ventoux", "plaats": "Sablet", "regio": "Vaucluse · Provence · Frankrijk", "coordinaten": {"lat": 44.1897, "lon": 5.0003}, "intro": "Een moderne vakantiewoning voor maximaal 4 personen op een klein, omheind domein van 9 huisjes met een groot verwarmd gemeenschappelijk zwembad, in het hart van het Provençaalse wijndorpje Sablet, aan de voet van de Mont Ventoux.", "kerncijfers": [{"icoon": "gasten", "waarde": 4, "label": "personen"}, {"icoon": "bed", "waarde": 2, "label": "slaapkamers"}, {"icoon": "zwembad", "waarde": 16, "label": "meter zwembad"}, {"icoon": "auto", "waarde": 2, "label": "parkeerplaatsen"}], "voorzieningen": [{"icoon": "zwembad", "titel": "Verwarmd zwembad", "tekst": "Groot gemeenschappelijk zwembad van 16 × 3,5 m in een mooi aangelegde tuin."}, {"icoon": "airco", "titel": "Airco overal", "tekst": "In de woonkamer én in beide slaapkamers."}, {"icoon": "keuken", "titel": "Volledig uitgeruste keuken", "tekst": "Vaatwasser, oven, combi-oven, kookplaat en Nespresso."}, {"icoon": "tv", "titel": "Flatscreen tv", "tekst": "Met TV Vlaanderen in de gezellige zithoek."}, {"icoon": "terras", "titel": "Twee terrassen", "tekst": "Zonneterras vooraan onder de moerbeiboom, en een terras achteraan."}, {"icoon": "fiets", "titel": "Fietsen veilig gestald", "tekst": "Tuinhuis in het achtertuintje — ideaal voor wie de Ventoux wil beklimmen."}, {"icoon": "was", "titel": "Wasmachine", "tekst": "In de aparte berging."}, {"icoon": "auto", "titel": "2 eigen parkeerplaatsen", "tekst": "Gereserveerd op het omheinde domein."}], "kamers": [{"id": "woon", "verdieping": 0, "naam": "Woonkamer & eethoek", "tekst": "Modern ingerichte woonkamer met airco, lederen zithoek, flatscreen tv (TV Vlaanderen) en een grote houten eettafel. Openslaande deuren naar het terras.", "x": 10, "y": 10, "b": 230, "h": 170}, {"id": "keuken", "verdieping": 0, "naam": "Open keuken", "tekst": "Volledig uitgerust: vaatwasser, oven, combi-oven, kookplaat en Nespresso-koffiezet.", "x": 240, "y": 10, "b": 150, "h": 110}, {"id": "wc0", "verdieping": 0, "naam": "Toilet", "tekst": "Apart toilet op de benedenverdieping.", "x": 240, "y": 120, "b": 70, "h": 60}, {"id": "berging", "verdieping": 0, "naam": "Berging", "tekst": "Berging met wasmachine.", "x": 310, "y": 120, "b": 80, "h": 60}, {"id": "terras", "verdieping": 0, "naam": "Zonneterras & tuintje", "tekst": "Zonneterras en tuintje vooraan onder een moerbeiboom, plus een terras aan de achterkant met tuinhuis voor je fietsen.", "x": 10, "y": 195, "b": 380, "h": 80}, {"id": "zwembad", "verdieping": 0, "naam": "Gemeenschappelijk zwembad", "tekst": "Groot verwarmd zwembad (16 × 3,5 m) in de mooi aangelegde gemeenschappelijke tuin.", "x": 10, "y": 290, "b": 380, "h": 90}, {"id": "slaap1", "verdieping": 1, "naam": "Slaapkamer 1", "tekst": "Airco en tweepersoonsbed 180 × 200 met aparte eenpersoonsdekbedden. Natuurstenen vloer en houten balken.", "x": 10, "y": 10, "b": 200, "h": 170}, {"id": "slaap2", "verdieping": 1, "naam": "Slaapkamer 2", "tekst": "Airco en tweepersoonsbed 160 × 200 met aparte eenpersoonsdekbedden.", "x": 210, "y": 10, "b": 180, "h": 170}, {"id": "bad", "verdieping": 1, "naam": "Badkamer", "tekst": "Badkamer met douche en lavabo.", "x": 10, "y": 180, "b": 200, "h": 95}, {"id": "wc1", "verdieping": 1, "naam": "Toilet", "tekst": "Apart toilet op de eerste verdieping.", "x": 210, "y": 180, "b": 90, "h": 95}, {"id": "overloop", "verdieping": 1, "naam": "Overloop & trap", "tekst": "De trap komt uit in de woonkamer.", "x": 300, "y": 180, "b": 90, "h": 95}], "galerij": [{"bestand": "1-gevel-terras.jpg", "titel": "Zonneterras onder de moerbeiboom", "categorie": "Buiten", "ruimte": "terras", "stijl": "terras"}, {"bestand": "2-zwembad.jpg", "titel": "Het verwarmde zwembad (16 × 3,5 m)", "categorie": "Buiten", "ruimte": "zwembad", "stijl": "zwembad"}, {"bestand": "3-eethoek.jpg", "titel": "Eethoek en woonkamer", "categorie": "Binnen", "ruimte": "woon", "stijl": "interieur"}, {"bestand": "4-woonkamer.jpg", "titel": "Zithoek met airco en tv", "categorie": "Binnen", "ruimte": "woon", "stijl": "interieur"}, {"bestand": "5-keuken.jpg", "titel": "De open keuken", "categorie": "Binnen", "ruimte": "keuken", "stijl": "keuken"}, {"bestand": "6-slaapkamer1.jpg", "titel": "Slaapkamer 1 — bed 180 × 200", "categorie": "Binnen", "ruimte": "slaap1", "stijl": "slaapkamer"}, {"bestand": "7-badkamer.jpg", "titel": "Badkamer", "categorie": "Binnen", "ruimte": "bad", "stijl": "badkamer"}, {"bestand": "8-slaapkamer2.jpg", "titel": "Slaapkamer 2 — bed 160 × 200", "categorie": "Binnen", "ruimte": "slaap2", "stijl": "slaapkamer"}, {"bestand": "9-buitenkant.jpg", "titel": "Het huisje met oleanders en wijnvat", "categorie": "Buiten", "ruimte": "terras", "stijl": "gevel"}], "heroFoto": "2-zwembad.jpg", "omgeving": [{"naam": "Séguret", "lat": 44.2069, "lon": 5.0225, "type": "dorp", "tekst": "Een van 'les plus beaux villages de France', tegen de rotsen aan gebouwd."}, {"naam": "Gigondas", "lat": 44.1636, "lon": 5.0058, "type": "wijn", "tekst": "Wereldberoemde rode wijn en wandelingen in de Dentelles de Montmirail."}, {"naam": "Dentelles de Montmirail", "lat": 44.17, "lon": 5.055, "type": "natuur", "tekst": "Grillige kalkrotsen als kantwerk: wandelen, klimmen, picknicken."}, {"naam": "Vacqueyras", "lat": 44.1394, "lon": 4.9844, "type": "wijn", "tekst": "Nog zo'n cru van de zuidelijke Rhône — proeven bij de domaines."}, {"naam": "Beaumes-de-Venise", "lat": 44.1225, "lon": 5.0303, "type": "wijn", "tekst": "Thuis van de zoete muscat — perfect als aperitief."}, {"naam": "Vaison-la-Romaine", "lat": 44.2411, "lon": 5.0747, "type": "markt", "tekst": "Romeinse ruïnes, middeleeuwse bovenstad en een van de mooiste markten van de Provence (dinsdag)."}, {"naam": "Mont Ventoux", "lat": 44.1739, "lon": 5.2786, "type": "natuur", "tekst": "'De kale berg' (1910 m). Legendarisch voor fietsers, adembenemend uitzicht."}, {"naam": "Orange", "lat": 44.1381, "lon": 4.8075, "type": "cultuur", "tekst": "Het best bewaarde Romeinse theater van Europa."}, {"naam": "Châteauneuf-du-Pape", "lat": 44.0561, "lon": 4.8325, "type": "wijn", "tekst": "Pauselijke burcht en de beroemdste wijn van de streek."}, {"naam": "Carpentras", "lat": 44.0556, "lon": 5.0481, "type": "markt", "tekst": "Grote vrijdagmarkt; in de winter de truffelmarkt."}, {"naam": "Avignon", "lat": 43.9493, "lon": 4.8055, "type": "cultuur", "tekst": "Pausenpaleis, de beroemde brug en in juli het theaterfestival."}, {"naam": "L'Isle-sur-la-Sorgue", "lat": 43.9194, "lon": 5.0514, "type": "markt", "tekst": "Venetië van de Provence: kanalen, waterraderen en de zondagse brocantemarkt."}, {"naam": "Gordes", "lat": 43.9116, "lon": 5.2003, "type": "dorp", "tekst": "Iconisch heuveldorp; vlakbij de lavendel van de abdij van Sénanque."}, {"naam": "Rasteau", "lat": 44.2297, "lon": 4.9861, "type": "wijn", "tekst": "Krachtige Côtes du Rhône-cru op een steenworp van Sablet."}, {"naam": "Vinsobres", "lat": 44.3333, "lon": 5.0622, "type": "wijn", "tekst": "Noordelijkste cru van de zuidelijke Rhône."}, {"naam": "Tavel", "lat": 44.0128, "lon": 4.6983, "type": "wijn", "tekst": "Dé rosé van Frankrijk."}, {"naam": "Nîmes", "lat": 43.8367, "lon": 4.3601, "type": "cultuur", "tekst": "Arena, Maison Carrée en het nabije Pont du Gard."}, {"naam": "Arles", "lat": 43.6766, "lon": 4.6278, "type": "cultuur", "tekst": "Van Gogh, Romeinse arena en de poort naar de Camargue."}, {"naam": "Camargue", "lat": 43.55, "lon": 4.45, "type": "natuur", "tekst": "Flamingo's, witte paarden en eindeloze moerassen."}, {"naam": "Marseille", "lat": 43.2965, "lon": 5.3698, "type": "cultuur", "tekst": "Oude haven, Mucem en de Calanques."}], "klimaat": {"maanden": ["jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"], "max": [11, 13, 16, 19, 23, 28, 31, 30, 26, 21, 15, 11], "min": [2, 2, 5, 8, 12, 16, 18, 18, 14, 10, 6, 3], "zonuren": [150, 160, 215, 240, 275, 320, 360, 320, 250, 190, 150, 140], "hoogtepunten": ["Truffelmarkten en stille dorpjes in de winterzon.", "Amandelbloesem en heldere, koude dagen.", "De lente begint: eerste terrasjes en wandelweer.", "Alles bloeit; ideaal om te fietsen en wandelen.", "Kersen van de Ventoux, groene wijngaarden, lange avonden.", "Lavendel begint te bloeien, het zwembad lonkt.", "Volle lavendel, krekels, 'La Journée du Livre' in Sablet en festivals in Avignon en Orange.", "Zomerse hitte, avondmarkten en zwemmen tot zonsondergang.", "De druivenoogst (vendanges): het hele dorp ruikt naar wijn.", "Gouden wijngaarden en warme, rustige herfstdagen.", "Olijvenoogst en nieuwe wijn bij de domaines.", "Kerstmarkten en de 13 desserts van de Provence."]}, "bezet": [], "huisinfo": [{"vraag": "Aankomst en vertrek", "antwoord": "Verhuur per week, van zondag 16:00 tot zondag 10:00."}, {"vraag": "Wat is inbegrepen?", "antwoord": "Energiekosten (bij normaal verbruik) en draadloos internet. Extra: eindschoonmaak € 95, bed- en badlinnen € 100 per verblijf (optioneel), waarborg € 300 en verblijfstaks (>18 jaar) aan het tarief van de COPAVO."}, {"vraag": "Hoeveel personen?", "antwoord": "Maximaal 4 personen, in twee slaapkamers met elk een tweepersoonsbed (180 en 160) met aparte eenpersoonsdekbedden."}, {"vraag": "Is het zwembad verwarmd?", "antwoord": "Ja: een groot verwarmd gemeenschappelijk zwembad van 16 × 3,5 m in de mooi aangelegde tuin van het domein."}, {"vraag": "Huisdieren?", "antwoord": "Huisdieren zijn helaas niet toegestaan."}, {"vraag": "Parkeren & fietsen", "antwoord": "Twee gereserveerde parkeerplaatsen. Fietsen kun je veilig stallen in het tuinhuis in het achtertuintje."}, {"vraag": "Hoe kom ik er?", "antwoord": "Met de auto via de A7 (afrit Orange of Bollène) en daarna nog ca. 30 minuten. Dichtstbijzijnde TGV-station: Avignon TGV; luchthavens in Avignon, Nîmes en Marseille."}, {"vraag": "Wat is er te doen?", "antwoord": "Ideaal voor fietsers en wandelaars (Mont Ventoux, Dentelles de Montmirail), wijnliefhebbers (Châteauneuf-du-Pape, Gigondas, Vacqueyras, Beaumes-de-Venise, Rasteau, Tavel, Vinsobres…) en cultuur (Avignon, Orange, Vaison-la-Romaine). Nîmes, Arles, Marseille, de Camargue en zelfs de Côte d'Azur zijn prachtige daguitstappen."}, {"vraag": "Boodschappen", "antwoord": "In Sablet zelf: bakkers, slager, apotheek, bloemenwinkel, krantenwinkel en een superette. Grote supermarkten (Intermarché, Super U, Lidl, Aldi) in Vaison-la-Romaine op 10 km — en ga zeker naar de markt daar op dinsdag!"}], "contact": {"naam": "VUL_IN", "whatsapp": "VUL_IN", "email": "VUL_IN"}, "referentie": "MG133", "reviews": [{"naam": "I. Z.", "plaats": "Herzele", "datum": "augustus 2024", "score": 9, "tekst": "Prachtig gelegen vakantiehuisje met alles op en aan. Zeer net. Airco is een troef. Genoten van een mooie vakantie. Een aanrader voor jong en oud!"}, {"naam": "S. D.", "plaats": "Lembeek", "datum": "juli 2024", "score": 9, "tekst": "Schitterende vakantie beleefd in deze woning. Mooie tuin met leuke, gezellige terrassen, airco in beide slaapkamers, goed uitgeruste keuken, aparte wc's, gezellig zwembad,...!"}], "verhuur": {"wisseldag": 0, "wisseldagNaam": "zondag", "aankomst": "16:00", "vertrek": "10:00"}, "tarieven": {"_uitleg": "Prijzen per week (zondag tot zondag). 'tot' is de vertrekzondag van de laatste week. Voeg hier gerust nieuwe periodes (bv. 2027) aan toe.", "periodes": [{"naam": "Voorseizoen", "van": "2026-05-03", "tot": "2026-06-28", "prijsPerWeek": 975}, {"naam": "Hoogseizoen", "van": "2026-06-28", "tot": "2026-08-30", "prijsPerWeek": 1245}, {"naam": "Naseizoen", "van": "2026-08-30", "tot": "2026-09-27", "prijsPerWeek": 975}], "overigePeriodes": "contacteer ons", "inclusief": ["Energiekosten (bij normaal verbruik)", "Draadloos internet"], "kosten": [{"naam": "Eindschoonmaak", "bedrag": 95, "verplicht": true}, {"naam": "Bed- en badlinnen (opgemaakte bedden, handdoeken, badmat, keukenhanddoeken)", "kort": "Bed- en badlinnen", "bedrag": 100, "verplicht": false}], "waarborg": 300, "verblijfstaks": "Verblijfstaks (taxe de séjour) voor personen ouder dan 18 jaar, aan het geldende tarief van de COPAVO."}, "dorp": {"tekst": "Het charmante Provençaalse wijndorpje Sablet was in de middeleeuwen een versterkt dorp. De graven van Toulouse lieten er een kasteel bouwen, omringd door wallen en poorten. Naast de burchtruïne is de 12de-eeuwse kerk de blikvanger. In juli zorgt 'La Journée du Livre' voor een grote volkstoeloop: je ontmoet er schrijvers, boekhandelaars en boekbinders, en de wijnbouwers bottelen een speciale cuvée voor de gelegenheid. De appellation 'Sablet' grenst aan Gigondas en de Dentelles de Montmirail; sinds 1974 is het dorp geclassificeerd als Côtes du Rhône Villages Sablet.", "winkelen": ["Verschillende bakkers, slager, apotheek, bloemenwinkel, kappers, krantenwinkel en superette in het centrum van het dorp", "Grote supermarkten (Intermarché, Super U, Lidl, Aldi) in Vaison-la-Romaine (10 km)"], "etenDrinken": ["Café en restaurant in het centrum van Sablet", "Verschillende restaurants, bistro's en cafés in Vaison-la-Romaine (10 km)"]}};
+const FOTOS = {};
+</script>
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const el=(tag,attrs={},html="")=>{const e=document.createElement(tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(html)e.innerHTML=html;return e};
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const rustig=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const ingevuld=v=>v&&!/VUL_IN/i.test(v);
+
+/* ---------- iconen ---------- */
+const P={
+ gasten:'<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14c3 0 5 2 5 5"/>',
+ bed:'<path d="M3 18V7M3 13h18v5M21 18v-3a3 3 0 0 0-3-3h-7v1"/><circle cx="7" cy="10.5" r="1.8"/>',
+ douche:'<path d="M4 20V8a4 4 0 0 1 8 0"/><path d="M9 11h6l-3-3z"/><path d="M10 14v1M13 14v1M16 14v1M11 17v1M14 17v1"/>',
+ zwembad:'<path d="M2 18c2 0 2-1.5 4-1.5s2 1.5 4 1.5 2-1.5 4-1.5 2 1.5 4 1.5 2-1.5 4-1.5"/><path d="M2 14c2 0 2-1.5 4-1.5s2 1.5 4 1.5 2-1.5 4-1.5 2 1.5 4 1.5 2-1.5 4-1.5"/><path d="M8 12V5a2 2 0 0 1 4 0M16 12V5a2 2 0 0 0-4 0"/>',
+ auto:'<path d="M5 16h14v-4l-2-5H7l-2 5z"/><circle cx="8" cy="16.5" r="1.8"/><circle cx="16" cy="16.5" r="1.8"/>',
+ airco:'<rect x="3" y="5" width="18" height="7" rx="2"/><path d="M7 15c0 2-1 3-1 4M12 15v4M17 15c0 2 1 3 1 4"/>',
+ keuken:'<path d="M6 3v8M4 3v4a2 2 0 0 0 4 0V3M6 11v10"/><path d="M17 3c-2 2-2 6 0 8v10"/>',
+ tv:'<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/>',
+ terras:'<path d="M12 3 3 9h18z"/><path d="M12 9v12M7 21h10"/>',
+ fiets:'<circle cx="6" cy="16" r="3.5"/><circle cx="18" cy="16" r="3.5"/><path d="M6 16l4-7h5l3 7M10 9l2 7h-6M14 6h3"/>',
+ was:'<rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="13" r="4.5"/><path d="M7 6.5h2"/>',
+ wandelen:'<circle cx="13" cy="4" r="2"/><path d="M9 21l3-7 3 3v4M7 12l3-4 4 1 2 3"/>',
+ wijn:'<path d="M8 3h8l-1 6a3 3 0 0 1-6 0z"/><path d="M12 12v8M8 21h8"/>'
+};
+const icoon=n=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${P[n]||P.terras}</svg>`;
+
+/* ---------- placeholder-illustraties (wanneer een foto nog ontbreekt) ---------- */
+function kunst(stijl,titel){
+    const kaders={
+   zwembad:`<rect width="800" height="600" fill="#8ec7e8"/><path d="M0 230 Q200 190 400 220 T800 210 V0 H0z" fill="#cfe7f5"/><path d="M0 260h800v80H0z" fill="#e8d3b1"/><rect x="0" y="330" width="800" height="270" fill="#3fa9d0"/><g stroke="#bfeaf7" stroke-width="5" fill="none" opacity=".8">${[0,1,2,3,4].map(i=>`<path d="M${i*170-40} ${380+i%2*90} q40 -18 80 0 t80 0"><animateTransform attributeName="transform" type="translate" values="0 0;30 0;0 0" dur="${4+i}s" repeatCount="indefinite"/></path>`).join("")}</g><g fill="#efe4cf"><rect x="90" y="150" width="200" height="110"/><rect x="300" y="130" width="220" height="130"/><rect x="530" y="150" width="200" height="110"/></g><g fill="#b2552c"><path d="M80 152l110-36 110 36zM290 132l120-40 120 40zM520 152l110-36 110 36z"/></g><g fill="#8a9bb0">${[120,180,240,340,400,460,560,620,680].map(x=>`<rect x="${x}" y="185" width="22" height="34"/>`).join("")}</g>`,
+   terras:`<rect width="800" height="600" fill="#a9d4ef"/><rect x="250" y="80" width="520" height="440" fill="#f3ece0"/><path d="M240 85l270-55 270 55z" fill="#c26a3c"/>${[330,560].map(x=>`<rect x="${x}" y="150" width="70" height="90" fill="#8b98aa"/><rect x="${x-18}" y="150" width="16" height="90" fill="#a9b3c0"/><rect x="${x+72}" y="150" width="16" height="90" fill="#a9b3c0"/>`).join("")}<rect x="0" y="470" width="800" height="130" fill="#e7dccb"/><circle cx="120" cy="150" r="190" fill="#5f8a3a"/><circle cx="40" cy="260" r="120" fill="#6d9a43"/><rect x="110" y="250" width="16" height="260" fill="#6b5640"/><path d="M180 290 Q330 230 480 290z" fill="#4a4a4a"/><rect x="327" y="290" width="5" height="190" fill="#444"/><rect x="250" y="420" width="160" height="12" fill="#5a5a5a"/><circle cx="560" cy="445" r="38" fill="#2f8f8f"/><g fill="#e85b8a"><circle cx="545" cy="400" r="14"/><circle cx="575" cy="392" r="13"/><circle cx="560" cy="380" r="12"/></g><g fill="#9b7fd0">${[...Array(14)].map((_,i)=>`<ellipse cx="${20+i*14}" cy="${520-i%3*8}" rx="5" ry="16"/>`).join("")}</g>`,
+   gevel:`<rect width="800" height="600" fill="#7fbfe8"/><path d="M120 120l230-60 230 60v380H120z" fill="#efe8dc"/><path d="M110 125l240-70 240 70" stroke="#c26a3c" stroke-width="18" fill="none"/>${[200,420].map(x=>`<rect x="${x}" y="180" width="70" height="90" fill="#8c99ab"/>`).join("")}<rect x="300" y="330" width="80" height="160" fill="#a9b3c0"/><rect x="0" y="500" width="800" height="100" fill="#ddd0bb"/><ellipse cx="420" cy="470" rx="45" ry="60" fill="#8b5a2b"/><path d="M380 445h80M378 495h84" stroke="#4a3a2a" stroke-width="6"/><g fill="#ef7fa8">${[...Array(16)].map((_,i)=>`<circle cx="${160+Math.sin(i)*70}" cy="${400+Math.cos(i*1.7)*45}" r="15"/>`).join("")}</g><circle cx="680" cy="170" r="160" fill="#5f8a3a"/><rect x="670" y="260" width="20" height="250" fill="#6b5640"/>`,
+   interieur:`<rect width="800" height="600" fill="#ebe7e1"/><rect x="0" y="420" width="800" height="180" fill="#cbbfae"/><rect x="420" y="70" width="140" height="280" fill="#b7d79a"/><rect x="420" y="70" width="140" height="280" fill="none" stroke="#fff" stroke-width="10"/><rect x="380" y="60" width="38" height="330" fill="#cfc4b5"/><rect x="562" y="60" width="38" height="330" fill="#cfc4b5"/><rect x="620" y="70" width="150" height="45" rx="8" fill="#fff"/><path d="M80 380h330v-60a20 20 0 0 0-20-20H100a20 20 0 0 0-20 20z" fill="#232323"/><rect x="60" y="370" width="370" height="60" rx="16" fill="#2c2c2c"/><path d="M180 90 Q260 40 330 140" stroke="#222" stroke-width="5" fill="none"/><path d="M130 90h100l-18 60h-64z" fill="#e7cfa6"><animate attributeName="fill" values="#e7cfa6;#f5ddb0;#e7cfa6" dur="4s" repeatCount="indefinite"/></path><rect x="610" y="330" width="170" height="60" fill="#fff"/><rect x="630" y="230" width="140" height="95" fill="#1d1d1d"/><path d="M400 470l40-30h40l40 30-40 30h-40z" fill="none" stroke="#333" stroke-width="4"/>`,
+   keuken:`<rect width="800" height="600" fill="#f1efea"/><rect x="60" y="80" width="680" height="150" fill="#d9d8d6"/>${[0,1,2,3,4].map(i=>`<rect x="${70+i*134}" y="90" width="124" height="130" rx="4" fill="#e3e2df" stroke="#c8c7c3"/>`).join("")}<rect x="60" y="230" width="680" height="80" fill="#caa57c"/><rect x="60" y="300" width="680" height="16" fill="#b58e64"/><rect x="60" y="316" width="680" height="190" fill="#dddcd9"/><rect x="480" y="330" width="130" height="120" rx="6" fill="#2a2a2a"/><rect x="120" y="270" width="40" height="40" fill="#555"/><circle cx="640" cy="270" r="30" fill="#5c8a3a"/><rect x="0" y="480" width="800" height="120" fill="#c89b6d"/><circle cx="400" cy="520" r="70" fill="#2f7fa1"/><g><circle cx="370" cy="490" r="20" fill="#f2c94c"/><circle cx="410" cy="480" r="22" fill="#e67e22"/><circle cx="440" cy="500" r="16" fill="#6aa84f"/></g>`,
+   slaapkamer:`<rect width="800" height="600" fill="#8e9590"/><path d="M0 0h800v90L400 30 0 90z" fill="#f4f1ea"/><rect x="380" y="20" width="40" height="400" fill="#b98a5a" transform="rotate(-62 400 60)"/><rect x="110" y="120" width="120" height="150" fill="#fdfcf6"/><rect x="110" y="120" width="120" height="150" fill="none" stroke="#fff" stroke-width="10"/><rect x="600" y="80" width="140" height="40" rx="6" fill="#fff"/>${[300,520].map(x=>`<circle cx="${x}" cy="200" r="22" fill="#ffd27a" opacity=".85"><animate attributeName="opacity" values=".85;.5;.85" dur="3s" repeatCount="indefinite"/></circle>`).join("")}<rect x="0" y="430" width="800" height="170" fill="#d6cbb7"/><rect x="230" y="320" width="420" height="150" rx="10" fill="#fff"/><rect x="230" y="440" width="420" height="70" fill="#5b5b5b"/><rect x="300" y="290" width="110" height="45" rx="14" fill="#fff" stroke="#444" stroke-width="2"/><rect x="460" y="290" width="110" height="45" rx="14" fill="#fff" stroke="#444" stroke-width="2"/>`,
+   badkamer:`<rect width="800" height="600" fill="#f0eee9"/><rect x="170" y="60" width="460" height="300" fill="#cfd6da"/><rect x="250" y="100" width="110" height="150" fill="#fdfdf8" stroke="#ddd" stroke-width="6"/><rect x="150" y="400" width="500" height="200" fill="#1f1f1f"/><path d="M300 360h200l-10 50H310z" fill="#fff"/><rect x="390" y="320" width="10" height="45" fill="#222"/><g stroke="#c9a46b" stroke-width="12">${[0,1,2,3].map(i=>`<path d="M${60+i*2} ${560-i*130}h110"/>`).join("")}</g><path d="M70 600L100 60M160 600L190 60" stroke="#c9a46b" stroke-width="12"/>`,
+   omgeving:`<rect width="800" height="600" fill="#a8cfe9"/><path d="M0 330l200-90 160 40 140-110 300 140v280H0z" fill="#9aa7c4"/><path d="M0 400q400-60 800 0v200H0z" fill="#6f8a4a"/><g stroke="#4f6a2f" stroke-width="10">${[...Array(10)].map((_,i)=>`<path d="M${-100+i*110} 600L${300+i*30} 420"/>`).join("")}</g>`
+  };
+  const inh=kaders[stijl]||kaders.omgeving;
+  return "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">${inh}</svg>`);
+}
+// Eén bron voor elke foto: echte foto uit fotos/ of anders de illustratie.
+const fotoUrl=item=>FOTOS[item.bestand]||kunst(item.stijl,item.titel);
+const galerij=HUIS.galerij.concat(Object.keys(FOTOS).filter(b=>!HUIS.galerij.some(g=>g.bestand===b)).map(b=>({bestand:b,titel:b.replace(/^\d+-|\.\w+$/g,"").replace(/[-_]/g," "),categorie:"Overig",ruimte:null,stijl:"omgeving"})));
+
+/* ---------- teksten ---------- */
+document.title=`${HUIS.naam} · ${HUIS.plaats}, Provence`;
+$("#navLogo").textContent=HUIS.naam;
+$("#heroPlaats").textContent=`${HUIS.plaats} · ${HUIS.regio}`;
+$("#heroTitel").innerHTML=[...HUIS.naam].map((c,i)=>`<span style="animation-delay:${.3+i*.08}s">${c===" "?"&nbsp;":esc(c)}</span>`).join("");
+$("#heroSub").textContent=HUIS.ondertitel;
+$("#introTekst").textContent=HUIS.intro;
+$("#stempelTekst").textContent=`${HUIS.plaats.toUpperCase()} · PROVENCE · ${HUIS.naam.toUpperCase()} · `;
+$("#footLogo").textContent=HUIS.naam;
+$("#footTekst").innerHTML=`${esc(HUIS.plaats)} · ${esc(HUIS.regio)}${HUIS.referentie?` · referentie ${esc(HUIS.referentie)}`:""}<br>Tot snel in de Provence ☀`;
+const heroItem=galerij.find(g=>g.bestand===HUIS.heroFoto);
+if(heroItem&&FOTOS[heroItem.bestand]){const h=$("#heroFoto");h.style.backgroundImage=`url("${FOTOS[heroItem.bestand]}")`;setTimeout(()=>h.classList.add("zichtbaar"),1600);}
+
+/* ---------- landschap: wolken, cipressen, dorp, sterren, parallax ---------- */
+(function(){
+  const w=$("#wolken");
+  for(let i=0;i<6;i++){const g=el("g");const x=Math.random()*1600,y=80+Math.random()*220,s=.6+Math.random()*.9;
+    g.innerHTML=`<g transform="translate(${x} ${y}) scale(${s})" fill="#fff" opacity="${.5+Math.random()*.4}"><ellipse cx="0" cy="0" rx="90" ry="28"/><ellipse cx="40" cy="-18" rx="55" ry="30"/><ellipse cx="-40" cy="-10" rx="45" ry="22"/></g>`;
+    if(!rustig)g.innerHTML+=``;g.firstChild.innerHTML+=`<animateTransform attributeName="transform" type="translate" additive="sum" from="0 0" to="${200+Math.random()*300} 0" dur="${40+Math.random()*40}s" repeatCount="indefinite"/>`;
+    w.appendChild(g)}
+  const c=$("#cipressen");[90,140,1380,1430,1475,820].forEach((x,i)=>{const h=[150,190,170,210,160,120][i];
+    c.innerHTML+=`<path d="M${x} ${760} q-22 -${h*.4} 0 -${h} q22 ${h*.6} 0 ${h}z"><animateTransform attributeName="transform" type="skewX" values="0;1.5;0;-1;0" dur="${5+i}s" repeatCount="indefinite"/></path>`});
+  const d=$("#dorp");[[560,628,50,34],[605,618,40,44],[640,630,60,30],[700,622,36,40],[735,632,50,28],[600,590,14,36]].forEach(([x,y,b,h])=>{d.innerHTML+=`<rect x="${x}" y="${y}" width="${b}" height="${h}"/><path d="M${x-4} ${y} L${x+b/2} ${y-12} L${x+b+4} ${y}z" fill="#b5653a"/>`});
+  const s=$("#sterren");for(let i=0;i<120;i++)s.innerHTML+=`<circle cx="${Math.random()*1600}" cy="${Math.random()*520}" r="${Math.random()*1.8+.3}" fill="#fff"><animate attributeName="opacity" values="1;.2;1" dur="${2+Math.random()*4}s" repeatCount="indefinite"/></circle>`;
+  if(rustig)return;
+  const lagen=$$("#landschap .laag");let mx=0,my=0,sy=0;
+  const update=()=>lagen.forEach(l=>{const d=+l.dataset.diepte;l.setAttribute("transform",`translate(${mx*d*12} ${my*d*6+sy*d*.12})`)});
+  addEventListener("mousemove",e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5;requestAnimationFrame(update)});
+  addEventListener("scroll",()=>{sy=scrollY;requestAnimationFrame(update)},{passive:true});
+  // vlinders / lavendelblaadjes
+  const hero=$("#hero");
+  setInterval(()=>{if(scrollY>innerHeight)return;const v=el("div",{class:"vlinder"},Math.random()<.5?"🦋":"🌸");v.style.left=Math.random()*100+"%";v.style.top="100%";hero.appendChild(v);
+    v.animate([{transform:"translate(0,0) rotate(0)",opacity:0},{opacity:1,offset:.1},{transform:`translate(${(Math.random()-.5)*300}px,-${innerHeight*.9}px) rotate(${Math.random()*360}deg)`,opacity:0}],{duration:9000+Math.random()*5000,easing:"ease-out"}).onfinish=()=>v.remove()},2200);
+})();
+
+/* ---------- dag / nacht ---------- */
+const kleuren={dag:["#5b8fc7","#f6c58f","#f7a76c"],nacht:["#0b1330","#2b2f5c","#5a3f6b"]};
+function zetNacht(aan){
+  document.body.classList.toggle("nacht",aan);$("#nachtKnop").classList.toggle("aan",aan);
+  ["lucht1","lucht2","lucht3"].forEach((id,i)=>$("#"+id).setAttribute("stop-color",kleuren[aan?"nacht":"dag"][i]));
+  $("#sterren").style.transition="opacity 1.5s";$("#sterren").style.opacity=aan?1:0;
+  $("#zonKern").setAttribute("fill",aan?"#f4f1e6":"#fff3cf");$("#zon").style.opacity=aan?.35:1;
+  try{localStorage.setItem("sabletNacht",aan?"1":"0")}catch(e){}
+}
+$("#nachtKnop").onclick=()=>zetNacht(!document.body.classList.contains("nacht"));
+try{if(localStorage.getItem("sabletNacht")==="1")zetNacht(true)}catch(e){}
+
+/* ---------- krekels (Web Audio) ---------- */
+let audio=null;
+$("#geluidKnop").onclick=function(){
+  if(audio){audio.close();audio=null;this.classList.remove("aan");return}
+  const ctx=new (window.AudioContext||window.webkitAudioContext)();audio=ctx;this.classList.add("aan");
+  const buf=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate),d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  const hoofd=ctx.createGain();hoofd.gain.value=.0;hoofd.gain.linearRampToValueAtTime(.18,ctx.currentTime+2);hoofd.connect(ctx.destination);
+  [[4600,0],[5200,.4],[3900,.9]].forEach(([f,pan])=>{
+    const n=ctx.createBufferSource();n.buffer=buf;n.loop=true;
+    const bp=ctx.createBiquadFilter();bp.type="bandpass";bp.frequency.value=f;bp.Q.value=12;
+    const tril=ctx.createGain();tril.gain.value=0;
+    const lfo=ctx.createOscillator();lfo.type="square";lfo.frequency.value=28+Math.random()*12;
+    const lfoG=ctx.createGain();lfoG.gain.value=.5;lfo.connect(lfoG).connect(tril.gain);
+    const zang=ctx.createGain();zang.gain.value=0;
+    const p=ctx.createStereoPanner?ctx.createStereoPanner():ctx.createGain();if(p.pan)p.pan.value=pan-.45;
+    n.connect(bp).connect(tril).connect(zang).connect(p).connect(hoofd);n.start();lfo.start();
+    (function fras(){if(audio!==ctx)return;const t=ctx.currentTime,l=.8+Math.random()*2.5;
+      zang.gain.setValueAtTime(0,t);zang.gain.linearRampToValueAtTime(1,t+.15);zang.gain.setValueAtTime(1,t+l);zang.gain.linearRampToValueAtTime(0,t+l+.3);
+      setTimeout(fras,(l+.5+Math.random()*1.5)*1000)})();
+  });
+};
+
+/* ---------- nav, voortgang, reveal ---------- */
+addEventListener("scroll",()=>{
+  $("#nav").classList.toggle("vast",scrollY>60);
+  $("#voortgang").style.width=(scrollY/(document.documentElement.scrollHeight-innerHeight)*100)+"%";
+  let actief=null;$$("nav.top .links a").forEach(a=>{const s=$(a.getAttribute("href"));if(s&&s.getBoundingClientRect().top<innerHeight*.4)actief=a});
+  $$("nav.top .links a").forEach(a=>a.classList.toggle("actief",a===actief));
+},{passive:true});
+$("#menuKnop").onclick=()=>$("#navLinks").classList.toggle("open");
+$$("#navLinks a").forEach(a=>a.onclick=()=>$("#navLinks").classList.remove("open"));
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("zien");io.unobserve(e.target)}}),{threshold:.12});
+const observeer=()=>$$(".reveal:not(.zien)").forEach(r=>io.observe(r));
+
+/* ---------- kerncijfers met optellen ---------- */
+$("#cijferbalk").innerHTML=HUIS.kerncijfers.map(c=>`<div class="cijfer">${icoon(c.icoon)}<b data-doel="${c.waarde}">0</b><small>${esc(c.label)}</small></div>`).join("");
+new IntersectionObserver((es,o)=>{if(!es[0].isIntersecting)return;o.disconnect();$$("#cijferbalk b").forEach(b=>{const doel=+b.dataset.doel,t0=performance.now();
+  (function st(t){const p=Math.min(1,(t-t0)/1400);b.textContent=Math.round(doel*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(st)})(t0)})}).observe($("#cijferbalk"));
+
+/* ---------- intro: fotostapel + mini-review ---------- */
+const stapelItems=[galerij.find(g=>g.ruimte==="terras"),galerij.find(g=>g.ruimte==="woon"),galerij.find(g=>g.ruimte==="zwembad")].filter(Boolean);
+stapelItems.forEach((g,i)=>{const f=el("div",{class:`f f${i+1}`,role:"button","aria-label":g.titel});f.style.backgroundImage=`url("${fotoUrl(g)}")`;f.onclick=()=>openLightbox(galerij.indexOf(g));$("#fotostapel").appendChild(f)});
+if(HUIS.reviews&&HUIS.reviews.length){const r=HUIS.reviews[0];$("#miniReview").innerHTML=`“${esc(r.tekst.split(/[.!]/)[0])}.”<small>— ${esc(r.naam)} uit ${esc(r.plaats)} · ${r.score}/10</small>`}else $("#miniReview").remove();
+
+/* ---------- interactief plan ---------- */
+let verdieping=0,kamerFotoIdx=0,huidigeKamer=null;
+function tekenPlan(){
+  const svg=$("#planSvg");const kamers=HUIS.kamers.filter(k=>k.verdieping===verdieping);
+  svg.innerHTML=kamers.map(k=>{const cls=k.id==="zwembad"?"water":(k.id==="terras"?"buiten":"");
+    const naam=esc(k.naam).split(" & ");
+    return `<g class="kamer ${cls}" data-id="${k.id}" tabindex="0" role="button" aria-label="${esc(k.naam)}"><rect x="${k.x}" y="${k.y}" width="${k.b}" height="${k.h}" rx="4"/>${naam.map((n,i)=>`<text x="${k.x+k.b/2}" y="${k.y+k.h/2+4+(i-(naam.length-1)/2)*15}" text-anchor="middle">${n}${i<naam.length-1?" &amp;":""}</text>`).join("")}</g>`}).join("")
+    + (verdieping===0?`<path d="M240 180 h-30 a30 30 0 0 1 30 -30" fill="none" stroke="var(--zacht)" stroke-width="1.5"/>`:"");
+  svg.style.opacity=0;requestAnimationFrame(()=>{svg.style.transition="opacity .4s";svg.style.opacity=1});
+  $$("#planSvg .kamer").forEach(g=>{g.onclick=()=>kiesKamer(g.dataset.id);g.onkeydown=e=>{if(e.key==="Enter")kiesKamer(g.dataset.id)}});
+  kiesKamer(kamers[0].id);
+}
+function kiesKamer(id){
+  huidigeKamer=HUIS.kamers.find(k=>k.id===id);kamerFotoIdx=0;
+  $$("#planSvg .kamer").forEach(g=>g.classList.toggle("actief",g.dataset.id===id));toonKamer();
+}
+function toonKamer(){
+  const k=huidigeKamer,fotos=galerij.filter(g=>g.ruimte===k.id);
+  const f=fotos[kamerFotoIdx%Math.max(1,fotos.length)];
+  const vz=HUIS.voorzieningen.filter(v=>k.tekst.toLowerCase().includes(v.icoon)||(k.id==="zwembad"&&v.icoon==="zwembad"));
+  $("#kamerInfo").innerHTML=`<div class="beeld fade-in" style="background-image:url('${f?fotoUrl(f):kunst(/^wc|bad/.test(k.id)?"badkamer":k.id==="zwembad"?"zwembad":"interieur",k.naam)}')">${fotos.length>1?`<div class="pijlen"><button data-r="-1" aria-label="Vorige foto">‹</button><button data-r="1" aria-label="Volgende foto">›</button></div>`:""}</div>
+   <div class="tekst fade-in"><span class="kicker">${verdieping?"Eerste verdieping":"Benedenverdieping"}</span><h3>${esc(k.naam)}</h3><p>${esc(k.tekst)}</p>${fotos.length?`<button class="chip" id="kamerGalerij">Bekijk ${fotos.length} foto${fotos.length>1?"'s":""} groot</button>`:""}</div>`;
+  $$("#kamerInfo .pijlen button").forEach(b=>b.onclick=()=>{kamerFotoIdx=(kamerFotoIdx+ +b.dataset.r+fotos.length)%fotos.length;toonKamer()});
+  const kg=$("#kamerGalerij");if(kg)kg.onclick=()=>openLightbox(galerij.indexOf(f));
+}
+$$("#verdiepingTabs button").forEach(b=>b.onclick=()=>{verdieping=+b.dataset.v;$$("#verdiepingTabs button").forEach(x=>x.classList.toggle("actief",x===b));tekenPlan()});
+tekenPlan();
+
+/* ---------- galerij + lightbox ---------- */
+const cats=["Alles",...new Set(galerij.map(g=>g.categorie))];
+$("#galerijFilters").innerHTML=cats.map((c,i)=>`<button class="chip ${i?"":"actief"}" data-c="${esc(c)}">${esc(c)}</button>`).join("");
+$("#galerijGrid").innerHTML=galerij.map((g,i)=>`<figure class="item reveal" data-c="${esc(g.categorie)}" data-i="${i}" style="margin:0;transition-delay:${(i%5)*.06}s"><div class="bg" style="background-image:url('${fotoUrl(g)}')"></div><figcaption>${esc(g.titel)}</figcaption></figure>`).join("");
+$$("#galerijFilters .chip").forEach(b=>b.onclick=()=>{$$("#galerijFilters .chip").forEach(x=>x.classList.toggle("actief",x===b));
+  $$("#galerijGrid .item").forEach(it=>it.classList.toggle("weg",b.dataset.c!=="Alles"&&it.dataset.c!==b.dataset.c))});
+$$("#galerijGrid .item").forEach(it=>it.onclick=()=>openLightbox(+it.dataset.i));
+let lbIdx=0;
+function openLightbox(i){lbIdx=i;toonLb();$("#lightbox").classList.add("open");document.body.style.overflow="hidden"}
+function sluitLb(){$("#lightbox").classList.remove("open");document.body.style.overflow=""}
+function toonLb(){const g=galerij[lbIdx];const img=$("#lbImg");img.src=fotoUrl(g);img.alt=g.titel;img.style.animation="none";img.offsetHeight;img.style.animation="";$("#lbTitel").textContent=g.titel;$("#lbTeller").textContent=`${lbIdx+1} / ${galerij.length}`}
+const lbStap=r=>{lbIdx=(lbIdx+r+galerij.length)%galerij.length;toonLb()};
+$("#lbVorige").onclick=()=>lbStap(-1);$("#lbVolgende").onclick=()=>lbStap(1);$("#lbSluit").onclick=sluitLb;
+$("#lightbox").onclick=e=>{if(e.target.id==="lightbox")sluitLb()};
+addEventListener("keydown",e=>{if(!$("#lightbox").classList.contains("open"))return;if(e.key==="Escape")sluitLb();if(e.key==="ArrowLeft")lbStap(-1);if(e.key==="ArrowRight")lbStap(1)});
+let tx=null;$("#lightbox").addEventListener("touchstart",e=>tx=e.touches[0].clientX,{passive:true});
+$("#lightbox").addEventListener("touchend",e=>{if(tx==null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>40)lbStap(dx<0?1:-1);tx=null});
+
+/* ---------- voorzieningen ---------- */
+$("#vzGrid").innerHTML=HUIS.voorzieningen.map((v,i)=>`<div class="flip reveal" style="transition-delay:${i*.05}s" tabindex="0"><div class="flip-binnen"><div class="kant voor">${icoon(v.icoon)}<h3>${esc(v.titel)}</h3></div><div class="kant achter">${esc(v.tekst)}</div></div></div>`).join("");
+$$(".flip").forEach(f=>{f.onclick=()=>f.classList.toggle("om");f.onkeydown=e=>{if(e.key==="Enter")f.classList.toggle("om")}});
+
+/* ---------- kaart ---------- */
+const TYPES={wijn:{k:"#8e2f4f",n:"Wijn"},dorp:{k:"#c8693f",n:"Dorpen"},natuur:{k:"#4f7a2f",n:"Natuur"},markt:{k:"#d99a2b",n:"Markten"},cultuur:{k:"#3d5f9e",n:"Cultuur"}};
+const H=HUIS.coordinaten;
+const afstand=(a,b)=>{const R=6371,r=x=>x*Math.PI/180,dl=r(b.lat-a.lat),dn=r(b.lon-a.lon);const s=Math.sin(dl/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(s))};
+const plekken=HUIS.omgeving.map(p=>{const km=afstand(H,p);return{...p,km,rij:Math.round(km*1.35/62*60+6)}}).sort((a,b)=>a.km-b.km);
+let kaartType="alle",zoomModus="nabij",actievePlek=null;
+const kustlijn=[[43.47,3.9],[43.44,4.3],[43.40,4.6],[43.33,4.85],[43.38,5.05],[43.30,5.36],[43.21,5.6],[43.1,6.0]];
+const rhone=[[44.6,4.68],[44.35,4.7],[44.14,4.72],[43.95,4.80],[43.80,4.66],[43.68,4.63],[43.5,4.72],[43.33,4.83]];
+function tekenKaart(){
+  const zicht=plekken.filter(p=>zoomModus==="regio"||p.km<45);
+  const lats=[H.lat,...zicht.map(p=>p.lat)],lons=[H.lon,...zicht.map(p=>p.lon)];
+  let la0=Math.min(...lats),la1=Math.max(...lats),lo0=Math.min(...lons),lo1=Math.max(...lons);
+  const cos=Math.cos(H.lat*Math.PI/180);
+  let bw=(lo1-lo0)*cos,bh=la1-la0;const span=Math.max(bw,bh)*1.25+.02;
+  const cLa=(la0+la1)/2,cLo=(lo0+lo1)/2;
+  const proj=(lat,lon)=>[300+((lon-cLo)*cos/span)*600,300-((lat-cLa)/span)*600];
+  const lijn=pts=>pts.map((p,i)=>(i?"L":"M")+proj(...p).map(v=>v.toFixed(1)).join(" ")).join("");
+  const zeeP=lijn(kustlijn)+` L${proj(42.5,6)[0]} 2000 L${proj(42.5,3.5)[0]} 2000Z`;
+  const schaalKm=zoomModus==="regio"?25:10,schaalPx=schaalKm/(span*111*cos)*600*cos/cos;
+  let s=`<defs><pattern id="heuvels" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M0 50 q15 -18 30 0 t30 0" fill="none" stroke="rgba(110,130,80,.08)" stroke-width="2"/></pattern></defs>
+   <rect width="600" height="600" fill="url(#heuvels)"/>
+   <path d="${zeeP}" fill="#9fd0e8" opacity=".9"/>
+   <path d="${lijn(rhone)}" fill="none" stroke="#6fb2d6" stroke-width="5" stroke-linecap="round"/>
+   <text x="${proj(44.02,4.73)[0]}" y="${proj(44.02,4.73)[1]}" fill="#4d8fb5" font-style="italic" font-size="14" font-family="Georgia" transform="rotate(-70 ${proj(44.02,4.73).join(" ")})">Rhône</text>`;
+  const [hx,hy]=proj(H.lat,H.lon);
+  zicht.forEach(p=>{const [x,y]=proj(p.lat,p.lon);if(kaartType!=="alle"&&p.type!==kaartType)return;
+    s+=`<line x1="${hx}" y1="${hy}" x2="${x}" y2="${y}" stroke="${TYPES[p.type].k}" stroke-width="1.5" stroke-dasharray="4 5" opacity="${actievePlek===p.naam?.9:.18}"/>`});
+  // Labels zonder overlap: actieve plek en dichtstbijzijnde eerst, anders links/boven/onder, anders pas zichtbaar bij hover.
+  const bezetVak=[[hx-60,hy-38,120,26],[hx-13,hy-13,26,26],...zicht.map(p=>{const [x,y]=proj(p.lat,p.lon);return[x-7,y-7,14,14]})],raakt=(a,b)=>a[0]<b[0]+b[2]&&b[0]<a[0]+a[2]&&a[1]<b[1]+b[3]&&b[1]<a[1]+a[3];
+  const volgorde=[...zicht].sort((a,b)=>(b.naam===actievePlek)-(a.naam===actievePlek)||((kaartType==="alle"||b.type===kaartType)-(kaartType==="alle"||a.type===kaartType))||a.km-b.km);
+  const labels={};
+  volgorde.forEach(p=>{const [x,y]=proj(p.lat,p.lon),fs=p.naam===actievePlek?15:12,w=p.naam.length*fs*.64,h=fs+4;
+    const opties=[[x+11,y+4,"start",[x+9,y-h/2,w,h]],[x-11,y+4,"end",[x-11-w,y-h/2,w,h]],[x,y-11,"middle",[x-w/2,y-11-h+3,w,h]],[x,y+19,"middle",[x-w/2,y+8,w,h]]];
+    const keuze=opties.find(o=>o[3][0]>2&&o[3][0]+o[3][2]<598&&!bezetVak.some(b=>raakt(b,o[3])));
+    if(keuze){bezetVak.push(keuze[3]);labels[p.naam]={x:keuze[0],y:keuze[1],a:keuze[2],fs,zicht:true}}
+    else labels[p.naam]={x:x+11,y:y+4,a:"start",fs,zicht:false}});
+  zicht.forEach(p=>{const [x,y]=proj(p.lat,p.lon);const uit=kaartType!=="alle"&&p.type!==kaartType,L=labels[p.naam];
+    s+=`<g class="pin ${actievePlek===p.naam?"actief":""}" data-naam="${esc(p.naam)}" opacity="${uit?.15:1}"><title>${esc(p.naam)} · ± ${Math.round(p.km)} km</title><circle class="punt" cx="${x}" cy="${y}" r="6.5" fill="${TYPES[p.type].k}" stroke="#fff" stroke-width="2.5"/><text x="${L.x}" y="${L.y}" text-anchor="${L.a}" font-size="${L.fs}" class="${L.zicht?"":"verborgen"}">${esc(p.naam)}</text></g>`});
+  s+=`<circle cx="${hx}" cy="${hy}" r="9" fill="var(--lavendel)" class="huispin"/><circle cx="${hx}" cy="${hy}" r="10" fill="#7d6fb3" stroke="#fff" stroke-width="3"/><text x="${hx}" y="${hy-18}" text-anchor="middle" font-family="Cormorant Garamond,Georgia" font-weight="700" font-size="20" fill="#7d6fb3" paint-order="stroke" stroke="#fff" stroke-width="4">${esc(HUIS.naam)}</text>`;
+  s+=`<g transform="translate(20 570)"><rect width="${schaalPx}" height="6" fill="#2b2a27"/><text y="-6" font-size="11" font-family="sans-serif" font-weight="700">${schaalKm} km</text></g><text x="580" y="590" text-anchor="end" font-size="10" fill="#6d665b" font-family="sans-serif">schematische kaart</text>`;
+  $("#kaartSvg").innerHTML=s;
+  $$("#kaartSvg .pin").forEach(g=>g.onclick=()=>kiesPlek(g.dataset.naam));
+}
+function tekenPlekken(){
+  $("#plekken").innerHTML=plekken.filter(p=>kaartType==="alle"||p.type===kaartType).map(p=>`<div class="plek ${actievePlek===p.naam?"actief":""}" data-naam="${esc(p.naam)}"><span class="stip" style="background:${TYPES[p.type].k}"></span><div><b>${esc(p.naam)}</b><p>${esc(p.tekst)}</p></div><div class="afstand">± ${Math.round(p.km)} km<br>± ${p.rij<60?p.rij+" min":Math.floor(p.rij/60)+" u "+String(p.rij%60).padStart(2,"0")}</div></div>`).join("");
+  $$("#plekken .plek").forEach(d=>d.onclick=()=>kiesPlek(d.dataset.naam));
+}
+function kiesPlek(n){actievePlek=actievePlek===n?null:n;const p=plekken.find(x=>x.naam===n);if(p&&p.km>=45&&zoomModus==="nabij")zetZoom("regio");else{tekenKaart();tekenPlekken()}
+  const d=$(`#plekken .plek[data-naam="${CSS.escape(n)}"]`);if(d&&innerWidth>900)d.scrollIntoView({block:"nearest",behavior:"smooth"})}
+function zetZoom(z){zoomModus=z;$$(".kaartvak .zoom button").forEach(b=>b.classList.toggle("actief",b.dataset.zoom===z));tekenKaart();tekenPlekken()}
+$$(".kaartvak .zoom button").forEach(b=>b.onclick=()=>zetZoom(b.dataset.zoom));
+$("#kaartFilters").innerHTML=`<button class="chip actief" data-t="alle">Alles</button>`+Object.entries(TYPES).filter(([t])=>plekken.some(p=>p.type===t)).map(([t,v])=>`<button class="chip" data-t="${t}"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${v.k};margin-right:6px"></span>${v.n}</button>`).join("");
+$$("#kaartFilters .chip").forEach(b=>b.onclick=()=>{kaartType=b.dataset.t;$$("#kaartFilters .chip").forEach(x=>x.classList.toggle("actief",x===b));tekenKaart();tekenPlekken()});
+tekenKaart();tekenPlekken();
+
+/* ---------- tarieven: één bron voor tijdlijn, klimaatkaart, kalender en aanvraag ---------- */
+const T=HUIS.tarieven,V=HUIS.verhuur;
+const euro=n=>"€ "+Math.round(n).toLocaleString("nl-BE");
+const PALET=["#9db86a","#e0703a","#d99a2b","#7d6fb3","#3d5f9e","#8e2f4f"];
+const kleurNaam={};T.periodes.forEach(p=>{if(!(p.naam in kleurNaam))kleurNaam[p.naam]=PALET[Object.keys(kleurNaam).length%PALET.length]});
+const periodes=T.periodes.map(p=>({...p,v:new Date(p.van+"T00:00"),t:new Date(p.tot+"T00:00"),kleur:kleurNaam[p.naam]})).sort((a,b)=>a.v-b.v);
+const periodeVan=d=>periodes.find(p=>d>=p.v&&d<p.t);
+const kortDatum=d=>d.toLocaleDateString("nl-BE",{day:"numeric",month:"long"});
+const verplicht=T.kosten.filter(k=>k.verplicht),optioneel=T.kosten.filter(k=>!k.verplicht);
+const vandaag=new Date();vandaag.setHours(0,0,0,0);
+
+/* ---------- het dorp ---------- */
+(function(){const D=HUIS.dorp;if(!D){$("#dorpGrid").remove();return}
+  const maps=`https://www.google.com/maps/search/?api=1&query=${H.lat},${H.lon}`,route=`https://www.google.com/maps/dir/?api=1&destination=${H.lat},${H.lon}`;
+  $("#dorpGrid").innerHTML=`<div class="dorp-kaart" id="dorpVerhaal"><h3>${icoon("wandelen")}Het dorp ${esc(HUIS.plaats)}</h3><div class="meer"><p>${esc(D.tekst)}</p></div><button class="linkknop" id="leesMeer">Lees meer ↓</button>
+     <div class="route"><a class="cta" target="_blank" rel="noopener" href="${route}">Route plannen</a><a class="cta donker" target="_blank" rel="noopener" href="${maps}">Open in Google Maps</a></div></div>
+   <div class="dorp-kaart"><h3>${icoon("keuken")}Winkelen</h3><ul>${D.winkelen.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+   <div class="dorp-kaart"><h3>${icoon("wijn")}Eten &amp; drinken</h3><ul>${D.etenDrinken.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`;
+  $("#leesMeer").onclick=function(){const o=$("#dorpVerhaal").classList.toggle("open");this.textContent=o?"Minder ↑":"Lees meer ↓"};
+})();
+
+/* ---------- klimaat ---------- */
+const K=HUIS.klimaat;const maandNamen=["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
+const periodesInMaand=m=>periodes.filter(p=>{for(let d=new Date(p.v);d<p.t;d.setDate(d.getDate()+7))if(d.getMonth()===m)return true;return false});
+let maand=new Date().getMonth();
+function tekenKlimaat(){
+  const w=600,h=300,l=34,b=40,bw=(w-l-10)/12,maxT=36;
+  const y=t=>h-b-(t/maxT)*(h-b-20);
+  let s=`${[0,10,20,30].map(t=>`<line x1="${l}" x2="${w}" y1="${y(t)}" y2="${y(t)}" stroke="var(--lijn)"/><text x="${l-6}" y="${y(t)+4}" text-anchor="end">${t}°</text>`).join("")}`;
+  K.maanden.forEach((m,i)=>{const x=l+i*bw+6,act=i===maand;
+    const kl=K.max[i]>=28?"#e0703a":K.max[i]>=20?"#e0a84f":K.max[i]>=14?"#9db86a":"#7fa7c9";
+    s+=`<g class="staaf" data-m="${i}" opacity="${act?1:.55}"><rect x="${x}" y="${y(K.max[i])}" width="${bw-12}" height="${y(K.min[i])-y(K.max[i])}" rx="${(bw-12)/2}" fill="${kl}"/><rect x="${x-6}" y="20" width="${bw}" height="${h-b-20}" fill="transparent"/>${act?`<text x="${x+(bw-12)/2}" y="${y(K.max[i])-8}" text-anchor="middle" style="fill:var(--tekst);font-size:13px">${K.max[i]}°</text>`:""}<text x="${x+(bw-12)/2}" y="${h-b+20}" text-anchor="middle" style="${act?"fill:var(--terra)":""}">${m}</text></g>`});
+  const zp=K.zonuren.map((z,i)=>`${l+i*bw+6+(bw-12)/2},${h-b-(z/400)*(h-b-20)}`).join(" ");
+  s+=`<polyline points="${zp}" fill="none" stroke="#f2b632" stroke-width="2.5" stroke-dasharray="5 4"/><text x="${w-6}" y="16" text-anchor="end" style="fill:#d79a12">- - zonuren</text>`;
+  $("#klimaatSvg").innerHTML=s;
+  $$("#klimaatSvg .staaf").forEach(g=>g.onclick=()=>zetMaand(+g.dataset.m));
+  const pm=periodesInMaand(maand);
+  const chip=pm.length?`<span class="seizoen" style="background:${pm[0].kleur}">${esc([...new Set(pm.map(p=>p.naam))].join(" / "))} · vanaf ${euro(Math.min(...pm.map(p=>p.prijsPerWeek)))} / week</span>`:`<span class="seizoen" style="background:var(--zacht)">Prijs: ${esc(T.overigePeriodes)}</span>`;
+  $("#maandKaart").innerHTML=`<div class="zon" style="transform:scale(${.5+K.zonuren[maand]/360})"></div>${chip}<h3 class="fade-in">${maandNamen[maand]}</h3>
+   <div class="stats"><div><b>${K.max[maand]}°</b><small>overdag</small></div><div><b>${K.min[maand]}°</b><small>'s nachts</small></div><div><b>${Math.round(K.zonuren[maand]/30)}u</b><small>zon per dag</small></div></div>
+   <p class="fade-in" style="font-family:var(--serif);font-size:1.35rem;font-style:italic;margin:0 0 16px">${esc(K.hoogtepunten[maand])}</p>
+   <button class="cta" id="maandBoek">Bekijk ${maandNamen[maand]} in de kalender →</button>`;
+  $("#maandBoek").onclick=()=>{let j=vandaag.getFullYear();if(maand<vandaag.getMonth())j++;naarKalender(new Date(j,maand,1))};
+  $("#maandSlider").value=maand;
+}
+const zetMaand=m=>{maand=m;tekenKlimaat()};
+$("#maandSlider").oninput=e=>zetMaand(+e.target.value);
+
+/* ---------- reviews ---------- */
+if(HUIS.reviews&&HUIS.reviews.length){
+  const gem=HUIS.reviews.reduce((a,r)=>a+r.score,0)/HUIS.reviews.length;
+  $("#reviewKop").innerHTML=`Gemiddeld <em style="color:var(--lavendel)">${gem.toLocaleString("nl",{maximumFractionDigits:1})}/10</em>`;
+  $("#reviewLijst").innerHTML=HUIS.reviews.map(r=>`<article class="review reveal"><div class="score" style="--p:${r.score*10}"><span>${r.score}/10</span></div><div class="sterren">${"★".repeat(Math.round(r.score/2))}${"☆".repeat(5-Math.round(r.score/2))}</div><blockquote>“${esc(r.tekst)}”</blockquote><div class="wie">${esc(r.naam)} uit ${esc(r.plaats)}<small>${esc(r.datum)}</small></div></article>`).join("");
+}else $("#reviews").remove();
+
+/* ---------- tarieven-sectie ---------- */
+const wisselTekst=`van ${V.wisseldagNaam} ${V.aankomst} tot ${V.wisseldagNaam} ${V.vertrek}`;
+$("#tariefLead").textContent=`Alle prijzen zijn per week; verhuur ${wisselTekst}. Klik op een periode om ze in de kalender te bekijken.`;
+$("#boekLead").textContent=`Verhuur per week, ${wisselTekst}. Klik op een week om ze te kiezen, klik op een latere week om je verblijf te verlengen.`;
+const jaren=[...new Set(periodes.map(p=>p.v.getFullYear()))];
+let tlJaar=jaren.includes(vandaag.getFullYear())?vandaag.getFullYear():jaren[jaren.length-1];
+function tekenTijdlijn(){
+  const j0=new Date(tlJaar,0,1),j1=new Date(tlJaar+1,0,1),pos=d=>Math.max(0,Math.min(100,(d-j0)/(j1-j0)*100));
+  const inJaar=periodes.filter(p=>p.t>j0&&p.v<j1);
+  $("#tijdlijn").innerHTML=`<div class="jaar">${jaren.length>1?`<button class="chip" data-j="-1">‹</button>`:"<span></span>"}<strong>Seizoenen ${tlJaar}</strong>${jaren.length>1?`<button class="chip" data-j="1">›</button>`:"<span></span>"}</div>
+   <div class="balk">${inJaar.map(p=>`<div class="blok" data-van="${p.van}" title="${esc(p.naam)}: ${euro(p.prijsPerWeek)} per week" style="left:${pos(p.v)}%;width:${pos(p.t)-pos(p.v)}%;background:${p.kleur}">${euro(p.prijsPerWeek)}</div>`).join("")}
+   ${vandaag>=j0&&vandaag<j1?`<div class="nu" style="left:${pos(vandaag)}%"></div>`:""}</div>
+   <div class="maanden">${K.maanden.map(m=>`<span>${m}</span>`).join("")}</div>`;
+  $$("#tijdlijn .blok").forEach(b=>b.onclick=()=>naarKalender(new Date(b.dataset.van+"T00:00")));
+  $$("#tijdlijn [data-j]").forEach(b=>b.onclick=()=>{const i=jaren.indexOf(tlJaar)+ +b.dataset.j;if(jaren[i]){tlJaar=jaren[i];tekenTijdlijn()}});
+}
+tekenTijdlijn();
+$("#tariefKaarten").innerHTML=periodes.map((p,i)=>`<div class="tarief reveal" style="--k:${p.kleur};transition-delay:${i*.07}s" data-van="${p.van}"><div class="naam">${esc(p.naam)}</div><div class="bedrag">${euro(p.prijsPerWeek)} <small>/ week</small></div><div class="wanneer">${kortDatum(p.v)} – ${kortDatum(p.t)} ${p.t.getFullYear()}</div></div>`).join("")
+  +`<div class="tarief reveal" style="--k:var(--zacht)"><div class="naam">Overige periodes</div><div class="bedrag" style="font-size:1.9rem">${esc(T.overigePeriodes)}</div><div class="wanneer">We bekijken het graag samen.</div></div>`;
+$$("#tariefKaarten .tarief[data-van]").forEach(c=>c.onclick=()=>naarKalender(new Date(c.dataset.van+"T00:00")));
+$("#kostenGrid").innerHTML=`<div class="dorp-kaart"><h3>${icoon("terras")}Inbegrepen</h3><ul>${T.inclusief.map(x=>`<li><span>✓ ${esc(x)}</span></li>`).join("")}</ul></div>
+ <div class="dorp-kaart"><h3>${icoon("wijn")}Bijkomend</h3><ul>${T.kosten.map(k=>`<li><span>${esc(k.naam)}${k.verplicht?"":" <em>(optioneel)</em>"}</span><b>${euro(k.bedrag)}</b></li>`).join("")}<li><span>Waarborg (wordt terugbetaald)</span><b>${euro(T.waarborg)}</b></li><li><span>${esc(T.verblijfstaks)}</span></li></ul></div>`;
+
+/* ---------- kalender + aanvraag (hele weken, wisseldag → wisseldag) ---------- */
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const plusDagen=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const wisseldagVan=d=>plusDagen(d,-((d.getDay()-V.wisseldag+7)%7));
+let kalStart=new Date(vandaag.getFullYear(),vandaag.getMonth(),1),aankomst=null,vertrek=null,personen=2,linnen=false,kalMelding="";
+const maxPers=(HUIS.kerncijfers.find(c=>c.icoon==="gasten")||{waarde:4}).waarde;
+const bezet=new Set();(HUIS.bezet||[]).forEach(b=>{for(let d=new Date(b.van+"T00:00");d<new Date(b.tot+"T00:00");d.setDate(d.getDate()+1))bezet.add(iso(d))});
+const vrij=(a,b)=>{for(let x=new Date(a);x<b;x.setDate(x.getDate()+1))if(bezet.has(iso(x)))return false;return true};
+const fmt=d=>d.toLocaleDateString("nl-BE",{weekday:"short",day:"numeric",month:"long",year:"numeric"});
+function naarKalender(d){kalStart=new Date(d.getFullYear(),d.getMonth(),1);if(kalStart<new Date(vandaag.getFullYear(),vandaag.getMonth(),1))kalStart=new Date(vandaag.getFullYear(),vandaag.getMonth(),1);tekenKalender();$("#boeken").scrollIntoView({behavior:"smooth"})}
+function tekenKalender(){
+  let html="";
+  for(let m=0;m<2;m++){const eerste=new Date(kalStart.getFullYear(),kalStart.getMonth()+m,1);
+    html+=`<div class="kal-maand"><h4>${eerste.toLocaleDateString("nl-BE",{month:"long",year:"numeric"})}</h4><div class="kal-dagen">${["ma","di","wo","do","vr","za","zo"].map(d=>`<span class="wd">${d}</span>`).join("")}`;
+    html+="<span></span>".repeat((eerste.getDay()+6)%7);
+    const dagen=new Date(eerste.getFullYear(),eerste.getMonth()+1,0).getDate();
+    for(let d=1;d<=dagen;d++){const dt=new Date(eerste.getFullYear(),eerste.getMonth(),d),k=iso(dt),p=periodeVan(dt);
+      const cls=[bezet.has(k)?"bezet":"",+dt===+vandaag?"vandaag":"",dt.getDay()===V.wisseldag?"wissel":"",aankomst&&+dt===+aankomst?"start":"",vertrek&&+dt===+vertrek?"eind":"",aankomst&&vertrek&&dt>aankomst&&dt<vertrek?"in":""].join(" ");
+      html+=`<button class="dag ${cls}" data-d="${k}" ${dt<vandaag||bezet.has(k)?"disabled":""} title="${p?esc(p.naam)+" · "+euro(p.prijsPerWeek)+"/week":"prijs "+esc(T.overigePeriodes)}" ${p?`style="box-shadow:inset 0 -3px 0 ${p.kleur}"`:""}>${d}</button>`}
+    html+="</div></div>"}
+  $("#kalMaanden").innerHTML=html;
+  $("#kalTitel").textContent=kalStart.toLocaleDateString("nl-BE",{year:"numeric"});
+  $$("#kalMaanden .dag:not(:disabled)").forEach(b=>b.onclick=()=>kiesDag(new Date(b.dataset.d+"T00:00")));
+  $("#kalVorige").disabled=kalStart<=new Date(vandaag.getFullYear(),vandaag.getMonth(),1);
+  updateAanvraag();
+}
+function kiesDag(d){
+  kalMelding="";
+  let w=wisseldagVan(d);if(w<vandaag)w=plusDagen(w,7);
+  if(aankomst&&vertrek&&w>=vertrek){                      // verlengen tot en met die week
+    const nieuw=plusDagen(w,7);
+    if(vrij(vertrek,nieuw))vertrek=nieuw;else kalMelding="Er zit een bezette periode tussen.";
+  }else if(aankomst&&+w===+aankomst&&vertrek-aankomst===7*864e5){aankomst=vertrek=null}
+  else{const e=plusDagen(w,7);if(vrij(w,e)){aankomst=w;vertrek=e}else kalMelding="Die week is (deels) bezet."}
+  tekenKalender();
+}
+$("#kalVorige").onclick=()=>{kalStart=new Date(kalStart.getFullYear(),kalStart.getMonth()-1,1);tekenKalender()};
+$("#kalVolgende").onclick=()=>{kalStart=new Date(kalStart.getFullYear(),kalStart.getMonth()+1,1);tekenKalender()};
+$("#pMin").onclick=()=>{personen=Math.max(1,personen-1);updateAanvraag()};
+$("#pPlus").onclick=()=>{personen=Math.min(maxPers,personen+1);updateAanvraag()};
+if(optioneel.length){$("#linnenTekst").textContent=`${optioneel[0].kort||optioneel[0].naam} (+ ${euro(optioneel[0].bedrag)})`;$("#aLinnen").onchange=e=>{linnen=e.target.checked;updateAanvraag()}}else $("#linnenOptie").remove();
+function updateAanvraag(){
+  $("#aAankomst").textContent=aankomst?`${fmt(aankomst)}, ${V.aankomst}`:"klik op een week";
+  $("#aVertrek").textContent=vertrek?`${fmt(vertrek)}, ${V.vertrek}`:"—";
+  $("#aPersonen").textContent=personen;
+  const weken=aankomst&&vertrek?Math.round((vertrek-aankomst)/(7*864e5)):0;
+  $("#aNachten").textContent=weken?`${weken} ${weken>1?"weken":"week"} (${weken*7} nachten)`:"—";
+  const groepen={};let onbekend=0,huur=0;
+  for(let i=0;i<weken;i++){const p=periodeVan(plusDagen(aankomst,i*7));if(!p){onbekend++;continue}huur+=p.prijsPerWeek;(groepen[p.naam]=groepen[p.naam]||{n:0,prijs:p.prijsPerWeek}).n++}
+  const extra=[...verplicht,...(linnen?optioneel.slice(0,1):[])];
+  $("#aSeizoen").textContent=weken?[...Object.keys(groepen),...(onbekend?["op aanvraag"]:[])].join(" + "):"—";
+  $("#aPrijsRegels").innerHTML=weken?Object.entries(groepen).map(([n,g])=>`<div class="regel sub"><span>${g.n} × ${esc(n)} à ${euro(g.prijs)}</span><span>${euro(g.n*g.prijs)}</span></div>`).join("")
+    +(onbekend?`<div class="regel sub"><span>${onbekend} × week buiten de tariefperiodes</span><span>${esc(T.overigePeriodes)}</span></div>`:"")
+    +extra.map(k=>`<div class="regel sub"><span>${esc(k.kort||k.naam)}</span><span>${euro(k.bedrag)}</span></div>`).join(""):"";
+  const totaal=huur+extra.reduce((a,k)=>a+k.bedrag,0);
+  $("#aPrijs").textContent=!weken?"—":onbekend===weken?"op aanvraag":onbekend?`${euro(totaal)} + ?`:euro(totaal);
+  $("#aKlein").textContent=weken?`Exclusief waarborg ${euro(T.waarborg)} (terugbetaald) en verblijfstaks.`:"";
+  $("#aMelding").textContent=kalMelding;
+  const ok=weken>0;
+  const groet=ingevuld(HUIS.contact.naam)?`Hallo ${HUIS.contact.naam}`:"Hallo";
+  const prijsZin=onbekend===weken?"":` Volgens de site komt dat op ${onbekend?"minstens ":""}${euro(totaal)}${onbekend?" (deels nog op aanvraag)":""}.`;
+  const bericht=ok?`${groet}, wij willen graag ${HUIS.naam} in ${HUIS.plaats} huren van ${fmt(aankomst)} tot ${fmt(vertrek)} (${weken} ${weken>1?"weken":"week"}) met ${personen} ${personen>1?"personen":"persoon"}${optioneel.length?(linnen?", graag met bed- en badlinnen":", zonder bed- en badlinnen"):""}.${prijsZin} Is het huisje dan vrij?`:"";
+  const tel=String(HUIS.contact.whatsapp||"").replace(/\D/g,"");
+  let k="";
+  if(ingevuld(HUIS.contact.whatsapp))k+=`<a class="cta groen" ${ok?"":"disabled"} target="_blank" rel="noopener" href="https://wa.me/${tel}?text=${encodeURIComponent(bericht)}">Vraag aan via WhatsApp</a>`;
+  if(ingevuld(HUIS.contact.email))k+=`<a class="cta" ${ok?"":"disabled"} href="mailto:${esc(HUIS.contact.email)}?subject=${encodeURIComponent("Aanvraag "+HUIS.naam)}&body=${encodeURIComponent(bericht)}">Vraag aan via e-mail</a>`;
+  k+=`<button class="cta donker" id="kopieer" ${ok?"":"disabled"}>Kopieer aanvraagbericht</button>`;
+  $("#aKnoppen").innerHTML=k;
+  const kb=$("#kopieer");kb.onclick=()=>{const klaar=()=>{kb.textContent="Gekopieerd ✓";setTimeout(()=>kb.textContent="Kopieer aanvraagbericht",2000)};
+    if(navigator.clipboard)navigator.clipboard.writeText(bericht).then(klaar,()=>prompt("Kopieer dit bericht:",bericht));else prompt("Kopieer dit bericht:",bericht)};
+}
+$("#seizoenLegenda").innerHTML=Object.entries(kleurNaam).map(([n,k])=>`<span><i style="background:${k}"></i>${esc(n)}</span>`).join(" ");
+tekenKlimaat();
+tekenKalender();
+
+/* ---------- FAQ ---------- */
+$("#faq").innerHTML=HUIS.huisinfo.map((q,i)=>`<details class="reveal" ${i?"":"open"}><summary>${esc(q.vraag)}</summary><p>${esc(q.antwoord)}</p></details>`).join("");
+$$("#faq details").forEach(d=>d.addEventListener("toggle",()=>{if(d.open)$$("#faq details").forEach(o=>{if(o!==d)o.open=false})}));
+
+observeer();
+})();
+</script>
+</body>
+</html>

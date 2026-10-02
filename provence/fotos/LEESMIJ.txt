@@ -1,0 +1,14 @@
+Zet hier jullie foto's met deze namen (jpg, png of webp mag; hoofdletters maakt niet uit):
+
+  1-gevel-terras.jpg    zonneterras met parasol onder de moerbeiboom
+  2-zwembad.jpg         het zwembad met de huisjes erachter  (ook de grote achtergrond bovenaan)
+  3-eethoek.jpg         houten eettafel met booglamp en trap
+  4-woonkamer.jpg       lederen zithoek, tv en airco
+  5-keuken.jpg          de open keuken
+  6-slaapkamer1.jpg     groot bed (180) met houten balk
+  7-badkamer.jpg        lavabo met spiegel en bamboeladder
+  8-slaapkamer2.jpg     bed (160) met blauw-wit dekbed
+  9-buitenkant.jpg      zijkant met oleanders en wijnvat
+
+Extra foto's met een andere naam komen automatisch mee in de galerij (categorie "Overig").
+Daarna:  python3 bouw.py

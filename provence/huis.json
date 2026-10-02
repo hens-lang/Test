@@ -1,0 +1,589 @@
+{
+  "_uitleg": "Dit is het ENIGE bestand met gegevens. Pas hier teksten, prijzen, contact en foto's aan en draai daarna: python3 bouw.py  -> dat maakt Sablet-VI.html (één bestand om te delen).",
+  "naam": "Sablet VI",
+  "ondertitel": "Jouw Provençaalse thuis aan de voet van de Mont Ventoux",
+  "plaats": "Sablet",
+  "regio": "Vaucluse · Provence · Frankrijk",
+  "coordinaten": {
+    "lat": 44.1897,
+    "lon": 5.0003
+  },
+  "intro": "Een moderne vakantiewoning voor maximaal 4 personen op een klein, omheind domein van 9 huisjes met een groot verwarmd gemeenschappelijk zwembad, in het hart van het Provençaalse wijndorpje Sablet, aan de voet van de Mont Ventoux.",
+  "kerncijfers": [
+    {
+      "icoon": "gasten",
+      "waarde": 4,
+      "label": "personen"
+    },
+    {
+      "icoon": "bed",
+      "waarde": 2,
+      "label": "slaapkamers"
+    },
+    {
+      "icoon": "zwembad",
+      "waarde": 16,
+      "label": "meter zwembad"
+    },
+    {
+      "icoon": "auto",
+      "waarde": 2,
+      "label": "parkeerplaatsen"
+    }
+  ],
+  "voorzieningen": [
+    {
+      "icoon": "zwembad",
+      "titel": "Verwarmd zwembad",
+      "tekst": "Groot gemeenschappelijk zwembad van 16 × 3,5 m in een mooi aangelegde tuin."
+    },
+    {
+      "icoon": "airco",
+      "titel": "Airco overal",
+      "tekst": "In de woonkamer én in beide slaapkamers."
+    },
+    {
+      "icoon": "keuken",
+      "titel": "Volledig uitgeruste keuken",
+      "tekst": "Vaatwasser, oven, combi-oven, kookplaat en Nespresso."
+    },
+    {
+      "icoon": "tv",
+      "titel": "Flatscreen tv",
+      "tekst": "Met TV Vlaanderen in de gezellige zithoek."
+    },
+    {
+      "icoon": "terras",
+      "titel": "Twee terrassen",
+      "tekst": "Zonneterras vooraan onder de moerbeiboom, en een terras achteraan."
+    },
+    {
+      "icoon": "fiets",
+      "titel": "Fietsen veilig gestald",
+      "tekst": "Tuinhuis in het achtertuintje — ideaal voor wie de Ventoux wil beklimmen."
+    },
+    {
+      "icoon": "was",
+      "titel": "Wasmachine",
+      "tekst": "In de aparte berging."
+    },
+    {
+      "icoon": "auto",
+      "titel": "2 eigen parkeerplaatsen",
+      "tekst": "Gereserveerd op het omheinde domein."
+    }
+  ],
+  "kamers": [
+    {
+      "id": "woon",
+      "verdieping": 0,
+      "naam": "Woonkamer & eethoek",
+      "tekst": "Modern ingerichte woonkamer met airco, lederen zithoek, flatscreen tv (TV Vlaanderen) en een grote houten eettafel. Openslaande deuren naar het terras.",
+      "x": 10,
+      "y": 10,
+      "b": 230,
+      "h": 170
+    },
+    {
+      "id": "keuken",
+      "verdieping": 0,
+      "naam": "Open keuken",
+      "tekst": "Volledig uitgerust: vaatwasser, oven, combi-oven, kookplaat en Nespresso-koffiezet.",
+      "x": 240,
+      "y": 10,
+      "b": 150,
+      "h": 110
+    },
+    {
+      "id": "wc0",
+      "verdieping": 0,
+      "naam": "Toilet",
+      "tekst": "Apart toilet op de benedenverdieping.",
+      "x": 240,
+      "y": 120,
+      "b": 70,
+      "h": 60
+    },
+    {
+      "id": "berging",
+      "verdieping": 0,
+      "naam": "Berging",
+      "tekst": "Berging met wasmachine.",
+      "x": 310,
+      "y": 120,
+      "b": 80,
+      "h": 60
+    },
+    {
+      "id": "terras",
+      "verdieping": 0,
+      "naam": "Zonneterras & tuintje",
+      "tekst": "Zonneterras en tuintje vooraan onder een moerbeiboom, plus een terras aan de achterkant met tuinhuis voor je fietsen.",
+      "x": 10,
+      "y": 195,
+      "b": 380,
+      "h": 80
+    },
+    {
+      "id": "zwembad",
+      "verdieping": 0,
+      "naam": "Gemeenschappelijk zwembad",
+      "tekst": "Groot verwarmd zwembad (16 × 3,5 m) in de mooi aangelegde gemeenschappelijke tuin.",
+      "x": 10,
+      "y": 290,
+      "b": 380,
+      "h": 90
+    },
+    {
+      "id": "slaap1",
+      "verdieping": 1,
+      "naam": "Slaapkamer 1",
+      "tekst": "Airco en tweepersoonsbed 180 × 200 met aparte eenpersoonsdekbedden. Natuurstenen vloer en houten balken.",
+      "x": 10,
+      "y": 10,
+      "b": 200,
+      "h": 170
+    },
+    {
+      "id": "slaap2",
+      "verdieping": 1,
+      "naam": "Slaapkamer 2",
+      "tekst": "Airco en tweepersoonsbed 160 × 200 met aparte eenpersoonsdekbedden.",
+      "x": 210,
+      "y": 10,
+      "b": 180,
+      "h": 170
+    },
+    {
+      "id": "bad",
+      "verdieping": 1,
+      "naam": "Badkamer",
+      "tekst": "Badkamer met douche en lavabo.",
+      "x": 10,
+      "y": 180,
+      "b": 200,
+      "h": 95
+    },
+    {
+      "id": "wc1",
+      "verdieping": 1,
+      "naam": "Toilet",
+      "tekst": "Apart toilet op de eerste verdieping.",
+      "x": 210,
+      "y": 180,
+      "b": 90,
+      "h": 95
+    },
+    {
+      "id": "overloop",
+      "verdieping": 1,
+      "naam": "Overloop & trap",
+      "tekst": "De trap komt uit in de woonkamer.",
+      "x": 300,
+      "y": 180,
+      "b": 90,
+      "h": 95
+    }
+  ],
+  "galerij": [
+    {
+      "bestand": "1-gevel-terras.jpg",
+      "titel": "Zonneterras onder de moerbeiboom",
+      "categorie": "Buiten",
+      "ruimte": "terras",
+      "stijl": "terras"
+    },
+    {
+      "bestand": "2-zwembad.jpg",
+      "titel": "Het verwarmde zwembad (16 × 3,5 m)",
+      "categorie": "Buiten",
+      "ruimte": "zwembad",
+      "stijl": "zwembad"
+    },
+    {
+      "bestand": "3-eethoek.jpg",
+      "titel": "Eethoek en woonkamer",
+      "categorie": "Binnen",
+      "ruimte": "woon",
+      "stijl": "interieur"
+    },
+    {
+      "bestand": "4-woonkamer.jpg",
+      "titel": "Zithoek met airco en tv",
+      "categorie": "Binnen",
+      "ruimte": "woon",
+      "stijl": "interieur"
+    },
+    {
+      "bestand": "5-keuken.jpg",
+      "titel": "De open keuken",
+      "categorie": "Binnen",
+      "ruimte": "keuken",
+      "stijl": "keuken"
+    },
+    {
+      "bestand": "6-slaapkamer1.jpg",
+      "titel": "Slaapkamer 1 — bed 180 × 200",
+      "categorie": "Binnen",
+      "ruimte": "slaap1",
+      "stijl": "slaapkamer"
+    },
+    {
+      "bestand": "7-badkamer.jpg",
+      "titel": "Badkamer",
+      "categorie": "Binnen",
+      "ruimte": "bad",
+      "stijl": "badkamer"
+    },
+    {
+      "bestand": "8-slaapkamer2.jpg",
+      "titel": "Slaapkamer 2 — bed 160 × 200",
+      "categorie": "Binnen",
+      "ruimte": "slaap2",
+      "stijl": "slaapkamer"
+    },
+    {
+      "bestand": "9-buitenkant.jpg",
+      "titel": "Het huisje met oleanders en wijnvat",
+      "categorie": "Buiten",
+      "ruimte": "terras",
+      "stijl": "gevel"
+    }
+  ],
+  "heroFoto": "2-zwembad.jpg",
+  "omgeving": [
+    {
+      "naam": "Séguret",
+      "lat": 44.2069,
+      "lon": 5.0225,
+      "type": "dorp",
+      "tekst": "Een van 'les plus beaux villages de France', tegen de rotsen aan gebouwd."
+    },
+    {
+      "naam": "Gigondas",
+      "lat": 44.1636,
+      "lon": 5.0058,
+      "type": "wijn",
+      "tekst": "Wereldberoemde rode wijn en wandelingen in de Dentelles de Montmirail."
+    },
+    {
+      "naam": "Dentelles de Montmirail",
+      "lat": 44.17,
+      "lon": 5.055,
+      "type": "natuur",
+      "tekst": "Grillige kalkrotsen als kantwerk: wandelen, klimmen, picknicken."
+    },
+    {
+      "naam": "Vacqueyras",
+      "lat": 44.1394,
+      "lon": 4.9844,
+      "type": "wijn",
+      "tekst": "Nog zo'n cru van de zuidelijke Rhône — proeven bij de domaines."
+    },
+    {
+      "naam": "Beaumes-de-Venise",
+      "lat": 44.1225,
+      "lon": 5.0303,
+      "type": "wijn",
+      "tekst": "Thuis van de zoete muscat — perfect als aperitief."
+    },
+    {
+      "naam": "Vaison-la-Romaine",
+      "lat": 44.2411,
+      "lon": 5.0747,
+      "type": "markt",
+      "tekst": "Romeinse ruïnes, middeleeuwse bovenstad en een van de mooiste markten van de Provence (dinsdag)."
+    },
+    {
+      "naam": "Mont Ventoux",
+      "lat": 44.1739,
+      "lon": 5.2786,
+      "type": "natuur",
+      "tekst": "'De kale berg' (1910 m). Legendarisch voor fietsers, adembenemend uitzicht."
+    },
+    {
+      "naam": "Orange",
+      "lat": 44.1381,
+      "lon": 4.8075,
+      "type": "cultuur",
+      "tekst": "Het best bewaarde Romeinse theater van Europa."
+    },
+    {
+      "naam": "Châteauneuf-du-Pape",
+      "lat": 44.0561,
+      "lon": 4.8325,
+      "type": "wijn",
+      "tekst": "Pauselijke burcht en de beroemdste wijn van de streek."
+    },
+    {
+      "naam": "Carpentras",
+      "lat": 44.0556,
+      "lon": 5.0481,
+      "type": "markt",
+      "tekst": "Grote vrijdagmarkt; in de winter de truffelmarkt."
+    },
+    {
+      "naam": "Avignon",
+      "lat": 43.9493,
+      "lon": 4.8055,
+      "type": "cultuur",
+      "tekst": "Pausenpaleis, de beroemde brug en in juli het theaterfestival."
+    },
+    {
+      "naam": "L'Isle-sur-la-Sorgue",
+      "lat": 43.9194,
+      "lon": 5.0514,
+      "type": "markt",
+      "tekst": "Venetië van de Provence: kanalen, waterraderen en de zondagse brocantemarkt."
+    },
+    {
+      "naam": "Gordes",
+      "lat": 43.9116,
+      "lon": 5.2003,
+      "type": "dorp",
+      "tekst": "Iconisch heuveldorp; vlakbij de lavendel van de abdij van Sénanque."
+    },
+    {
+      "naam": "Rasteau",
+      "lat": 44.2297,
+      "lon": 4.9861,
+      "type": "wijn",
+      "tekst": "Krachtige Côtes du Rhône-cru op een steenworp van Sablet."
+    },
+    {
+      "naam": "Vinsobres",
+      "lat": 44.3333,
+      "lon": 5.0622,
+      "type": "wijn",
+      "tekst": "Noordelijkste cru van de zuidelijke Rhône."
+    },
+    {
+      "naam": "Tavel",
+      "lat": 44.0128,
+      "lon": 4.6983,
+      "type": "wijn",
+      "tekst": "Dé rosé van Frankrijk."
+    },
+    {
+      "naam": "Nîmes",
+      "lat": 43.8367,
+      "lon": 4.3601,
+      "type": "cultuur",
+      "tekst": "Arena, Maison Carrée en het nabije Pont du Gard."
+    },
+    {
+      "naam": "Arles",
+      "lat": 43.6766,
+      "lon": 4.6278,
+      "type": "cultuur",
+      "tekst": "Van Gogh, Romeinse arena en de poort naar de Camargue."
+    },
+    {
+      "naam": "Camargue",
+      "lat": 43.55,
+      "lon": 4.45,
+      "type": "natuur",
+      "tekst": "Flamingo's, witte paarden en eindeloze moerassen."
+    },
+    {
+      "naam": "Marseille",
+      "lat": 43.2965,
+      "lon": 5.3698,
+      "type": "cultuur",
+      "tekst": "Oude haven, Mucem en de Calanques."
+    }
+  ],
+  "klimaat": {
+    "maanden": [
+      "jan",
+      "feb",
+      "mrt",
+      "apr",
+      "mei",
+      "jun",
+      "jul",
+      "aug",
+      "sep",
+      "okt",
+      "nov",
+      "dec"
+    ],
+    "max": [
+      11,
+      13,
+      16,
+      19,
+      23,
+      28,
+      31,
+      30,
+      26,
+      21,
+      15,
+      11
+    ],
+    "min": [
+      2,
+      2,
+      5,
+      8,
+      12,
+      16,
+      18,
+      18,
+      14,
+      10,
+      6,
+      3
+    ],
+    "zonuren": [
+      150,
+      160,
+      215,
+      240,
+      275,
+      320,
+      360,
+      320,
+      250,
+      190,
+      150,
+      140
+    ],
+    "hoogtepunten": [
+      "Truffelmarkten en stille dorpjes in de winterzon.",
+      "Amandelbloesem en heldere, koude dagen.",
+      "De lente begint: eerste terrasjes en wandelweer.",
+      "Alles bloeit; ideaal om te fietsen en wandelen.",
+      "Kersen van de Ventoux, groene wijngaarden, lange avonden.",
+      "Lavendel begint te bloeien, het zwembad lonkt.",
+      "Volle lavendel, krekels, 'La Journée du Livre' in Sablet en festivals in Avignon en Orange.",
+      "Zomerse hitte, avondmarkten en zwemmen tot zonsondergang.",
+      "De druivenoogst (vendanges): het hele dorp ruikt naar wijn.",
+      "Gouden wijngaarden en warme, rustige herfstdagen.",
+      "Olijvenoogst en nieuwe wijn bij de domaines.",
+      "Kerstmarkten en de 13 desserts van de Provence."
+    ]
+  },
+  "bezet": [],
+  "huisinfo": [
+    {
+      "vraag": "Aankomst en vertrek",
+      "antwoord": "Verhuur per week, van zondag 16:00 tot zondag 10:00."
+    },
+    {
+      "vraag": "Wat is inbegrepen?",
+      "antwoord": "Energiekosten (bij normaal verbruik) en draadloos internet. Extra: eindschoonmaak € 95, bed- en badlinnen € 100 per verblijf (optioneel), waarborg € 300 en verblijfstaks (>18 jaar) aan het tarief van de COPAVO."
+    },
+    {
+      "vraag": "Hoeveel personen?",
+      "antwoord": "Maximaal 4 personen, in twee slaapkamers met elk een tweepersoonsbed (180 en 160) met aparte eenpersoonsdekbedden."
+    },
+    {
+      "vraag": "Is het zwembad verwarmd?",
+      "antwoord": "Ja: een groot verwarmd gemeenschappelijk zwembad van 16 × 3,5 m in de mooi aangelegde tuin van het domein."
+    },
+    {
+      "vraag": "Huisdieren?",
+      "antwoord": "Huisdieren zijn helaas niet toegestaan."
+    },
+    {
+      "vraag": "Parkeren & fietsen",
+      "antwoord": "Twee gereserveerde parkeerplaatsen. Fietsen kun je veilig stallen in het tuinhuis in het achtertuintje."
+    },
+    {
+      "vraag": "Hoe kom ik er?",
+      "antwoord": "Met de auto via de A7 (afrit Orange of Bollène) en daarna nog ca. 30 minuten. Dichtstbijzijnde TGV-station: Avignon TGV; luchthavens in Avignon, Nîmes en Marseille."
+    },
+    {
+      "vraag": "Wat is er te doen?",
+      "antwoord": "Ideaal voor fietsers en wandelaars (Mont Ventoux, Dentelles de Montmirail), wijnliefhebbers (Châteauneuf-du-Pape, Gigondas, Vacqueyras, Beaumes-de-Venise, Rasteau, Tavel, Vinsobres…) en cultuur (Avignon, Orange, Vaison-la-Romaine). Nîmes, Arles, Marseille, de Camargue en zelfs de Côte d'Azur zijn prachtige daguitstappen."
+    },
+    {
+      "vraag": "Boodschappen",
+      "antwoord": "In Sablet zelf: bakkers, slager, apotheek, bloemenwinkel, krantenwinkel en een superette. Grote supermarkten (Intermarché, Super U, Lidl, Aldi) in Vaison-la-Romaine op 10 km — en ga zeker naar de markt daar op dinsdag!"
+    }
+  ],
+  "contact": {
+    "naam": "VUL_IN",
+    "whatsapp": "VUL_IN",
+    "email": "VUL_IN"
+  },
+  "referentie": "MG133",
+  "reviews": [
+    {
+      "naam": "I. Z.",
+      "plaats": "Herzele",
+      "datum": "augustus 2024",
+      "score": 9,
+      "tekst": "Prachtig gelegen vakantiehuisje met alles op en aan. Zeer net. Airco is een troef. Genoten van een mooie vakantie. Een aanrader voor jong en oud!"
+    },
+    {
+      "naam": "S. D.",
+      "plaats": "Lembeek",
+      "datum": "juli 2024",
+      "score": 9,
+      "tekst": "Schitterende vakantie beleefd in deze woning. Mooie tuin met leuke, gezellige terrassen, airco in beide slaapkamers, goed uitgeruste keuken, aparte wc's, gezellig zwembad,...!"
+    }
+  ],
+  "verhuur": {
+    "wisseldag": 0,
+    "wisseldagNaam": "zondag",
+    "aankomst": "16:00",
+    "vertrek": "10:00"
+  },
+  "tarieven": {
+    "_uitleg": "Prijzen per week (zondag tot zondag). 'tot' is de vertrekzondag van de laatste week. Voeg hier gerust nieuwe periodes (bv. 2027) aan toe.",
+    "periodes": [
+      {
+        "naam": "Voorseizoen",
+        "van": "2026-05-03",
+        "tot": "2026-06-28",
+        "prijsPerWeek": 975
+      },
+      {
+        "naam": "Hoogseizoen",
+        "van": "2026-06-28",
+        "tot": "2026-08-30",
+        "prijsPerWeek": 1245
+      },
+      {
+        "naam": "Naseizoen",
+        "van": "2026-08-30",
+        "tot": "2026-09-27",
+        "prijsPerWeek": 975
+      }
+    ],
+    "overigePeriodes": "contacteer ons",
+    "inclusief": [
+      "Energiekosten (bij normaal verbruik)",
+      "Draadloos internet"
+    ],
+    "kosten": [
+      {
+        "naam": "Eindschoonmaak",
+        "bedrag": 95,
+        "verplicht": true
+      },
+      {
+        "naam": "Bed- en badlinnen (opgemaakte bedden, handdoeken, badmat, keukenhanddoeken)",
+        "kort": "Bed- en badlinnen",
+        "bedrag": 100,
+        "verplicht": false
+      }
+    ],
+    "waarborg": 300,
+    "verblijfstaks": "Verblijfstaks (taxe de séjour) voor personen ouder dan 18 jaar, aan het geldende tarief van de COPAVO."
+  },
+  "dorp": {
+    "tekst": "Het charmante Provençaalse wijndorpje Sablet was in de middeleeuwen een versterkt dorp. De graven van Toulouse lieten er een kasteel bouwen, omringd door wallen en poorten. Naast de burchtruïne is de 12de-eeuwse kerk de blikvanger. In juli zorgt 'La Journée du Livre' voor een grote volkstoeloop: je ontmoet er schrijvers, boekhandelaars en boekbinders, en de wijnbouwers bottelen een speciale cuvée voor de gelegenheid. De appellation 'Sablet' grenst aan Gigondas en de Dentelles de Montmirail; sinds 1974 is het dorp geclassificeerd als Côtes du Rhône Villages Sablet.",
+    "winkelen": [
+      "Verschillende bakkers, slager, apotheek, bloemenwinkel, kappers, krantenwinkel en superette in het centrum van het dorp",
+      "Grote supermarkten (Intermarché, Super U, Lidl, Aldi) in Vaison-la-Romaine (10 km)"
+    ],
+    "etenDrinken": [
+      "Café en restaurant in het centrum van Sablet",
+      "Verschillende restaurants, bistro's en cafés in Vaison-la-Romaine (10 km)"
+    ]
+  }
+}
