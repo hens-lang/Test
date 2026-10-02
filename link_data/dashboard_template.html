@@ -974,6 +974,17 @@ function naPeilMelding() {
   const tot = Object.values(b).sort().pop(), res = na.resultaten || {}, nRes = Object.values(res).reduce((a, v) => a + v, 0);
   return `<div class="melding"><b>Alles telt tot en met ${dmy(M.peildatum)}</b>, de laatste dag met uren. Er zijn al belexports tot ${dmy(tot)} (${num(na.belregels)} belregels, ${num(nRes)} resultaten${nRes ? ": " + Object.entries(res).map(([k, v]) => `${esc(k)} ${v}`).join(", ") : ""}). Die tellen mee zodra <b>PayableHoursPerDay t/m ${dmy(tot)}</b> in de inbox staat; dan schuiven resultaten, uren, kosten en opbrengst samen op.</div>` + vwT + hmT;
 }
+// Aansluiting met de facturatie (Twinfield): gefactureerd op factuurdatum = verdiend + vooruitgefactureerd
+function omzetAansluiting(ki) {
+  const A = (D.dq.omzet_aansluiting || []).filter(r => ki == null || r.klant === D.klanten[ki].naam);
+  if (!A.length) return "";
+  const T = A.reduce((t, r) => ({g: t.g + r.gefactureerd, v: t.v + r.verdiend, x: t.x + r.vooruit, c: t.c + r.concept}), {g: 0, v: 0, x: 0, c: 0});
+  const rij = (n, r, b) => `<tr${b ? ' style="font-weight:700"' : ""}><td class="l">${n}</td><td>${eurT(r.g)}</td><td>${eurT(r.v)}</td><td>${eurT(r.x)}</td><td class="vs">${r.c ? eurT(r.c) : "-"}</td></tr>`;
+  const regels = ki == null ? A.filter(r => Math.abs(r.vooruit) > 1 || r.concept).map(r => rij(esc(r.klant), {g: r.gefactureerd, v: r.verdiend, x: r.vooruit, c: r.concept})).join("") : "";
+  return `<details class="kaart" style="margin-top:12px"${ki == null ? "" : " open"}><summary style="cursor:pointer"><b>Aansluiting met de facturatie (Twinfield)</b> <span class="vs">gefactureerd t/m ${dmy(M.peildatum)} ${eurT(T.g)} = verdiend ${eurT(T.v)} + vooruitgefactureerd ${eurT(T.x)}</span></summary>
+    <p class="uitleg" style="margin:8px 0">Twinfield telt een factuur volledig op de factuurdatum. Het dashboard telt hem als <b>verdiend</b> over de werkdagen van de periode die hij dekt, tot de peildatum. Wat al gefactureerd is voor werk na ${dmy(M.peildatum)} staat onder vooruitgefactureerd. Concepten (nog te versturen) tellen nergens mee.</p>
+    <div class="tabelwrap"><table><thead><tr><th class="l">Opdrachtgever</th><th>Gefactureerd</th><th>Verdiend</th><th>Vooruit</th><th>Concept</th></tr></thead><tbody>${regels}${rij(ki == null ? "Totaal" : esc(D.klanten[ki].naam), {g: T.g, v: T.v, x: T.x, c: T.c}, true)}</tbody></table></div></details>`;
+}
 function renderStuur() {
   const R = stuurRegels(), tot = marge4(null);
   const metT = R.filter(r => r.t && r.t.target), opT = metT.filter(r => r.t.stoplicht === "groen").length;
@@ -1004,7 +1015,7 @@ function renderStuur() {
     <div class="kaart tabelwrap" style="margin-top:12px"><h3>Opdrachtgevers</h3><table class="stapel"><thead><tr><th class="l">Opdrachtgever</th><th class="l">Target werkperiode</th><th>Marge per 4 weken</th><th>Uren per beldag</th><th>Resultaten per beldag</th><th class="l">Wat moet er gebeuren</th></tr></thead>
     <tbody>${rijen}</tbody><tfoot>
       ${Math.abs(rest.opbr) > 1 || Math.abs(rest.kosten) > 1 ? `<tr><td class="l vs">Overig (gestopt, niet toegerekend)</td><td></td><td class="vs">${eurT(rest.opbr - rest.kosten)}</td><td colspan="3"></td></tr>` : ""}
-      <tr style="font-weight:700;border-top:2px solid var(--rand)"><td class="l">Onder de streep</td><td></td><td><span class="${tot.marge >= 0 ? "pos" : "neg"}">${eurT(tot.marge)}</span><div class="vs">${tot.pct != null ? pct(tot.pct) : "-"} van ${eurT(tot.opbr)}</div></td><td colspan="3"></td></tr></tfoot></table></div>`;
+      <tr style="font-weight:700;border-top:2px solid var(--rand)"><td class="l">Onder de streep</td><td></td><td><span class="${tot.marge >= 0 ? "pos" : "neg"}">${eurT(tot.marge)}</span><div class="vs">${tot.pct != null ? pct(tot.pct) : "-"} van ${eurT(tot.opbr)}</div></td><td colspan="3"></td></tr></tfoot></table></div>` + omzetAansluiting(null);
   document.querySelectorAll("#stInhoud tr[data-k]").forEach(tr => tr.onclick = () => { S.k = +tr.dataset.k; document.getElementById("fKlant").value = String(S.k); openTab("klant"); });
 }
 function renderKlant() {
@@ -1043,7 +1054,7 @@ function renderKlant() {
       <div class="kaart tabelwrap"><h3>Werkperiodes</h3>${wpT}
         <h3 style="margin-top:16px">Bellers, laatste ${NS.weken} weken</h3>${belT ? `<table><thead><tr><th class="l">Beller</th><th>Uren</th><th>Resultaten</th><th>Uren per res.</th><th>Pog./uur</th></tr></thead><tbody>${belT}</tbody></table><p class="uitleg" style="margin:6px 0 0">Uren per resultaat: max. ${n1(x.moet.upr)}.</p>` : "<p class='uitleg'>Geen uren in deze periode.</p>"}</div>
     </div>
-    <h2>Beldagen, laatste ${NS.weken} weken</h2>${bd ? bd.kaart : "<p class='uitleg'>Geen beldagen in de laatste weken.</p>"}`;
+    <h2>Beldagen, laatste ${NS.weken} weken</h2>${bd ? bd.kaart : "<p class='uitleg'>Geen beldagen in de laatste weken.</p>"}` + omzetAansluiting(x.i);
 }
 
 // ---------- tab: periodes

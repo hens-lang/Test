@@ -228,3 +228,18 @@ def test_handmatig_resultaat_vervalt_als_export_hem_bevat(pipeline):
         assert m2.contacten["is_resultaat"].sum() == m.contacten["is_resultaat"].sum() + 1
     finally:
         cfg.handmatig = []
+
+
+def test_dashboard_javascript_is_geldig(pipeline, tmp_path):
+    """Het dashboardscript moet parsen; een syntaxfout maakt alle tabbladen leeg."""
+    import shutil as sh
+    import subprocess
+    if not sh.which("node"):
+        pytest.skip("node niet beschikbaar")
+    from build_dashboard import bouw_dashboard
+    con, inbox, exports, cfg, m = pipeline
+    html = bouw_dashboard(m, cfg, tmp_path / "index.html").read_text(encoding="utf-8")
+    js = tmp_path / "dashboard.js"
+    js.write_text(html.split("<script>")[-1].split("</script>")[0], encoding="utf-8")
+    r = subprocess.run(["node", "--check", str(js)], capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr

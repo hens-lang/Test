@@ -729,6 +729,18 @@ def _dq_verkoop(cfg, verkoop, contacten, peildatum, opbrengst) -> dict:
             "eerste": str(g["factuurdatum"].min()) if len(g) else "-",
             "laatste": str(g["factuurdatum"].max()) if len(g) else "-",
             "klant": (g["klant"].iloc[0] if len(g) else k) or "niet gekoppeld"})
+    # Aansluiting met de facturatie (Twinfield): gefactureerd op factuurdatum tegenover verdiend in het dashboard
+    # (factuur verdeeld over de werkdagen van zijn periode). Het verschil is vooruitgefactureerd werk.
+    pd_ = pd.Timestamp(peildatum)
+    fd = pd.to_datetime(verstuurd["factuurdatum"])
+    gef = verstuurd[fd <= pd_].groupby("klant")["bedrag_excl"].sum()
+    con = verkoop[verkoop["status"] == "te_versturen"].groupby("klant")["bedrag_excl"].sum()
+    ver = (opbrengst.loc[opbrengst["gefactureerd"].astype(bool)].assign(t=lambda o: o["fee"] + o["leads_eur"])
+           .groupby("klant")["t"].sum()) if len(opbrengst) else pd.Series(dtype=float)
+    dq["omzet_aansluiting"] = [
+        {"klant": k, "gefactureerd": round(float(gef.get(k, 0)), 2), "verdiend": round(float(ver.get(k, 0)), 2),
+         "vooruit": round(float(gef.get(k, 0) - ver.get(k, 0)), 2), "concept": round(float(con.get(k, 0)), 2)}
+        for k in sorted(set(gef.index) | set(ver.index) | set(con.index))]
     # Verstreken werkperiodes zonder verkoopfactuur (mogelijk niet gefactureerd)
     zonder = []
     verschil = []
