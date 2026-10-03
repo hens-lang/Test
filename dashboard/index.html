@@ -223,6 +223,19 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); outline
 .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 0 16px 12px; }
 .toolbar select, .toolbar input { width: auto; }
 .muted { color: var(--muted); }
+.briefs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr)); gap: 16px; margin-bottom: 20px; align-items: start; }
+.brief .card-body { display: grid; gap: 12px; }
+.blk { border-left: 4px solid var(--pc, var(--faint)); background: var(--surface-2); border-radius: 0 8px 8px 0; padding: 10px 12px; font-size: 13px; }
+.blk-h { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 14px; }
+.blk-doel { margin-left: auto; color: var(--muted); font-size: 12.5px; }
+.blk p { margin: 6px 0 0; } .blk ul, .fb ul { margin: 2px 0 0; padding-left: 18px; display: grid; gap: 2px; }
+.fb { border-top: 1px solid var(--line); padding-top: 10px; font-size: 13px; }
+.fb h3 { font-size: 14px; margin: 0 0 6px; }
+.fb-cijfers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-bottom: 6px; }
+.fb-cijfers div { font-size: 11.5px; color: var(--muted); } .fb-cijfers b { display: block; font-size: 16px; color: var(--fg); font-variant-numeric: tabular-nums; }
+.fb-hens { background: var(--info-bg); border-radius: 8px; padding: 6px 10px; margin-top: 8px; } .fb-hens p { margin: 2px 0; }
+.fb-add { display: flex; gap: 8px; margin-top: 8px; } .fb-add input { flex: 1; }
+@media (max-width: 560px) { .fb-cijfers { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .bt { display: grid; grid-template-columns: 64px 1fr 36px minmax(0, 150px); gap: 8px; align-items: center; font-size: 12.5px; padding: 3px 0; font-variant-numeric: tabular-nums; }
 .bt b { text-align: right; } .bt .bar-mini { height: 8px; }
 .bt-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 4px 24px; margin-bottom: 14px; }
@@ -264,8 +277,8 @@ tr.detail td { background: var(--surface-2); }
    zzp ← diensten.zzpId, facturen(inkoop).partijId, resultaten.perAgent[*].zzpId
    diensten → factuurVerkoopId / factuurInkoopId (voorkomt dubbel factureren)
    ====================================================================== */
-const COLL = ['klanten', 'projecten', 'zzp', 'diensten', 'facturen', 'resultaten', 'dagstart', 'sync'];
-const S = { klanten: {}, projecten: {}, zzp: {}, diensten: {}, facturen: {}, resultaten: {}, dagstart: {}, sync: {}, loaded: new Set() };
+const COLL = ['klanten', 'projecten', 'zzp', 'diensten', 'facturen', 'resultaten', 'dagstart', 'sync', 'feedback'];
+const S = { klanten: {}, projecten: {}, zzp: {}, diensten: {}, facturen: {}, resultaten: {}, dagstart: {}, sync: {}, feedback: {}, loaded: new Set() };
 const UI = { tab: 'overzicht', weekStart: mondayOf(new Date()), factSoort: 'verkoop', factStatus: 'alle', projFilter: 'actief', dsOpen: new Set(), beheer: 'opdrachtgevers', toonAlles: false };
 let store = null;
 let downloads = null;
@@ -1253,9 +1266,9 @@ function vDagstart() {
   const note = S.dagstart[refI]?.notitie || '';
   return '<div class="page-head"><div><div class="eyebrow">Dagstart · ' + esc(fmtD(refI, true)) + ' · week ' + wk.week + (isToday ? '' : ' (eerstvolgende werkdag)') + '</div><h1>Wat moet er <span class="serif">deze week gebeuren?</span></h1></div><div class="actions"><button class="btn primary" data-act="newdienst:' + refI + '">Inplannen</button></div></div>'
     + '<section class="kpis k4">' + kpis.map(k => '<div class="kpi' + (k.hl ? ' hl' : '') + '"><div class="lbl">' + esc(k.lbl) + '</div><div class="val">' + esc(k.val) + '</div><div class="foot' + (k.bad ? ' bad' : '') + '">' + esc(k.foot) + '</div></div>').join('') + '</section>'
+    + '<h2 style="margin:4px 0 10px;font-size:17px">Briefing per beller</h2>' + briefingHtml(refI, plans)
     + '<section class="card" style="margin-bottom:16px"><div class="card-head"><h2>Per opdrachtgever</h2><span class="sub">klik op een regel voor de verdeling over bellers</span></div><div class="tbl-wrap"><table class="ov"><thead><tr><th></th><th>Opdrachtgever · werkperiode</th><th class="n">Nodig wk</th><th class="n">Gehaald</th><th class="n">Ingepland</th><th class="n">Verwacht</th><th>Actie</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div></section>'
-    + '<div class="grid2"><section class="card"><div class="card-head"><h2>Briefing ' + (isToday ? 'vandaag' : fmtD(refI)) + '</h2></div>' + briefing + '</section>'
-    + '<section class="card"><div class="card-head"><h2>Afspraken uit de dagstart</h2><span class="sub">' + (S.dagstart[refI]?.gewijzigd ? 'opgeslagen ' + new Date(S.dagstart[refI].gewijzigd).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' }) : '') + '</span></div><div class="card-body"><textarea id="ds-note" data-date="' + refI + '" aria-label="Afspraken uit de dagstart" placeholder="Wie belt extra, welke lijsten gaan open…" style="min-height:110px">' + esc(note) + '</textarea></div></section></div>';
+    + '<section class="card"><div class="card-head"><h2>Afspraken uit de dagstart</h2><span class="sub">' + (S.dagstart[refI]?.gewijzigd ? 'opgeslagen ' + new Date(S.dagstart[refI].gewijzigd).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' }) : '') + '</span></div><div class="card-body"><textarea id="ds-note" data-date="' + refI + '" aria-label="Afspraken uit de dagstart" placeholder="Wie belt extra, welke lijsten gaan open…" style="min-height:110px">' + esc(note) + '</textarea></div></section>';
 }
 function dagstartDetail(p, x) {
   const tbl = x.bellers.length ? '<table><thead><tr><th>Beller</th><th>Vandaag</th><th class="n">Uren rest wk</th><th class="n">Tempo/u</th><th class="n">Aandeel</th><th class="n">Doel dag</th><th class="n">Pogingen dag</th></tr></thead><tbody>'
@@ -1272,6 +1285,101 @@ async function saveDagstart() {
   if (await save('dagstart', d, { notitie: el.value, gewijzigd: new Date().toISOString() })) toast('Dagstart opgeslagen');
 }
 
+/* ======================================================================
+   BRIEFING PER BELLER — wat moet er vandaag gebeuren, hoe halen we dat, feedback
+   ====================================================================== */
+function bellerStats(zid, weken = 4) {
+  const vanaf = iso(addDays(mondayOf(new Date()), -7 * (weken - 1) - 7));
+  const agg = { pog: 0, regels: 0, gesproken: 0, res: 0 };
+  const team = { pog: 0, regels: 0, gesproken: 0, res: 0 };
+  list('resultaten').filter(r => iso(weekMonday(r.jaar, r.week)) >= vanaf).forEach(r => Object.values(r.perAgent || {}).forEach(a => {
+    const res = telt(r.projectId, a);
+    for (const t of a.zzpId === zid ? [agg, team] : [team]) { t.pog += num(a.pogingen); t.regels += num(a.regels); t.gesproken += num(a.gesproken); t.res += res; }
+  }));
+  const urenB = dienstenVan(d => d.zzpId === zid && d.status === 'gewerkt' && d.datum >= vanaf).reduce((a, d) => a + uren(d), 0);
+  const f = t => ({ ...t, gesprPct: t.regels ? 100 * t.gesproken / t.regels : 0, per100: t.pog ? 100 * t.res / t.pog : 0, perGespr: t.gesproken ? 100 * t.res / t.gesproken : 0 });
+  return { b: f(agg), t: f(team), uren: urenB, vanaf };
+}
+function bellerTips(s) {
+  const tips = [];
+  if (s.b.regels < 40) { tips.push('Nog te weinig gesprekken in de laatste weken voor harde feedback. Focus op volume: minimaal 15 pogingen per uur.'); return tips; }
+  if (s.b.per100 >= s.t.per100 * 1.1) tips.push('Sterk: ' + nf(s.b.per100, 1) + ' resultaten per 100 pogingen, team ' + nf(s.t.per100, 1) + '. Houd deze aanpak vast en deel wat werkt in de dagstart.');
+  if (s.b.gesprPct < s.t.gesprPct - 8) tips.push('Je spreekt minder beslissers dan het team (' + nf(s.b.gesprPct) + '% tegen ' + nf(s.t.gesprPct) + '%). Vraag bij de receptie direct naar de naam en vaste werkdagen van de beslisser en bel dan gericht terug.');
+  if (s.b.perGespr < s.t.perGespr * 0.7 && s.b.gesproken >= 20) tips.push('Veel gesprekken, weinig resultaat (' + nf(s.b.perGespr, 1) + '% van de gesprekken tegen ' + nf(s.t.perGespr, 1) + '%). Sluit elk goed gesprek af met een concreet voorstel: "Zal ik dinsdag 10:00 of donderdag 14:00 inplannen?", in plaats van alleen info te mailen.');
+  if (s.uren >= 6) { const pu = s.b.res / s.uren; tips.push(pu >= 1 / 3 ? 'Norm gehaald: ' + nf(pu * 3, 1) + ' resultaat per blok van 3 uur (norm 1).' : 'Onder de norm: ' + nf(pu * 3, 1) + ' resultaat per blok van 3 uur (norm 1). Pak de warmste terugbelafspraken eerst.'); }
+  if (!tips.length) tips.push('In lijn met het team. Doel vandaag: één resultaat per blok van 3 uur.');
+  return tips;
+}
+function briefingData(zid, refI, plans) {
+  const ds = sortBy(dienstenVan(d => d.zzpId === zid && d.datum === refI && d.status !== 'afgemeld'), d => d.start);
+  const blokken = ds.map(d => {
+    const p = d.projectId ? { id: d.projectId, ...project(d.projectId) } : null;
+    const q = p && plans.find(q => q.p.id === p.id);
+    const b = q?.x.bellers.find(b => b.zid === zid);
+    const aandeel = b && b.vandaag ? uren(d) / b.vandaag : 1;
+    return { d, p, q, doel: b ? b.doelVandaag * aandeel : 0, pog: b?.pogVandaag ? b.pogVandaag * aandeel : null };
+  });
+  return { ds, blokken, doel: blokken.reduce((a, x) => a + x.doel, 0), stats: bellerStats(zid) };
+}
+function briefingTekst(zid, refI, bd) {
+  const z = zzp(zid); const r = [];
+  r.push('Dagstart ' + fmtD(refI) + ' · ' + (z?.naam || ''));
+  r.push('Doel vandaag: ' + nf(bd.doel, 1) + ' afspraken/leads.');
+  bd.blokken.forEach(x => {
+    if (!x.p) { r.push(''); r.push(x.d.start + '–' + x.d.eind + ': opdrachtgever volgt.'); return; }
+    const pp = x.q?.pp; const ins = x.p.inzicht;
+    r.push(''); r.push(x.d.start + '–' + x.d.eind + ' · ' + (klant(x.p.klantId)?.naam || x.p.naam) + ' · doel ' + nf(x.doel, 1) + (x.pog ? ' (±' + Math.round(x.pog) + ' pogingen)' : ''));
+    if (pp && !pp.nogNiet) r.push('Stand: ' + nf(pp.gehaald) + ' van ' + nf(pp.target, pp.target % 1 ? 1 : 0) + ', nog ' + nf(pp.nog, pp.nog % 1 ? 1 : 0) + ' tot ' + fmtD(pp.tot) + '.');
+    if (x.p.belinstructie) r.push('Pitch: ' + x.p.belinstructie);
+    if (x.p.beltijd?.besteBlok) r.push('Beste tijd: ' + beltijdKort(x.p) + '.');
+    (ins?.focus || []).slice(0, 2).forEach(f => r.push('• ' + f));
+    if (ins?.hoorden?.[0]) r.push('Wat werkt: ' + ins.hoorden[0]);
+  });
+  const tips = bellerTips(bd.stats); r.push(''); r.push('Feedback: ' + tips.join(' '));
+  const fb = (S.feedback[zid]?.items || [])[0]; if (fb) r.push('Van Hens: ' + fb.tekst);
+  return r.join('\n');
+}
+function briefingHtml(refI, plans) {
+  const zids = [...new Set(dienstenVan(d => d.datum === refI && d.status !== 'afgemeld').map(d => d.zzpId))];
+  if (!zids.length) return '<section class="card" style="margin-bottom:16px"><p class="empty">Niemand ingepland op ' + fmtD(refI) + '. <button class="link" data-act="newdienst:' + refI + '">Inplannen</button> of <button class="link" data-act="tab:planning:' + refI + '">open de planning</button>.</p></section>';
+  return '<div class="briefs">' + sortBy(zids, z => zzp(z)?.naam || '').map(zid => {
+    const z = zzp(zid), bd = briefingData(zid, refI, plans), s = bd.stats;
+    const blok = bd.blokken.map(x => {
+      if (!x.p) return '<div class="blk"><div class="blk-h"><b>' + esc(x.d.start) + '–' + esc(x.d.eind) + '</b> <span class="pill warn">opdrachtgever nog kiezen</span> <button class="link" data-act="dienst:' + x.d.id + '">indelen</button></div></div>';
+      const pp = x.q?.pp, ins = x.p.inzicht, sl = pp ? (pp.nogNiet ? 'grijs' : pp.stoplicht) : 'grijs';
+      const buitenTijd = x.p.beltijd?.besteBlok && !(mins(x.d.start) < mins(x.p.beltijd.besteBlok.split('-')[1] + ':00') && mins(x.d.eind) > mins(x.p.beltijd.besteBlok.split('-')[0] + ':00'));
+      return '<div class="blk" style="--pc:' + projColor(x.p.id) + '"><div class="blk-h"><b>' + esc(x.d.start) + '–' + esc(x.d.eind) + '</b> <span class="sl ' + sl + '"></span> <b>' + esc(klant(x.p.klantId)?.naam || x.p.naam) + '</b><span class="blk-doel">doel <b>' + nf(x.doel, 1) + '</b>' + (x.pog ? ' · ±' + Math.round(x.pog) + ' pogingen' : '') + '</span></div>'
+        + (pp && !pp.nogNiet ? '<div class="meta">WP ' + pp.nr + ': ' + nf(pp.gehaald) + ' van ' + nf(pp.target, pp.target % 1 ? 1 : 0) + ' (' + esc(codeRegel(x.p, pp)) + '), nog ' + nf(pp.nog, pp.nog % 1 ? 1 : 0) + ' tot ' + fmtD(pp.tot) + '</div>' : '')
+        + (x.p.belinstructie ? '<p><b>Pitch:</b> ' + esc(x.p.belinstructie) + '</p>' : '')
+        + (x.p.beltijd?.besteBlok ? '<p><b>Beste tijd:</b> ' + esc(beltijdKort(x.p)) + (buitenTijd ? ' <span class="pill warn">dit blok valt erbuiten</span>' : '') + '</p>' : '')
+        + (ins?.focus?.length ? '<p><b>Focus:</b></p><ul>' + ins.focus.map(f => '<li>' + esc(f) + '</li>').join('') + '</ul>' : '')
+        + (ins?.hoorden?.length ? '<p><b>Wat werkt:</b></p><ul>' + ins.hoorden.map(f => '<li>' + esc(f) + '</li>').join('') + '</ul>' : '')
+        + (ins ? '<p class="meta">Open: ' + ins.terugbelOpen + ' terugbelafspraken' + (ins.infomails ? ' · ' + ins.infomails + ' infomails nabellen' : '') + ' (rapportage wk ' + ins.week + ')</p>' : '')
+        + '</div>';
+    }).join('');
+    const tips = bellerTips(s);
+    const fbs = (S.feedback[zid]?.items || []).slice(0, 3);
+    return '<section class="card brief"><div class="card-head"><div><h2>' + esc(z?.naam || 'Onbekend') + '</h2><div class="sub">' + bd.ds.map(d => esc(d.start) + '–' + esc(d.eind)).join(', ') + ' · doel vandaag <b>' + nf(bd.doel, 1) + '</b></div></div><button class="btn small" data-act="kopieer:' + zid + '">Kopieer briefing</button></div><div class="card-body">' + blok
+      + '<div class="fb"><h3>Feedback op de gesprekken <span class="meta">laatste 4 weken</span></h3>'
+      + (s.b.regels ? '<div class="fb-cijfers"><div><b>' + nf(s.b.pog) + '</b>pogingen</div><div><b>' + nf(s.b.gesprPct) + '%</b>gesproken <span class="meta">team ' + nf(s.t.gesprPct) + '%</span></div><div><b>' + nf(s.b.res) + '</b>resultaten</div><div><b>' + nf(s.b.per100, 1) + '</b>per 100 pog. <span class="meta">team ' + nf(s.t.per100, 1) + '</span></div></div>' : '')
+      + '<ul>' + tips.map(t => '<li>' + esc(t) + '</li>').join('') + '</ul>'
+      + (fbs.length ? '<div class="fb-hens">' + fbs.map(f => '<p><span class="meta">' + fmtD(f.datum) + '</span> ' + esc(f.tekst) + '</p>').join('') + '</div>' : '')
+      + '<div class="fb-add"><input type="text" id="fb-' + zid + '" placeholder="Feedback na meeluisteren of terugluisteren…" aria-label="Feedback voor ' + esc(z?.naam || '') + '"><button class="btn small" data-act="fbsave:' + zid + '">Opslaan</button></div></div>'
+      + '</div></section>';
+  }).join('') + '</div>';
+}
+async function feedbackOpslaan(zid) {
+  const el = document.getElementById('fb-' + zid); const t = (el?.value || '').trim(); if (!t) return;
+  const items = [{ datum: TODAY, tekst: t }, ...(S.feedback[zid]?.items || [])].slice(0, 20);
+  if (await save('feedback', zid, { items, gewijzigd: new Date().toISOString() })) { toast('Feedback opgeslagen'); }
+}
+function kopieerBriefing(zid) {
+  const ref = dagstartRef(), refI = iso(ref);
+  const plans = actieveProjecten().map(p => ({ p, x: dagstartPlan(p, ref), pp: periodePlan(p, refI) }));
+  const txt = briefingTekst(zid, refI, briefingData(zid, refI, plans));
+  const fallback = () => { openModal('<div class="modal-head"><h2>Briefing</h2><button class="x" data-act="close" aria-label="Sluiten">×</button></div><div class="modal-body"><textarea id="brief-txt" style="min-height:320px">' + esc(txt) + '</textarea></div><div class="modal-foot"><span class="sub">Selecteer en kopieer de tekst.</span></div>'); const t = document.getElementById('brief-txt'); t.focus(); t.select(); };
+  try { navigator.clipboard.writeText(txt).then(() => toast('Briefing gekopieerd, plak hem in WhatsApp'), fallback); } catch (e) { fallback(); }
+}
 /* ======================================================================
    BELRESULTATEN — zelfde funnel als funnel.py van de rapportage-pijplijn
    ====================================================================== */
@@ -1438,6 +1546,8 @@ document.addEventListener('click', e => {
     fstat: () => setFactStatus(b, c),
     fs: () => { UI.factSoort = b; UI.factStatus = 'alle'; render(); },
     fst: () => { UI.factStatus = b; render(); },
+    kopieer: () => kopieerBriefing(b),
+    fbsave: () => feedbackOpslaan(b),
     dsopen: () => { UI.dsOpen.has(b) ? UI.dsOpen.delete(b) : UI.dsOpen.add(b); render(); },
     bh: () => { UI.beheer = b; render(); },
     toonalles: () => { UI.toonAlles = !UI.toonAlles; render(); },

@@ -10,7 +10,7 @@ Live: https://claude.ai/artifact/Qaea1fo5JpAyaaV42L2X82 (privé; delen via het S
 | Tab | Wat je er ziet |
 |---|---|
 | Overzicht | Per opdrachtgever de lopende werkperiode met stoplicht: resultaat tegenover target, prognose, wat er nog nodig is (per werkdag), ingeplande beluren, factuurstand en contractafspraak. Daaronder "Vandaag doen", factuurmails van de laatste 14 dagen en de laatste Twinfield-stand |
-| Dagstart | Wat er deze week nodig is om de werkperiodes te halen, per opdrachtgever in één regel; klik voor de verdeling over bellers. Plus briefing per beller en notities |
+| Dagstart | Briefing per beller voor vandaag: blokken met opdrachtgever, doel, stand van de werkperiode, pitch, beste beltijd, focus en wat werkt (uit de laatste rapportage), open terugbelafspraken en feedback op de gesprekken (cijfers laatste 4 weken tegen het team, norm 1 resultaat per blok van 3 uur, plus notities van Hens). Met een knop om de briefing te kopiëren voor WhatsApp. Daaronder wat er deze week nodig is om de werkperiodes te halen, per opdrachtgever in één regel; klik voor de verdeling over bellers. Plus briefing per beller en notities |
 | Planning | Weekrooster: per beller per dag op welke opdrachtgever die belt |
 | Facturen | Verkoop- en inkoopfacturen |
 | Beheer | Opdrachtgevers, bellers, belexports uploaden en klantgegevens |
