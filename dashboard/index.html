@@ -1,0 +1,1205 @@
+<title>LINK. Management</title>
+<style>
+/* Layout: zwarte LINK.-balk met tabs bovenaan, zandkleurige werkvlakte eronder; overzicht = KPI-rij + twee kolommen (vandaag/aandacht | resultaten/projecten) */
+:root {
+  --bg: #e9e0cd;          /* LINK. zand */
+  --surface: #f8f4eb;     /* kaart */
+  --surface-2: #efe8d8;
+  --line: #d9cfb8;
+  --fg: #1c2230;          /* inkt */
+  --muted: #6f6a5c;
+  --faint: #a79f8b;
+  --accent: #38b6ff;      /* LINK.-blauw */
+  --accent-ink: #0b6fa8;
+  --bar: #000000;
+  --bar-fg: #ffffff;
+  --ok: #2f8a57;  --ok-bg: #dcefe1;
+  --warn: #a8670f; --warn-bg: #f6e6c8;
+  --bad: #b8333f; --bad-bg: #f5d9d9;
+  --info-bg: #dcecf6;
+  --shadow: 0 1px 0 rgba(28,34,48,.06), 0 8px 24px -16px rgba(28,34,48,.25);
+  --font-body: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121417; --surface: #1b1e23; --surface-2: #23272d; --line: #30343b;
+  --fg: #ece5d5; --muted: #a9a290; --faint: #7b7567; --accent: #38b6ff; --accent-ink: #7fd0ff;
+  --bar: #000000; --bar-fg: #ffffff;
+  --ok: #6cc893; --ok-bg: #19352a; --warn: #e3ad5a; --warn-bg: #3a2e18; --bad: #ef7d86; --bad-bg: #3d1f23; --info-bg: #15303f;
+  --shadow: 0 1px 0 rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.6);
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121417; --surface: #1b1e23; --surface-2: #23272d; --line: #30343b;
+  --fg: #ece5d5; --muted: #a9a290; --faint: #7b7567; --accent: #38b6ff; --accent-ink: #7fd0ff;
+  --bar: #000000; --bar-fg: #ffffff;
+  --ok: #6cc893; --ok-bg: #19352a; --warn: #e3ad5a; --warn-bg: #3a2e18; --bad: #ef7d86; --bad-bg: #3d1f23; --info-bg: #15303f;
+  --shadow: 0 1px 0 rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.6);
+  color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 14px; line-height: 1.5; }
+.num, td.n, .tab-num { font-variant-numeric: tabular-nums; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Topbalk */
+.topbar { background: var(--bar); color: var(--bar-fg); position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; }
+.topbar-in { max-width: 1280px; margin: 0 auto; padding-inline: 16px; display: flex; align-items: center; gap: 24px; min-height: 56px; }
+.logo { font-weight: 800; font-size: 22px; letter-spacing: -0.6px; white-space: nowrap; }
+.logo .dot { color: var(--accent); }
+.logo small { font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: 14px; color: #bdbdbd; letter-spacing: 0; margin-left: 8px; }
+.tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; flex: 1; min-width: 0; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { background: none; border: 0; color: #bdbdbd; padding: 18px 12px 16px; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; font-weight: 600; font-size: 13.5px; }
+.tab:hover { color: #fff; }
+.tab[aria-selected="true"] { color: #fff; border-bottom-color: var(--accent); }
+.mode { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); border-radius: 11px; padding: 2px 9px; white-space: nowrap; font-weight: 700; }
+.mode.local { color: #e3ad5a; border-color: #e3ad5a; }
+
+main { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 24px 64px; }
+.page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+.eyebrow { color: var(--accent-ink); font-size: 11px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; }
+h1 { font-size: 28px; line-height: 1.1; margin: 4px 0 0; font-weight: 800; letter-spacing: -0.5px; text-wrap: balance; }
+h1 .serif { font-family: var(--font-serif); font-style: italic; font-weight: 400; }
+h2 { font-size: 15px; margin: 0; font-weight: 700; text-wrap: balance; }
+.sub { color: var(--muted); font-size: 13px; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* Knoppen */
+.btn { border: 1px solid var(--line); background: var(--surface); padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; white-space: nowrap; }
+.btn:hover { border-color: var(--fg); }
+.btn.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.btn.primary:hover { opacity: .88; }
+.btn.danger { color: var(--bad); }
+.btn.small { padding: 4px 10px; font-size: 12px; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.link { background: none; border: 0; padding: 0; color: var(--accent-ink); cursor: pointer; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+
+/* KPI-rij */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.kpi { background: var(--surface); border-radius: 12px; padding: 16px; box-shadow: var(--shadow); min-width: 0; }
+.kpi.hl { background: var(--bar); color: #fff; }
+.kpi .lbl { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.kpi.hl .lbl { color: #bdbdbd; }
+.kpi .val { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-top: 6px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.kpi.hl .val { color: var(--accent); }
+.kpi .foot { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.kpi.hl .foot { color: #b3b3b3; }
+.kpi .foot.bad { color: var(--bad); font-weight: 600; }
+.kpi.hl .foot.bad { color: #ff8b94; }
+
+.grid2 { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 16px; align-items: start; }
+@media (max-width: 920px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+.stack { display: grid; gap: 16px; min-width: 0; }
+
+.card { background: var(--surface); border-radius: 12px; box-shadow: var(--shadow); min-width: 0; }
+.card-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px 10px; flex-wrap: wrap; }
+.card-head .num-label { font-family: var(--font-serif); font-style: italic; color: var(--accent-ink); margin-right: 8px; }
+.card-body { padding: 0 16px 16px; }
+.empty { color: var(--muted); padding: 18px 16px 20px; font-size: 13px; }
+.empty strong { color: var(--fg); }
+
+/* Lijsten */
+.list { list-style: none; margin: 0; padding: 0; }
+.list li { display: flex; gap: 12px; align-items: flex-start; padding: 10px 16px; border-top: 1px solid var(--line); }
+.list li:first-child { border-top: 0; }
+.list .main { flex: 1; min-width: 0; }
+.list .title { font-weight: 600; }
+.list .meta { color: var(--muted); font-size: 12.5px; }
+.list .right { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.stripe { width: 4px; align-self: stretch; border-radius: 2px; flex: none; }
+.stripe.bad { background: var(--bad); } .stripe.warn { background: var(--warn); } .stripe.info { background: var(--accent); } .stripe.ok { background: var(--ok); }
+
+/* Tabellen */
+.tbl-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th { text-align: left; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 700; padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tbody tr.click { cursor: pointer; }
+tbody tr.click:hover td { background: var(--surface-2); }
+td .meta { color: var(--muted); font-size: 12px; }
+tfoot td { font-weight: 700; border-top: 1px solid var(--fg); border-bottom: 0; }
+
+/* Pills */
+.pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 700; white-space: nowrap; background: var(--surface-2); color: var(--muted); }
+.pill.ok { background: var(--ok-bg); color: var(--ok); }
+.pill.warn { background: var(--warn-bg); color: var(--warn); }
+.pill.bad { background: var(--bad-bg); color: var(--bad); }
+.pill.info { background: var(--info-bg); color: var(--accent-ink); }
+.dotc { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+
+/* Planning */
+.weeknav { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.weeknav .wk { font-weight: 800; font-size: 15px; min-width: 150px; text-align: center; }
+.plan-wrap { overflow-x: auto; }
+.plan { display: grid; grid-template-columns: 170px repeat(7, minmax(118px, 1fr)); min-width: 1000px; }
+.plan > div { border-bottom: 1px solid var(--line); border-left: 1px solid var(--line); padding: 8px; min-height: 64px; }
+.plan .ph { min-height: 0; font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); font-weight: 700; background: var(--surface-2); }
+.plan .ph.today { color: var(--accent-ink); }
+.plan .ph .d { display: block; font-size: 15px; letter-spacing: 0; color: var(--fg); text-transform: none; }
+.plan .ph.today .d { color: var(--accent-ink); }
+.plan .who { border-left: 0; font-weight: 700; }
+.plan .who .meta { font-weight: 400; color: var(--muted); font-size: 12px; }
+.plan .cell { display: flex; flex-direction: column; gap: 4px; position: relative; }
+.plan .cell.weekend { background: color-mix(in srgb, var(--surface-2) 55%, transparent); }
+.plan .cell.today { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+.chip { border: 0; text-align: left; border-radius: 6px; padding: 5px 7px; font-size: 12px; line-height: 1.3; cursor: pointer; background: color-mix(in srgb, var(--pc) 16%, var(--surface)); border-left: 4px solid var(--pc); width: 100%; }
+.chip b { display: block; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chip span { color: var(--muted); font-variant-numeric: tabular-nums; }
+.chip.gepland { background: var(--surface); outline: 1px dashed color-mix(in srgb, var(--pc) 70%, transparent); outline-offset: -1px; }
+.chip.afgemeld { opacity: .5; text-decoration: line-through; }
+.add { border: 1px dashed var(--line); background: none; color: var(--faint); border-radius: 6px; font-size: 16px; line-height: 1; padding: 4px; cursor: pointer; opacity: 0; transition: opacity .12s; }
+.cell:hover .add, .add:focus-visible { opacity: 1; }
+@media (hover: none) { .add { opacity: .7; } }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; padding: 10px 16px 14px; color: var(--muted); }
+.legend b { color: var(--fg); font-variant-numeric: tabular-nums; }
+
+/* Grafiek */
+.chart svg { display: block; width: 100%; height: auto; }
+.chart text { fill: var(--muted); font-size: 11px; font-family: var(--font-body); }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart .val { fill: var(--fg); font-weight: 700; }
+.chart-legend { display: flex; gap: 16px; font-size: 12px; color: var(--muted); padding: 0 16px 14px; flex-wrap: wrap; }
+.sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+
+/* Subtabs + filters */
+.seg { display: inline-flex; background: var(--surface-2); border-radius: 9px; padding: 3px; gap: 2px; }
+.seg button { border: 0; background: none; padding: 6px 12px; border-radius: 7px; cursor: pointer; font-weight: 600; font-size: 13px; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--fg); box-shadow: var(--shadow); }
+
+/* Modal */
+.overlay { position: fixed; inset: 0; background: rgba(10,12,16,.55); z-index: 50; display: flex; align-items: flex-start; justify-content: center; padding: max(24px, env(safe-area-inset-top, 0px)) 16px 24px; overflow-y: auto; }
+.modal { background: var(--surface); border-radius: 14px; width: 100%; max-width: 640px; box-shadow: 0 30px 80px -20px rgba(0,0,0,.5); }
+.modal.wide { max-width: 880px; }
+.modal-head { padding: 18px 20px 6px; display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.modal-head h2 { font-size: 19px; }
+.modal-body { padding: 8px 20px 4px; }
+.modal-foot { padding: 14px 20px 18px; display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; align-items: center; }
+.modal-foot .spacer { flex: 1; }
+.x { border: 0; background: none; font-size: 22px; line-height: 1; cursor: pointer; color: var(--muted); padding: 4px 8px; }
+.form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 14px; }
+.form .full { grid-column: 1 / -1; }
+@media (max-width: 560px) { .form { grid-template-columns: minmax(0, 1fr); } }
+label.f { display: grid; gap: 4px; font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: .02em; min-width: 0; }
+label.f .hint { font-weight: 400; color: var(--faint); }
+input[type=text], input[type=email], input[type=tel], input[type=number], input[type=date], input[type=time], select, textarea {
+  width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 8px 10px; font-size: 14px; color: var(--fg); min-width: 0; }
+textarea { min-height: 80px; resize: vertical; }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: none; }
+.checks { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--fg); font-weight: 400; }
+.checks label { display: inline-flex; gap: 6px; align-items: center; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; background: var(--surface-2); border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; }
+.facts div { font-size: 12px; color: var(--muted); }
+.facts b { display: block; font-size: 17px; color: var(--fg); font-variant-numeric: tabular-nums; }
+.notice { border-radius: 8px; padding: 9px 12px; font-size: 13px; margin: 0 0 12px; }
+.notice.warn { background: var(--warn-bg); color: var(--warn); }
+.notice.bad { background: var(--bad-bg); color: var(--bad); }
+.notice.info { background: var(--info-bg); color: var(--accent-ink); }
+.confirm { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; color: var(--bad); font-weight: 600; flex-wrap: wrap; }
+
+/* Factuurregels */
+.lines input { padding: 6px 8px; font-size: 13px; }
+.lines td { padding: 6px 6px; }
+.lines td:first-child { padding-left: 0; }
+.totals { margin-left: auto; width: min(320px, 100%); font-size: 13.5px; margin-top: 10px; }
+.totals div { display: flex; justify-content: space-between; padding: 3px 0; font-variant-numeric: tabular-nums; }
+.totals .grand { font-weight: 800; font-size: 16px; border-top: 1px solid var(--fg); margin-top: 4px; padding-top: 7px; }
+
+/* Factuurvoorbeeld */
+.inv { border: 1px solid var(--line); border-radius: 10px; padding: 20px; background: var(--bg); }
+.inv-top { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+.inv .logo { color: var(--fg); }
+
+/* Upload */
+.drop { border: 2px dashed var(--line); border-radius: 12px; padding: 22px 16px; text-align: center; color: var(--muted); cursor: pointer; transition: border-color .15s, background .15s; }
+.drop:hover, .drop.over { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 6%, transparent); }
+.drop strong { color: var(--fg); }
+
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-weight: 600; font-size: 13px; z-index: 80; box-shadow: var(--shadow); max-width: calc(100% - 32px); }
+.toast.bad { background: var(--bad); color: #fff; }
+.toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 0 16px 12px; }
+.toolbar select, .toolbar input { width: auto; }
+.muted { color: var(--muted); }
+.right { text-align: right; }
+.bar-mini { height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; min-width: 60px; }
+.bar-mini i { display: block; height: 100%; background: var(--accent); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="logo">LINK<span class="dot">.</span><small>management</small></div>
+    <nav class="tabs" id="tabs" role="tablist" aria-label="Onderdelen"></nav>
+    <span class="mode" id="mode">verbinden…</span>
+  </div>
+</header>
+<main id="app" aria-live="polite"></main>
+<div id="modal-root"></div>
+<div id="toast-root"></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ======================================================================
+   Datamodel — alle collecties verwijzen naar elkaar via id's:
+   klanten ← projecten.klantId
+   projecten ← diensten.projectId, resultaten.projectId, factuurregels.projectId
+   zzp ← diensten.zzpId, facturen(inkoop).partijId, resultaten.perAgent[*].zzpId
+   diensten → factuurVerkoopId / factuurInkoopId (voorkomt dubbel factureren)
+   ====================================================================== */
+const COLL = ['klanten', 'projecten', 'zzp', 'diensten', 'facturen', 'resultaten'];
+const S = { klanten: {}, projecten: {}, zzp: {}, diensten: {}, facturen: {}, resultaten: {}, loaded: new Set() };
+const UI = { tab: 'overzicht', weekStart: mondayOf(new Date()), factSoort: 'verkoop', factStatus: 'alle', projFilter: 'actief' };
+let store = null;
+let downloads = null;
+
+const TABS = [
+  ['overzicht', 'Overzicht'], ['planning', 'Planning'], ['projecten', 'Projecten'], ['klanten', 'Klanten'],
+  ['zzp', "ZZP'ers"], ['facturen', 'Facturen'], ['resultaten', 'Belresultaten'],
+];
+const PCOLORS = ['#38b6ff', '#e8833a', '#2f9e6b', '#a35bd6', '#d64f6b', '#c9a227', '#3a8f9e', '#8a7a5c', '#5468d4', '#c25a2b'];
+const CODES = { 100: 'Afspraak', 101: 'Overdracht', 200: 'Geen interesse', 201: 'Al voorzien', 202: 'Te klein/niet passend', 300: 'Onjuist nummer', 400: 'Geen gehoor', 401: 'Voicemail', 402: 'Bezet', 500: 'Terugbelafspraak', 501: 'Informatiemail', 502: 'Terugbelverzoek' };
+const WARM = [100, 101, 500], SPOKEN = [100, 101, 200, 201, 202, 500];
+const CSV_COLS = ['Naam project', 'Naam agent', 'Bedrijf', 'idnr', 'Recording', 'Contactmoment datum & tijd', 'Campagne', 'Laatste interne memo', 'Resultaatcode'];
+
+/* ---------------- helpers ---------------- */
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function iso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function parseISO(s) { if (!s) return null; const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); }
+function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
+function mondayOf(d) { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); const wd = (x.getDay() + 6) % 7; return addDays(x, -wd); }
+function isoWeek(d) {
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const day = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - day);
+  const y0 = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+  return { jaar: t.getUTCFullYear(), week: Math.ceil(((t - y0) / 86400000 + 1) / 7) };
+}
+function weekMonday(jaar, week) { const jan4 = new Date(jaar, 0, 4); return addDays(mondayOf(jan4), (week - 1) * 7); }
+function wkKey(j, w) { return j * 100 + w; }
+const TODAY = iso(new Date());
+const MONTHS = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
+const DAYS = ['ma', 'di', 'wo', 'do', 'vr', 'za', 'zo'];
+function fmtD(s, withYear) { const d = parseISO(s); if (!d) return '–'; return DAYS[(d.getDay() + 6) % 7] + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + (withYear ? ' ' + d.getFullYear() : ''); }
+function fmtDL(s) { const d = parseISO(s); if (!d) return '–'; return d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear(); }
+const EUR = new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' });
+const EUR0 = new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+function eur(n, round) { return (round ? EUR0 : EUR).format(n || 0); }
+function nf(n, dec = 0) { return (n || 0).toLocaleString('nl-NL', { minimumFractionDigits: dec, maximumFractionDigits: dec }); }
+function pct(a, b) { return b ? Math.round(100 * a / b) : 0; }
+function num(v) { const n = parseFloat(String(v ?? '').replace(',', '.')); return isFinite(n) ? n : 0; }
+function mins(t) { if (!t) return 0; const [h, m] = t.split(':').map(Number); return h * 60 + (m || 0); }
+function uren(d) { return Math.max(0, (mins(d.eind) - mins(d.start) - (num(d.pauze) || 0)) / 60); }
+function sortBy(arr, f) { return arr.slice().sort((a, b) => { const x = f(a), y = f(b); return x < y ? -1 : x > y ? 1 : 0; }); }
+function list(c) { return Object.entries(S[c]).map(([id, v]) => ({ id, ...v })); }
+function norm(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
+
+/* ---------------- afgeleide koppelingen ---------------- */
+const klant = id => S.klanten[id];
+const project = id => S.projecten[id];
+const zzp = id => S.zzp[id];
+function projColor(id) { const ids = Object.keys(S.projecten).sort(); const i = ids.indexOf(id); return PCOLORS[(i < 0 ? 0 : i) % PCOLORS.length]; }
+function projLabel(id) { const p = project(id); if (!p) return 'Onbekend project'; const k = klant(p.klantId); return p.naam + (k && k.naam !== p.naam ? ' · ' + k.naam : ''); }
+function tariefVerkoop(pid) { const p = project(pid); if (!p) return 0; return num(p.tariefUur) || num(klant(p.klantId)?.tariefUur); }
+function tariefInkoop(zid) { return num(zzp(zid)?.uurtarief); }
+function factTotals(f) { const sub = (f.regels || []).reduce((a, r) => a + num(r.aantal) * num(r.prijs), 0); const btw = sub * num(f.btwPct) / 100; return { sub, btw, tot: sub + btw }; }
+function factStatus(f) { if (f.status === 'verstuurd' && f.vervaldatum && f.vervaldatum < TODAY) return 'te laat'; return f.status || 'concept'; }
+function partijNaam(f) { return f.soort === 'inkoop' ? (zzp(f.partijId)?.naam || 'Onbekende zzp\'er') : (klant(f.partijId)?.naam || 'Onbekende klant'); }
+function dienstenVan(filter) { return list('diensten').filter(filter); }
+function resultatenVan(pid) { return sortBy(list('resultaten').filter(r => r.projectId === pid), r => -wkKey(r.jaar, r.week)); }
+function huidigeWeek() { return isoWeek(new Date()); }
+function vorigeWeek() { return isoWeek(addDays(new Date(), -7)); }
+
+/* ---------------- opslag ---------------- */
+function localStore() {
+  const KEY = 'link-management-v1';
+  let data = null;
+  try { data = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { data = null; }
+  data = data || {}; COLL.forEach(c => { data[c] = data[c] || {}; });
+  const subs = {};
+  const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) { /* geen opslag */ } };
+  const emit = c => subs[c] && subs[c]({ ...data[c] });
+  return {
+    mode: 'lokaal',
+    newId: () => 'l' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+    subscribe(c, cb) { subs[c] = cb; cb({ ...data[c] }); },
+    async save(c, id, obj) { data[c][id] = obj; persist(); emit(c); },
+    async remove(c, id) { delete data[c][id]; persist(); emit(c); },
+  };
+}
+function dbStore(db) {
+  return {
+    mode: 'gedeeld',
+    newId: () => db.collection('klanten').doc().id,
+    subscribe(c, cb) {
+      let q = db.collection(c);
+      q = c === 'diensten' ? q.orderBy('datum', 'desc').limit(1000) : q.limit(1000);
+      q.onSnapshot(s => { const o = {}; s.docs.forEach(d => { o[d.id] = d.data(); }); cb(o); },
+        e => toast('Verbinding met ' + c + ' verbroken (' + e.code + '). Herlaad de pagina.', true));
+    },
+    async save(c, id, obj) { await withRetry(() => db.collection(c).doc(id).set(obj)); },
+    async remove(c, id) { await withRetry(() => db.collection(c).doc(id).delete()); },
+  };
+}
+async function withRetry(fn) {
+  try { return await fn(); } catch (e) {
+    if (e && e.code === 'unavailable') { await new Promise(r => setTimeout(r, 400 + Math.random() * 600)); return fn(); }
+    throw e;
+  }
+}
+function clean(obj) { const o = {}; for (const [k, v] of Object.entries(obj)) if (k !== 'id' && v !== undefined) o[k] = v; return o; }
+async function save(c, id, obj) {
+  try { await store.save(c, id, clean(obj)); return true; }
+  catch (e) { toast(saveErr(e), true); return false; }
+}
+async function remove(c, id) {
+  try { await store.remove(c, id); return true; } catch (e) { toast(saveErr(e), true); return false; }
+}
+function saveErr(e) {
+  const c = e && e.code;
+  if (c === 'invalid_argument') return 'Opslaan geweigerd: je hebt alleen leesrechten op dit dashboard.';
+  if (c === 'quota_exceeded') return 'De opslag is vol. Verwijder oude diensten of resultaten.';
+  if (c === 'resource_exhausted') return 'Even te veel tegelijk. Probeer het over een paar seconden opnieuw.';
+  return 'Opslaan mislukt' + (c ? ' (' + c + ')' : '') + '. Probeer het opnieuw.';
+}
+
+/* ---------------- UI-basis ---------------- */
+function toast(msg, bad) {
+  const r = document.getElementById('toast-root');
+  r.innerHTML = '<div class="toast' + (bad ? ' bad' : '') + '" role="status">' + esc(msg) + '</div>';
+  clearTimeout(toast.t); toast.t = setTimeout(() => { r.innerHTML = ''; }, bad ? 6000 : 2600);
+}
+let modalCleanup = null;
+function openModal(html, opts = {}) {
+  const root = document.getElementById('modal-root');
+  root.innerHTML = '<div class="overlay" data-close-overlay><div class="modal' + (opts.wide ? ' wide' : '') + '" role="dialog" aria-modal="true">' + html + '</div></div>';
+  const first = root.querySelector('input:not([type=hidden]), select, textarea');
+  if (first) first.focus();
+  return root.querySelector('.modal');
+}
+function closeModal() { document.getElementById('modal-root').innerHTML = ''; if (modalCleanup) { modalCleanup(); modalCleanup = null; } }
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.querySelector('.overlay')) closeModal(); });
+document.addEventListener('mousedown', e => { if (e.target.matches && e.target.matches('[data-close-overlay]')) closeModal(); });
+
+function opt(v, label, sel) { return '<option value="' + esc(v) + '"' + (String(sel) === String(v) ? ' selected' : '') + '>' + esc(label) + '</option>'; }
+function field(f, val) {
+  const id = 'f-' + f.k;
+  const cls = 'f' + (f.full ? ' full' : '');
+  const hint = f.hint ? ' <span class="hint">' + esc(f.hint) + '</span>' : '';
+  let input;
+  if (f.type === 'select') input = '<select id="' + id + '" name="' + f.k + '">' + f.options.map(([v, l]) => opt(v, l, val ?? f.def ?? '')).join('') + '</select>';
+  else if (f.type === 'textarea') input = '<textarea id="' + id + '" name="' + f.k + '" placeholder="' + esc(f.ph || '') + '">' + esc(val ?? '') + '</textarea>';
+  else input = '<input id="' + id + '" name="' + f.k + '" type="' + (f.type || 'text') + '"' + (f.type === 'number' ? ' step="any" inputmode="decimal"' : '') + ' value="' + esc(val ?? f.def ?? '') + '" placeholder="' + esc(f.ph || '') + '"' + (f.req ? ' required' : '') + '>';
+  return '<label class="' + cls + '" for="' + id + '">' + esc(f.label) + hint + input + '</label>';
+}
+function readForm(form, fields) {
+  const o = {};
+  fields.forEach(f => { const el = form.elements[f.k]; if (!el) return; o[f.k] = f.type === 'number' ? (el.value === '' ? null : num(el.value)) : el.value.trim(); });
+  return o;
+}
+function confirmInline(btn, label, onYes) {
+  const wrap = document.createElement('span'); wrap.className = 'confirm';
+  wrap.innerHTML = esc(label) + ' <button type="button" class="btn small danger">Ja, verwijderen</button><button type="button" class="btn small">Annuleren</button>';
+  btn.replaceWith(wrap);
+  const [yes, no] = wrap.querySelectorAll('button');
+  yes.onclick = onYes; no.onclick = () => wrap.replaceWith(btn);
+  no.focus();
+}
+
+/* ---------------- tabs ---------------- */
+function renderTabs() {
+  document.getElementById('tabs').innerHTML = TABS.map(([k, l]) => '<button class="tab" role="tab" data-tab="' + k + '" aria-selected="' + (UI.tab === k) + '">' + l + '</button>').join('');
+}
+document.getElementById('tabs').addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if (b) go(b.dataset.tab); });
+function go(tab) { UI.tab = tab; try { history.replaceState(null, '', '#' + tab); } catch (e) { /* frame */ } try { localStorage.setItem('link-tab', tab); } catch (e) { /* */ } renderTabs(); render(); window.scrollTo(0, 0); }
+
+let renderQueued = false;
+function render() {
+  if (renderQueued) return; renderQueued = true;
+  requestAnimationFrame(() => { renderQueued = false; renderNow(); });
+}
+function renderNow() {
+  const app = document.getElementById('app');
+  const views = { overzicht: vOverzicht, planning: vPlanning, projecten: vProjecten, klanten: vKlanten, zzp: vZzp, facturen: vFacturen, resultaten: vResultaten };
+  const y = window.scrollY;
+  app.innerHTML = (views[UI.tab] || vOverzicht)();
+  window.scrollTo(0, y);
+}
+
+/* ======================================================================
+   OVERZICHT
+   ====================================================================== */
+function berekenAandacht() {
+  const items = [];
+  const facts = list('facturen');
+  facts.filter(f => factStatus(f) === 'te laat').forEach(f => items.push({ lvl: 'bad', t: (f.soort === 'inkoop' ? 'Inkoopfactuur ' : 'Factuur ') + (f.nummer || '') + ' is over de vervaldatum', m: partijNaam(f) + ' · ' + eur(factTotals(f).tot) + ' · verviel ' + fmtD(f.vervaldatum), act: 'factuur:' + f.id }));
+  const openPast = dienstenVan(d => d.status === 'gepland' && d.datum < TODAY);
+  if (openPast.length) items.push({ lvl: 'warn', t: openPast.length + (openPast.length === 1 ? ' dienst' : ' diensten') + ' in het verleden nog niet bevestigd', m: 'Zet ze op gewerkt of afgemeld, dan kloppen uren en facturen.', act: 'tab:planning:' + sortBy(openPast, d => d.datum)[0].datum });
+  const nfk = {};
+  dienstenVan(d => d.status === 'gewerkt' && !d.factuurVerkoopId).forEach(d => { const p = project(d.projectId); if (!p) return; const k = p.klantId; nfk[k] = nfk[k] || { u: 0, v: 0, oud: d.datum }; nfk[k].u += uren(d); nfk[k].v += uren(d) * tariefVerkoop(d.projectId); if (d.datum < nfk[k].oud) nfk[k].oud = d.datum; });
+  Object.entries(nfk).forEach(([k, x]) => items.push({ lvl: x.oud.slice(0, 7) < TODAY.slice(0, 7) ? 'warn' : 'info', t: nf2(x.u) + ' uur nog te factureren aan ' + (klant(k)?.naam || 'onbekende klant'), m: eur(x.v) + ' excl. btw · sinds ' + fmtD(x.oud), act: 'newfact:verkoop:' + k }));
+  list('projecten').filter(p => p.status === 'actief' && !tariefVerkoop(p.id) && !num(p.prijsPerAfspraak)).forEach(p => items.push({ lvl: 'warn', t: 'Geen tarief voor ' + p.naam, m: 'Vul een uurtarief in bij het project of de klant, anders blijft de factuur leeg.', act: 'project:' + p.id }));
+  list('zzp').filter(z => z.status !== 'inactief' && !num(z.uurtarief)).forEach(z => items.push({ lvl: 'warn', t: 'Geen uurtarief voor ' + z.naam, m: 'Nodig voor inkoopfacturen en marge.', act: 'zzp:' + z.id }));
+  const ws = iso(mondayOf(new Date())), we = iso(addDays(mondayOf(new Date()), 6));
+  list('projecten').filter(p => p.status === 'actief').forEach(p => {
+    if (!dienstenVan(d => d.projectId === p.id && d.datum >= ws && d.datum <= we && d.status !== 'afgemeld').length)
+      items.push({ lvl: 'info', t: p.naam + ' heeft deze week geen bellers ingepland', m: klant(p.klantId)?.naam || '', act: 'plan:' + p.id });
+  });
+  const vw = vorigeWeek();
+  list('projecten').filter(p => p.status === 'actief').forEach(p => {
+    const heeftUren = dienstenVan(d => d.projectId === p.id && d.status === 'gewerkt' && isoWeek(parseISO(d.datum)).week === vw.week && isoWeek(parseISO(d.datum)).jaar === vw.jaar).length;
+    const heeftRes = list('resultaten').some(r => r.projectId === p.id && r.jaar === vw.jaar && r.week === vw.week);
+    if (heeftUren && !heeftRes) items.push({ lvl: 'info', t: 'Belresultaten week ' + vw.week + ' ontbreken voor ' + p.naam, m: 'Upload de belexport, dan staat de rapportage klaar.', act: 'tab:resultaten' });
+  });
+  const order = { bad: 0, warn: 1, info: 2 };
+  return sortBy(items, i => order[i.lvl]);
+}
+function nf2(u) { return nf(u, u % 1 ? 1 : 0); }
+
+function vOverzicht() {
+  if (!S.loaded.size) return '<p class="empty">Gegevens laden…</p>';
+  const now = new Date();
+  const mStart = TODAY.slice(0, 7);
+  const facts = list('facturen');
+  const verkoop = facts.filter(f => f.soort === 'verkoop');
+  const open = verkoop.filter(f => f.status === 'verstuurd');
+  const laat = open.filter(f => factStatus(f) === 'te laat');
+  const omzetMaand = verkoop.filter(f => (f.datum || '').startsWith(mStart) && f.status !== 'concept').reduce((a, f) => a + factTotals(f).sub, 0);
+  const nogFact = dienstenVan(d => d.status === 'gewerkt' && !d.factuurVerkoopId).reduce((a, d) => a + uren(d) * tariefVerkoop(d.projectId), 0);
+  const inkOpen = facts.filter(f => f.soort === 'inkoop' && f.status !== 'betaald').reduce((a, f) => a + factTotals(f).tot, 0);
+  const inkNog = dienstenVan(d => d.status === 'gewerkt' && !d.factuurInkoopId).reduce((a, d) => a + uren(d) * tariefInkoop(d.zzpId), 0);
+  const ws = iso(mondayOf(now)), we = iso(addDays(mondayOf(now), 6));
+  const dWeek = dienstenVan(d => d.datum >= ws && d.datum <= we && d.status !== 'afgemeld');
+  const urenWeek = dWeek.reduce((a, d) => a + uren(d), 0);
+  const bellers = new Set(dWeek.map(d => d.zzpId)).size;
+  const hw = huidigeWeek(), vw = vorigeWeek();
+  let resW = list('resultaten').filter(r => r.jaar === hw.jaar && r.week === hw.week), resLabel = 'week ' + hw.week;
+  if (!resW.length) { resW = list('resultaten').filter(r => r.jaar === vw.jaar && r.week === vw.week); resLabel = 'week ' + vw.week; }
+  const afspr = resW.reduce((a, r) => a + num(r.afspraak) + num(r.overdracht), 0);
+  const warm = resW.reduce((a, r) => a + num(r.warm), 0);
+
+  const kpis = [
+    { hl: true, lbl: 'Openstaand', val: eur(open.reduce((a, f) => a + factTotals(f).tot, 0), true), foot: laat.length ? laat.length + ' te laat' : open.length + ' facturen verstuurd', bad: laat.length },
+    { lbl: 'Gefactureerd ' + MONTHS[now.getMonth()], val: eur(omzetMaand, true), foot: 'excl. btw' },
+    { lbl: 'Nog te factureren', val: eur(nogFact, true), foot: 'gewerkte uren × tarief' },
+    { lbl: "Te betalen zzp'ers", val: eur(inkOpen + inkNog, true), foot: eur(inkOpen, true) + ' gefactureerd' },
+    { lbl: 'Uren deze week', val: nf2(urenWeek), foot: bellers + (bellers === 1 ? ' beller' : ' bellers') + ' ingepland' },
+    { lbl: 'Afspraken + overdrachten', val: nf(afspr), foot: resLabel + ' · ' + warm + ' warm' },
+  ];
+
+  // Vandaag
+  const vandaag = sortBy(dienstenVan(d => d.datum === TODAY && d.status !== 'afgemeld'), d => d.start);
+  const vandaagHtml = vandaag.length ? '<ul class="list">' + vandaag.map(d => {
+    const p = project(d.projectId);
+    return '<li><span class="stripe" style="background:' + projColor(d.projectId) + '"></span><div class="main"><div class="title">' + esc(zzp(d.zzpId)?.naam || 'Onbekend') + '</div><div class="meta">belt voor <b>' + esc(projLabel(d.projectId)) + '</b>' + (p?.belinstructie ? ' · ' + esc(p.belinstructie.slice(0, 90)) + (p.belinstructie.length > 90 ? '…' : '') : '') + '</div></div><div class="right num">' + esc(d.start) + '–' + esc(d.eind) + '<div class="meta">' + nf2(uren(d)) + ' u</div></div></li>';
+  }).join('') + '</ul>' : '<p class="empty">Vandaag staat niemand ingepland. <button class="link" data-act="newdienst:' + TODAY + '">Plan een zzp\'er in</button></p>';
+
+  const aandacht = berekenAandacht();
+  const aandachtHtml = aandacht.length ? '<ul class="list">' + aandacht.slice(0, 9).map(i =>
+    '<li><span class="stripe ' + i.lvl + '"></span><div class="main"><div class="title">' + esc(i.t) + '</div><div class="meta">' + esc(i.m) + '</div></div><button class="btn small" data-act="' + esc(i.act) + '">Open</button></li>').join('') + '</ul>' + (aandacht.length > 9 ? '<p class="empty">En nog ' + (aandacht.length - 9) + ' punten.</p>' : '')
+    : '<p class="empty">Niets dat aandacht vraagt. Alles is bevestigd, gefactureerd en ingepland.</p>';
+
+  // Projecten deze week
+  const actief = sortBy(list('projecten').filter(p => p.status === 'actief'), p => p.naam);
+  const projHtml = actief.length ? '<div class="tbl-wrap"><table><thead><tr><th>Project</th><th class="n">Uren wk</th><th class="n">Bellers</th><th class="n">Laatste week</th><th>Doel</th></tr></thead><tbody>' + actief.map(p => {
+    const dp = dWeek.filter(d => d.projectId === p.id);
+    const r = resultatenVan(p.id)[0];
+    const res = r ? num(r.afspraak) + num(r.overdracht) : null;
+    const doel = num(p.doelPerWeek);
+    return '<tr class="click" data-act="project:' + p.id + '"><td><span class="dotc" style="background:' + projColor(p.id) + '"></span><b>' + esc(p.naam) + '</b><div class="meta">' + esc(klant(p.klantId)?.naam || '') + '</div></td><td class="n">' + nf2(dp.reduce((a, d) => a + uren(d), 0)) + '</td><td class="n">' + new Set(dp.map(d => d.zzpId)).size + '</td><td class="n">' + (r ? res + ' <span class="meta">wk ' + r.week + '</span>' : '<span class="meta">–</span>') + '</td><td>' + (doel && r ? '<div class="bar-mini" title="' + res + ' van ' + doel + '"><i style="width:' + Math.min(100, pct(res, doel)) + '%"></i></div>' : '<span class="meta">' + (doel ? doel + '/wk' : '–') + '</span>') + '</td></tr>';
+  }).join('') + '</tbody></table></div>' : '<p class="empty">Nog geen actieve projecten. <button class="link" data-act="newproject">Maak een project aan</button></p>';
+
+  return '<div class="page-head"><div><div class="eyebrow">' + esc(fmtD(TODAY, true)) + ' · week ' + hw.week + '</div><h1>Goedendag, <span class="serif">dit is LINK. vandaag.</span></h1></div><div class="actions"><button class="btn" data-act="newdienst:' + TODAY + '">Zzp\'er inplannen</button><button class="btn primary" data-act="newfact:verkoop:">Factuur maken</button></div></div>'
+    + '<section class="kpis">' + kpis.map(k => '<div class="kpi' + (k.hl ? ' hl' : '') + '"><div class="lbl">' + esc(k.lbl) + '</div><div class="val">' + esc(k.val) + '</div><div class="foot' + (k.bad ? ' bad' : '') + '">' + esc(k.foot) + '</div></div>').join('') + '</section>'
+    + '<div class="grid2"><div class="stack">'
+    + '<section class="card"><div class="card-head"><h2>Vandaag aan de lijn</h2><button class="btn small" data-act="tab:planning">Planning</button></div>' + vandaagHtml + '</section>'
+    + '<section class="card"><div class="card-head"><h2>Aandacht nodig</h2><span class="pill' + (aandacht.some(i => i.lvl === 'bad') ? ' bad' : aandacht.length ? ' warn' : ' ok') + '">' + aandacht.length + '</span></div>' + aandachtHtml + '</section>'
+    + '</div><div class="stack">'
+    + '<section class="card"><div class="card-head"><h2>Warme uitkomsten per week</h2><span class="sub">uit de belexports</span></div>' + chartWeken() + '</section>'
+    + '<section class="card"><div class="card-head"><h2>Omzet en zzp-kosten per maand</h2><span class="sub">op factuurdatum, excl. btw</span></div>' + chartMaanden() + '</section>'
+    + '<section class="card"><div class="card-head"><h2>Actieve projecten deze week</h2><button class="btn small" data-act="tab:projecten">Alle projecten</button></div>' + projHtml + '</section>'
+    + '</div></div>';
+}
+
+/* Grafieken: gestapelde staven, één schaal */
+function barChart(cats, series, opts = {}) {
+  const W = 640, H = 210, L = 36, R = 10, T = 18, B = 26;
+  const tot = cats.map((_, i) => series.reduce((a, s) => a + (s.stack === false ? 0 : s.vals[i]), 0));
+  const sideMax = Math.max(0, ...series.filter(s => s.stack === false).flatMap(s => s.vals));
+  const max = Math.max(1, ...tot, sideMax);
+  const step = opts.fmt ? niceStep(max) : Math.max(1, Math.round(niceStep(max))), top = Math.ceil(max / step) * step;
+  const y = v => T + (H - T - B) * (1 - v / top);
+  const cw = (W - L - R) / cats.length;
+  const groups = series.some(s => s.stack === false) ? 2 : 1;
+  const bw = Math.min(34, cw * 0.62 / groups);
+  let g = '';
+  for (let v = 0; v <= top + 1e-9; v += step) g += '<line class="grid" x1="' + L + '" x2="' + (W - R) + '" y1="' + y(v) + '" y2="' + y(v) + '"/><text x="' + (L - 6) + '" y="' + (y(v) + 4) + '" text-anchor="end">' + (opts.fmt ? opts.fmt(v) : v) + '</text>';
+  cats.forEach((c, i) => {
+    const cx = L + cw * i + cw / 2;
+    let acc = 0;
+    const x0 = groups === 2 ? cx - bw - 1 : cx - bw / 2;
+    series.filter(s => s.stack !== false).forEach(s => {
+      const v = s.vals[i]; if (!v) return;
+      g += '<rect x="' + x0 + '" y="' + y(acc + v) + '" width="' + bw + '" height="' + (y(acc) - y(acc + v)) + '" style="fill:' + s.color + '"><title>' + esc(s.name + ': ' + (opts.fmt ? opts.fmtFull(v) : v)) + '</title></rect>';
+      acc += v;
+    });
+    if (acc && opts.labels !== false) g += '<text class="val" x="' + (x0 + bw / 2) + '" y="' + (y(acc) - 5) + '" text-anchor="middle">' + (opts.fmt ? opts.fmt(acc) : acc) + '</text>';
+    series.filter(s => s.stack === false).forEach(s => {
+      const v = s.vals[i]; if (!v) return;
+      g += '<rect x="' + (cx + 1) + '" y="' + y(v) + '" width="' + bw + '" height="' + (y(0) - y(v)) + '" style="fill:' + s.color + '"><title>' + esc(s.name + ': ' + (opts.fmt ? opts.fmtFull(v) : v)) + '</title></rect>';
+    });
+    g += '<text x="' + cx + '" y="' + (H - 8) + '" text-anchor="middle"' + (c.cur ? ' class="val"' : '') + '>' + esc(c.label) + '</text>';
+  });
+  return '<div class="chart card-body"><svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(opts.aria || '') + '">' + g + '</svg></div><div class="chart-legend">' + series.map(s => '<span><i class="sw" style="background:' + s.color + '"></i>' + esc(s.name) + '</span>').join('') + '</div>';
+}
+function niceStep(max) { const raw = max / 4; const p = Math.pow(10, Math.floor(Math.log10(raw))); const n = raw / p; return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * p; }
+function chartWeken() {
+  const res = list('resultaten');
+  if (!res.length) return '<p class="empty">Nog geen belresultaten. <button class="link" data-act="tab:resultaten">Upload een belexport</button> en de grafiek vult zich per week.</p>';
+  const weeks = []; const hw = huidigeWeek();
+  for (let i = 7; i >= 0; i--) { const w = isoWeek(addDays(new Date(), -7 * i)); weeks.push(w); }
+  const sum = (w, k) => res.filter(r => r.jaar === w.jaar && r.week === w.week).reduce((a, r) => a + num(r[k]), 0);
+  return barChart(weeks.map(w => ({ label: 'wk ' + w.week, cur: w.week === hw.week && w.jaar === hw.jaar })), [
+    { name: 'Afspraak', color: 'var(--fg)', vals: weeks.map(w => sum(w, 'afspraak')) },
+    { name: 'Overdracht', color: 'var(--accent)', vals: weeks.map(w => sum(w, 'overdracht')) },
+    { name: 'Terugbelafspraak', color: 'var(--faint)', vals: weeks.map(w => sum(w, 'terugbel')) },
+  ], { aria: 'Warme uitkomsten per week, laatste 8 weken' });
+}
+function chartMaanden() {
+  const facts = list('facturen').filter(f => f.status !== 'concept');
+  if (!facts.length) return '<p class="empty">Nog geen verstuurde facturen. Zodra je factureert zie je hier omzet naast zzp-kosten.</p>';
+  const now = new Date(); const ms = [];
+  for (let i = 5; i >= 0; i--) { const d = new Date(now.getFullYear(), now.getMonth() - i, 1); ms.push({ key: iso(d).slice(0, 7), label: MONTHS[d.getMonth()], cur: i === 0 }); }
+  const sum = (m, soort) => facts.filter(f => f.soort === soort && (f.datum || '').startsWith(m.key)).reduce((a, f) => a + factTotals(f).sub, 0);
+  const k = v => v >= 1000 ? '€' + nf(v / 1000, v % 1000 ? 1 : 0) + 'k' : '€' + nf(v);
+  return barChart(ms, [
+    { name: 'Omzet (verkoop)', color: 'var(--accent)', vals: ms.map(m => sum(m, 'verkoop')) },
+    { name: "Kosten zzp'ers (inkoop)", color: 'var(--fg)', vals: ms.map(m => sum(m, 'inkoop')), stack: false },
+  ], { aria: 'Omzet en zzp-kosten per maand', fmt: k, fmtFull: v => eur(v), labels: false });
+}
+
+/* ======================================================================
+   PLANNING
+   ====================================================================== */
+function vPlanning() {
+  const ws = UI.weekStart, days = [...Array(7)].map((_, i) => addDays(ws, i));
+  const wsI = iso(ws), weI = iso(days[6]);
+  const wk = isoWeek(ws);
+  const dW = dienstenVan(d => d.datum >= wsI && d.datum <= weI);
+  const zIds = new Set(list('zzp').filter(z => z.status !== 'inactief').map(z => z.id));
+  dW.forEach(d => zIds.add(d.zzpId));
+  const rows = sortBy([...zIds].map(id => ({ id, ...(zzp(id) || { naam: 'Verwijderde zzp\'er' }) })), z => z.naam);
+  const openPast = dW.filter(d => d.status === 'gepland' && d.datum <= TODAY).length;
+
+  let grid = '<div class="ph who">Beller</div>' + days.map(d => '<div class="ph' + (iso(d) === TODAY ? ' today' : '') + '">' + DAYS[(d.getDay() + 6) % 7] + '<span class="d">' + d.getDate() + ' ' + MONTHS[d.getMonth()] + '</span></div>').join('');
+  rows.forEach(z => {
+    const zd = dW.filter(d => d.zzpId === z.id && d.status !== 'afgemeld');
+    grid += '<div class="who">' + esc(z.naam) + '<div class="meta">' + nf2(zd.reduce((a, d) => a + uren(d), 0)) + ' u deze week</div></div>';
+    days.forEach((d, i) => {
+      const di = iso(d);
+      const ds = sortBy(dW.filter(x => x.zzpId === z.id && x.datum === di), x => x.start);
+      grid += '<div class="cell' + (i > 4 ? ' weekend' : '') + (di === TODAY ? ' today' : '') + '">' + ds.map(x => {
+        const p = project(x.projectId);
+        return '<button class="chip ' + esc(x.status || 'gepland') + '" style="--pc:' + projColor(x.projectId) + '" data-act="dienst:' + x.id + '" title="' + esc((p?.naam || '') + ' · ' + (x.status || 'gepland') + (p?.belinstructie ? '\n' + p.belinstructie : '')) + '"><b>' + esc(p?.naam || 'Onbekend project') + '</b><span>' + esc(x.start) + '–' + esc(x.eind) + (x.status === 'gewerkt' ? ' ✓' : '') + '</span></button>';
+      }).join('') + (z.status !== 'inactief' && zzp(z.id) ? '<button class="add" data-act="newdienst:' + di + ':' + z.id + '" aria-label="Plan ' + esc(z.naam) + ' in op ' + fmtD(di) + '">+</button>' : '') + '</div>';
+    });
+  });
+
+  const perProj = {};
+  dW.filter(d => d.status !== 'afgemeld').forEach(d => { perProj[d.projectId] = (perProj[d.projectId] || 0) + uren(d); });
+  const legend = Object.keys(perProj).length ? '<div class="legend">' + sortBy(Object.entries(perProj), e => -e[1]).map(([pid, u]) => '<span><span class="dotc" style="background:' + projColor(pid) + '"></span>' + esc(projLabel(pid)) + ' <b>' + nf2(u) + ' u</b></span>').join('') + '<span>· stippellijn = gepland, gevuld = gewerkt</span></div>' : '';
+
+  const body = rows.length ? '<div class="plan-wrap"><div class="plan">' + grid + '</div></div>' + legend
+    : '<p class="empty"><strong>Nog geen zzp\'ers.</strong> Voeg eerst een zzp\'er toe, dan kun je hier per dag inplannen op welk project die belt. <button class="link" data-act="newzzp">Zzp\'er toevoegen</button></p>';
+
+  return '<div class="page-head"><div><div class="eyebrow">Planning</div><h1>Wie belt <span class="serif">waar en wanneer</span></h1></div><div class="actions">'
+    + (openPast ? '<button class="btn" data-act="confirmweek">Bevestig ' + openPast + ' als gewerkt</button>' : '')
+    + '<button class="btn primary" data-act="newdienst:' + (wsI <= TODAY && TODAY <= weI ? TODAY : wsI) + '">Zzp\'er inplannen</button></div></div>'
+    + '<section class="card"><div class="card-head"><div class="weeknav"><button class="btn small" data-act="wk:-1" aria-label="Vorige week">←</button><span class="wk">Week ' + wk.week + ' <span class="sub">' + days[0].getDate() + ' ' + MONTHS[days[0].getMonth()] + ' – ' + days[6].getDate() + ' ' + MONTHS[days[6].getMonth()] + '</span></span><button class="btn small" data-act="wk:1" aria-label="Volgende week">→</button><button class="btn small" data-act="wk:0">Deze week</button></div><span class="sub">' + nf2(dW.filter(d => d.status !== 'afgemeld').reduce((a, d) => a + uren(d), 0)) + ' uur ingepland</span></div>' + body + '</section>';
+}
+
+function dienstModal(id, preset = {}) {
+  const d = id ? { id, ...S.diensten[id] } : { datum: preset.datum || TODAY, zzpId: preset.zzpId || '', projectId: preset.projectId || '', start: '09:00', eind: '17:00', pauze: 30, status: 'gepland' };
+  if (!id && d.zzpId && !d.projectId) { const last = sortBy(dienstenVan(x => x.zzpId === d.zzpId), x => x.datum).pop(); if (last && project(last.projectId)?.status === 'actief') d.projectId = last.projectId; }
+  const zz = sortBy(list('zzp').filter(z => z.status !== 'inactief' || z.id === d.zzpId), z => z.naam);
+  const pp = sortBy(list('projecten').filter(p => p.status === 'actief' || p.id === d.projectId), p => p.naam);
+  if (!zz.length || !pp.length) {
+    openModal('<div class="modal-head"><h2>Inplannen</h2><button class="x" data-act="close" aria-label="Sluiten">×</button></div><div class="modal-body"><p class="notice warn">Je hebt minimaal één zzp\'er en één actief project nodig om in te plannen.</p></div><div class="modal-foot">' + (!zz.length ? '<button class="btn" data-act="newzzp">Zzp\'er toevoegen</button>' : '') + (!pp.length ? '<button class="btn primary" data-act="newproject">Project aanmaken</button>' : '') + '</div>');
+    return;
+  }
+  const invoiced = d.factuurVerkoopId || d.factuurInkoopId;
+  const wd = (parseISO(d.datum).getDay() + 6) % 7;
+  const m = openModal('<form id="dform"><div class="modal-head"><div><div class="eyebrow">' + (id ? 'Dienst' : 'Nieuwe dienst') + '</div><h2>' + (id ? esc(zzp(d.zzpId)?.naam || '') + ' · ' + fmtD(d.datum) : 'Zzp\'er inplannen') + '</h2></div><button type="button" class="x" data-act="close" aria-label="Sluiten">×</button></div><div class="modal-body">'
+    + (invoiced ? '<p class="notice info">Deze dienst staat op een factuur' + (d.factuurVerkoopId ? ' (verkoop ' + esc(S.facturen[d.factuurVerkoopId]?.nummer || '') + ')' : '') + (d.factuurInkoopId ? ' (inkoop ' + esc(S.facturen[d.factuurInkoopId]?.nummer || '') + ')' : '') + '. Wijzigingen in uren passen de factuur niet aan.</p>' : '')
+    + '<div id="conflict"></div><div class="form">'
+    + '<label class="f" for="f-zzpId">Zzp\'er<select id="f-zzpId" name="zzpId" required>' + opt('', 'Kies…', d.zzpId) + zz.map(z => opt(z.id, z.naam, d.zzpId)).join('') + '</select></label>'
+    + '<label class="f" for="f-projectId">Belt voor project<select id="f-projectId" name="projectId" required>' + opt('', 'Kies…', d.projectId) + pp.map(p => opt(p.id, projLabel(p.id), d.projectId)).join('') + '</select></label>'
+    + '<label class="f" for="f-datum">Datum<input id="f-datum" name="datum" type="date" value="' + esc(d.datum) + '" required></label>'
+    + '<label class="f" for="f-status">Status<select id="f-status" name="status">' + [['gepland', 'Gepland'], ['gewerkt', 'Gewerkt'], ['afgemeld', 'Afgemeld / niet gekomen']].map(([v, l]) => opt(v, l, d.status)).join('') + '</select></label>'
+    + '<label class="f" for="f-start">Van<input id="f-start" name="start" type="time" value="' + esc(d.start) + '" required></label>'
+    + '<label class="f" for="f-eind">Tot<input id="f-eind" name="eind" type="time" value="' + esc(d.eind) + '" required></label>'
+    + '<label class="f" for="f-pauze">Pauze <span class="hint">minuten, onbetaald</span><input id="f-pauze" name="pauze" type="number" min="0" step="5" value="' + esc(d.pauze ?? 0) + '"></label>'
+    + '<label class="f"><span>Uren</span><input id="f-uren" type="text" readonly value="' + nf2(uren(d)) + '"></label>'
+    + '<label class="f full" for="f-notitie">Notitie <span class="hint">bv. lijst, belblok, focus</span><input id="f-notitie" name="notitie" type="text" value="' + esc(d.notitie || '') + '"></label>'
+    + (!id ? '<div class="f full"><span>Ook inplannen op <span class="hint">zelfde tijden en project</span></span><div class="checks">' + DAYS.map((n, i) => '<label><input type="checkbox" name="rep" value="' + i + '"' + (i === wd ? ' checked disabled' : '') + '> ' + n + '</label>').join('') + '<label>voor <input id="f-weken" name="weken" type="number" min="1" max="12" value="1" style="width:64px"> week/weken</label></div></div>' : '')
+    + '<div class="full" id="pinfo"></div>'
+    + '</div></div><div class="modal-foot">' + (id ? '<button type="button" class="btn danger" id="del">Verwijderen</button>' : '') + '<span class="spacer"></span><button type="button" class="btn" data-act="close">Annuleren</button><button type="submit" class="btn primary">' + (id ? 'Opslaan' : 'Inplannen') + '</button></div></form>');
+  const f = m.querySelector('form');
+  const upd = () => {
+    const x = { start: f.start.value, eind: f.eind.value, pauze: f.pauze.value };
+    f.querySelector('#f-uren').value = nf2(uren(x));
+    const p = project(f.projectId.value);
+    m.querySelector('#pinfo').innerHTML = p ? '<p class="notice info"><b>Belinstructie ' + esc(p.naam) + ':</b> ' + esc(p.belinstructie || 'nog geen instructie bij dit project.') + '</p>' : '';
+    const clash = dienstenVan(o => o.zzpId === f.zzpId.value && o.datum === f.datum.value && o.status !== 'afgemeld' && (!id || o.id !== id) && mins(o.start) < mins(x.eind) && mins(x.start) < mins(o.eind));
+    m.querySelector('#conflict').innerHTML = clash.length ? '<p class="notice warn">Let op: ' + esc(zzp(f.zzpId.value)?.naam) + ' staat dan al ingepland voor ' + esc(project(clash[0].projectId)?.naam || 'een ander project') + ' (' + esc(clash[0].start) + '–' + esc(clash[0].eind) + ').</p>' : '';
+  };
+  f.addEventListener('input', upd); f.addEventListener('change', upd); upd();
+  const del = m.querySelector('#del');
+  if (del) del.onclick = () => confirmInline(del, 'Dienst verwijderen?', async () => { if (await remove('diensten', id)) { closeModal(); toast('Dienst verwijderd'); } });
+  f.onsubmit = async e => {
+    e.preventDefault();
+    if (mins(f.eind.value) <= mins(f.start.value)) { toast('De eindtijd moet na de begintijd liggen.', true); return; }
+    const base = { ...(id ? S.diensten[id] : {}), zzpId: f.zzpId.value, projectId: f.projectId.value, datum: f.datum.value, start: f.start.value, eind: f.eind.value, pauze: num(f.pauze.value), status: f.status.value, notitie: f.notitie.value.trim(), gewijzigd: new Date().toISOString() };
+    if (id) { if (await save('diensten', id, base)) { closeModal(); toast('Dienst opgeslagen'); } return; }
+    const dates = new Set([base.datum]);
+    const reps = [...f.querySelectorAll('input[name=rep]:checked')].map(c => +c.value);
+    const weken = Math.max(1, Math.min(12, num(f.weken?.value) || 1));
+    const mon = mondayOf(parseISO(base.datum));
+    for (let w = 0; w < weken; w++) reps.forEach(i => { const dd = iso(addDays(mon, w * 7 + i)); if (dd >= base.datum) dates.add(dd); });
+    let ok = 0;
+    for (const dd of [...dates].sort()) if (await save('diensten', store.newId(), { ...base, datum: dd, aangemaakt: new Date().toISOString() })) ok++;
+    closeModal(); toast(ok === 1 ? 'Ingepland' : ok + ' diensten ingepland');
+  };
+}
+async function confirmWeek() {
+  const ws = iso(UI.weekStart), we = iso(addDays(UI.weekStart, 6));
+  const ds = dienstenVan(d => d.datum >= ws && d.datum <= we && d.datum <= TODAY && d.status === 'gepland');
+  let n = 0; for (const d of ds) if (await save('diensten', d.id, { ...S.diensten[d.id], status: 'gewerkt' })) n++;
+  toast(n + ' diensten bevestigd als gewerkt');
+}
+
+/* ======================================================================
+   PROJECTEN
+   ====================================================================== */
+const PROJ_FIELDS = () => [
+  { k: 'naam', label: 'Projectnaam', req: true, ph: 'bv. Moyee Coffee kantoren Q4' },
+  { k: 'klantId', label: 'Klant', type: 'select', options: [['', 'Kies een klant…'], ...sortBy(list('klanten'), k => k.naam).map(k => [k.id, k.naam])] },
+  { k: 'type', label: 'Soort deliverable', type: 'select', options: [['afspraak', 'Afspraak-gedreven'], ['overdracht', 'Overdracht-gedreven'], ['afspraak_lead', 'Afspraak / lead']] },
+  { k: 'status', label: 'Status', type: 'select', options: [['actief', 'Actief'], ['gepauzeerd', 'Gepauzeerd'], ['afgerond', 'Afgerond']], def: 'actief' },
+  { k: 'start', label: 'Startdatum', type: 'date' },
+  { k: 'eind', label: 'Einddatum', type: 'date', hint: 'leeg = doorlopend' },
+  { k: 'tariefUur', label: 'Uurtarief klant (€)', type: 'number', hint: 'leeg = tarief van de klant' },
+  { k: 'prijsPerAfspraak', label: 'Prijs per afspraak (€)', type: 'number', hint: 'optioneel, no-cure-no-pay' },
+  { k: 'doelPerWeek', label: 'Doel per week', type: 'number', hint: 'afspraken + overdrachten' },
+  { k: 'dialerNaam', label: 'Naam in Belstat', hint: '"Naam project" of Campagne in de export' },
+  { k: 'belinstructie', label: 'Belinstructie voor bellers', type: 'textarea', full: true, ph: 'Doelgroep, pitch, wat is een goede afspraak, met wie overdragen…' },
+];
+function vProjecten() {
+  const f = UI.projFilter;
+  const ps = sortBy(list('projecten').filter(p => f === 'alle' || p.status === f), p => (klant(p.klantId)?.naam || '') + p.naam);
+  const m0 = TODAY.slice(0, 7);
+  const rows = ps.map(p => {
+    const dd = dienstenVan(d => d.projectId === p.id && d.status === 'gewerkt');
+    const uM = dd.filter(d => d.datum.startsWith(m0)).reduce((a, d) => a + uren(d), 0);
+    const rs = resultatenVan(p.id).slice(0, 4);
+    const warm4 = rs.reduce((a, r) => a + num(r.afspraak) + num(r.overdracht), 0);
+    const omzet = dd.reduce((a, d) => a + uren(d) * tariefVerkoop(p.id), 0);
+    const kost = dd.reduce((a, d) => a + uren(d) * tariefInkoop(d.zzpId), 0);
+    const marge = omzet ? pct(omzet - kost, omzet) : null;
+    return '<tr class="click" data-act="project:' + p.id + '"><td><span class="dotc" style="background:' + projColor(p.id) + '"></span><b>' + esc(p.naam) + '</b><div class="meta">' + esc(klant(p.klantId)?.naam || 'geen klant') + ' · ' + esc(typeLabel(p.type)) + '</div></td><td>' + statusPill(p.status) + '</td><td class="n">' + (tariefVerkoop(p.id) ? eur(tariefVerkoop(p.id)) : '<span class="pill warn">ontbreekt</span>') + '</td><td class="n">' + nf2(uM) + '</td><td class="n">' + (rs.length ? warm4 : '–') + '</td><td class="n">' + (marge === null ? '–' : '<span class="pill ' + (marge >= 30 ? 'ok' : marge >= 10 ? 'warn' : 'bad') + '">' + marge + '%</span>') + '</td></tr>';
+  }).join('');
+  return '<div class="page-head"><div><div class="eyebrow">Projecten</div><h1>Belcampagnes <span class="serif">per klant</span></h1></div><div class="actions"><button class="btn primary" data-act="newproject">Nieuw project</button></div></div>'
+    + '<section class="card"><div class="card-head"><div class="seg">' + [['actief', 'Actief'], ['gepauzeerd', 'Gepauzeerd'], ['afgerond', 'Afgerond'], ['alle', 'Alle']].map(([v, l]) => '<button data-act="pf:' + v + '" aria-pressed="' + (f === v) + '">' + l + '</button>').join('') + '</div><span class="sub">' + ps.length + ' projecten</span></div>'
+    + (ps.length ? '<div class="tbl-wrap"><table><thead><tr><th>Project</th><th>Status</th><th class="n">Tarief/u</th><th class="n">Uren ' + MONTHS[new Date().getMonth()] + '</th><th class="n">Warm 4 wkn</th><th class="n">Marge</th></tr></thead><tbody>' + rows + '</tbody></table></div>' : '<p class="empty">Geen projecten in deze selectie. <button class="link" data-act="newproject">Nieuw project</button></p>')
+    + '</section>';
+}
+function typeLabel(t) { return { afspraak: 'afspraak-gedreven', overdracht: 'overdracht-gedreven', afspraak_lead: 'afspraak / lead' }[t] || 'deliverable onbekend'; }
+function statusPill(s) { const m = { actief: 'ok', gepauzeerd: 'warn', afgerond: '', inactief: '' }; return '<span class="pill ' + (m[s] ?? '') + '">' + esc(s || 'actief') + '</span>'; }
+
+function entityModal(coll, id, fields, title, factsHtml, preset = {}) {
+  const v = id ? S[coll][id] : preset;
+  const m = openModal('<form id="eform"><div class="modal-head"><div><div class="eyebrow">' + esc(title) + '</div><h2>' + esc(id ? (v.naam || '') : 'Nieuw') + '</h2></div><button type="button" class="x" data-act="close" aria-label="Sluiten">×</button></div><div class="modal-body">' + (factsHtml || '')
+    + '<div class="form">' + fields.map(f => field(f, v?.[f.k])).join('') + '</div></div><div class="modal-foot">' + (id ? '<button type="button" class="btn danger" id="del">Verwijderen</button>' : '') + '<span class="spacer"></span><button type="button" class="btn" data-act="close">Annuleren</button><button type="submit" class="btn primary">Opslaan</button></div></form>', { wide: !!factsHtml });
+  const f = m.querySelector('form');
+  f.onsubmit = async e => {
+    e.preventDefault();
+    const data = { ...(id ? S[coll][id] : {}), ...readForm(f, fields), gewijzigd: new Date().toISOString() };
+    if (!data.naam) { toast('Vul een naam in.', true); return; }
+    const nid = id || store.newId();
+    if (await save(coll, nid, data)) { closeModal(); toast('Opgeslagen'); }
+  };
+  const del = m.querySelector('#del');
+  if (del) del.onclick = () => {
+    const refs = refCount(coll, id);
+    if (refs) { del.replaceWith(Object.assign(document.createElement('span'), { className: 'confirm', textContent: 'Kan niet verwijderen: nog ' + refs + '. Zet de status op inactief/afgerond.' })); return; }
+    confirmInline(del, 'Definitief verwijderen?', async () => { if (await remove(coll, id)) { closeModal(); toast('Verwijderd'); } });
+  };
+  return m;
+}
+function refCount(coll, id) {
+  if (coll === 'klanten') { const n = list('projecten').filter(p => p.klantId === id).length + list('facturen').filter(f => f.soort === 'verkoop' && f.partijId === id).length; return n ? n + ' gekoppelde projecten/facturen' : ''; }
+  if (coll === 'projecten') { const n = dienstenVan(d => d.projectId === id).length + list('resultaten').filter(r => r.projectId === id).length; return n ? n + ' gekoppelde diensten/resultaten' : ''; }
+  if (coll === 'zzp') { const n = dienstenVan(d => d.zzpId === id).length + list('facturen').filter(f => f.soort === 'inkoop' && f.partijId === id).length; return n ? n + ' gekoppelde diensten/facturen' : ''; }
+  return '';
+}
+function projectModal(id, preset) {
+  let facts = '';
+  if (id) {
+    const dd = dienstenVan(d => d.projectId === id && d.status === 'gewerkt');
+    const u = dd.reduce((a, d) => a + uren(d), 0);
+    const gef = list('facturen').filter(f => f.soort === 'verkoop' && f.status !== 'concept').reduce((a, f) => a + (f.regels || []).filter(r => r.projectId === id).reduce((b, r) => b + num(r.aantal) * num(r.prijs), 0), 0);
+    const rs = resultatenVan(id);
+    const tot = rs.reduce((a, r) => ({ p: a.p + num(r.pogingen), g: a.g + num(r.gesproken), w: a.w + num(r.afspraak) + num(r.overdracht) }), { p: 0, g: 0, w: 0 });
+    const komend = dienstenVan(d => d.projectId === id && d.datum >= TODAY && d.status === 'gepland');
+    const bellers = [...new Set(komend.map(d => zzp(d.zzpId)?.naam).filter(Boolean))];
+    facts = '<div class="facts"><div><b>' + nf2(u) + '</b>uren gewerkt</div><div><b>' + eur(gef, true) + '</b>gefactureerd</div><div><b>' + tot.w + '</b>afspraken + overdrachten</div><div><b>' + pct(tot.w, tot.g) + '%</b>conversie op gesproken</div><div><b>' + (u ? nf(tot.w / u, 2) : '–') + '</b>warm per beluur</div><div><b>' + komend.length + '</b>komende diensten' + (bellers.length ? ': ' + esc(bellers.join(', ')) : '') + '</div></div>';
+  }
+  return entityModal('projecten', id, PROJ_FIELDS(), 'Project', facts, preset);
+}
+
+/* ======================================================================
+   KLANTEN
+   ====================================================================== */
+const KLANT_FIELDS = [
+  { k: 'naam', label: 'Bedrijfsnaam', req: true }, { k: 'sector', label: 'Sector / doelgroep' },
+  { k: 'contactpersoon', label: 'Contactpersoon' }, { k: 'email', label: 'E-mail (facturen)', type: 'email' },
+  { k: 'telefoon', label: 'Telefoon', type: 'tel' }, { k: 'kvk', label: 'KvK-nummer' },
+  { k: 'adres', label: 'Factuuradres', full: true, ph: 'Straat 1, 1234 AB Plaats' },
+  { k: 'deliverable', label: 'Soort deliverable', type: 'select', options: [['afspraak', 'Afspraak-gedreven'], ['overdracht', 'Overdracht-gedreven'], ['afspraak_lead', 'Afspraak / lead']] },
+  { k: 'tariefUur', label: 'Standaard uurtarief (€)', type: 'number' }, { k: 'betaaltermijn', label: 'Betaaltermijn (dagen)', type: 'number', def: 14 },
+  { k: 'status', label: 'Status', type: 'select', options: [['actief', 'Actief'], ['inactief', 'Inactief']], def: 'actief' },
+  { k: 'driveMap', label: 'Drive-map', hint: 'bv. Klanten/<klant>/4. Rapportages' },
+  { k: 'notities', label: 'Notities', type: 'textarea', full: true },
+];
+function vKlanten() {
+  const ks = sortBy(list('klanten'), k => k.naam);
+  const rows = ks.map(k => {
+    const ps = list('projecten').filter(p => p.klantId === k.id);
+    const fs = list('facturen').filter(f => f.soort === 'verkoop' && f.partijId === k.id);
+    const open = fs.filter(f => f.status === 'verstuurd').reduce((a, f) => a + factTotals(f).tot, 0);
+    const laat = fs.some(f => factStatus(f) === 'te laat');
+    const jaar = fs.filter(f => f.status !== 'concept' && (f.datum || '').startsWith(TODAY.slice(0, 4))).reduce((a, f) => a + factTotals(f).sub, 0);
+    return '<tr class="click" data-act="klant:' + k.id + '"><td><b>' + esc(k.naam) + '</b><div class="meta">' + esc(k.sector || '') + '</div></td><td>' + esc(k.contactpersoon || '–') + '<div class="meta">' + esc(k.email || '') + '</div></td><td class="n">' + ps.filter(p => p.status === 'actief').length + ' / ' + ps.length + '</td><td class="n">' + (num(k.tariefUur) ? eur(k.tariefUur) : '<span class="pill warn">ontbreekt</span>') + '</td><td class="n">' + eur(jaar, true) + '</td><td class="n">' + (open ? '<span class="pill ' + (laat ? 'bad' : 'info') + '">' + eur(open, true) + '</span>' : '–') + '</td></tr>';
+  }).join('');
+  return '<div class="page-head"><div><div class="eyebrow">Klanten</div><h1>Opdrachtgevers</h1></div><div class="actions"><button class="btn primary" data-act="newklant">Nieuwe klant</button></div></div>'
+    + '<section class="card">' + (ks.length ? '<div class="tbl-wrap"><table><thead><tr><th>Klant</th><th>Contact</th><th class="n">Projecten</th><th class="n">Tarief/u</th><th class="n">Omzet ' + TODAY.slice(0, 4) + '</th><th class="n">Openstaand</th></tr></thead><tbody>' + rows + '</tbody></table></div>' : '<p class="empty">Nog geen klanten. <button class="link" data-act="newklant">Voeg je eerste klant toe</button></p>') + '</section>';
+}
+function klantModal(id) {
+  let facts = '';
+  if (id) {
+    const ps = list('projecten').filter(p => p.klantId === id);
+    const fs = list('facturen').filter(f => f.soort === 'verkoop' && f.partijId === id);
+    const nog = dienstenVan(d => d.status === 'gewerkt' && !d.factuurVerkoopId && project(d.projectId)?.klantId === id);
+    facts = '<div class="facts"><div><b>' + ps.length + '</b>projecten</div><div><b>' + eur(fs.filter(f => f.status !== 'concept').reduce((a, f) => a + factTotals(f).sub, 0), true) + '</b>totaal gefactureerd</div><div><b>' + eur(fs.filter(f => f.status === 'verstuurd').reduce((a, f) => a + factTotals(f).tot, 0), true) + '</b>openstaand</div><div><b>' + nf2(nog.reduce((a, d) => a + uren(d), 0)) + ' u</b>nog te factureren</div></div>'
+      + '<div class="actions" style="margin:-4px 0 14px"><button type="button" class="btn small" data-act="newproject:' + id + '">Project voor deze klant</button><button type="button" class="btn small" data-act="newfact:verkoop:' + id + '">Factuur maken</button></div>';
+  }
+  return entityModal('klanten', id, KLANT_FIELDS, 'Klant', facts);
+}
+
+/* ======================================================================
+   ZZP'ERS
+   ====================================================================== */
+const ZZP_FIELDS = [
+  { k: 'naam', label: 'Naam', req: true, hint: 'zoals in Belstat (Naam agent)' }, { k: 'telefoon', label: 'Telefoon', type: 'tel' },
+  { k: 'email', label: 'E-mail', type: 'email' }, { k: 'kvk', label: 'KvK-nummer' },
+  { k: 'iban', label: 'IBAN' }, { k: 'uurtarief', label: 'Uurtarief inkoop (€)', type: 'number' },
+  { k: 'btwPct', label: 'Btw op inkoop', type: 'select', options: [['21', '21%'], ['0', '0% (KOR / vrijgesteld)']], def: '21' },
+  { k: 'status', label: 'Status', type: 'select', options: [['actief', 'Actief'], ['inactief', 'Inactief']], def: 'actief' },
+  { k: 'beschikbaar', label: 'Vaste beschikbaarheid', full: true, ph: 'bv. ma/wo/do 09:00–15:00' },
+  { k: 'notities', label: 'Notities', type: 'textarea', full: true },
+];
+function zzpStats(id) {
+  const m0 = TODAY.slice(0, 7);
+  const dd = dienstenVan(d => d.zzpId === id && d.status === 'gewerkt');
+  const uM = dd.filter(d => d.datum.startsWith(m0)).reduce((a, d) => a + uren(d), 0);
+  const uT = dd.reduce((a, d) => a + uren(d), 0);
+  const nogF = dd.filter(d => !d.factuurInkoopId).reduce((a, d) => a + uren(d), 0);
+  let warm = 0, pog = 0;
+  list('resultaten').forEach(r => Object.values(r.perAgent || {}).forEach(a => { if (a.zzpId === id) { warm += num(a.afspraak) + num(a.overdracht); pog += num(a.pogingen); } }));
+  const volgende = sortBy(dienstenVan(d => d.zzpId === id && d.datum >= TODAY && d.status === 'gepland'), d => d.datum + d.start)[0];
+  return { uM, uT, nogF, warm, pog, volgende };
+}
+function vZzp() {
+  const zs = sortBy(list('zzp'), z => (z.status === 'inactief' ? '1' : '0') + z.naam);
+  const rows = zs.map(z => {
+    const s = zzpStats(z.id);
+    return '<tr class="click" data-act="zzp:' + z.id + '"><td><b>' + esc(z.naam) + '</b><div class="meta">' + esc(z.telefoon || '') + (z.email ? ' · ' + esc(z.email) : '') + '</div></td><td>' + statusPill(z.status) + '</td><td>' + (s.volgende ? fmtD(s.volgende.datum) + '<div class="meta">' + esc(project(s.volgende.projectId)?.naam || '') + '</div>' : '<span class="meta">niet ingepland</span>') + '</td><td class="n">' + (num(z.uurtarief) ? eur(z.uurtarief) : '<span class="pill warn">ontbreekt</span>') + '</td><td class="n">' + nf2(s.uM) + '</td><td class="n">' + (s.nogF ? eur(s.nogF * num(z.uurtarief), true) : '–') + '</td><td class="n">' + (s.uT && s.warm ? nf(s.warm / s.uT, 2) : '–') + '</td></tr>';
+  }).join('');
+  return '<div class="page-head"><div><div class="eyebrow">ZZP\'ers</div><h1>Bellers <span class="serif">in het team</span></h1></div><div class="actions"><button class="btn primary" data-act="newzzp">Zzp\'er toevoegen</button></div></div>'
+    + '<section class="card">' + (zs.length ? '<div class="tbl-wrap"><table><thead><tr><th>Naam</th><th>Status</th><th>Volgende dienst</th><th class="n">Tarief/u</th><th class="n">Uren ' + MONTHS[new Date().getMonth()] + '</th><th class="n">Nog te betalen</th><th class="n">Warm/uur</th></tr></thead><tbody>' + rows + '</tbody></table></div>' : '<p class="empty"><strong>Nog geen zzp\'ers.</strong> Voeg je bellers toe met hun uurtarief. Gebruik dezelfde naam als in Belstat, dan worden hun belresultaten automatisch aan hen gekoppeld. <button class="link" data-act="newzzp">Zzp\'er toevoegen</button></p>') + '</section>';
+}
+function zzpModal(id) {
+  let facts = '';
+  if (id) {
+    const s = zzpStats(id);
+    facts = '<div class="facts"><div><b>' + nf2(s.uM) + ' u</b>gewerkt deze maand</div><div><b>' + nf2(s.uT) + ' u</b>totaal gewerkt</div><div><b>' + eur(s.nogF * num(S.zzp[id].uurtarief), true) + '</b>nog te verrekenen</div><div><b>' + s.warm + '</b>afspraken + overdrachten</div><div><b>' + (s.uT && s.warm ? nf(s.warm / s.uT, 2) : '–') + '</b>warm per uur</div></div>'
+      + '<div class="actions" style="margin:-4px 0 14px"><button type="button" class="btn small" data-act="newdienst:' + TODAY + ':' + id + '">Inplannen</button><button type="button" class="btn small" data-act="newfact:inkoop:' + id + '">Inkoopfactuur maken</button></div>';
+  }
+  return entityModal('zzp', id, ZZP_FIELDS, "Zzp'er", facts);
+}
+
+/* ======================================================================
+   FACTUREN
+   ====================================================================== */
+function vFacturen() {
+  const soort = UI.factSoort, st = UI.factStatus;
+  const all = sortBy(list('facturen').filter(f => f.soort === soort), f => (f.datum || '') + (f.nummer || '')).reverse();
+  const fs = all.filter(f => st === 'alle' || factStatus(f) === st);
+  const sum = arr => arr.reduce((a, f) => a + factTotals(f).tot, 0);
+  const open = all.filter(f => f.status === 'verstuurd'), laat = all.filter(f => factStatus(f) === 'te laat');
+  const betaaldJ = all.filter(f => f.status === 'betaald' && (f.datum || '').startsWith(TODAY.slice(0, 4)));
+  const rows = fs.map(f => { const t = factTotals(f), s = factStatus(f); return '<tr class="click" data-act="factuur:' + f.id + '"><td><b class="num">' + esc(f.nummer || '–') + '</b><div class="meta">' + (f.periodeVan ? fmtDL(f.periodeVan) + ' – ' + fmtDL(f.periodeTot) : '') + '</div></td><td>' + esc(partijNaam(f)) + '</td><td class="num">' + fmtD(f.datum) + '</td><td class="num">' + fmtD(f.vervaldatum) + '</td><td class="n">' + eur(t.sub) + '</td><td class="n"><b>' + eur(t.tot) + '</b></td><td>' + factPill(s) + '</td></tr>'; }).join('');
+  return '<div class="page-head"><div><div class="eyebrow">Facturen</div><h1>' + (soort === 'verkoop' ? 'Verkoop <span class="serif">aan klanten</span>' : 'Inkoop <span class="serif">van zzp\'ers</span>') + '</h1></div><div class="actions"><button class="btn primary" data-act="newfact:' + soort + ':">' + (soort === 'verkoop' ? 'Verkoopfactuur maken' : 'Inkoopfactuur maken') + '</button></div></div>'
+    + '<section class="kpis"><div class="kpi hl"><div class="lbl">Openstaand</div><div class="val">' + eur(sum(open), true) + '</div><div class="foot">' + open.length + ' facturen</div></div><div class="kpi"><div class="lbl">Te laat</div><div class="val">' + eur(sum(laat), true) + '</div><div class="foot' + (laat.length ? ' bad' : '') + '">' + laat.length + ' over vervaldatum</div></div><div class="kpi"><div class="lbl">Betaald ' + TODAY.slice(0, 4) + '</div><div class="val">' + eur(sum(betaaldJ), true) + '</div><div class="foot">incl. btw</div></div><div class="kpi"><div class="lbl">Concepten</div><div class="val">' + all.filter(f => f.status === 'concept').length + '</div><div class="foot">nog niet verstuurd</div></div></section>'
+    + '<section class="card"><div class="card-head"><div class="seg">' + [['verkoop', 'Verkoop'], ['inkoop', 'Inkoop']].map(([v, l]) => '<button data-act="fs:' + v + '" aria-pressed="' + (soort === v) + '">' + l + '</button>').join('') + '</div><div class="seg">' + [['alle', 'Alle'], ['concept', 'Concept'], ['verstuurd', 'Verstuurd'], ['te laat', 'Te laat'], ['betaald', 'Betaald']].map(([v, l]) => '<button data-act="fst:' + v + '" aria-pressed="' + (st === v) + '">' + l + '</button>').join('') + '</div></div>'
+    + (fs.length ? '<div class="tbl-wrap"><table><thead><tr><th>Nummer</th><th>' + (soort === 'verkoop' ? 'Klant' : "Zzp'er") + '</th><th>Datum</th><th>Vervalt</th><th class="n">Excl.</th><th class="n">Incl. btw</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table></div>' : '<p class="empty">Geen facturen in deze selectie. Een factuur bouw je automatisch op uit de gewerkte uren in de planning.</p>')
+    + '</section>';
+}
+function factPill(s) { const m = { concept: '', verstuurd: 'info', 'te laat': 'bad', betaald: 'ok' }; return '<span class="pill ' + (m[s] ?? '') + '">' + esc(s) + '</span>'; }
+function volgendNummer(soort, datum) {
+  const y = (datum || TODAY).slice(0, 4), pre = (soort === 'verkoop' ? 'LINK-' : 'INK-') + y + '-';
+  const max = list('facturen').filter(f => (f.nummer || '').startsWith(pre)).reduce((a, f) => Math.max(a, parseInt(f.nummer.slice(pre.length), 10) || 0), 0);
+  return pre + String(max + 1).padStart(3, '0');
+}
+
+function factuurNieuwModal(soort, partijId) {
+  const parties = soort === 'verkoop' ? sortBy(list('klanten'), k => k.naam) : sortBy(list('zzp'), z => z.naam);
+  const now = new Date();
+  const pm = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const st = { soort, partijId: partijId || '', van: iso(pm), tot: iso(new Date(now.getFullYear(), now.getMonth(), 0)), datum: TODAY, sel: null, regels: [], extra: [] };
+  // standaard: vorige maand; als er in de huidige maand al gewerkte uren zijn en vorige maand niets, pak deze maand
+  const m = openModal('<form id="nf"><div class="modal-head"><div><div class="eyebrow">Nieuwe ' + soort + 'factuur</div><h2>' + (soort === 'verkoop' ? 'Factureer gewerkte uren aan een klant' : 'Verreken uren van een zzp\'er') + '</h2></div><button type="button" class="x" data-act="close" aria-label="Sluiten">×</button></div><div class="modal-body">'
+    + '<div class="form"><label class="f" for="nf-p">' + (soort === 'verkoop' ? 'Klant' : "Zzp'er") + '<select id="nf-p" name="p">' + opt('', 'Kies…', st.partijId) + parties.map(p => opt(p.id, p.naam, st.partijId)).join('') + '</select></label>'
+    + '<label class="f" for="nf-nr">Factuurnummer<input id="nf-nr" name="nr" type="text" value="' + esc(volgendNummer(soort, TODAY)) + '"></label>'
+    + '<label class="f" for="nf-van">Periode van<input id="nf-van" name="van" type="date" value="' + st.van + '"></label>'
+    + '<label class="f" for="nf-tot">Periode tot en met<input id="nf-tot" name="tot" type="date" value="' + st.tot + '"></label>'
+    + '<label class="f" for="nf-datum">Factuurdatum<input id="nf-datum" name="datum" type="date" value="' + TODAY + '"></label>'
+    + '<label class="f" for="nf-btw">Btw<select id="nf-btw" name="btw">' + opt('21', '21%', '21') + opt('0', '0%', '21') + '</select></label></div>'
+    + '<div id="nf-src" style="margin-top:16px"></div>'
+    + '<h2 style="margin:18px 0 6px">Factuurregels</h2><div class="tbl-wrap"><table class="lines"><thead><tr><th>Omschrijving</th><th class="n" style="width:90px">Aantal</th><th class="n" style="width:110px">Prijs</th><th class="n" style="width:110px">Bedrag</th><th style="width:40px"></th></tr></thead><tbody id="nf-lines"></tbody></table></div>'
+    + '<button type="button" class="btn small" id="nf-add" style="margin-top:8px">Regel toevoegen</button><div class="totals" id="nf-tot-box"></div>'
+    + '</div><div class="modal-foot"><span class="spacer"></span><button type="button" class="btn" data-act="close">Annuleren</button><button type="submit" class="btn" name="as" value="concept">Opslaan als concept</button><button type="submit" class="btn primary" name="as" value="verstuurd">Opslaan als verstuurd</button></div></form>', { wide: true });
+  const f = m.querySelector('form');
+  const src = m.querySelector('#nf-src'), lines = m.querySelector('#nf-lines'), totBox = m.querySelector('#nf-tot-box');
+
+  function eligible() {
+    const pid = f.p.value; if (!pid) return [];
+    return sortBy(dienstenVan(d => d.status === 'gewerkt' && d.datum >= f.van.value && d.datum <= f.tot.value
+      && (soort === 'verkoop' ? (!d.factuurVerkoopId && project(d.projectId)?.klantId === pid) : (!d.factuurInkoopId && d.zzpId === pid))), d => d.datum);
+  }
+  function buildLines() {
+    const ds = eligible().filter(d => !st.sel || st.sel.has(d.id));
+    const groups = {};
+    ds.forEach(d => { const key = soort === 'verkoop' ? d.projectId : d.projectId; groups[key] = groups[key] || { u: 0, n: 0 }; groups[key].u += uren(d); groups[key].n++; });
+    const per = fmtDL(f.van.value) + ' – ' + fmtDL(f.tot.value);
+    st.regels = Object.entries(groups).map(([pid, g]) => ({
+      omschrijving: (soort === 'verkoop' ? 'Telemarketing / belwerk ' : 'Belwerk ') + (project(pid)?.naam || '') + ' (' + g.n + (g.n === 1 ? ' dienst' : ' diensten') + ', ' + per + ')',
+      aantal: Math.round(g.u * 100) / 100, prijs: soort === 'verkoop' ? tariefVerkoop(pid) : tariefInkoop(f.p.value), projectId: pid, auto: true }));
+    if (soort === 'verkoop') {
+      // Afspraakbonus uit belresultaten van weken binnen de periode
+      list('projecten').filter(p => p.klantId === f.p.value && num(p.prijsPerAfspraak)).forEach(p => {
+        const rs = list('resultaten').filter(r => r.projectId === p.id && iso(weekMonday(r.jaar, r.week)) >= iso(mondayOf(parseISO(f.van.value))) && iso(weekMonday(r.jaar, r.week)) <= f.tot.value);
+        const n = rs.reduce((a, r) => a + num(r.afspraak) + (p.type === 'overdracht' ? num(r.overdracht) : 0), 0);
+        if (n) st.regels.push({ omschrijving: (p.type === 'overdracht' ? 'Afspraken/overdrachten ' : 'Afspraken ') + p.naam + ' (wk ' + rs.map(r => r.week).sort((a, b) => a - b).join(', ') + ')', aantal: n, prijs: num(p.prijsPerAfspraak), projectId: p.id, auto: true });
+      });
+    }
+    st.ids = ds.map(d => d.id);
+  }
+  function drawSrc() {
+    const el = eligible();
+    if (!f.p.value) { src.innerHTML = '<p class="notice info">Kies ' + (soort === 'verkoop' ? 'een klant' : "een zzp'er") + ' om de gewerkte, nog niet gefactureerde uren op te halen.</p>'; return; }
+    if (!el.length) { src.innerHTML = '<p class="notice warn">Geen gewerkte, ongefactureerde diensten in deze periode. Check of de diensten in de planning op <b>gewerkt</b> staan, of voeg handmatig regels toe.</p>'; return; }
+    if (!st.sel) st.sel = new Set(el.map(d => d.id));
+    src.innerHTML = '<details' + (el.length <= 8 ? ' open' : '') + '><summary class="sub" style="cursor:pointer">' + el.length + ' diensten gevonden · ' + nf2(el.reduce((a, d) => a + uren(d), 0)) + ' uur. Vink uit wat niet mee moet.</summary><div class="tbl-wrap"><table><tbody>' + el.map(d => '<tr><td style="width:32px"><input type="checkbox" data-sel="' + d.id + '"' + (st.sel.has(d.id) ? ' checked' : '') + ' aria-label="Neem mee"></td><td class="num">' + fmtD(d.datum) + '</td><td>' + esc(soort === 'verkoop' ? (zzp(d.zzpId)?.naam || '') : '') + ' <span class="meta">' + esc(project(d.projectId)?.naam || '') + '</span></td><td class="n">' + esc(d.start) + '–' + esc(d.eind) + '</td><td class="n">' + nf2(uren(d)) + ' u</td></tr>').join('') + '</tbody></table></div></details>';
+  }
+  function drawLines() {
+    const all = st.regels.concat(st.extra);
+    lines.innerHTML = all.length ? all.map((r, i) => '<tr data-i="' + i + '"><td><input type="text" data-k="omschrijving" value="' + esc(r.omschrijving) + '" aria-label="Omschrijving"></td><td><input type="number" step="any" data-k="aantal" value="' + esc(r.aantal) + '" class="right" aria-label="Aantal"></td><td><input type="number" step="any" data-k="prijs" value="' + esc(r.prijs) + '" class="right" aria-label="Prijs"></td><td class="n">' + eur(num(r.aantal) * num(r.prijs)) + '</td><td><button type="button" class="x" data-rm="' + i + '" aria-label="Regel verwijderen">×</button></td></tr>').join('') : '<tr><td colspan="5" class="muted">Nog geen regels.</td></tr>';
+    const t = factTotals({ regels: all, btwPct: f.btw.value });
+    totBox.innerHTML = '<div><span>Subtotaal</span><span>' + eur(t.sub) + '</span></div><div><span>Btw ' + f.btw.value + '%</span><span>' + eur(t.btw) + '</span></div><div class="grand"><span>Totaal</span><span>' + eur(t.tot) + '</span></div>'
+      + (all.some(r => r.auto && !num(r.prijs)) ? '<p class="notice warn" style="margin-top:8px">Er ontbreekt een tarief. Vul het in bij ' + (soort === 'verkoop' ? 'het project of de klant' : "de zzp'er") + ', of typ de prijs hier.</p>' : '');
+  }
+  function refreshAll(resetSel) {
+    if (resetSel) st.sel = null;
+    if (soort === 'inkoop' && f.p.value) f.btw.value = String(zzp(f.p.value)?.btwPct ?? '21');
+    drawSrc(); buildLines(); drawLines();
+  }
+  f.p.onchange = () => refreshAll(true); f.van.onchange = () => refreshAll(true); f.tot.onchange = () => refreshAll(true);
+  f.btw.onchange = drawLines;
+  f.datum.onchange = () => { f.nr.value = volgendNummer(soort, f.datum.value); };
+  src.addEventListener('change', e => { const id = e.target.dataset.sel; if (!id) return; e.target.checked ? st.sel.add(id) : st.sel.delete(id); buildLines(); drawLines(); });
+  lines.addEventListener('input', e => {
+    const k = e.target.dataset.k; if (!k) return; const i = +e.target.closest('tr').dataset.i;
+    const arr = i < st.regels.length ? st.regels : st.extra; const r = arr[i < st.regels.length ? i : i - st.regels.length];
+    r[k] = k === 'omschrijving' ? e.target.value : num(e.target.value);
+    const cell = e.target.closest('tr').children[3]; cell.textContent = eur(num(r.aantal) * num(r.prijs));
+    const t = factTotals({ regels: st.regels.concat(st.extra), btwPct: f.btw.value });
+    totBox.querySelectorAll('span')[1].textContent = eur(t.sub); totBox.querySelectorAll('span')[3].textContent = eur(t.btw); totBox.querySelectorAll('span')[5].textContent = eur(t.tot);
+  });
+  lines.addEventListener('click', e => { const i = e.target.dataset.rm; if (i === undefined) return; const n = +i; if (n < st.regels.length) st.regels.splice(n, 1); else st.extra.splice(n - st.regels.length, 1); drawLines(); });
+  m.querySelector('#nf-add').onclick = () => { st.extra.push({ omschrijving: '', aantal: 1, prijs: 0 }); drawLines(); const ins = lines.querySelectorAll('input[data-k=omschrijving]'); ins[ins.length - 1]?.focus(); };
+  refreshAll(true);
+
+  f.onsubmit = async e => {
+    e.preventDefault();
+    const as = e.submitter?.value || 'concept';
+    if (!f.p.value) { toast('Kies eerst ' + (soort === 'verkoop' ? 'een klant.' : "een zzp'er."), true); return; }
+    const regels = st.regels.concat(st.extra).filter(r => r.omschrijving || num(r.aantal) * num(r.prijs)).map(r => clean({ omschrijving: r.omschrijving, aantal: num(r.aantal), prijs: num(r.prijs), projectId: r.projectId }));
+    if (!regels.length) { toast('Een factuur heeft minimaal één regel nodig.', true); return; }
+    const p = soort === 'verkoop' ? klant(f.p.value) : null;
+    const termijn = soort === 'verkoop' ? (num(p?.betaaltermijn) || 14) : 14;
+    const fid = store.newId();
+    const doc = { soort, nummer: f.nr.value.trim(), partijId: f.p.value, datum: f.datum.value, vervaldatum: iso(addDays(parseISO(f.datum.value), termijn)), periodeVan: f.van.value, periodeTot: f.tot.value, regels, btwPct: num(f.btw.value), status: as, dienstIds: st.ids || [], aangemaakt: new Date().toISOString() };
+    if (!(await save('facturen', fid, doc))) return;
+    const key = soort === 'verkoop' ? 'factuurVerkoopId' : 'factuurInkoopId';
+    for (const did of doc.dienstIds) if (S.diensten[did]) await save('diensten', did, { ...S.diensten[did], [key]: fid });
+    closeModal(); toast('Factuur ' + doc.nummer + ' opgeslagen'); UI.factSoort = soort; if (UI.tab === 'facturen') render();
+  };
+}
+
+function invoiceHtml(f) {
+  const t = factTotals(f);
+  const p = f.soort === 'verkoop' ? klant(f.partijId) : zzp(f.partijId);
+  return '<div class="inv-top"><div><div class="logo">LINK<span class="dot" style="color:var(--accent)">.</span></div><div class="sub">' + (f.soort === 'verkoop' ? 'Factuur' : 'Inkoopfactuur (self-billing)') + '</div></div><div class="right"><div class="eyebrow">' + esc(f.nummer) + '</div><div class="sub">Datum ' + fmtDL(f.datum) + '<br>Vervalt ' + fmtDL(f.vervaldatum) + '</div></div></div>'
+    + '<div style="margin-bottom:14px"><b>' + esc(p?.naam || partijNaam(f)) + '</b>' + (p?.contactpersoon ? '<br>t.a.v. ' + esc(p.contactpersoon) : '') + (p?.adres ? '<br>' + esc(p.adres) : '') + (p?.kvk ? '<br><span class="sub">KvK ' + esc(p.kvk) + '</span>' : '') + (f.soort === 'inkoop' && p?.iban ? '<br><span class="sub">IBAN ' + esc(p.iban) + '</span>' : '') + '</div>'
+    + '<div class="tbl-wrap"><table><thead><tr><th>Omschrijving</th><th class="n">Aantal</th><th class="n">Prijs</th><th class="n">Bedrag</th></tr></thead><tbody>' + (f.regels || []).map(r => '<tr><td>' + esc(r.omschrijving) + '</td><td class="n">' + nf(num(r.aantal), num(r.aantal) % 1 ? 2 : 0) + '</td><td class="n">' + eur(r.prijs) + '</td><td class="n">' + eur(num(r.aantal) * num(r.prijs)) + '</td></tr>').join('') + '</tbody></table></div>'
+    + '<div class="totals"><div><span>Subtotaal</span><span>' + eur(t.sub) + '</span></div><div><span>Btw ' + num(f.btwPct) + '%</span><span>' + eur(t.btw) + '</span></div><div class="grand"><span>Totaal</span><span>' + eur(t.tot) + '</span></div></div>';
+}
+function factuurModal(id) {
+  const f = { id, ...S.facturen[id] }; const s = factStatus(f);
+  const ds = (f.dienstIds || []).map(i => S.diensten[i]).filter(Boolean);
+  const m = openModal('<div class="modal-head"><div><div class="eyebrow">' + (f.soort === 'verkoop' ? 'Verkoopfactuur' : 'Inkoopfactuur') + ' · ' + factPill(s) + '</div><h2>' + esc(f.nummer) + ' · ' + esc(partijNaam(f)) + '</h2></div><button class="x" data-act="close" aria-label="Sluiten">×</button></div><div class="modal-body">'
+    + (s === 'te laat' ? '<p class="notice bad">Deze factuur is ' + Math.round((new Date(TODAY) - new Date(f.vervaldatum)) / 864e5) + ' dagen over de vervaldatum. Tijd voor een herinnering.</p>' : '')
+    + '<div class="inv">' + invoiceHtml(f) + '</div>'
+    + (ds.length ? '<p class="sub" style="margin-top:10px">Gekoppeld aan ' + ds.length + ' diensten (' + nf2(ds.reduce((a, d) => a + uren(d), 0)) + ' uur) uit de planning.</p>' : '')
+    + (f.betaaldOp ? '<p class="sub">Betaald op ' + fmtDL(f.betaaldOp) + '.</p>' : '')
+    + '</div><div class="modal-foot"><button class="btn danger" id="fdel">Verwijderen</button><span class="spacer"></span>'
+    + (downloads ? '<button class="btn" id="fdl">Download (.html)</button>' : '')
+    + (f.status === 'concept' ? '<button class="btn primary" data-act="fstat:' + id + ':verstuurd">Markeer als verstuurd</button>' : '')
+    + (f.status === 'verstuurd' ? '<button class="btn" data-act="fstat:' + id + ':concept">Terug naar concept</button><button class="btn primary" data-act="fstat:' + id + ':betaald">Markeer als betaald</button>' : '')
+    + (f.status === 'betaald' ? '<button class="btn" data-act="fstat:' + id + ':verstuurd">Toch niet betaald</button>' : '')
+    + '</div>', { wide: true });
+  const del = m.querySelector('#fdel');
+  del.onclick = () => confirmInline(del, 'Factuur verwijderen? De uren worden weer factureerbaar.', async () => {
+    const key = f.soort === 'verkoop' ? 'factuurVerkoopId' : 'factuurInkoopId';
+    for (const d of (f.dienstIds || [])) if (S.diensten[d] && S.diensten[d][key] === id) { const nd = { ...S.diensten[d] }; delete nd[key]; await save('diensten', d, nd); }
+    if (await remove('facturen', id)) { closeModal(); toast('Factuur verwijderd'); }
+  });
+  const dl = m.querySelector('#fdl');
+  if (dl) dl.onclick = () => saveFile((f.nummer || 'factuur') + ' ' + partijNaam(f) + '.html', standaloneInvoice(f));
+}
+async function setFactStatus(id, status) {
+  const f = { ...S.facturen[id], status };
+  if (status === 'betaald') f.betaaldOp = TODAY; else delete f.betaaldOp;
+  if (await save('facturen', id, f)) { toast('Status: ' + status); factuurModal(id); }
+}
+function standaloneInvoice(f) {
+  return '<!doctype html><html lang="nl"><head><meta charset="utf-8"><title>' + esc(f.nummer) + '</title><style>:root{--accent:#38b6ff;--fg:#1c2230;--muted:#6f6a5c;--line:#d9cfb8;--bg:#fff}body{font-family:Helvetica,Arial,sans-serif;color:#1c2230;max-width:760px;margin:40px auto;padding:0 24px;font-size:14px;line-height:1.5}.logo{font-weight:800;font-size:30px;letter-spacing:-.6px}.sub{color:#6f6a5c;font-size:13px}.eyebrow{color:#0b6fa8;font-weight:700;letter-spacing:.18em;font-size:12px}.inv-top{display:flex;justify-content:space-between;margin-bottom:28px}.right{text-align:right}table{width:100%;border-collapse:collapse;margin-top:12px}th{text-align:left;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#6f6a5c;border-bottom:1px solid #1c2230;padding:8px}td{padding:8px;border-bottom:1px solid #e4dcc8}.n{text-align:right;white-space:nowrap}.totals{margin-left:auto;width:300px;margin-top:14px}.totals div{display:flex;justify-content:space-between;padding:3px 0}.grand{font-weight:800;font-size:17px;border-top:1px solid #1c2230;margin-top:4px;padding-top:7px}</style></head><body>' + invoiceHtml(f) + '<p class="sub" style="margin-top:36px">Graag betalen binnen de termijn onder vermelding van ' + esc(f.nummer) + '.</p></body></html>';
+}
+async function saveFile(filename, data) {
+  if (!downloads) { toast('Downloaden is in deze weergave niet beschikbaar.', true); return; }
+  try { await downloads.save({ filename, data }); }
+  catch (e) { if (e && e.code !== 'declined') toast('Downloaden lukte niet (' + (e.code || 'fout') + ').', true); }
+}
+
+/* ======================================================================
+   BELRESULTATEN — zelfde funnel als funnel.py van de rapportage-pijplijn
+   ====================================================================== */
+function vResultaten() {
+  const rs = sortBy(list('resultaten'), r => -wkKey(r.jaar, r.week));
+  const rows = rs.map(r => '<tr class="click" data-act="resultaat:' + r.id + '"><td class="num"><b>wk ' + r.week + '</b> <span class="meta">' + r.jaar + '</span></td><td><span class="dotc" style="background:' + projColor(r.projectId) + '"></span>' + esc(project(r.projectId)?.naam || 'Onbekend') + '<div class="meta">' + esc(klant(project(r.projectId)?.klantId)?.naam || '') + '</div></td><td class="n">' + nf(r.pogingen) + '</td><td class="n">' + nf(r.gesproken) + '</td><td class="n">' + nf(r.afspraak) + '</td><td class="n">' + nf(r.overdracht) + '</td><td class="n">' + nf(r.terugbel) + '</td><td class="n">' + pct(num(r.warm), num(r.gesproken)) + '%</td></tr>').join('');
+  return '<div class="page-head"><div><div class="eyebrow">Belresultaten</div><h1>Funnel <span class="serif">per project per week</span></h1></div><div class="actions"><button class="btn" data-act="newresult">Handmatig invoeren</button></div></div>'
+    + '<section class="card" style="margin-bottom:16px"><div class="card-body" style="padding-top:16px"><label class="drop" id="drop" for="upl"><strong>Sleep een belexport hierheen</strong> of klik om te kiezen<br><span class="sub">Belstat / Steam Connect · .xls (HTML-tabel) of .csv · dezelfde telling als de weekrapportage</span></label><input type="file" id="upl" accept=".xls,.xlsx,.html,.htm,.csv,.txt" hidden multiple></div></section>'
+    + '<section class="card">' + (rs.length ? '<div class="tbl-wrap"><table><thead><tr><th>Week</th><th>Project</th><th class="n">Pogingen</th><th class="n">Gesproken</th><th class="n">Afspraak</th><th class="n">Overdracht</th><th class="n">Terugbel</th><th class="n">Warm/gespr.</th></tr></thead><tbody>' + rows + '</tbody></table></div>' : '<p class="empty">Nog geen resultaten. Upload de wekelijkse belexport: de funnel wordt per project opgeslagen en per beller gekoppeld aan de zzp\'er met dezelfde naam.</p>') + '</section>';
+}
+function parseCSV(text, sep) {
+  const rows = []; let row = [], cur = '', q = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) { if (c === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += c; }
+    else if (c === '"') q = true;
+    else if (c === sep) { row.push(cur); cur = ''; }
+    else if (c === '\n' || c === '\r') { if (c === '\r' && text[i + 1] === '\n') i++; row.push(cur); rows.push(row); row = []; cur = ''; }
+    else cur += c;
+  }
+  if (cur || row.length) { row.push(cur); rows.push(row); }
+  return rows.filter(r => r.some(x => x.trim()));
+}
+async function readExport(file) {
+  const buf = await file.arrayBuffer();
+  let text = new TextDecoder('utf-8').decode(buf);
+  if (text.includes(String.fromCharCode(0xFFFD))) text = new TextDecoder('windows-1252').decode(buf);
+  let rows;
+  if (/<table/i.test(text)) {
+    const doc = new DOMParser().parseFromString(text, 'text/html');
+    const tbl = doc.querySelector('table');
+    const trs = [...tbl.querySelectorAll('tr')].map(tr => [...tr.querySelectorAll('th,td')].map(c => c.textContent.replace(/ /g, ' ').trim()));
+    const head = trs[0];
+    rows = trs.slice(1).filter(r => r.length >= head.length - 1).map(r => Object.fromEntries(head.map((h, i) => [h, r[i] ?? ''])));
+  } else if (/management module/i.test(text) && text.length < 6000) {
+    throw new Error('Dit is een lege export (alleen de "Management module"-wrapper zonder data). Exporteer opnieuw uit Belstat.');
+  } else {
+    const first = text.split(/\r?\n/)[0];
+    const sep = (first.match(/;/g) || []).length > (first.match(/,/g) || []).length ? ';' : ',';
+    const raw = parseCSV(text, sep);
+    if (raw.length && raw[0].some(c => /resultaatcode/i.test(c))) { const head = raw[0].map(h => h.trim()); rows = raw.slice(1).map(r => Object.fromEntries(head.map((h, i) => [h, r[i] ?? '']))); }
+    else rows = raw.map(r => Object.fromEntries(CSV_COLS.map((h, i) => [h, r[i] ?? ''])));
+  }
+  if (!rows || !rows.length) throw new Error('Geen regels gevonden in ' + file.name + '.');
+  const out = rows.map(r => {
+    const g = k => { const key = Object.keys(r).find(x => x.toLowerCase() === k.toLowerCase()); return key ? String(r[key]).trim() : ''; };
+    const m = g('Resultaatcode').replace('MAX-', '').match(/\d+/);
+    return { project: g('Naam project'), agent: g('Naam agent'), bedrijf: g('Bedrijf'), dt: g('Contactmoment datum & tijd'), campagne: g('Campagne') || g('Projectcode'), code: m ? +m[0] : null };
+  }).filter(r => r.code !== null);
+  if (!out.length) throw new Error('Geen resultaatcodes gevonden. Is dit wel een belexport?');
+  return out;
+}
+function funnelOf(rows) {
+  const uniq = codes => new Set(rows.filter(r => codes.includes(r.code)).map(r => r.bedrijf)).size;
+  return { pogingen: rows.length, gesproken: uniq(SPOKEN), warm: uniq(WARM), afspraak: uniq([100]), overdracht: uniq([101]), terugbel: uniq([500]), infomail: uniq([501]), terugbelverzoek: uniq([502]), geenInteresse: rows.filter(r => [200, 201, 202].includes(r.code)).length };
+}
+function parseDt(s) {
+  let m = s.match(/(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})/); if (m) return new Date(+m[3], +m[2] - 1, +m[1]);
+  m = s.match(/(\d{4})-(\d{2})-(\d{2})/); if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+  return null;
+}
+async function handleFiles(files) {
+  for (const file of files) {
+    let rows;
+    try { rows = await readExport(file); } catch (e) { toast(e.message, true); continue; }
+    await new Promise(res => importModal(file.name, rows, res));
+  }
+}
+function importModal(filename, rows, done) {
+  // week = meest voorkomende ISO-week in de contactmomenten
+  const wc = {};
+  rows.forEach(r => { const d = parseDt(r.dt); if (!d) return; const w = isoWeek(d); const k = w.jaar + '-' + w.week; wc[k] = (wc[k] || 0) + 1; });
+  const top = Object.entries(wc).sort((a, b) => b[1] - a[1])[0];
+  const def = top ? { jaar: +top[0].split('-')[0], week: +top[0].split('-')[1] } : vorigeWeek();
+  // klant bepalen: Campagne/Projectcode → klant → project; anders "Naam project" → Belstat-naam. Nooit gokken op doelgroep.
+  const camp = [...new Set(rows.map(r => r.campagne).filter(Boolean))];
+  const pnames = [...new Set(rows.map(r => r.project).filter(Boolean))];
+  let guess = '', reden = '';
+  const ps = list('projecten');
+  const byDialer = ps.find(p => p.dialerNaam && (camp.concat(pnames)).some(n => norm(n) === norm(p.dialerNaam)));
+  if (byDialer) { guess = byDialer.id; reden = 'herkend via de Belstat-naam van het project'; }
+  else if (camp.length === 1) {
+    const k = list('klanten').find(k => norm(k.naam) === norm(camp[0]) || norm(camp[0]).includes(norm(k.naam)) || norm(k.naam).includes(norm(camp[0])));
+    const kp = k ? ps.filter(p => p.klantId === k.id && p.status === 'actief') : [];
+    if (kp.length === 1) { guess = kp[0].id; reden = 'herkend via Campagne "' + camp[0] + '"'; }
+  }
+  const fu = funnelOf(rows);
+  const agents = {};
+  rows.forEach(r => { const a = r.agent || 'Onbekend'; (agents[a] = agents[a] || []).push(r); });
+  const zmatch = a => list('zzp').find(z => norm(z.naam) === norm(a) || norm(a).includes(norm(z.naam)) && norm(z.naam).length > 3);
+  const m = openModal('<form id="imp"><div class="modal-head"><div><div class="eyebrow">Belexport inlezen</div><h2>' + esc(filename) + '</h2></div><button type="button" class="x" data-act="close" aria-label="Sluiten">×</button></div><div class="modal-body">'
+    + '<p class="sub" style="margin-top:0">' + rows.length + ' contactmomenten · Naam project: <b>' + esc(pnames.join(', ') || '–') + '</b> · Campagne: <b>' + esc(camp.join(', ') || 'ontbreekt') + '</b></p>'
+    + (guess ? '<p class="notice info">Project ' + esc(reden) + '. Controleer het even.</p>' : '<p class="notice warn">De klant is niet zeker uit de export af te leiden' + (camp.length ? '' : ' (geen Campagne-kolom)') + '. Kies zelf het juiste project. Twee exports met hetzelfde SBI-thema kunnen verschillende klanten zijn.</p>')
+    + '<div class="form"><label class="f full" for="imp-p">Project<select id="imp-p" name="p" required>' + opt('', 'Kies het project…', guess) + sortBy(ps, p => projLabel(p.id)).map(p => opt(p.id, projLabel(p.id), guess)).join('') + '</select></label>'
+    + '<label class="f" for="imp-j">Jaar<input id="imp-j" name="j" type="number" value="' + def.jaar + '"></label><label class="f" for="imp-w">Week<input id="imp-w" name="w" type="number" min="1" max="53" value="' + def.week + '"></label></div>'
+    + '<div class="facts" style="margin-top:14px"><div><b>' + fu.pogingen + '</b>contactpogingen</div><div><b>' + fu.gesproken + '</b>bedrijven gesproken</div><div><b>' + fu.warm + '</b>warme uitkomst</div><div><b>' + fu.afspraak + '</b>afspraak (100)</div><div><b>' + fu.overdracht + '</b>overdracht (101)</div><div><b>' + fu.terugbel + '</b>terugbelafspraak (500)</div></div>'
+    + '<h2 style="margin:4px 0 6px">Per beller</h2><div class="tbl-wrap"><table><thead><tr><th>Naam agent</th><th>Zzp\'er</th><th class="n">Pogingen</th><th class="n">Gesproken</th><th class="n">Afspr.</th><th class="n">Overdr.</th></tr></thead><tbody>'
+    + Object.entries(agents).map(([a, rr]) => { const z = zmatch(a), af = funnelOf(rr); return '<tr><td>' + esc(a) + '</td><td>' + (z ? '<span class="pill ok">' + esc(z.naam) + '</span>' : '<span class="pill">niet gekoppeld</span>') + '</td><td class="n">' + af.pogingen + '</td><td class="n">' + af.gesproken + '</td><td class="n">' + af.afspraak + '</td><td class="n">' + af.overdracht + '</td></tr>'; }).join('')
+    + '</tbody></table></div><p class="sub" id="imp-name"></p></div><div class="modal-foot"><span class="spacer"></span><button type="button" class="btn" data-act="close">Overslaan</button><button type="submit" class="btn primary">Opslaan</button></div></form>', { wide: true });
+  modalCleanup = done;
+  const f = m.querySelector('form');
+  const nameUpd = () => { const p = project(f.p.value); const k = klant(p?.klantId); const ex = list('resultaten').find(r => r.projectId === f.p.value && r.jaar === num(f.j.value) && r.week === num(f.w.value)); m.querySelector('#imp-name').innerHTML = (k ? 'Hoort bij rapportage: <b>Rapportage ' + esc(k.naam) + ' wk ' + esc(f.w.value) + '.pdf</b>. ' : '') + (ex ? '<span style="color:var(--warn)">Er staan al resultaten voor deze week; opslaan overschrijft ze.</span>' : ''); };
+  f.addEventListener('change', nameUpd); f.addEventListener('input', nameUpd); nameUpd();
+  f.onsubmit = async e => {
+    e.preventDefault();
+    if (!f.p.value) { toast('Kies het project waar deze export bij hoort.', true); return; }
+    const jaar = num(f.j.value), week = num(f.w.value);
+    const perAgent = {};
+    Object.entries(agents).forEach(([a, rr]) => { const z = zmatch(a); perAgent[norm(a) || 'onbekend'] = { naam: a, zzpId: z ? z.id : null, ...funnelOf(rr) }; });
+    const id = (f.p.value + '_' + jaar + '-W' + String(week).padStart(2, '0'));
+    if (await save('resultaten', id, { projectId: f.p.value, jaar, week, ...fu, perAgent, bron: filename, ingelezen: new Date().toISOString() })) { toast('Week ' + week + ' opgeslagen voor ' + (project(f.p.value)?.naam || '')); closeModal(); }
+  };
+}
+function resultaatModal(id, preset) {
+  const r = id ? S.resultaten[id] : (preset || { jaar: vorigeWeek().jaar, week: vorigeWeek().week });
+  const fields = [
+    { k: 'projectId', label: 'Project', type: 'select', full: true, options: [['', 'Kies…'], ...sortBy(list('projecten'), p => projLabel(p.id)).map(p => [p.id, projLabel(p.id)])] },
+    { k: 'jaar', label: 'Jaar', type: 'number' }, { k: 'week', label: 'Week', type: 'number' },
+    { k: 'pogingen', label: 'Contactpogingen', type: 'number' }, { k: 'gesproken', label: 'Bedrijven gesproken', type: 'number' },
+    { k: 'afspraak', label: 'Afspraken (100)', type: 'number' }, { k: 'overdracht', label: 'Overdrachten (101)', type: 'number' },
+    { k: 'terugbel', label: 'Terugbelafspraken (500)', type: 'number' }, { k: 'geenInteresse', label: 'Geen interesse (200-202)', type: 'number' },
+  ];
+  const ag = r.perAgent ? Object.values(r.perAgent) : [];
+  const k = klant(project(r.projectId)?.klantId);
+  const extra = id ? '<div class="facts"><div><b>' + pct(num(r.gesproken), num(r.pogingen)) + '%</b>gesproken / pogingen</div><div><b>' + pct(num(r.warm), num(r.gesproken)) + '%</b>warm / gesproken</div><div><b>' + nf(r.infomail) + '</b>infomail (501)</div><div><b>' + nf(r.terugbelverzoek) + '</b>terugbelverzoek (502)</div></div>'
+    + (ag.length ? '<div class="tbl-wrap" style="margin-bottom:14px"><table><thead><tr><th>Beller</th><th class="n">Pogingen</th><th class="n">Gesproken</th><th class="n">Afspr.</th><th class="n">Overdr.</th></tr></thead><tbody>' + ag.map(a => '<tr><td>' + esc(a.zzpId && zzp(a.zzpId) ? zzp(a.zzpId).naam : a.naam) + '</td><td class="n">' + a.pogingen + '</td><td class="n">' + a.gesproken + '</td><td class="n">' + a.afspraak + '</td><td class="n">' + a.overdracht + '</td></tr>').join('') + '</tbody></table></div>' : '')
+    + (k ? '<p class="sub">Rapportagebestand: <b>Rapportage ' + esc(k.naam) + ' wk ' + r.week + '.pdf</b>' + (r.bron ? ' · bron: ' + esc(r.bron) : '') + '</p>' : '') : '';
+  const m = openModal('<form><div class="modal-head"><div><div class="eyebrow">Belresultaten</div><h2>' + (id ? esc(project(r.projectId)?.naam || '') + ' · week ' + r.week : 'Handmatig invoeren') + '</h2></div><button type="button" class="x" data-act="close" aria-label="Sluiten">×</button></div><div class="modal-body">' + extra + '<div class="form">' + fields.map(f => field(f, r[f.k])).join('') + '</div></div><div class="modal-foot">' + (id ? '<button type="button" class="btn danger" id="del">Verwijderen</button>' : '') + '<span class="spacer"></span><button type="button" class="btn" data-act="close">Annuleren</button><button type="submit" class="btn primary">Opslaan</button></div></form>', { wide: !!id });
+  const f = m.querySelector('form');
+  f.onsubmit = async e => {
+    e.preventDefault();
+    const d = readForm(f, fields);
+    if (!d.projectId || !d.jaar || !d.week) { toast('Kies een project, jaar en week.', true); return; }
+    const nid = d.projectId + '_' + d.jaar + '-W' + String(d.week).padStart(2, '0');
+    const body = { ...(id ? S.resultaten[id] : {}), ...d, warm: num(d.afspraak) + num(d.overdracht) + num(d.terugbel) };
+    if (id && id !== nid) await remove('resultaten', id);
+    if (await save('resultaten', nid, body)) { closeModal(); toast('Opgeslagen'); }
+  };
+  const del = m.querySelector('#del');
+  if (del) del.onclick = () => confirmInline(del, 'Resultaten verwijderen?', async () => { if (await remove('resultaten', id)) { closeModal(); toast('Verwijderd'); } });
+}
+
+/* ======================================================================
+   Acties (event delegation)
+   ====================================================================== */
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]'); if (!el) return;
+  const [a, b, c] = el.dataset.act.split(':');
+  const actions = {
+    close: closeModal,
+    tab: () => { if (b === 'planning' && c) UI.weekStart = mondayOf(parseISO(c)); closeModal(); go(b); },
+    wk: () => { UI.weekStart = b === '0' ? mondayOf(new Date()) : addDays(UI.weekStart, 7 * +b); render(); },
+    newdienst: () => dienstModal(null, { datum: b || TODAY, zzpId: c || '' }),
+    dienst: () => dienstModal(b),
+    plan: () => dienstModal(null, { datum: TODAY, projectId: b }),
+    confirmweek: confirmWeek,
+    newproject: () => projectModal(null, { klantId: b || '', status: 'actief', type: klant(b)?.deliverable || 'afspraak' }),
+    project: () => projectModal(b),
+    pf: () => { UI.projFilter = b; render(); },
+    newklant: () => klantModal(null), klant: () => klantModal(b),
+    newzzp: () => zzpModal(null), zzp: () => zzpModal(b),
+    newfact: () => factuurNieuwModal(b, c || ''),
+    factuur: () => factuurModal(b),
+    fstat: () => setFactStatus(b, c),
+    fs: () => { UI.factSoort = b; UI.factStatus = 'alle'; render(); },
+    fst: () => { UI.factStatus = b; render(); },
+    newresult: () => resultaatModal(null), resultaat: () => resultaatModal(b),
+  };
+  if (actions[a]) { e.preventDefault(); actions[a](); }
+});
+document.addEventListener('change', e => { if (e.target.id === 'upl' && e.target.files.length) { handleFiles([...e.target.files]); e.target.value = ''; } });
+document.addEventListener('dragover', e => { const d = e.target.closest && e.target.closest('#drop'); if (d) { e.preventDefault(); d.classList.add('over'); } });
+document.addEventListener('dragleave', e => { const d = e.target.closest && e.target.closest('#drop'); if (d) d.classList.remove('over'); });
+document.addEventListener('drop', e => { const d = e.target.closest && e.target.closest('#drop'); if (d) { e.preventDefault(); d.classList.remove('over'); handleFiles([...e.dataTransfer.files]); } });
+
+/* ======================================================================
+   Start
+   ====================================================================== */
+(function boot() {
+  const h = (location.hash || '').slice(1);
+  let saved = null; try { saved = localStorage.getItem('link-tab'); } catch (e) { /* */ }
+  UI.tab = TABS.some(t => t[0] === h) ? h : (TABS.some(t => t[0] === saved) ? saved : 'overzicht');
+  renderTabs(); render();
+  const start = st => {
+    store = st;
+    const mode = document.getElementById('mode');
+    mode.textContent = st.mode === 'gedeeld' ? 'live gedeeld' : 'lokaal';
+    mode.className = 'mode' + (st.mode === 'gedeeld' ? '' : ' local');
+    mode.title = st.mode === 'gedeeld' ? 'Alle wijzigingen worden gedeeld met iedereen met toegang.' : 'Gegevens staan alleen in deze browser. Open het dashboard via claude.ai voor gedeelde opslag.';
+    COLL.forEach(c => st.subscribe(c, data => { S[c] = data; S.loaded.add(c); render(); }));
+  };
+  if (window.claude && typeof window.claude.use === 'function') {
+    window.claude.use('db').then(db => start(db ? dbStore(db) : localStore())).catch(() => start(localStore()));
+    window.claude.use('downloads').then(d => { downloads = d; }).catch(() => {});
+  } else start(localStore());
+})();
+})();
+</script>
