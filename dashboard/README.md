@@ -50,6 +50,7 @@ klanten ──< projecten ──< diensten >── zzp
 - **Twinfield**: Hens stuurt dagelijks een screenshot van de factuurstatussen; Claude zet de statussen gelijk en legt de totalen vast in `sync/twinfield`. Het overzicht laat zien of dashboard en Twinfield aansluiten.
 - **Mail**: het dashboard leest (alleen lezen) Gmail op factuurmails van de laatste 14 dagen: verstuurde facturen, binnenkomende facturen van bellers en doorsturingen naar Basecone. Het maakt nooit concepten aan; per mail is er hooguit een knop om de factuur in het dashboard bij te werken.
 
+- **Briefing = koude acquisitie**: bellers krijgen alleen koude acquisitie (nieuwe bedrijven, terugbelafspraken en infomails nabellen). Afspraken en leads bevestigen, voorbereiden en opvolgen doet Hens aan de achterkant; die punten staan alleen bij de opdrachtgever onder "Achterkant (Hens)".
 - **Beste beltijd** per opdrachtgever: resultaten (volgens wat er voor die klant telt) per 100 belpogingen, per blok van 2 uur (9-11, 11-13, 13-15, 15-17) en per weekdag, uit de Steam-belpogingen en belexports. Minder dan 500 pogingen in totaal = indicatief; een blok onder 150 pogingen staat gemarkeerd.
 - **Werkperiodes**: bij elke opdrachtgever staat de historie per periode (resultaat tegenover target, afspraken, leads, pogingen) en de Steam-stand van de laatste export. Bij Moyee gelden aparte targets per code (4 afspraken, 10 leads per 4 weken).
 

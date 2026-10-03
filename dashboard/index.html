@@ -884,6 +884,8 @@ function periodesHtml(p) {
   const sc = p.steamCheck;
   if (sc) h += '<p class="notice ' + (sc.verschil ? 'warn' : 'info') + '">Controle Steam-campagnerapport (' + fmtD(sc.peildatum) + '): Steam telt ' + sc.steam + ' resultaten (' + sc.afspraken + ' afspraken, ' + sc.overdrachten + ' overdrachten), de belexport ' + sc.dashboard + '. ' + (sc.verschil ? (sc.verschil > 0 ? 'De export mist er ' + sc.verschil + '. ' : 'De export telt er ' + (-sc.verschil) + ' meer. ') : 'Sluit aan. ') + esc(sc.toelichting || '') + '</p>';
   if (per.length) h += '<div class="tbl-wrap" style="margin-bottom:14px"><table><thead><tr><th>Periode</th><th class="n">Resultaat</th><th class="n">Afspraken</th><th class="n">Leads</th><th class="n">Pogingen</th><th class="n">Per 100 pog.</th></tr></thead><tbody>' + per.map(r => '<tr><td>' + esc(r.label) + ' <span class="meta">' + fmtD(r.van) + ' – ' + fmtD(r.tot) + '</span></td><td class="n"><b>' + r.resultaten + '</b> / ' + (r.target ?? '–') + ' ' + (r.target ? '<span class="sl ' + (r.resultaten >= r.target ? 'groen' : r.resultaten >= r.target * 0.8 ? 'oranje' : r.tot < TODAY ? 'rood' : 'grijs') + '"></span>' : '') + '</td><td class="n">' + r.afspraken + '</td><td class="n">' + r.leads + '</td><td class="n">' + nf(r.pogingen) + '</td><td class="n">' + (r.pogingen ? nf(100 * r.resultaten / r.pogingen, 1) : '–') + '</td></tr>').join('') + '</tbody></table></div>';
+  const ak = achterkantFocus(p);
+  if (ak.length) h += '<h2 style="margin:0 0 6px">Achterkant (Hens)</h2><ul style="margin:0 0 14px;padding-left:18px">' + ak.map(f => '<li>' + esc(f) + '</li>').join('') + '</ul>';
   const wk = resultatenVan(p.id).filter(r => r.rapportage || telt(p.id, r)).slice(0, 8);
   if (wk.length) h += '<h2 style="margin:0 0 6px">Resultaten per week</h2><ul class="list" style="margin-bottom:14px">' + wk.map(r => '<li style="padding:6px 0"><div class="main"><b>wk ' + r.week + '</b> <span class="meta">' + fmtD(iso(weekMonday(r.jaar, r.week))) + '</span> · ' + (r.rapportage ? esc(r.rapportage.tekst) + ' <span class="pill ok" title="gecontroleerd tegen de rapportage">rapportage</span>' : nf(num(r.afspraak)) + ' afspr · ' + nf(num(r.overdracht)) + ' overdr <span class="meta">(export)</span>') + '</div></li>').join('') + '</ul>';
   const b = p.beltijd;
@@ -1266,7 +1268,7 @@ function vDagstart() {
   const note = S.dagstart[refI]?.notitie || '';
   return '<div class="page-head"><div><div class="eyebrow">Dagstart · ' + esc(fmtD(refI, true)) + ' · week ' + wk.week + (isToday ? '' : ' (eerstvolgende werkdag)') + '</div><h1>Wat moet er <span class="serif">deze week gebeuren?</span></h1></div><div class="actions"><button class="btn primary" data-act="newdienst:' + refI + '">Inplannen</button></div></div>'
     + '<section class="kpis k4">' + kpis.map(k => '<div class="kpi' + (k.hl ? ' hl' : '') + '"><div class="lbl">' + esc(k.lbl) + '</div><div class="val">' + esc(k.val) + '</div><div class="foot' + (k.bad ? ' bad' : '') + '">' + esc(k.foot) + '</div></div>').join('') + '</section>'
-    + '<h2 style="margin:4px 0 10px;font-size:17px">Briefing per beller</h2>' + briefingHtml(refI, plans)
+    + '<h2 style="margin:4px 0 10px;font-size:17px">Briefing per beller · koude acquisitie</h2>' + briefingHtml(refI, plans)
     + '<section class="card" style="margin-bottom:16px"><div class="card-head"><h2>Per opdrachtgever</h2><span class="sub">klik op een regel voor de verdeling over bellers</span></div><div class="tbl-wrap"><table class="ov"><thead><tr><th></th><th>Opdrachtgever · werkperiode</th><th class="n">Nodig wk</th><th class="n">Gehaald</th><th class="n">Ingepland</th><th class="n">Verwacht</th><th>Actie</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div></section>'
     + '<section class="card"><div class="card-head"><h2>Afspraken uit de dagstart</h2><span class="sub">' + (S.dagstart[refI]?.gewijzigd ? 'opgeslagen ' + new Date(S.dagstart[refI].gewijzigd).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' }) : '') + '</span></div><div class="card-body"><textarea id="ds-note" data-date="' + refI + '" aria-label="Afspraken uit de dagstart" placeholder="Wie belt extra, welke lijsten gaan open…" style="min-height:110px">' + esc(note) + '</textarea></div></section>';
 }
@@ -1288,6 +1290,10 @@ async function saveDagstart() {
 /* ======================================================================
    BRIEFING PER BELLER — wat moet er vandaag gebeuren, hoe halen we dat, feedback
    ====================================================================== */
+// Bellers doen koude acquisitie. Bevestigen, voorbereiden en opvolgen van gemaakte afspraken en leads gebeurt aan de achterkant (Hens).
+const ACHTERKANT = /(bevestig|voorbereid|(^|[^a-z])afspra(ak|ken) met|kennismakingsbezoek|terugkoppeling|nagaan of|punten van .+ (naar|sturen)|met merel|kortingscode .*bestel)/i;
+function koudeFocus(p) { return (p?.inzicht?.focus || []).filter(f => !ACHTERKANT.test(f)); }
+function achterkantFocus(p) { return (p?.inzicht?.focus || []).filter(f => ACHTERKANT.test(f)); }
 function bellerStats(zid, weken = 4) {
   const vanaf = iso(addDays(mondayOf(new Date()), -7 * (weken - 1) - 7));
   const agg = { pog: 0, regels: 0, gesproken: 0, res: 0 };
@@ -1332,7 +1338,7 @@ function briefingTekst(zid, refI, bd) {
     if (pp && !pp.nogNiet) r.push('Stand: ' + nf(pp.gehaald) + ' van ' + nf(pp.target, pp.target % 1 ? 1 : 0) + ', nog ' + nf(pp.nog, pp.nog % 1 ? 1 : 0) + ' tot ' + fmtD(pp.tot) + '.');
     if (x.p.belinstructie) r.push('Pitch: ' + x.p.belinstructie);
     if (x.p.beltijd?.besteBlok) r.push('Beste tijd: ' + beltijdKort(x.p) + '.');
-    (ins?.focus || []).slice(0, 2).forEach(f => r.push('• ' + f));
+    koudeFocus(x.p).slice(0, 2).forEach(f => r.push('• ' + f));
     if (ins?.hoorden?.[0]) r.push('Wat werkt: ' + ins.hoorden[0]);
   });
   const tips = bellerTips(bd.stats); r.push(''); r.push('Feedback: ' + tips.join(' '));
@@ -1352,7 +1358,7 @@ function briefingHtml(refI, plans) {
         + (pp && !pp.nogNiet ? '<div class="meta">WP ' + pp.nr + ': ' + nf(pp.gehaald) + ' van ' + nf(pp.target, pp.target % 1 ? 1 : 0) + ' (' + esc(codeRegel(x.p, pp)) + '), nog ' + nf(pp.nog, pp.nog % 1 ? 1 : 0) + ' tot ' + fmtD(pp.tot) + '</div>' : '')
         + (x.p.belinstructie ? '<p><b>Pitch:</b> ' + esc(x.p.belinstructie) + '</p>' : '')
         + (x.p.beltijd?.besteBlok ? '<p><b>Beste tijd:</b> ' + esc(beltijdKort(x.p)) + (buitenTijd ? ' <span class="pill warn">dit blok valt erbuiten</span>' : '') + '</p>' : '')
-        + (ins?.focus?.length ? '<p><b>Focus:</b></p><ul>' + ins.focus.map(f => '<li>' + esc(f) + '</li>').join('') + '</ul>' : '')
+        + (koudeFocus(x.p).length ? '<p><b>Focus koude acquisitie:</b></p><ul>' + koudeFocus(x.p).map(f => '<li>' + esc(f) + '</li>').join('') + '</ul>' : '')
         + (ins?.hoorden?.length ? '<p><b>Wat werkt:</b></p><ul>' + ins.hoorden.map(f => '<li>' + esc(f) + '</li>').join('') + '</ul>' : '')
         + (ins ? '<p class="meta">Open: ' + ins.terugbelOpen + ' terugbelafspraken' + (ins.infomails ? ' · ' + ins.infomails + ' infomails nabellen' : '') + ' (rapportage wk ' + ins.week + ')</p>' : '')
         + '</div>';
