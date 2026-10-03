@@ -514,7 +514,7 @@ function vOverzicht() {
     const k = klant(p.klantId);
     const f = factuurStand(p.klantId);
     const sl = x.nogNiet ? '<span class="sl grijs" title="nog niet gestart"></span>' : '<span class="sl ' + x.stoplicht + '" title="' + esc(x.stoplichtTekst) + '"></span>';
-    const res = x.nogNiet ? '<span class="meta">start ' + fmtD(x.van) + '</span>' : '<b>' + nf(x.gehaald) + '</b> / ' + nf(x.target, x.target % 1 ? 1 : 0) + '<div class="meta">' + esc(codeRegel(p, x)) + '</div><div class="bar-mini"><i style="width:' + Math.min(100, pct(x.gehaald, x.target)) + '%;background:' + slKleur(x.stoplicht) + '"></i></div>';
+    const res = x.nogNiet ? '<span class="meta">start ' + fmtD(x.van) + '</span>' : '<b>' + nf(x.gehaald) + '</b> / ' + nf(x.target, x.target % 1 ? 1 : 0) + '<div class="meta">' + esc(codeRegel(p, x)) + '</div><div class="meta">laatste 4 wkn: <b>' + x.laatste4 + '</b></div><div class="bar-mini"><i style="width:' + Math.min(100, pct(x.gehaald, x.target)) + '%;background:' + slKleur(x.stoplicht) + '"></i></div>';
     const nodig = x.nogNiet ? '<span class="meta">' + nf(x.target, 0) + ' in ' + (num(p.periodeWeken) || 4) + ' wkn</span>' : x.nog > 0 ? '<b>' + nf(x.nog, x.nog % 1 ? 1 : 0) + '</b> in ' + x.restDagen + ' werkdg<div class="meta">' + (x.restDagen ? nf(x.nog / x.restDagen, 1) + ' per dag' : 'periode voorbij') + '</div>' : '<span class="pill ok">gehaald</span>';
     const plan = x.urenWeek ? nf2(x.urenWeek) + ' u<div class="meta">' + esc(x.bellersWeek.join(', ')) + '</div>' : '<span class="pill ' + (x.nogNiet ? '' : 'bad') + '">niemand</span>';
     return '<tr class="click' + (x.nogNiet ? ' dim' : '') + '" data-act="project:' + p.id + '"><td>' + sl + '</td><td><b>' + esc(k?.naam || p.naam) + '</b><div class="meta">' + (x.nogNiet ? 'pilot · ' : 'WP ' + x.nr + ' · ') + fmtD(x.van) + ' – ' + fmtD(x.tot) + '</div></td><td class="n">' + res + '</td><td class="n">' + (x.nogNiet ? '–' : nf(x.prognose, 1)) + '</td><td class="n">' + nodig + '</td><td class="n">' + plan + '</td><td class="meta" style="white-space:nowrap">' + (beltijdKort(p) ? '<b style="color:var(--fg)">' + esc(beltijdKort(p)) + '</b>' + (p.beltijd.zekerheid === 'indicatief' ? '<br>indicatief' : '') : '–') + '</td><td>' + f + '</td><td class="meta">' + esc(prijsLabel(p.id)) + (p.testEinde ? '<br>einde ' + fmtD(p.testEinde) : '') + '</td></tr>';
@@ -558,6 +558,9 @@ function periodePlan(p, peil = TODAY) {
   const inP = list('resultaten').filter(r => r.projectId === p.id && iso(weekMonday(r.jaar, r.week)) >= iso(mondayOf(parseISO(van))) && iso(weekMonday(r.jaar, r.week)) <= tot);
   const gehaald = inP.reduce((a, r) => a + telt(p.id, r), 0);
   const afspraken = inP.reduce((a, r) => a + num(r.afspraak), 0), leads = inP.reduce((a, r) => a + num(r.overdracht), 0);
+  // laatste 4 volle/lopende weken t/m peildatum, los van de periodegrens
+  const w4 = iso(addDays(mondayOf(parseISO(peil)), -21));
+  const laatste4 = list('resultaten').filter(r => r.projectId === p.id && iso(weekMonday(r.jaar, r.week)) >= w4 && iso(weekMonday(r.jaar, r.week)) <= peil).reduce((a, r) => a + telt(p.id, r), 0);
   const gisteren = iso(addDays(parseISO(peil), -1));
   const verstreken = nogNiet || gisteren < van ? 0 : werkdagen(van, gisteren < tot ? gisteren : tot);
   const totaal = werkdagen(van, tot), restDagen = Math.max(0, totaal - Math.max(0, verstreken));
@@ -570,7 +573,7 @@ function periodePlan(p, peil = TODAY) {
   const dagenDezeWeek = restDagen ? werkdagen(wsI > van ? wsI : van, weI < tot ? weI : tot) : 0;
   const nodigWeek = restDagen ? nog * Math.min(1, dagenDezeWeek / restDagen) : 0;
   const dw = dienstenVan(d => d.projectId === p.id && d.datum >= wsI && d.datum <= iso(addDays(mondayOf(ref), 6)) && d.status !== 'afgemeld');
-  return { nogNiet, nr: n + 1, van, tot, target, gehaald, afspraken, leads, prognose, nog, restDagen, stoplicht, nodigWeek,
+  return { nogNiet, nr: n + 1, van, tot, target, gehaald, afspraken, leads, laatste4, w4, prognose, nog, restDagen, stoplicht, nodigWeek,
     stoplichtTekst: target ? 'prognose ' + nf(prognose, 1) + ' van ' + nf(target, 1) : 'geen target',
     urenWeek: dw.reduce((a, d) => a + uren(d), 0), bellersWeek: [...new Set(dw.map(d => (zzp(d.zzpId)?.naam || '').split(' ')[0]))] };
 }
@@ -864,7 +867,9 @@ function periodesHtml(p) {
   const per = (p.perioden || []).slice().reverse();
   const ss = p.steamStand;
   let h = '<h2 style="margin:0 0 6px">Werkperiodes</h2>';
-  h += '<p class="sub" style="margin:0 0 8px">Nu: ' + (pp.nogNiet ? 'start ' + fmtD(pp.van) : 'WP ' + pp.nr + ' (' + fmtD(pp.van) + ' – ' + fmtD(pp.tot) + '), ' + nf(pp.gehaald) + ' van ' + nf(pp.target, pp.target % 1 ? 1 : 0) + ', ' + esc(codeRegel(p, pp)) + ', prognose ' + nf(pp.prognose, 1)) + (ss && ss.target ? '. Steam-stand 2 okt: ' + nf(ss.resultaten) + ' van ' + nf(ss.target) + (ss.opmerking ? ' (' + esc(ss.opmerking) + ')' : '') : '') + '.</p>';
+  h += '<p class="sub" style="margin:0 0 8px">Nu: ' + (pp.nogNiet ? 'start ' + fmtD(pp.van) : 'WP ' + pp.nr + ' (' + fmtD(pp.van) + ' – ' + fmtD(pp.tot) + '), ' + nf(pp.gehaald) + ' van ' + nf(pp.target, pp.target % 1 ? 1 : 0) + ', ' + esc(codeRegel(p, pp)) + ', prognose ' + nf(pp.prognose, 1)) + '. Laatste 4 weken (' + fmtD(pp.w4) + ' – nu): ' + pp.laatste4 + (ss && ss.target ? '. Steam-stand 2 okt: ' + nf(ss.resultaten) + ' van ' + nf(ss.target) + (ss.opmerking ? ' (' + esc(ss.opmerking) + ')' : '') : '') + '.</p>';
+  const sc = p.steamCheck;
+  if (sc) h += '<p class="notice ' + (sc.verschil ? 'warn' : 'info') + '">Controle Steam-campagnerapport (' + fmtD(sc.peildatum) + '): Steam telt ' + sc.steam + ' resultaten (' + sc.afspraken + ' afspraken, ' + sc.overdrachten + ' overdrachten), de belexport ' + sc.dashboard + '. ' + (sc.verschil ? (sc.verschil > 0 ? 'De export mist er ' + sc.verschil + '. ' : 'De export telt er ' + (-sc.verschil) + ' meer. ') : 'Sluit aan. ') + esc(sc.toelichting || '') + '</p>';
   if (per.length) h += '<div class="tbl-wrap" style="margin-bottom:14px"><table><thead><tr><th>Periode</th><th class="n">Resultaat</th><th class="n">Afspraken</th><th class="n">Leads</th><th class="n">Pogingen</th><th class="n">Per 100 pog.</th></tr></thead><tbody>' + per.map(r => '<tr><td>' + esc(r.label) + ' <span class="meta">' + fmtD(r.van) + ' – ' + fmtD(r.tot) + '</span></td><td class="n"><b>' + r.resultaten + '</b> / ' + (r.target ?? '–') + ' ' + (r.target ? '<span class="sl ' + (r.resultaten >= r.target ? 'groen' : r.resultaten >= r.target * 0.8 ? 'oranje' : r.tot < TODAY ? 'rood' : 'grijs') + '"></span>' : '') + '</td><td class="n">' + r.afspraken + '</td><td class="n">' + r.leads + '</td><td class="n">' + nf(r.pogingen) + '</td><td class="n">' + (r.pogingen ? nf(100 * r.resultaten / r.pogingen, 1) : '–') + '</td></tr>').join('') + '</tbody></table></div>';
   const b = p.beltijd;
   if (b && b.blokken) {
