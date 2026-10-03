@@ -223,6 +223,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); outline
 .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 0 16px 12px; }
 .toolbar select, .toolbar input { width: auto; }
 .muted { color: var(--muted); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .right { text-align: right; }
 .bar-mini { height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; min-width: 60px; }
 .bar-mini i { display: block; height: 100%; background: var(--accent); }
@@ -251,14 +252,14 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); outline
    zzp ← diensten.zzpId, facturen(inkoop).partijId, resultaten.perAgent[*].zzpId
    diensten → factuurVerkoopId / factuurInkoopId (voorkomt dubbel factureren)
    ====================================================================== */
-const COLL = ['klanten', 'projecten', 'zzp', 'diensten', 'facturen', 'resultaten'];
-const S = { klanten: {}, projecten: {}, zzp: {}, diensten: {}, facturen: {}, resultaten: {}, loaded: new Set() };
+const COLL = ['klanten', 'projecten', 'zzp', 'diensten', 'facturen', 'resultaten', 'dagstart'];
+const S = { klanten: {}, projecten: {}, zzp: {}, diensten: {}, facturen: {}, resultaten: {}, dagstart: {}, loaded: new Set() };
 const UI = { tab: 'overzicht', weekStart: mondayOf(new Date()), factSoort: 'verkoop', factStatus: 'alle', projFilter: 'actief' };
 let store = null;
 let downloads = null;
 
 const TABS = [
-  ['overzicht', 'Overzicht'], ['planning', 'Planning'], ['projecten', 'Projecten'], ['klanten', 'Klanten'],
+  ['overzicht', 'Overzicht'], ['dagstart', 'Dagstart'], ['planning', 'Planning'], ['projecten', 'Projecten'], ['klanten', 'Klanten'],
   ['zzp', "ZZP'ers"], ['facturen', 'Facturen'], ['resultaten', 'Belresultaten'],
 ];
 const PCOLORS = ['#38b6ff', '#e8833a', '#2f9e6b', '#a35bd6', '#d64f6b', '#c9a227', '#3a8f9e', '#8a7a5c', '#5468d4', '#c25a2b'];
@@ -423,9 +424,11 @@ function render() {
 }
 function renderNow() {
   const app = document.getElementById('app');
-  const views = { overzicht: vOverzicht, planning: vPlanning, projecten: vProjecten, klanten: vKlanten, zzp: vZzp, facturen: vFacturen, resultaten: vResultaten };
+  const views = { overzicht: vOverzicht, dagstart: vDagstart, planning: vPlanning, projecten: vProjecten, klanten: vKlanten, zzp: vZzp, facturen: vFacturen, resultaten: vResultaten };
   const y = window.scrollY;
+  const ae = document.activeElement, keep = ae && ae.id && app.contains(ae) && /^(TEXTAREA|INPUT)$/.test(ae.tagName) ? { id: ae.id, v: ae.value, s: ae.selectionStart, e: ae.selectionEnd } : null;
   app.innerHTML = (views[UI.tab] || vOverzicht)();
+  if (keep) { const el = document.getElementById(keep.id); if (el) { el.value = keep.v; el.focus(); try { el.setSelectionRange(keep.s, keep.e); } catch (e) { /* */ } } }
   window.scrollTo(0, y);
 }
 
@@ -694,6 +697,8 @@ const PROJ_FIELDS = () => [
   { k: 'tariefUur', label: 'Uurtarief klant (€)', type: 'number', hint: 'leeg = tarief van de klant' },
   { k: 'prijsPerAfspraak', label: 'Prijs per afspraak (€)', type: 'number', hint: 'optioneel, no-cure-no-pay' },
   { k: 'doelPerWeek', label: 'Doel per week', type: 'number', hint: 'afspraken + overdrachten' },
+  { k: 'verwachtPerUur', label: 'Verwacht per beluur', type: 'number', hint: 'afspraken + overdrachten; zolang er geen historie is' },
+  { k: 'verwachtPogPerUur', label: 'Verwachte belpogingen per uur', type: 'number', hint: 'optioneel' },
   { k: 'dialerNaam', label: 'Naam in Belstat', hint: '"Naam project" of Campagne in de export' },
   { k: 'belinstructie', label: 'Belinstructie voor bellers', type: 'textarea', full: true, ph: 'Doelgroep, pitch, wat is een goede afspraak, met wie overdragen…' },
 ];
@@ -1006,6 +1011,136 @@ async function saveFile(filename, data) {
 }
 
 /* ======================================================================
+   DAGSTART — weekdoel per opdrachtgever → verdeling over ingeplande bellers → wat is nodig
+   ====================================================================== */
+function weekUren(pid, jaar, week, zid) {
+  const ws = iso(weekMonday(jaar, week)), we = iso(addDays(weekMonday(jaar, week), 6));
+  return dienstenVan(d => d.projectId === pid && d.status === 'gewerkt' && d.datum >= ws && d.datum <= we && (!zid || d.zzpId === zid)).reduce((a, d) => a + uren(d), 0);
+}
+// Historisch tempo per project: warme uitkomsten (afspraak + overdracht) en belpogingen per gewerkt beluur, laatste 8 weken met uren
+function projRate(pid) {
+  let w = 0, pog = 0, u = 0;
+  resultatenVan(pid).slice(0, 8).forEach(r => { const uu = weekUren(pid, r.jaar, r.week); if (uu > 0) { u += uu; w += num(r.afspraak) + num(r.overdracht); pog += num(r.pogingen); } });
+  if (u >= 4) return { warm: w / u, pog: pog / u, bron: 'historie', uren: u };
+  const p = project(pid);
+  if (num(p?.verwachtPerUur)) return { warm: num(p.verwachtPerUur), pog: num(p.verwachtPogPerUur) || null, bron: 'verwachting', uren: 0 };
+  return null;
+}
+function agentRate(zid, pid) {
+  let w = 0, u = 0;
+  resultatenVan(pid).slice(0, 8).forEach(r => Object.values(r.perAgent || {}).forEach(a => { if (a.zzpId === zid) { const uu = weekUren(pid, r.jaar, r.week, zid); if (uu > 0) { u += uu; w += num(a.afspraak) + num(a.overdracht); } } }));
+  return u >= 4 ? w / u : null;
+}
+function dagstartRef() {
+  const now = new Date(), wd = (now.getDay() + 6) % 7;
+  return wd > 4 ? addDays(mondayOf(now), 7) : new Date(now.getFullYear(), now.getMonth(), now.getDate());
+}
+function dagstartPlan(p, ref) {
+  const refI = iso(ref), mon = mondayOf(ref), wk = isoWeek(ref);
+  const we = iso(addDays(mon, 6)), fri = iso(addDays(mon, 4));
+  const doel = num(p.doelPerWeek);
+  const res = list('resultaten').find(r => r.projectId === p.id && r.jaar === wk.jaar && r.week === wk.week);
+  const behaald = res ? num(res.afspraak) + num(res.overdracht) : 0;
+  const resterend = Math.max(0, doel - behaald);
+  const rate = projRate(p.id);
+  const rest = dienstenVan(d => d.projectId === p.id && d.datum >= refI && d.datum <= we && d.status !== 'afgemeld');
+  const restUren = rest.reduce((a, d) => a + uren(d), 0);
+  const verwacht = rate ? restUren * rate.warm : null;
+  // verdeling over bellers: naar verwachte bijdrage (uren × eigen tempo, anders projecttempo)
+  const per = {};
+  rest.forEach(d => { const x = per[d.zzpId] = per[d.zzpId] || { zid: d.zzpId, uren: 0, vandaag: 0, tijden: [] }; x.uren += uren(d); if (d.datum === refI) { x.vandaag += uren(d); x.tijden.push(d.start + '–' + d.eind); } });
+  const bellers = Object.values(per).map(b => { const r = agentRate(b.zid, p.id); return { ...b, eigen: r, tempo: r ?? rate?.warm ?? 1 }; });
+  const totW = bellers.reduce((a, b) => a + b.uren * b.tempo, 0);
+  bellers.forEach(b => {
+    b.aandeel = totW ? resterend * (b.uren * b.tempo) / totW : 0;
+    b.doelVandaag = b.uren ? b.aandeel * b.vandaag / b.uren : 0;
+    b.pogVandaag = rate?.pog ? b.vandaag * rate.pog : null;
+  });
+  let status;
+  if (!doel) status = { k: '', t: 'geen weekdoel' };
+  else if (behaald >= doel) status = { k: 'ok', t: 'doel gehaald' };
+  else if (!restUren) status = { k: 'bad', t: 'geen bellers ingepland' };
+  else if (!rate) status = { k: '', t: 'tempo onbekend' };
+  else if (verwacht >= resterend) status = { k: 'ok', t: 'op schema' };
+  else if (verwacht >= resterend * 0.8) status = { k: 'warn', t: 'krap' };
+  else status = { k: 'bad', t: 'achter' };
+  const tekort = rate && doel ? Math.max(0, resterend - verwacht) : 0;
+  const extraUren = rate && tekort ? tekort / rate.warm : 0;
+  // vrije bellers op de resterende werkdagen
+  const vrij = [];
+  if (extraUren > 0 || (doel && !restUren)) {
+    for (let d = new Date(ref); iso(d) <= fri; d = addDays(d, 1)) {
+      const di = iso(d);
+      list('zzp').filter(z => z.status !== 'inactief' && !dienstenVan(x => x.zzpId === z.id && x.datum === di && x.status !== 'afgemeld').length).forEach(z => vrij.push({ zid: z.id, datum: di }));
+    }
+  }
+  return { doel, behaald, resterend, rate, restUren, verwacht, bellers, status, tekort, extraUren, vrij, res, refI };
+}
+function vDagstart() {
+  if (!S.loaded.size) return '<p class="empty">Gegevens laden…</p>';
+  const ref = dagstartRef(), refI = iso(ref), wk = isoWeek(ref);
+  const isToday = refI === TODAY;
+  const ps = sortBy(list('projecten').filter(p => p.status === 'actief'), p => (klant(p.klantId)?.naam || '') + p.naam);
+  const plans = ps.map(p => ({ p, x: dagstartPlan(p, ref) }));
+  const sum = k => plans.reduce((a, q) => a + num(q.x[k]), 0);
+  const vandaag = dienstenVan(d => d.datum === refI && d.status !== 'afgemeld');
+  const zonderDoel = plans.filter(q => !q.x.doel).length;
+  const kpis = [
+    { hl: true, lbl: 'Weekdoel', val: nf(sum('doel')), foot: 'afspraken + overdrachten, wk ' + wk.week },
+    { lbl: 'Gehaald', val: nf(sum('behaald')), foot: pct(sum('behaald'), sum('doel')) + '% van het doel' },
+    { lbl: 'Nog te halen', val: nf(sum('resterend')), foot: 'over ' + nf2(sum('restUren')) + ' ingeplande uren' },
+    { lbl: 'Bellers ' + (isToday ? 'vandaag' : fmtD(refI)), val: nf(new Set(vandaag.map(d => d.zzpId)).size), foot: nf2(vandaag.reduce((a, d) => a + uren(d), 0)) + ' uur ingepland' },
+    { lbl: 'Achter / krap', val: nf(plans.filter(q => ['bad', 'warn'].includes(q.x.status.k) && q.x.doel).length), foot: 'van ' + plans.length + ' opdrachtgevers', bad: plans.some(q => q.x.status.k === 'bad' && q.x.doel) },
+  ];
+  const cards = plans.map(({ p, x }) => {
+    const k = klant(p.klantId);
+    const nodig = [];
+    if (!x.doel) nodig.push('<li>Stel een <b>weekdoel</b> in voor dit project. <button class="link" data-act="project:' + p.id + '">Doel instellen</button></li>');
+    if (x.doel && !x.rate) nodig.push('<li>Nog geen tempo bekend. Upload belexports of vul bij het project een <b>verwacht aantal per beluur</b> in. <button class="link" data-act="project:' + p.id + '">Verwachting invullen</button></li>');
+    if (x.doel && x.behaald < x.doel && !x.restUren) nodig.push('<li><b>Niemand ingepland</b> voor de rest van de week. ' + (x.rate ? 'Nodig: ±' + nf2(Math.ceil(x.resterend / x.rate.warm)) + ' beluren.' : '') + '</li>');
+    if (x.extraUren > 0 && x.restUren) nodig.push('<li>Op het huidige tempo kom je <b>' + nf(x.tekort, 1) + ' tekort</b>. Plan <b>±' + nf(Math.ceil(x.extraUren)) + ' extra beluren</b> in (≈ ' + Math.ceil(x.extraUren / 7.5) + ' dienst' + (Math.ceil(x.extraUren / 7.5) === 1 ? '' : 'en') + ' van een dag), of verhoog het tempo naar ' + nf(x.resterend / x.restUren, 2) + ' per uur (nu ' + nf(x.rate.warm, 2) + ').</li>');
+    if (x.rate?.pog && x.resterend) nodig.push('<li>Reken op ±<b>' + nf(Math.ceil(x.resterend / x.rate.warm * x.rate.pog)) + ' belpogingen</b> voor de resterende ' + x.resterend + ' (' + nf(x.rate.pog / x.rate.warm, 0) + ' pogingen per warme uitkomst).</li>');
+    if (x.status.k === 'ok' && x.behaald < x.doel) nodig.push('<li>Op schema: houd de planning zo vast.</li>');
+    if (x.vrij.length && (x.extraUren > 0 || !x.restUren)) {
+      const byZ = {}; x.vrij.forEach(v => { (byZ[v.zid] = byZ[v.zid] || []).push(v.datum); });
+      nodig.push('<li>Vrij op de resterende dagen: ' + Object.entries(byZ).slice(0, 6).map(([zid, ds]) => '<button class="link" data-act="dsplan:' + p.id + ':' + ds[0] + ':' + zid + '">' + esc(zzp(zid)?.naam) + '</button> <span class="meta">(' + ds.map(d => DAYS[(parseISO(d).getDay() + 6) % 7]).join(', ') + ')</span>').join(' · ') + '</li>');
+    }
+    if (!x.res && x.doel) nodig.push('<li class="meta">Nog geen belexport voor week ' + wk.week + ': "gehaald" staat op 0 tot je de export uploadt.</li>');
+    const bar = x.doel ? '<div class="bar-mini" style="height:8px;margin:6px 0 2px" title="' + x.behaald + ' van ' + x.doel + '"><i style="width:' + Math.min(100, pct(x.behaald, x.doel)) + '%"></i></div>' : '';
+    const tbl = x.bellers.length ? '<div class="tbl-wrap"><table><thead><tr><th>Beller</th><th>' + (isToday ? 'Vandaag' : fmtD(refI)) + '</th><th class="n">Uren rest wk</th><th class="n">Tempo/u</th><th class="n">Aandeel wk</th><th class="n">Doel dag</th><th class="n">Pogingen dag</th></tr></thead><tbody>'
+      + sortBy(x.bellers, b => -b.vandaag).map(b => '<tr><td><b>' + esc(zzp(b.zid)?.naam || 'Onbekend') + '</b></td><td class="num" style="white-space:nowrap">' + (b.tijden.length ? esc(b.tijden.join(', ')) : '<span class="meta">niet</span>') + '</td><td class="n">' + nf2(b.uren) + '</td><td class="n">' + (b.eigen != null ? nf(b.eigen, 2) : x.rate ? '<span class="meta">' + nf(x.rate.warm, 2) + '</span>' : '–') + '</td><td class="n">' + nf(b.aandeel, 1) + '</td><td class="n"><b>' + (b.vandaag ? nf(b.doelVandaag, 1) : '–') + '</b></td><td class="n">' + (b.pogVandaag ? nf(Math.round(b.pogVandaag)) : '–') + '</td></tr>').join('')
+      + '</tbody></table></div>' : '<p class="empty" style="padding:8px 0">Geen bellers ingepland voor de rest van week ' + wk.week + '. <button class="link" data-act="dsplan:' + p.id + ':' + refI + '">Beller inplannen</button></p>';
+    return '<section class="card"><div class="card-head"><div style="min-width:0"><h2><span class="dotc" style="background:' + projColor(p.id) + '"></span>' + esc(k?.naam || p.naam) + (k && k.naam !== p.naam ? ' <span class="sub">· ' + esc(p.naam) + '</span>' : '') + '</h2><div class="sub">' + esc(typeLabel(p.type)) + (x.rate ? ' · tempo ' + nf(x.rate.warm, 2) + '/u (' + x.rate.bron + ')' : '') + '</div></div><span class="pill ' + x.status.k + '">' + esc(x.status.t) + '</span></div>'
+      + '<div class="card-body"><div class="facts" style="margin-bottom:10px"><div><b>' + (x.doel || '–') + '</b>weekdoel</div><div><b>' + x.behaald + '</b>gehaald' + bar + '</div><div><b>' + x.resterend + '</b>nog te halen</div><div><b>' + nf2(x.restUren) + ' u</b>ingepland rest week</div><div><b>' + (x.verwacht != null ? nf(x.verwacht, 1) : '–') + '</b>verwacht op tempo</div><div><b>' + (x.restUren && x.resterend ? nf(x.resterend / x.restUren, 2) : '–') + '</b>nodig per uur</div></div>'
+      + tbl + (nodig.length ? '<h2 style="margin:14px 0 4px;font-size:13px">Wat is er nodig</h2><ul style="margin:0;padding-left:18px;display:grid;gap:4px;font-size:13px">' + nodig.join('') + '</ul>' : '') + '</div></section>';
+  }).join('');
+
+  // briefing per beller
+  const perZ = {};
+  vandaag.forEach(d => { (perZ[d.zzpId] = perZ[d.zzpId] || []).push(d); });
+  const briefing = Object.keys(perZ).length ? '<ul class="list">' + sortBy(Object.entries(perZ), e => zzp(e[0])?.naam || '').map(([zid, ds]) => '<li><div class="main"><div class="title">' + esc(zzp(zid)?.naam || 'Onbekend') + '</div>' + sortBy(ds, d => d.start).map(d => {
+    const q = plans.find(q => q.p.id === d.projectId); const b = q?.x.bellers.find(b => b.zid === zid); const p = project(d.projectId);
+    return '<div class="meta" style="margin-top:2px"><span class="dotc" style="background:' + projColor(d.projectId) + '"></span><b>' + esc(d.start) + '–' + esc(d.eind) + '</b> ' + esc(projLabel(d.projectId)) + (b && b.vandaag ? ' · doel vandaag <b>' + nf(b.doelVandaag, 1) + '</b>' + (b.pogVandaag ? ', ±' + Math.round(b.pogVandaag * uren(d) / b.vandaag) + ' pogingen' : '') : '') + (p?.belinstructie ? '<br>' + esc(p.belinstructie) : '') + (d.notitie ? '<br><i>' + esc(d.notitie) + '</i>' : '') + '</div>';
+  }).join('') + '</div></li>').join('') + '</ul>' : '<p class="empty">Niemand ingepland op ' + fmtD(refI) + '. <button class="link" data-act="newdienst:' + refI + '">Zzp\'er inplannen</button></p>';
+
+  const note = S.dagstart[refI]?.notitie || '';
+  return '<div class="page-head"><div><div class="eyebrow">Dagstart · ' + esc(fmtD(refI, true)) + ' · week ' + wk.week + (isToday ? '' : ' (eerstvolgende werkdag)') + '</div><h1>Wat moet er <span class="serif">deze week gehaald worden?</span></h1></div><div class="actions"><button class="btn" data-act="tab:resultaten">Belexport uploaden</button><button class="btn primary" data-act="newdienst:' + refI + '">Zzp\'er inplannen</button></div></div>'
+    + '<section class="kpis">' + kpis.map(k => '<div class="kpi' + (k.hl ? ' hl' : '') + '"><div class="lbl">' + esc(k.lbl) + '</div><div class="val">' + esc(k.val) + '</div><div class="foot' + (k.bad ? ' bad' : '') + '">' + esc(k.foot) + '</div></div>').join('') + '</section>'
+    + (zonderDoel ? '<p class="notice warn">' + zonderDoel + ' actieve opdrachtgever' + (zonderDoel === 1 ? ' heeft' : 's hebben') + ' nog geen weekdoel. Vul het in bij het project (veld "Doel per week"), dan rekent de dagstart de verdeling uit.</p>' : '')
+    + '<div class="grid2"><div class="stack">'
+    + '<section class="card"><div class="card-head"><h2>Briefing per beller</h2><span class="sub">' + esc(fmtD(refI)) + '</span></div>' + briefing + '</section>'
+    + '<section class="card"><div class="card-head"><h2>Afspraken uit de dagstart</h2><span class="sub" id="ds-saved">' + (S.dagstart[refI]?.gewijzigd ? 'opgeslagen ' + new Date(S.dagstart[refI].gewijzigd).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' }) : '') + '</span></div><div class="card-body"><label class="f" for="ds-note"><span class="sr">Notities</span><textarea id="ds-note" data-date="' + refI + '" placeholder="Wie belt extra, welke lijsten gaan open, aandachtspunten per opdrachtgever…" style="min-height:120px">' + esc(note) + '</textarea></label><div class="actions" style="margin-top:8px"><button class="btn small" data-act="dssave">Opslaan</button></div></div></section>'
+    + '</div><div class="stack">' + (cards || '<section class="card"><p class="empty">Geen actieve projecten. <button class="link" data-act="newproject">Maak een project aan</button></p></section>') + '</div></div>'
+    + '<p class="sub" style="margin-top:16px">Rekenwijze: tempo = afspraken + overdrachten per gewerkt beluur over de laatste 8 weken met belexport en uren (anders de verwachting bij het project). Het resterende doel wordt verdeeld naar verwachte bijdrage per beller (ingeplande uren × eigen tempo). "Gehaald" komt uit de laatst geüploade belexport van deze week.</p>';
+}
+async function saveDagstart() {
+  const el = document.getElementById('ds-note'); if (!el) return;
+  const d = el.dataset.date;
+  if ((S.dagstart[d]?.notitie || '') === el.value) return;
+  if (await save('dagstart', d, { notitie: el.value, gewijzigd: new Date().toISOString() })) toast('Dagstart opgeslagen');
+}
+
+/* ======================================================================
    BELRESULTATEN — zelfde funnel als funnel.py van de rapportage-pijplijn
    ====================================================================== */
 function vResultaten() {
@@ -1152,7 +1287,7 @@ function resultaatModal(id, preset) {
    ====================================================================== */
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-act]'); if (!el) return;
-  const [a, b, c] = el.dataset.act.split(':');
+  const [a, b, c, d4] = el.dataset.act.split(':');
   const actions = {
     close: closeModal,
     tab: () => { if (b === 'planning' && c) UI.weekStart = mondayOf(parseISO(c)); closeModal(); go(b); },
@@ -1171,10 +1306,13 @@ document.addEventListener('click', e => {
     fstat: () => setFactStatus(b, c),
     fs: () => { UI.factSoort = b; UI.factStatus = 'alle'; render(); },
     fst: () => { UI.factStatus = b; render(); },
+    dsplan: () => dienstModal(null, { projectId: b, datum: c || TODAY, zzpId: d4 || '' }),
+    dssave: saveDagstart,
     newresult: () => resultaatModal(null), resultaat: () => resultaatModal(b),
   };
   if (actions[a]) { e.preventDefault(); actions[a](); }
 });
+document.addEventListener('focusout', e => { if (e.target.id === 'ds-note') saveDagstart(); });
 document.addEventListener('change', e => { if (e.target.id === 'upl' && e.target.files.length) { handleFiles([...e.target.files]); e.target.value = ''; } });
 document.addEventListener('dragover', e => { const d = e.target.closest && e.target.closest('#drop'); if (d) { e.preventDefault(); d.classList.add('over'); } });
 document.addEventListener('dragleave', e => { const d = e.target.closest && e.target.closest('#drop'); if (d) d.classList.remove('over'); });
