@@ -52,7 +52,21 @@ klanten ──< projecten ──< diensten >── zzp
 
 - **Briefing = koude acquisitie**: bellers krijgen alleen koude acquisitie (nieuwe bedrijven, terugbelafspraken en infomails nabellen). Afspraken en leads bevestigen, voorbereiden en opvolgen doet Hens aan de achterkant; die punten staan alleen bij de opdrachtgever onder "Achterkant (Hens)".
 - **Beste beltijd** per opdrachtgever: resultaten (volgens wat er voor die klant telt) per 100 belpogingen, per blok van 2 uur (9-11, 11-13, 13-15, 15-17) en per weekdag, uit de Steam-belpogingen en belexports. Minder dan 500 pogingen in totaal = indicatief; een blok onder 150 pogingen staat gemarkeerd.
-- **Werkperiodes**: bij elke opdrachtgever staat de historie per periode (resultaat tegenover target, afspraken, leads, pogingen) en de Steam-stand van de laatste export. Bij Moyee gelden aparte targets per code (4 afspraken, 10 leads per 4 weken).
+- **Werkperiodes**: bij elke opdrachtgever staat de historie per periode (resultaat tegenover target, afspraken, leads, pogingen) en de Steam-stand van de laatste export. Moyee: 8 per werkperiode (afspraken en leads samen). Zijn de periodes door een pauze verschoven, vul dan bij de opdrachtgever "Werkperiode gestart op" en het nummer in (BuildingBricks: WP 6 vanaf 21 sep, gelijk aan de facturen).
+
+## KPI-bord (Apps Script)
+
+Het KPI-bord voor de bellers (`kpibord/Code.gs` en `kpibord/Index.html`, web-app "LINK. KPI-bord") rekent met
+dezelfde gegevens als dit dashboard:
+
+- Claude maakt met `kpibord/maak_bron.py` uit de database (projecten + resultaten) het bestand
+  `kpibord-bron.json` en zet het in de Drive-map "LINK. KPI-bord bron". Het script leest altijd het nieuwste
+  bestand (5 minuten gecachet) en ruimt oudere versies op.
+- Uit de bron komen opdrachtgevers, targets, lengte en start van de werkperiodes en de Steam-telling per week.
+  Pilots verschijnen vanzelf vanaf hun startweek.
+- Afgelopen weken tellen volgens Steam; de lopende week telt het hoogste van de +/−-telling en Steam.
+- Inhaal (tekort doorschuiven) loopt binnen een werkperiode en begint bij een nieuwe periode opnieuw.
+- Zonder bronbestand draait het bord op de ingebouwde lijst.
 
 ## Rekenwijze dagstart
 

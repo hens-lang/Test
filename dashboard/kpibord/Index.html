@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LINK. KPI-bord</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --paper: #F6F8FB; --card: #FFFFFF; --ink: #16223A; --muted: #5A6678;
+    --line: #DCE2EC; --line-soft: #EAEEF5;
+    --accent: #2452C8; --accent-soft: #E6EDFB;
+    --warn: #B4690E; --warn-soft: #FBF1E2;
+    --good: #159A57; --good-soft: #E0F5EA;
+    --gold: #E9B63C;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0D1320; --card: #161E30; --ink: #EAEEF6; --muted: #93A0B8;
+      --line: #273249; --line-soft: #1E273B;
+      --accent: #7FA6F5; --accent-soft: #1C2A4C;
+      --warn: #E0A050; --warn-soft: #33260F;
+      --good: #3FCE8A; --good-soft: #10331F;
+      --gold: #F2C453;
+    }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    overflow: hidden; display: flex; flex-direction: column;
+  }
+  header {
+    display: flex; align-items: center; gap: 1.4rem; flex-wrap: wrap;
+    padding: 1rem 1.6rem .9rem; border-bottom: 2px solid var(--line);
+  }
+  h1 { font-weight: 900; font-size: clamp(1.2rem, 2.2vw, 1.8rem); letter-spacing: -.02em; white-space: nowrap; }
+  h1 .dot { color: var(--accent); }
+  .weeknav { display: flex; align-items: center; gap: .5rem; }
+  .weeknav button {
+    font: inherit; font-weight: 800; font-size: 1.1rem;
+    width: 2.3rem; height: 2.3rem; border: 1px solid var(--line); background: var(--card);
+    color: var(--accent); border-radius: 8px; cursor: pointer;
+  }
+  .weeknav button:hover { border-color: var(--accent); }
+  .weeknav .wk { font-weight: 800; font-size: clamp(1rem, 1.8vw, 1.35rem); min-width: 8.5rem; text-align: center; font-variant-numeric: tabular-nums; }
+  .now {
+    font-family: "IBM Plex Mono", monospace; font-size: .62rem; letter-spacing: .1em; text-transform: uppercase;
+    background: var(--accent); color: var(--card); padding: .16rem .5rem; border-radius: 3px;
+  }
+  .totals { margin-left: auto; text-align: right; }
+  .totals .big { font-weight: 900; font-size: clamp(1.3rem, 2.6vw, 2rem); font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .totals .big .lbl { font-size: .55em; font-weight: 700; color: var(--muted); }
+  .totals .sub { font-family: "IBM Plex Mono", monospace; font-size: clamp(.62rem, 1vw, .78rem); color: var(--muted); font-variant-numeric: tabular-nums; }
+  #savechip {
+    font-family: "IBM Plex Mono", monospace; font-size: .62rem; letter-spacing: .05em;
+    padding: .18rem .6rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap;
+  }
+  #savechip.warn { background: var(--warn-soft); color: var(--warn); }
+  #board {
+    flex: 1; display: grid; gap: clamp(.5rem, 1vw, 1rem);
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 44vw), 1fr));
+    grid-auto-rows: 1fr;
+    padding: clamp(.6rem, 1.2vw, 1.2rem) clamp(.8rem, 1.4vw, 1.6rem);
+    overflow: auto;
+  }
+  .kpi {
+    position: relative; overflow: hidden;
+    border: 1px solid var(--line); background: var(--card); border-radius: 14px;
+    padding: clamp(.7rem, 1.2vw, 1.2rem);
+    display: flex; flex-direction: column; gap: .4rem; min-height: 8.5rem;
+    transition: border-color .2s ease, box-shadow .2s ease;
+  }
+  .kpi.done { border-color: var(--good); box-shadow: 0 0 0 2px var(--good), 0 6px 24px -12px var(--good); }
+  .kpi-head { display: flex; align-items: baseline; gap: .6rem; }
+  .kpi-head .name { font-weight: 800; font-size: clamp(.85rem, 1.4vw, 1.15rem); flex: 1; line-height: 1.15; }
+  .hit4 {
+    font-family: "IBM Plex Mono", monospace; font-size: clamp(.56rem, .9vw, .7rem); color: var(--muted);
+    white-space: nowrap; font-variant-numeric: tabular-nums;
+  }
+  .end {
+    font-family: "IBM Plex Mono", monospace; font-size: clamp(.58rem, .95vw, .72rem);
+    color: var(--muted); font-variant-numeric: tabular-nums;
+  }
+  .end.soon { color: var(--warn); font-weight: 600; }
+  .end.miss { color: var(--muted); font-style: italic; opacity: .7; }
+  .carry {
+    font-family: "IBM Plex Mono", monospace; font-size: clamp(.56rem, .9vw, .68rem);
+    letter-spacing: .05em; text-transform: uppercase; white-space: nowrap;
+    background: var(--warn-soft); color: var(--warn);
+    padding: .14rem .45rem; border-radius: 3px;
+  }
+  .mid { display: flex; align-items: center; gap: .8rem; flex: 1; }
+  .count {
+    font-weight: 900; font-size: clamp(2rem, 4.6vw, 3.6rem); line-height: 1;
+    font-variant-numeric: tabular-nums; display: inline-block;
+  }
+  .count .of { font-size: .42em; font-weight: 700; color: var(--muted); }
+  .count.pop { animation: pop .45s cubic-bezier(.2, 2.2, .4, 1); }
+  @keyframes pop { 0% { transform: scale(1); } 35% { transform: scale(1.35); color: var(--accent); } 100% { transform: scale(1); } }
+  .kpi.done .count.pop { animation-name: popGood; }
+  @keyframes popGood { 0% { transform: scale(1); } 35% { transform: scale(1.4); color: var(--good); } 100% { transform: scale(1); } }
+  .btns { margin-left: auto; display: flex; gap: .45rem; }
+  .btns button {
+    font: inherit; font-weight: 800; font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+    width: clamp(2.4rem, 4vw, 3.2rem); height: clamp(2.4rem, 4vw, 3.2rem);
+    border: 1px solid var(--line); background: var(--paper); color: var(--accent);
+    border-radius: 10px; cursor: pointer; transition: transform .1s ease, border-color .15s ease;
+  }
+  .btns button:hover { border-color: var(--accent); transform: scale(1.06); }
+  .btns button:active { transform: scale(.94); }
+  .btns button:disabled { opacity: .3; cursor: default; transform: none; }
+  .bar { height: 10px; background: var(--line-soft); border-radius: 5px; overflow: hidden; }
+  .fill {
+    height: 100%; width: 0%; border-radius: 5px;
+    background: linear-gradient(90deg, var(--accent), var(--gold));
+    transition: width .45s cubic-bezier(.3, 1, .4, 1);
+  }
+  .kpi.done .fill { background: var(--good); }
+  .badge {
+    position: absolute; top: .6rem; right: .7rem;
+    font-family: "IBM Plex Mono", monospace; font-size: .62rem; letter-spacing: .08em; text-transform: uppercase;
+    background: var(--good-soft); color: var(--good); padding: .16rem .5rem; border-radius: 3px;
+    opacity: 0; transform: translateY(-4px); transition: opacity .3s ease, transform .3s ease;
+  }
+  .kpi.done .badge { opacity: 1; transform: none; }
+  .confetti {
+    position: fixed; width: 9px; height: 14px; top: 0; left: 0;
+    pointer-events: none; z-index: 99; border-radius: 2px;
+    animation: fall var(--dur) cubic-bezier(.2, .4, .6, 1) forwards;
+  }
+  @keyframes fall {
+    0%   { transform: translate(var(--x0), var(--y0)) rotate(0turn) scale(1); opacity: 1; }
+    100% { transform: translate(var(--x1), var(--y1)) rotate(var(--spin)) scale(.8); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .confetti { display: none; }
+    .count.pop { animation: none; }
+  }
+  footer {
+    font-family: "IBM Plex Mono", monospace; font-size: .6rem; color: var(--muted);
+    padding: .4rem 1.6rem .6rem; border-top: 1px solid var(--line-soft);
+    display: flex; gap: 1.4rem; flex-wrap: wrap;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>LINK<span class="dot">.</span> KPI-bord</h1>
+  <div class="weeknav">
+    <button id="prev" title="vorige week">&#8249;</button>
+    <span class="wk" id="wklabel">–</span>
+    <span class="now" id="nowtag" hidden>nu</span>
+    <button id="next" title="volgende week">&#8250;</button>
+  </div>
+  <span id="savechip">laden…</span>
+  <div class="totals">
+    <div class="big" id="totweek">–</div>
+    <div class="sub" id="tot4">–</div>
+  </div>
+</header>
+
+<div id="board"></div>
+
+<footer>
+  <span>+ = afspraak/lead geleverd · − = corrigeren</span>
+  <span>Targets en werkperiodes komen uit het management dashboard; het weektarget verdeelt het periodetarget (bijv. 6 = om en om 2 en 1)</span>
+  <span>Afgelopen weken tellen volgens Steam; de lopende week telt het hoogste van + en Steam</span>
+  <span>"periode x/y" = geteld binnen de lopende werkperiode van die klant</span>
+  <span>+X inhaal = tekort van vorige weken, automatisch doorgeschoven</span>
+  <span>Ververst elke 20 sec — iedereen ziet dezelfde stand</span>
+  <span>Volledig scherm: F11</span>
+</footer>
+
+<script>
+// Ingebouwde lijst = noodvoorziening. Normaal komen opdrachtgevers, targets en werkperiodes uit
+// kpibord-bron.json (het management dashboard), zodat bord en dashboard altijd hetzelfde rekenen.
+// target: resultaten per werkperiode · weken: lengte werkperiode · wp + wpStart: werkperiode wp begint op wpStart
+let CLIENTS = [
+  { id: "mostware",   name: "MostWare (HeadsUp)", target: 8, weken: 4, wp: 4, wpStart: "2026-09-14" },
+  { id: "moyee",      name: "Moyee Coffee",       target: 8, weken: 4, wp: 7, wpStart: "2026-09-14" },
+  { id: "ok",         name: "OK Creative Agency", target: 6, weken: 4, wp: 3, wpStart: "2026-09-28" },
+  { id: "growon",     name: "GrowOn Agency",      target: 8, weken: 4, wp: 3, wpStart: "2026-09-28" },
+  { id: "pivot",      name: "PIVOT",              target: 6, weken: 4, wp: 2, wpStart: "2026-09-07" },
+  { id: "greenearth", name: "Green Earth Group",  target: 6, weken: 4, wp: 2, wpStart: "2026-09-28" },
+  { id: "bloei",      name: "BLOEI Interieurbeplanting", target: 4, weken: 4, wp: 2, wpStart: "2026-09-14" },
+  { id: "bb",         name: "BuildingBricks",     target: 4, weken: 4, wp: 6, wpStart: "2026-09-21" },
+  { id: "slt",        name: "Second Life Textile", target: 6, weken: 4, wp: 1, wpStart: "2026-09-07" }
+];
+let STEAM = {}, STEAM_TOT = "", BRON_DATUM = "";
+const MAAND = ["jan","feb","mrt","apr","mei","jun","jul","aug","sep","okt","nov","dec"];
+
+let state = { weeks: {} };
+const $ = (s) => document.querySelector(s);
+
+function isoWeek(d) {
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const day = t.getUTCDay() || 7;
+  t.setUTCDate(t.getUTCDate() + 4 - day);
+  const y0 = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+  return { y: t.getUTCFullYear(), w: Math.ceil(((t - y0) / 86400000 + 1) / 7) };
+}
+function weeksInYear(y) { return isoWeek(new Date(Date.UTC(y, 11, 28))).w; }
+const NOW = isoWeek(new Date());
+let view = { y: NOW.y, w: NOW.w };
+const key = (v) => v.y + "-W" + String(v.w).padStart(2, "0");
+function shift(v, d) {
+  let y = v.y, w = v.w + d;
+  if (w < 1) { y--; w = weeksInYear(y); }
+  else if (w > weeksInYear(y)) { y++; w = 1; }
+  return { y: y, w: w };
+}
+const DAG = 86400000;
+// maandag (UTC) van ISO-week v
+function mondayOf(v) {
+  const jan4 = new Date(Date.UTC(v.y, 0, 4));
+  const day = jan4.getUTCDay() || 7;
+  return new Date(jan4.getTime() - (day - 1) * DAG + (v.w - 1) * 7 * DAG);
+}
+function anchorOf(c) { return new Date(c.wpStart + "T00:00:00Z"); }
+// werkperiode (blok van 4 weken) waar week v in valt, teruggerekend vanaf het anker
+function wekenVan(c) { return c.weken || 4; }
+function periodOf(c, v) {
+  const mon = mondayOf(v), L = wekenVan(c) * 7 * DAG;
+  const k = Math.floor((mon - anchorOf(c)) / L);
+  const start = new Date(anchorOf(c).getTime() + k * L);
+  return {
+    num: c.wp != null ? c.wp + k : null,
+    started: !(c.wp != null && c.wp + k < 1),
+    start: start,
+    end: new Date(start.getTime() + L - DAG),
+    weekSlot: Math.round((mon - start) / (7 * DAG)) // 0..weken-1: hoeveelste week van de periode
+  };
+}
+// weektarget afgeleid uit het periodetarget: bij bijv. 6 per periode wisselt het 2-1-2-1,
+// gekoppeld aan de werkperiode van deze klant, zodat elke periode precies op het target uitkomt
+function weekTarget(c, v) {
+  const p = periodOf(c, v);
+  if (!p.started) return 0;
+  const W = wekenVan(c), base = Math.floor(c.target / W), rem = c.target % W, s = p.weekSlot;
+  return base + (Math.ceil((s + 1) * rem / W) > Math.ceil(s * rem / W) ? 1 : 0);
+}
+// Telling van een week. Afgelopen weken met Steam-cijfers: Steam is leidend (de belexport telt alles).
+// Lopende week: het hoogste van de handmatige telling en Steam, want de export loopt achter.
+function steamLeidend(v) { const k = key(v); return k < key(NOW) && !!STEAM[k] && k <= STEAM_TOT; }
+function handVan(c, v) { const wk = state.weeks[key(v)]; return (wk && wk[c.id]) || 0; }
+function countFor(c, v) {
+  const st = STEAM[key(v)], s = st ? st[c.id] || 0 : 0;
+  if (steamLeidend(v)) return s;
+  return Math.max(handVan(c, v), s);
+}
+// geteld in de werkperiode waar de weergegeven week in valt (alle 4 weken van dat blok)
+function periodCount(c) {
+  const p = periodOf(c, view);
+  let v = shift({ y: view.y, w: view.w }, -p.weekSlot), sum = 0;
+  for (let i = 0; i < wekenVan(c); i++) {
+    sum += countFor(c, v);
+    v = shift(v, 1);
+  }
+  return sum;
+}
+function earliestWeek() {
+  const all = Object.assign({}, STEAM, state.weeks);
+  const keys = Object.keys(all).filter((k) => {
+    const c = all[k];
+    return c && Object.keys(c).some((id) => c[id] > 0);
+  });
+  if (!keys.length) return null;
+  keys.sort();
+  const m = keys[0].match(/^(\d+)-W(\d+)$/);
+  return m ? { y: +m[1], w: +m[2] } : null;
+}
+function carryFor(c) {
+  const start = earliestWeek();
+  if (!start) return 0;
+  let v = { y: start.y, w: start.w }, carry = 0, guard = 0;
+  const target = key(view);
+  while (key(v) !== target && guard++ < 60) {
+    const n = countFor(c, v);
+    // na afloop van een werkperiode begint de inhaal opnieuw
+    if (periodOf(c, v).weekSlot === 0) carry = 0;
+    carry = Math.max(0, weekTarget(c, v) + carry - n);
+    v = shift(v, 1);
+  }
+  if (key(v) !== target || periodOf(c, view).weekSlot === 0) return 0;
+  return carry;
+}
+function fmtD(d) { return d.getUTCDate() + " " + MAAND[d.getUTCMonth()]; }
+function periodLine(c) {
+  const p = periodOf(c, view);
+  if (!p.started) return { txt: "nog niet gestart — werkperiode 1 vanaf " + fmtD(anchorOf(c)), cls: "miss" };
+  const name = p.num !== null ? "werkperiode " + p.num : "werkperiode";
+  let extra = "", cls = "";
+  const now = Date.now();
+  if (now >= p.start.getTime() && now < p.end.getTime() + DAG) {
+    const days = Math.ceil((p.end.getTime() + DAG - now) / DAG);
+    extra = " — nog " + days + (days === 1 ? " dag" : " dagen");
+    if (days <= 7) cls = "soon";
+  }
+  return { txt: name + " · " + fmtD(p.start) + " t/m " + fmtD(p.end) + extra, cls: cls };
+}
+function chip(text, warn) { const el = $("#savechip"); el.textContent = text; el.className = warn ? "warn" : ""; }
+
+const KLEUREN = ["#2452C8", "#E9B63C", "#159A57", "#E06AA0", "#7FA6F5", "#F2784B"];
+function confetti(x, y, n, spread) {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  for (let i = 0; i < n; i++) {
+    const p = document.createElement("div");
+    p.className = "confetti";
+    const ang = (Math.random() - 0.5) * Math.PI * (spread || 1);
+    const v = 90 + Math.random() * (spread ? 260 : 150);
+    p.style.background = KLEUREN[i % KLEUREN.length];
+    p.style.setProperty("--x0", x + "px");
+    p.style.setProperty("--y0", y + "px");
+    p.style.setProperty("--x1", (x + Math.sin(ang) * v * 2) + "px");
+    p.style.setProperty("--y1", (y - Math.cos(ang) * v + 260 + Math.random() * 160) + "px");
+    p.style.setProperty("--spin", (2 + Math.random() * 3).toFixed(1) + "turn");
+    p.style.setProperty("--dur", (0.9 + Math.random() * 0.7).toFixed(2) + "s");
+    document.body.appendChild(p);
+    setTimeout(function () { p.remove(); }, 1800);
+  }
+}
+
+function render() {
+  const k = key(view);
+  $("#wklabel").textContent = "week " + view.w + " · " + view.y;
+  $("#nowtag").hidden = !(view.y === NOW.y && view.w === NOW.w);
+
+  let done = 0, targetSum = 0, doneP = 0, targetSumP = 0;
+  // opdrachtgevers (pilots) die nog niet gestart zijn verschijnen vanzelf op hun startweek
+  $("#board").innerHTML = CLIENTS.filter(function (c) { return periodOf(c, view).started; }).map(function (c) {
+    const p = periodOf(c, view);
+    const n = countFor(c, view), hand = handVan(c, view), vast = steamLeidend(view);
+    const np = periodCount(c);
+    const carry = carryFor(c);
+    const eff = weekTarget(c, view) + carry;
+    const hit = eff > 0 && n >= eff;
+    done += Math.min(n, eff); targetSum += eff;
+    if (p.started) { doneP += np; targetSumP += c.target; }
+    const pct = eff > 0 ? Math.min(100, Math.round(100 * n / eff)) : 100;
+    const e = periodLine(c);
+    return '<section class="kpi' + (hit ? " done" : "") + '">' +
+      '<span class="badge">behaald ✓</span>' +
+      '<div class="kpi-head"><span class="name">' + c.name + "</span>" +
+      (carry > 0 ? '<span class="carry">+' + carry + " inhaal</span>" : "") +
+      (vast || n > hand ? '<span class="hit4" title="handmatig ' + hand + ', Steam ' + n + '">steam</span>' : "") +
+      '<span class="hit4">periode ' + (p.started ? np + "/" + c.target : "–") + "</span></div>" +
+      '<div class="mid">' +
+        '<span class="count" id="cnt-' + c.id + '">' + n + '<span class="of"> /' + eff + "</span></span>" +
+        '<div class="btns">' +
+          '<button data-min="' + c.id + '"' + (hand === 0 || vast ? " disabled" : "") + ">−</button>" +
+          '<button data-plus="' + c.id + '"' + (vast ? " disabled" : "") + ">+</button>" +
+        "</div>" +
+      "</div>" +
+      '<div class="bar"><div class="fill" style="width:' + pct + '%"></div></div>' +
+      '<div class="end ' + e.cls + '">' + e.txt + "</div>" +
+
+      "</section>";
+  }).join("");
+
+  $("#totweek").innerHTML = done + "<span class='lbl'> / " + targetSum + " deze week</span>";
+  $("#tot4").textContent = "werkperiodes: " + doneP + " / " + targetSumP;
+}
+
+function applyServerState(s) {
+  if (!s || !s.weeks) return;
+  state = { weeks: s.weeks };
+  const b = s.bron;
+  if (b && b.klanten && b.klanten.length) {
+    CLIENTS = b.klanten; STEAM = b.steam || {}; STEAM_TOT = b.steamTot || ""; BRON_DATUM = (b.gemaakt || "").slice(0, 10);
+  }
+  render();
+}
+function okChip() { chip(BRON_DATUM ? "gedeeld ✓ · dashboard " + BRON_DATUM.split("-").reverse().slice(0, 2).join("-") : "gedeeld ✓ · ingebouwde lijst", !BRON_DATUM); }
+
+document.addEventListener("click", function (e) {
+  const t = e.target;
+  if (!t) return;
+  if (t.id === "prev") { view = shift(view, -1); render(); return; }
+  if (t.id === "next") { view = shift(view, 1); render(); return; }
+  const plus = t.dataset && t.dataset.plus, min = t.dataset && t.dataset.min;
+  if (plus || min) {
+    const k = key(view);
+    const id = plus || min;
+    const c = CLIENTS.find(function (x) { return x.id === id; });
+    // optimistisch lokaal bijwerken
+    if (!state.weeks[k]) state.weeks[k] = {};
+    const cur = state.weeks[k][id] || 0;
+    const carry = c ? carryFor(c) : 0;
+    state.weeks[k][id] = Math.max(0, cur + (plus ? 1 : -1));
+    const next = state.weeks[k][id];
+    const r = t.getBoundingClientRect();
+    render();
+    chip("opslaan…");
+    google.script.run
+      .withSuccessHandler(function (s) { applyServerState(s); okChip(); })
+      .withFailureHandler(function () { chip("opslaan mislukt — check verbinding", true); })
+      .bump(k, id, plus ? 1 : -1);
+    if (plus) {
+      const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      confetti(cx, cy, 14);
+      const el = $("#cnt-" + id);
+      if (el) { el.classList.add("pop"); setTimeout(function () { el.classList.remove("pop"); }, 500); }
+      if (c && next === weekTarget(c, view) + carry) confetti(cx, cy, 60, 2);
+    }
+  }
+});
+
+// laden + elke 20 sec verversen zodat alle schermen gelijk lopen
+function refresh() {
+  google.script.run
+    .withSuccessHandler(function (s) { applyServerState(s); okChip(); })
+    .withFailureHandler(function () { chip("verbinding kwijt — probeert opnieuw…", true); })
+    .getState();
+}
+render();
+refresh();
+setInterval(refresh, 20000);
+</script>
+</body>
+</html>
