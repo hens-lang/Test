@@ -71,6 +71,21 @@ gekoppeld aan dit dashboard, via de Drive-map "LINK. KPI-bord bron":
   ingebouwde lijst.
 - In het overzicht (onder de Twinfield-stand) staat wanneer het bord voor het laatst gevoed is en hoe oud de stand is.
 
+## Wekelijkse rapportages
+
+De rapportages ("Rapportage <Klant> wk <nr>.pdf", gemaakt met de rapportage-pijplijn) zijn gekoppeld:
+
+- Het dashboard zoekt elke 5 minuten in Drive naar rapportages van de laatste 3 weken die nieuw of gewijzigd zijn
+  en leest ze (collectie `rapportages`, één document per PDF).
+- Per opdrachtgever komen de cijfers bij het weekresultaat. Ze worden vergeleken met de belexport; wijkt het aantal
+  afspraken/overdrachten af, dan staat dat in het overzicht en bij de week ("wijkt af"). Is er nog geen export voor die
+  week, dan telt de rapportage.
+- "Wat we hoorden" en "Focus de komende periode" worden het inzicht van de opdrachtgever. Daar werkt de dagstart mee:
+  koude-acquisitiepunten gaan in de briefing van de bellers, opvolgen en bevestigen gaan naar "Achterkant (Hens)".
+- Wijzigt een resultaat, dan krijgt het KPI-bord binnen een minuut de nieuwe stand.
+- Koppeling op naam: de naam in de bestandsnaam wordt vergeleken met opdrachtgever, klant, Belstat-naam en het veld
+  "Naam in rapportage" (OK Creative Agency = OnzeKapel).
+
 ## Rekenwijze dagstart
 
 - Tempo = (afspraken + overdrachten) per gewerkt beluur over de laatste 8 weken met belexport en uren. Zonder historie: het veld "Verwacht per beluur" bij het project.

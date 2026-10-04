@@ -277,8 +277,8 @@ tr.detail td { background: var(--surface-2); }
    zzp ← diensten.zzpId, facturen(inkoop).partijId, resultaten.perAgent[*].zzpId
    diensten → factuurVerkoopId / factuurInkoopId (voorkomt dubbel factureren)
    ====================================================================== */
-const COLL = ['klanten', 'projecten', 'zzp', 'diensten', 'facturen', 'resultaten', 'dagstart', 'sync', 'feedback'];
-const S = { klanten: {}, projecten: {}, zzp: {}, diensten: {}, facturen: {}, resultaten: {}, dagstart: {}, sync: {}, feedback: {}, loaded: new Set() };
+const COLL = ['klanten', 'projecten', 'zzp', 'diensten', 'facturen', 'resultaten', 'dagstart', 'sync', 'feedback', 'rapportages'];
+const S = { klanten: {}, projecten: {}, zzp: {}, diensten: {}, facturen: {}, resultaten: {}, dagstart: {}, sync: {}, feedback: {}, rapportages: {}, loaded: new Set() };
 const UI = { tab: 'overzicht', weekStart: mondayOf(new Date()), factSoort: 'verkoop', factStatus: 'alle', projFilter: 'actief', dsOpen: new Set(), beheer: 'opdrachtgevers', toonAlles: false };
 let store = null;
 let downloads = null;
@@ -540,7 +540,7 @@ function vOverzicht() {
     + '<section class="kpis k4">' + kpis.map(k => '<div class="kpi' + (k.hl ? ' hl' : '') + '"><div class="lbl">' + esc(k.lbl) + '</div><div class="val">' + esc(k.val) + '</div><div class="foot' + (k.bad ? ' bad' : '') + '">' + esc(k.foot) + '</div></div>').join('') + '</section>'
     + '<section class="card" style="margin-bottom:16px"><div class="card-head"><h2>Opdrachtgevers · lopende werkperiode</h2><span class="sub">groen = prognose haalt target · oranje = 80-100% · rood = onder 80%</span></div><div class="tbl-wrap"><table class="ov"><thead><tr><th></th><th>Opdrachtgever</th><th class="n">Resultaat</th><th class="n">Prognose</th><th class="n">Nog nodig</th><th class="n">Ingepland wk</th><th>Beste beltijd</th><th>Facturen</th><th>Afspraak</th></tr></thead><tbody>' + rows + '</tbody></table></div></section>'
     + '<div class="grid2"><section class="card"><div class="card-head"><h2>Vandaag doen</h2><span class="pill' + (aandacht.some(i => i.lvl === 'bad') ? ' bad' : aandacht.length ? ' warn' : ' ok') + '">' + aandacht.length + '</span></div>' + doen + '</section>'
-    + '<section class="card"><div class="card-head"><h2>Facturen in de mail</h2><span class="sub">laatste 14 dagen</span></div>' + mailHtml() + twHtml + kbStatusHtml() + '</section></div>';
+    + '<section class="card"><div class="card-head"><h2>Facturen in de mail</h2><span class="sub">laatste 14 dagen</span></div>' + mailHtml() + twHtml + kbStatusHtml() + rapStatusHtml() + '</section></div>';
 }
 function codeRegel(p, x) {
   const t = p.targetsPerCode || {};
@@ -704,12 +704,126 @@ function kbStatusHtml() {
   const fout = KB.fout || KB.leesFout;
   return '<div class="tw"><span>KPI-bord</span>' + bits.map(b => '<span>' + esc(b) + '</span>').join('') + (fout ? '<span class="neg">' + esc(fout) + '</span>' : '<span class="pos">realtime</span>') + '</div>';
 }
+/* Wekelijkse rapportages uit Drive ("Rapportage <Klant> wk <nr>.pdf", gemaakt met de rapportage-pijplijn).
+   Het dashboard zoekt elke 5 minuten naar nieuwe of gewijzigde rapportages, leest ze en zet per opdrachtgever:
+   - de cijfers bij het weekresultaat (controle tegen de belexport; ontbreekt de export, dan telt de rapportage)
+   - "wat we hoorden" en "focus" als inzicht, waar de dagstart-briefing mee werkt
+   Wijzigt daardoor een resultaat, dan volgt het KPI-bord vanzelf via het bronbestand. */
+const RAP = { bezig: false, wacht: [], fout: '', laatst: null };
+function rapNorm(t) { return String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\(.*?\)/g, ' ').replace(/\b(b\.?v\.?|agency|group|interieurbeplanting|coffee)\b/g, ' ').replace(/[^a-z0-9]+/g, ' ').trim(); }
+function rapProject(naam, jaar, week) {
+  const n = rapNorm(naam), ma = iso(weekMonday(jaar, week));
+  let best = null, score = 0;
+  list('projecten').forEach(p => {
+    if (p.belstart && p.belstart > iso(addDays(parseISO(ma), 6))) return; // nog niet gestart in die week
+    const namen = [p.rapportageNaam, p.naam, klant(p.klantId)?.naam, p.dialerNaam].filter(Boolean).map(rapNorm);
+    let sc = 0;
+    namen.forEach(x => { if (!x) return; if (x === n) sc = Math.max(sc, 3); else if (x.startsWith(n + ' ') || n.startsWith(x + ' ')) sc = Math.max(sc, 2); else if (x.split(' ')[0] === n.split(' ')[0] && n.length > 3) sc = Math.max(sc, 1); });
+    if (sc && p.status === 'actief') sc += 0.5;
+    if (sc > score) { score = sc; best = p; }
+  });
+  return best;
+}
+function rapParse(t, titel) {
+  const tm = /Rapportage (.+?) wk (\d+)/i.exec(titel || '') || [];
+  const g = re => { const m = re.exec(t); return m ? num(m[1]) : null; };
+  const per = /gebeld van (.+?) t\/m (.+?(\d{4}))/i.exec(t), jr = /gebeld [^\n]*?(\d{4})/i.exec(t);
+  const blok = (van, tot) => { const i = t.indexOf(van); if (i < 0) return ''; const r = t.slice(i + van.length); const j = tot.map(x => r.indexOf(x)).filter(x => x >= 0); return j.length ? r.slice(0, Math.min(...j)) : r; };
+  // PDF-tekst breekt zinnen en opsommingen over regels: losse stukken plakken tot een zin met een punt eindigt
+  const regels = x => x.split(/\n\s*\n|•/).map(l => l.replace(/\s+/g, ' ').trim()).filter(Boolean).reduce((a, l) => {
+    if (a.length && !/[.!?]$/.test(a[a.length - 1])) a[a.length - 1] += ' ' + l; else a.push(l); return a;
+  }, []).filter(l => l.length > 3);
+  const afspraken = [];
+  const ar = /\b(Ma|Di|Wo|Do|Vr|Za|Zo) (\d{1,2} [a-z]{3,4}), (\d{1,2}:\d{2})\s*\n\s*\n([^\n]+)\n\s*\n([^\n]+)/g; let m;
+  while ((m = ar.exec(t))) afspraken.push({ wanneer: m[1] + ' ' + m[2] + ', ' + m[3], bedrijf: m[4].trim(), tekst: m[5].trim() });
+  const or = /\n(Overdracht|Afspraak)\s*\n\s*\n([^\n]+)\n\s*\n([^\n]+)/g;
+  while ((m = or.exec(t))) afspraken.push({ wanneer: m[1].toLowerCase(), bedrijf: m[2].trim(), tekst: m[3].trim() });
+  return {
+    klantNaam: tm[1] || '', week: num(tm[2]), jaar: per ? num(per[3]) : jr ? num(jr[1]) : new Date().getFullYear(), periode: per ? per[1] + ' t/m ' + per[2] : '',
+    cijfers: { pogingen: g(/Contactpogingen (\d+)/), gesproken: g(/Bedrijven gesproken (\d+) \d+%/), warm: g(/Warme uitkomst (\d+)/),
+      afspraak: g(/\nAfspraak (\d+) \d+%/) || 0, overdracht: g(/\nOverdracht (\d+) \d+%/) || 0, terugbel: g(/(\d+)\s*\n\s*\n?\s*Terugbelafspraken/),
+      geenInteresse: g(/(\d+)\s*Geen interesse of niet passend/), infomail: g(/(\d+)\s*informatiemails? verstuurd/) },
+    kort: regels(blok('IN HET KORT', ['01 Resultaat']))[0] || '',
+    hoorden: regels(blok('WAT WE HOORDEN IN DE MARKT', ['FOCUS DE KOMENDE PERIODE'])),
+    focus: regels(blok('FOCUS DE KOMENDE PERIODE', ['LINK. · Wekelijkse rapportage', '• • •'])),
+    afspraken,
+  };
+}
+function rapZoeken(ev) {
+  if (ev.type === 'error') { RAP.fout = ev.error.code === 'not_in_manifest' ? 'Google Drive staat uit voor dit dashboard' : 'rapportages niet opgehaald (' + ev.error.code + ')'; render(); return; }
+  RAP.fout = ''; RAP.laatst = Date.now();
+  const files = (ev.result.payload && ev.result.payload.files) || [];
+  files.forEach(f => {
+    if (!/^Rapportage .+ wk \d+/i.test(f.title || '')) return;
+    const oud = S.rapportages[f.id];
+    if (oud && oud.modified === f.modifiedTime) return;
+    if (!RAP.wacht.some(x => x.id === f.id)) RAP.wacht.push(f);
+  });
+  rapVerwerk();
+}
+async function rapVerwerk() {
+  if (RAP.bezig || !KB.mcp || store?.mode !== 'gedeeld' || !['projecten', 'resultaten', 'rapportages', 'klanten'].every(c => S.loaded.has(c))) return;
+  RAP.bezig = true;
+  try {
+    let n = 0;
+    while (RAP.wacht.length && n++ < 12) {
+      const f = RAP.wacht.shift();
+      let t = '';
+      try { const r = await KB.mcp.callTool('Google Drive', 'read_file_content', { fileId: f.id }); const p = r.payload; t = typeof p === 'string' ? p : (p && p.fileContent) || ''; }
+      catch (e) { RAP.fout = 'rapportage ' + f.title + ' niet gelezen (' + (e && e.code) + ')'; continue; }
+      await rapOpslaan(f, rapParse(t, f.title));
+    }
+  } finally { RAP.bezig = false; render(); if (RAP.wacht.length) setTimeout(rapVerwerk, 2000); }
+}
+async function rapOpslaan(f, d) {
+  const p = d.week ? rapProject(d.klantNaam, d.jaar, d.week) : null;
+  const leesbaar = d.cijfers.pogingen != null;
+  const rec = { titel: f.title, link: f.viewUrl || '', modified: f.modifiedTime, gelezen: new Date().toISOString(), projectId: p ? p.id : null, ...(leesbaar ? {} : { onleesbaar: true }), ...d };
+  if (p && leesbaar) {
+    const rid = p.id + '_' + wkStr(d.jaar, d.week), r = S.resultaten[rid];
+    const telR = telt(p.id, d.cijfers);
+    const rap = { bestand: f.title.replace(/\.pdf$/i, ''), link: rec.link, gecontroleerd: true, cijfers: d.cijfers,
+      tekst: [d.cijfers.afspraak ? d.cijfers.afspraak + ' afspra' + (d.cijfers.afspraak === 1 ? 'ak' : 'ken') : '', d.cijfers.overdracht ? d.cijfers.overdracht + ' overdr.' : ''].filter(Boolean).join(', ') || '0',
+      ...(d.afspraken.length ? { afspraken: d.afspraken } : {}) };
+    if (r) {
+      const telE = telt(p.id, r);
+      if (telE !== telR) { rap.gecontroleerd = false; rap.verschil = 'rapportage ' + telR + ', export ' + telE; }
+      await save('resultaten', rid, { ...r, rapportage: rap });
+    } else {
+      // nog geen belexport voor deze week: de rapportage telt
+      await save('resultaten', rid, { projectId: p.id, jaar: d.jaar, week: d.week, bron: 'rapportage', ingelezen: rec.gelezen,
+        afspraak: d.cijfers.afspraak, overdracht: d.cijfers.overdracht, pogingen: d.cijfers.pogingen || 0, gesproken: d.cijfers.gesproken || 0,
+        warm: d.cijfers.warm || 0, terugbel: d.cijfers.terugbel || 0, geenInteresse: d.cijfers.geenInteresse || 0, infomail: d.cijfers.infomail || 0, rapportage: rap });
+    }
+    const ins = p.inzicht || {};
+    const insK = ins.week ? num(ins.jaar || d.jaar) * 100 + num(ins.week) : 0;
+    if (insK <= d.jaar * 100 + d.week) {
+      if (d.focus.length || d.hoorden.length) await save('projecten', p.id, { ...project(p.id), inzicht: { bron: 'Rapportage wk ' + d.week, week: d.week, jaar: d.jaar, link: rec.link,
+        focus: d.focus, hoorden: d.hoorden, terugbelOpen: d.cijfers.terugbel, infomails: d.cijfers.infomail, kort: d.kort } });
+    }
+  }
+  await save('rapportages', f.id, rec);
+}
+function rapStatusHtml() {
+  if (!KB.mcp) return '';
+  const deze = huidigeWeek(), heeft = list('rapportages').some(r => r.jaar === deze.jaar && r.week === deze.week);
+  const nu = heeft ? deze : vorigeWeek(), rs = list('rapportages').filter(r => r.jaar === nu.jaar && r.week === nu.week);
+  const los = list('rapportages').filter(r => !r.projectId && r.week >= nu.week - 1);
+  const verschil = list('resultaten').filter(r => r.rapportage && r.rapportage.gecontroleerd === false && r.week >= nu.week - 1);
+  return '<div class="tw"><span>Rapportages wk ' + nu.week + '</span><span><b>' + rs.length + '</b> gelezen</span>'
+    + (list('rapportages').some(r => r.onleesbaar && r.week >= nu.week) ? '<span class="neg">niet leesbaar: ' + esc(list('rapportages').filter(r => r.onleesbaar && r.week >= nu.week).map(r => r.klantNaam).join(', ')) + '</span>' : '')
+    + (los.length ? '<span class="neg">niet gekoppeld: ' + esc(los.map(r => r.klantNaam).join(', ')) + '</span>' : '')
+    + (verschil.length ? '<span class="neg">wijkt af van export: ' + esc(verschil.map(r => (project(r.projectId)?.naam || '') + ' wk ' + r.week + ' (' + r.rapportage.verschil + ')').join(', ')) + '</span>' : '')
+    + (RAP.fout ? '<span class="neg">' + esc(RAP.fout) + '</span>' : (!los.length && !verschil.length && !list('rapportages').some(r => r.onleesbaar && r.week >= nu.week) ? '<span class="pos">gekoppeld</span>' : '')) + '</div>';
+}
 async function startMail() {
   let mcp = null;
   try { mcp = window.claude && await window.claude.use('mcp'); } catch (e) { mcp = null; }
   if (!mcp) { MAIL.state = 'geen'; render(); return; }
   KB.mcp = mcp; kbPlan();
   mcp.watchTool('Google Drive', 'read_file_content', { fileId: KPIBORD.stand }, kbLees, { cache: { staleTime: 30000 }, refetchInterval: 60000 });
+  const sinds = iso(addDays(new Date(), -21)) + 'T00:00:00Z';
+  mcp.watchTool('Google Drive', 'search_files', { query: "title contains 'Rapportage' and title contains ' wk ' and mimeType = 'application/pdf' and modifiedTime > '" + sinds + "'", pageSize: 100, excludeContentSnippets: true }, rapZoeken, { cache: { staleTime: 60000 }, refetchInterval: 300000 });
   const q = '(factuur OR invoice OR betalingsherinnering OR creditnota) newer_than:14d -in:draft';
   mcp.watchTool('Gmail', 'search_threads', { query: q, pageSize: 25 }, ev => {
     if (ev.type === 'data') { MAIL.state = 'ok'; MAIL.err = null; MAIL.threads = (ev.result.payload && ev.result.payload.threads) || []; }
@@ -915,6 +1029,7 @@ const PROJ_FIELDS = () => [
   { k: 'verwachtPerUur', label: 'Verwacht per beluur', type: 'number', hint: 'afspraken + overdrachten; zolang er geen historie is' },
   { k: 'verwachtPogPerUur', label: 'Verwachte belpogingen per uur', type: 'number', hint: 'optioneel' },
   { k: 'dialerNaam', label: 'Naam in Belstat', hint: '"Naam project" of Campagne in de export' },
+  { k: 'rapportageNaam', label: 'Naam in rapportage', hint: 'zoals in "Rapportage <naam> wk 40.pdf", als die afwijkt' },
   { k: 'belinstructie', label: 'Belinstructie voor bellers', type: 'textarea', full: true, ph: 'Doelgroep, pitch, wat is een goede afspraak, met wie overdragen…' },
 ];
 function vProjecten() {
@@ -978,7 +1093,7 @@ function periodesHtml(p) {
   const ak = achterkantFocus(p);
   if (ak.length) h += '<h2 style="margin:0 0 6px">Achterkant (Hens)</h2><ul style="margin:0 0 14px;padding-left:18px">' + ak.map(f => '<li>' + esc(f) + '</li>').join('') + '</ul>';
   const wk = resultatenVan(p.id).filter(r => r.rapportage || telt(p.id, r)).slice(0, 8);
-  if (wk.length) h += '<h2 style="margin:0 0 6px">Resultaten per week</h2><ul class="list" style="margin-bottom:14px">' + wk.map(r => '<li style="padding:6px 0"><div class="main"><b>wk ' + r.week + '</b> <span class="meta">' + fmtD(iso(weekMonday(r.jaar, r.week))) + '</span> · ' + (r.rapportage ? esc(r.rapportage.tekst) + ' <span class="pill ok" title="gecontroleerd tegen de rapportage">rapportage</span>' : nf(num(r.afspraak)) + ' afspr · ' + nf(num(r.overdracht)) + ' overdr <span class="meta">(export)</span>') + '</div></li>').join('') + '</ul>';
+  if (wk.length) h += '<h2 style="margin:0 0 6px">Resultaten per week</h2><ul class="list" style="margin-bottom:14px">' + wk.map(r => '<li style="padding:6px 0"><div class="main"><b>wk ' + r.week + '</b> <span class="meta">' + fmtD(iso(weekMonday(r.jaar, r.week))) + '</span> · ' + (r.rapportage ? esc(r.rapportage.tekst) + (r.rapportage.gecontroleerd === false ? ' <span class="pill bad" title="' + esc(r.rapportage.verschil || '') + '">wijkt af: ' + esc(r.rapportage.verschil || '') + '</span>' : ' <span class="pill ok" title="gecontroleerd tegen de rapportage">rapportage</span>') + (r.rapportage.link ? ' <a href="' + esc(r.rapportage.link) + '" target="_blank" rel="noopener">pdf</a>' : '') : nf(num(r.afspraak)) + ' afspr · ' + nf(num(r.overdracht)) + ' overdr <span class="meta">(export)</span>') + '</div></li>').join('') + '</ul>';
   const b = p.beltijd;
   if (b && b.blokken) {
     const max = Math.max(0.1, ...b.blokken.map(x => x.resPer100), ...b.dagen.map(x => x.resPer100));
@@ -1674,7 +1789,7 @@ document.addEventListener('drop', e => { const d = e.target.closest && e.target.
     mode.textContent = st.mode === 'gedeeld' ? 'live gedeeld' : 'lokaal';
     mode.className = 'mode' + (st.mode === 'gedeeld' ? '' : ' local');
     mode.title = st.mode === 'gedeeld' ? 'Alle wijzigingen worden gedeeld met iedereen met toegang.' : 'Gegevens staan alleen in deze browser. Open het dashboard via claude.ai voor gedeelde opslag.';
-    COLL.forEach(c => st.subscribe(c, data => { S[c] = data; S.loaded.add(c); render(); if (['projecten', 'resultaten', 'sync', 'klanten'].includes(c)) kbPlan(); }));
+    COLL.forEach(c => st.subscribe(c, data => { S[c] = data; S.loaded.add(c); render(); if (['projecten', 'resultaten', 'sync', 'klanten'].includes(c)) kbPlan(); if (c === 'rapportages' && RAP.wacht.length) rapVerwerk(); }));
     startMail();
   };
   if (window.claude && typeof window.claude.use === 'function') {
