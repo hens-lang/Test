@@ -74,9 +74,6 @@ section{position:relative}
 .knop[disabled]{opacity:.35;pointer-events:none}
 .tekstlink{background:none;border:0;padding:0 0 4px;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid currentColor;text-decoration:none;color:inherit}
 
-/* ---------- korrel (filmkorrel over alles) ---------- */
-#korrel{position:fixed;inset:-50%;width:200%;height:200%;pointer-events:none;z-index:90;opacity:.055;animation:korrel 1s steps(6) infinite}
-@keyframes korrel{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}}
 
 /* ---------- cursor ---------- */
 #cursor{position:fixed;left:0;top:0;z-index:95;pointer-events:none;display:none}
@@ -126,8 +123,8 @@ section{position:relative}
 .scherm{position:sticky;top:0;height:100svh;overflow:hidden}
 .kader{position:absolute;inset:0;overflow:hidden;background:var(--nacht);will-change:clip-path}
 .dia{position:absolute;inset:-2%;background-size:cover;background-position:center;opacity:0;transition:opacity 1.8s ease}
-.dia.actief{opacity:1;animation:adem 9s linear forwards}
-@keyframes adem{from{transform:scale(1.12)}to{transform:scale(1.02)}}
+.dia.actief{opacity:1;animation:adem 14s linear forwards}
+@keyframes adem{from{transform:scale(1.05)}to{transform:scale(1.01)}}
 .kader::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,16,24,.55) 0%,rgba(12,16,24,.08) 35%,rgba(12,16,24,.15) 60%,rgba(12,16,24,.78) 100%)}
 .opening-tekst{position:absolute;inset:0;z-index:2;color:var(--wit);display:flex;flex-direction:column;justify-content:flex-end;padding:0 var(--gutter) clamp(28px,5vh,56px);max-width:var(--max);margin:0 auto;pointer-events:none}
 .opening-tekst .boven{display:flex;justify-content:space-between;gap:20px;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;opacity:0;animation:op 1.4s 1.1s var(--ease) forwards}
@@ -540,13 +537,13 @@ html.lenis,html.lenis body{height:auto}
   .maand-detail .stats{gap:22px}
   .opening-tekst .boven{flex-direction:column;gap:6px}
 }
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}#korrel,#intro{display:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}#intro{display:none}}
 </style>
 </head>
 <body>
 <div id="intro" aria-hidden="true"><div class="midden"><span class="naam" id="introNaam"></span></div><div class="onder mono"><span id="introCoord"></span><span class="lijntje"><i></i></span><span id="introTel">000</span></div></div>
-<canvas id="korrelBron" width="160" height="160" hidden></canvas>
-<div id="korrel" aria-hidden="true"></div>
+
+
 <div id="cursor" aria-hidden="true"><div class="ring"></div><div class="lbl" id="cursorLbl">Bekijk</div></div>
 
 <header class="nav" id="nav">
@@ -786,11 +783,6 @@ const url=g=>FOTOS[g.bestand]||neutraal(g.titel);
 const opBestand=b=>galerij.find(g=>g.bestand===b);
 const nr=i=>String(i+1).padStart(2,"0");
 
-/* ---------- filmkorrel ---------- */
-(function(){if(rustig)return;const c=$("#korrelBron"),x=c.getContext("2d"),d=x.createImageData(160,160);
-  for(let i=0;i<d.data.length;i+=4){const v=Math.random()*255;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=255}
-  x.putImageData(d,0,0);$("#korrel").style.backgroundImage=`url(${c.toDataURL()})`})();
-
 /* ---------- teksten ---------- */
 const delen=HUIS.naam.split(" "),C=HUIS.contact;
 const merkHtml=`<b>${esc(delen[0])} <i>${esc(delen.slice(1).join(" "))}</i></b><small>${esc(HUIS.plaats)} · Provence</small>`;
@@ -843,10 +835,10 @@ const GL=(function(){if(rustig)return null;const kader=$("#kader"),cv=document.c
   float fb(vec2 p){float s=0.,a=.5;for(int i=0;i<4;i++){s+=a*n(p);p*=2.;a*=.5;}return s;}
   vec2 cov(vec2 uv,vec2 im,float z){float ra=res.x/res.y,ri=im.x/im.y;vec2 s=ra>ri?vec2(1.,ri/ra):vec2(ra/ri,1.);return (uv-.5)*s/z+.5;}
   void main(){vec2 uv=v;float asp=res.x/res.y;vec2 d=(uv-mu)*vec2(asp,1.);float r=length(d);
-    float golf=sin(r*34.-tm*4.)*exp(-r*5.5)*.014*hv;vec2 uvm=uv+normalize(d+1e-5)/vec2(asp,1.)*golf;
+    float golf=sin(r*22.-tm*1.6)*exp(-r*6.5)*.005*hv;vec2 uvm=uv+normalize(d+1e-5)/vec2(asp,1.)*golf;
     float ruis=fb(uv*2.6+tm*.04);float p=pr;float rand=smoothstep(p-.25,p+.05,ruis*.7+(1.-uv.y)*.3+.0);
     vec2 a=uvm+(ruis-.5)*.22*p*vec2(1.,.6);vec2 b=uvm-(ruis-.5)*.22*(1.-p)*vec2(1.,.6);
-    float sp=golf*1.6+.0025*hv;
+    float sp=0.;
     vec3 c0=vec3(texture2D(t0,cov(a+vec2(sp,0.),r0,zm)).r,texture2D(t0,cov(a,r0,zm)).g,texture2D(t0,cov(a-vec2(sp,0.),r0,zm)).b);
     vec3 c1=vec3(texture2D(t1,cov(b+vec2(sp,0.),r1,zm)).r,texture2D(t1,cov(b,r1,zm)).g,texture2D(t1,cov(b-vec2(sp,0.),r1,zm)).b);
     float m=p<=0.?0.:(p>=1.?1.:1.-rand);vec3 c=mix(c0,c1,m);
@@ -873,7 +865,7 @@ const GL=(function(){if(rustig)return null;const kader=$("#kader"),cv=document.c
     if(van!==naar){pr=Math.min(1,(t-start)/1800);if(pr>=1){van=naar;pr=0;slideStart=t}}
     mx+=(tx-mx)*.08;my+=(ty-my)*.08;hv+=(hvDoel-hv)*.05;
     bind(van,0,U.t0);bind(naar,1,U.t1);gl.uniform2f(U.r0,...maten[van]);gl.uniform2f(U.r1,...maten[naar]);gl.uniform2f(U.res,cv.width,cv.height);gl.uniform2f(U.mu,mx,my);
-    const e=pr<.5?4*pr*pr*pr:1-Math.pow(-2*pr+2,3)/2;gl.uniform1f(U.pr,van===naar?0:e);gl.uniform1f(U.tm,t/1000);gl.uniform1f(U.hv,hv);gl.uniform1f(U.zm,1.04+Math.min(1,(t-slideStart)/9000)*.05);
+    const e=pr<.5?4*pr*pr*pr:1-Math.pow(-2*pr+2,3)/2;gl.uniform1f(U.pr,van===naar?0:e);gl.uniform1f(U.tm,t/1000);gl.uniform1f(U.hv,hv);gl.uniform1f(U.zm,1.03+Math.min(1,(t-slideStart)/12000)*.025);
     gl.drawArrays(gl.TRIANGLE_STRIP,0,4)})(0);
   return{naar(i){if(i===naar)return;if(van!==naar){van=naar}naar=i;start=performance.now()}}})();
 const oudToon=toonDia;
