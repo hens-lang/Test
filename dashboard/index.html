@@ -709,7 +709,7 @@ function kbStatusHtml() {
    - de cijfers bij het weekresultaat (controle tegen de belexport; ontbreekt de export, dan telt de rapportage)
    - "wat we hoorden" en "focus" als inzicht, waar de dagstart-briefing mee werkt
    Wijzigt daardoor een resultaat, dan volgt het KPI-bord vanzelf via het bronbestand. */
-const RAP = { bezig: false, wacht: [], fout: '', laatst: null };
+const RAP = { bezig: false, wacht: [], fout: '', laatst: null, versie: 2 };
 function rapNorm(t) { return String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\(.*?\)/g, ' ').replace(/\b(b\.?v\.?|agency|group|interieurbeplanting|coffee)\b/g, ' ').replace(/[^a-z0-9]+/g, ' ').trim(); }
 function rapProject(naam, jaar, week) {
   const n = rapNorm(naam), ma = iso(weekMonday(jaar, week));
@@ -740,14 +740,33 @@ function rapParse(t, titel) {
   while ((m = or.exec(t))) afspraken.push({ wanneer: m[1].toLowerCase(), bedrijf: m[2].trim(), tekst: m[3].trim() });
   return {
     klantNaam: tm[1] || '', week: num(tm[2]), jaar: per ? num(per[3]) : jr ? num(jr[1]) : new Date().getFullYear(), periode: per ? per[1] + ' t/m ' + per[2] : '',
-    cijfers: { pogingen: g(/Contactpogingen (\d+)/), gesproken: g(/Bedrijven gesproken (\d+) \d+%/), warm: g(/Warme uitkomst (\d+)/),
-      afspraak: g(/\nAfspraak (\d+) \d+%/) || 0, overdracht: g(/\nOverdracht (\d+) \d+%/) || 0, terugbel: g(/(\d+)\s*\n\s*\n?\s*Terugbelafspraken/),
+    cijfers: { pogingen: g(/Contactpogingen (\d+)/), gesproken: g(/Bedrijven gesproken (\d+) [\d.,]+%/), warm: g(/Warme uitkomst (\d+)/),
+      ...rapUitkomst(t, blok), terugbel: g(/(\d+)\s*\n\s*\n?\s*Terugbelafspraken/),
       geenInteresse: g(/(\d+)\s*Geen interesse of niet passend/), infomail: g(/(\d+)\s*informatiemails? verstuurd/) },
     kort: regels(blok('IN HET KORT', ['01 Resultaat']))[0] || '',
     hoorden: regels(blok('WAT WE HOORDEN IN DE MARKT', ['FOCUS DE KOMENDE PERIODE'])),
     focus: regels(blok('FOCUS DE KOMENDE PERIODE', ['LINK. · Wekelijkse rapportage', '• • •'])),
     afspraken,
   };
+}
+// Afspraken en overdrachten uit de funnelregels; de labels verschillen per rapportage ("Afspraak", "Overdracht",
+// "Afspraak of overdracht", "Kennismakingen"). Een gecombineerde regel wordt verdeeld met het aantal gedateerde
+// afspraken in sectie 04.
+function rapUitkomst(t, blok) {
+  let a = 0, o = 0, comb = 0;
+  blok('De funnel deze week', ['Percentages ten opzichte']).split('\n').forEach(l => {
+    const m = /^(.+?)\s+(\d+)\s+[\d.,]+%$/.exec(l.trim()); if (!m) return;
+    const lab = m[1].toLowerCase(), n = num(m[2]);
+    if (/contactpogingen|gesproken|warme uitkomst|terugbel/.test(lab)) return;
+    const isA = /afspra|kennismak|demo/.test(lab), isO = /overdracht|lead/.test(lab);
+    if (isA && isO) comb += n; else if (isA) a += n; else if (isO) o += n;
+  });
+  if (comb) {
+    const i4 = t.search(/\n04 [A-Z]/), s4 = i4 < 0 ? '' : t.slice(i4, (t.indexOf('05 Wat we hoorden', i4) + 1 || t.length + 1) - 1);
+    const datum = (s4.match(/\b(Ma|Di|Wo|Do|Vr|Za|Zo) \d{1,2} [a-z]{3,4},? \d{1,2}[:.]\d{2}/g) || []).length;
+    const aa = Math.min(comb, datum); a += aa; o += comb - aa;
+  }
+  return { afspraak: a, overdracht: o };
 }
 function rapZoeken(ev) {
   if (ev.type === 'error') { RAP.fout = ev.error.code === 'not_in_manifest' ? 'Google Drive staat uit voor dit dashboard' : 'rapportages niet opgehaald (' + ev.error.code + ')'; render(); return; }
@@ -756,7 +775,7 @@ function rapZoeken(ev) {
   files.forEach(f => {
     if (!/^Rapportage .+ wk \d+/i.test(f.title || '')) return;
     const oud = S.rapportages[f.id];
-    if (oud && oud.modified === f.modifiedTime) return;
+    if (oud && oud.modified === f.modifiedTime && oud.versie === RAP.versie) return;
     if (!RAP.wacht.some(x => x.id === f.id)) RAP.wacht.push(f);
   });
   rapVerwerk();
@@ -778,14 +797,16 @@ async function rapVerwerk() {
 async function rapOpslaan(f, d) {
   const p = d.week ? rapProject(d.klantNaam, d.jaar, d.week) : null;
   const leesbaar = d.cijfers.pogingen != null;
-  const rec = { titel: f.title, link: f.viewUrl || '', modified: f.modifiedTime, gelezen: new Date().toISOString(), projectId: p ? p.id : null, ...(leesbaar ? {} : { onleesbaar: true }), ...d };
+  const rec = { titel: f.title, link: f.viewUrl || '', modified: f.modifiedTime, versie: RAP.versie, gelezen: new Date().toISOString(), projectId: p ? p.id : null, ...(leesbaar ? {} : { onleesbaar: true }), ...d };
   if (p && leesbaar) {
     const rid = p.id + '_' + wkStr(d.jaar, d.week), r = S.resultaten[rid];
     const telR = telt(p.id, d.cijfers);
     const rap = { bestand: f.title.replace(/\.pdf$/i, ''), link: rec.link, gecontroleerd: true, cijfers: d.cijfers,
       tekst: [d.cijfers.afspraak ? d.cijfers.afspraak + ' afspra' + (d.cijfers.afspraak === 1 ? 'ak' : 'ken') : '', d.cijfers.overdracht ? d.cijfers.overdracht + ' overdr.' : ''].filter(Boolean).join(', ') || '0',
       ...(d.afspraken.length ? { afspraken: d.afspraken } : {}) };
-    if (r) {
+    if (r && r.bron === 'rapportage') {
+      await save('resultaten', rid, { ...r, afspraak: d.cijfers.afspraak, overdracht: d.cijfers.overdracht, pogingen: d.cijfers.pogingen || 0, gesproken: d.cijfers.gesproken || 0, rapportage: rap });
+    } else if (r) {
       const telE = telt(p.id, r);
       if (telE !== telR) { rap.gecontroleerd = false; rap.verschil = 'rapportage ' + telR + ', export ' + telE; }
       await save('resultaten', rid, { ...r, rapportage: rap });
