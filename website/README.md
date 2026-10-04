@@ -55,6 +55,14 @@ Later uitbreiden? De teksten staan in `content/verhalen/`. Voeg een bestand toe 
 3. **Contactformulier.** Verstuurt via Web3Forms (sleutel in `contact.form.web3formsKey`). Berichten komen binnen op het e-mailadres dat bij Web3Forms aan die sleutel hangt. Lukt versturen niet, dan ziet de bezoeker een melding met het e-mailadres als alternatief.
 4. **Controleer** e-mail en telefoonnummer. Die komen uit de *Website Teksten Opzet*.
 
+## Nette URL's (zonder .html)
+
+`.htaccess` (Apache, de meeste Nederlandse hosting) zorgt dat `linkgrp.nl/contact` de pagina `contact.html` laadt. Oude adressen met `.html` gaan met een 301 naar de nette versie, `ons-verhaal` en `waarom-link` gaan naar `over-link`. Daarnaast: altijd `https://www.`, `/content`, `/tools` en deze README zijn niet openbaar, een eigen 404-pagina, caching en compressie.
+
+De bestanden zelf houden `.html`-links, zodat de site lokaal en in de preview blijft werken. Op het echte domein (`data/site.js > contact.web`) zet `main.js` de links om naar de nette vorm, dus bezoekers krijgen geen omweg via een redirect. Canonicals, `sitemap.xml` en de verhalen-build gebruiken dezelfde nette URL's.
+
+Host je niet op Apache (bijv. Netlify of Vercel)? Daar staat "pretty URLs" of `cleanUrls` meestal standaard aan of is het één instelling.
+
 ## Techniek
 
 - **Snel:** geen frameworks, fonts zelf gehost (`assets/fonts`, alleen Latin), afbeeldingen klein.

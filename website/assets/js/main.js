@@ -7,7 +7,7 @@
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const page = (() => { const p = location.pathname.split("/").pop() || "index.html"; return /^verhaal-/.test(p) ? "verhalen.html" : p; })();
+  const page = (() => { let p = location.pathname.split("/").pop() || "index.html"; if (!/\.[a-z0-9]+$/i.test(p)) p += ".html"; return /^verhaal-/.test(p) ? "verhalen.html" : p; })();
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const arrow = '<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
   const ico = {
@@ -52,7 +52,7 @@
       const a = e.target.closest("a[href]");
       if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || a.target === "_blank") return;
       const href = a.getAttribute("href");
-      if (!href || href.startsWith("#") || /^(mailto|tel|https?):/i.test(href) || !/\.html(#.*)?$/.test(href)) return;
+      if (!href || href.startsWith("#") || /^(mailto|tel|https?):/i.test(href) || !/^(\/|[a-z0-9-]+(\.html)?)(#.*)?$/i.test(href)) return;
       e.preventDefault();
       const pt = document.createElement("div");
       pt.className = "pt pt-out"; pt.setAttribute("aria-hidden", "true");
@@ -598,6 +598,14 @@
     $$(".btn").forEach((b) => {
       b.addEventListener("pointermove", (e) => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.18}px, ${(e.clientY - r.top - r.height / 2) * 0.3}px)`; });
       b.addEventListener("pointerleave", () => (b.style.transform = ""));
+    });
+  }
+  /* ---------- Nette URL's (zonder .html) op het echte domein, zie .htaccess ---------- */
+  if (C.web && location.hostname.replace(/^www\./, "") === C.web.replace(/^www\./, "")) {
+    $$("a[href]").forEach((a) => {
+      const h = a.getAttribute("href");
+      const m = /^([a-z0-9-]+)\.html(#.*)?$/i.exec(h);
+      if (m) a.setAttribute("href", (m[1] === "index" ? "/" : m[1]) + (m[2] || ""));
     });
   }
 })();

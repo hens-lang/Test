@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://www.linkgrp.nl/</loc><priority>1.0</priority></url>
-  <url><loc>https://www.linkgrp.nl/diensten.html</loc><priority>0.9</priority></url>
-  <url><loc>https://www.linkgrp.nl/over-link.html</loc><priority>0.8</priority></url>
-  <url><loc>https://www.linkgrp.nl/verhalen.html</loc><priority>0.8</priority></url>
-  <url><loc>https://www.linkgrp.nl/contact.html</loc><priority>0.9</priority></url>
-  <url><loc>https://www.linkgrp.nl/werken-bij.html</loc><priority>0.6</priority></url>
-  <url><loc>https://www.linkgrp.nl/privacy.html</loc><priority>0.3</priority></url>
-  <url><loc>https://www.linkgrp.nl/verhaal-een-pilot-is-geen-proef.html</loc><priority>0.7</priority></url>
-  <url><loc>https://www.linkgrp.nl/verhaal-al-voorzien.html</loc><priority>0.7</priority></url>
-  <url><loc>https://www.linkgrp.nl/verhaal-wat-je-mag-verwachten.html</loc><priority>0.7</priority></url>
-  <url><loc>https://www.linkgrp.nl/verhaal-acquisitie-uitbesteden.html</loc><priority>0.7</priority></url>
-  <url><loc>https://www.linkgrp.nl/verhaal-de-juiste-beslisser.html</loc><priority>0.7</priority></url>
+  <url><loc>https://www.linkgrp.nl/diensten</loc><priority>0.9</priority></url>
+  <url><loc>https://www.linkgrp.nl/over-link</loc><priority>0.8</priority></url>
+  <url><loc>https://www.linkgrp.nl/verhalen</loc><priority>0.8</priority></url>
+  <url><loc>https://www.linkgrp.nl/contact</loc><priority>0.9</priority></url>
+  <url><loc>https://www.linkgrp.nl/werken-bij</loc><priority>0.6</priority></url>
+  <url><loc>https://www.linkgrp.nl/privacy</loc><priority>0.3</priority></url>
+  <url><loc>https://www.linkgrp.nl/verhaal-een-pilot-is-geen-proef</loc><priority>0.7</priority></url>
+  <url><loc>https://www.linkgrp.nl/verhaal-al-voorzien</loc><priority>0.7</priority></url>
+  <url><loc>https://www.linkgrp.nl/verhaal-wat-je-mag-verwachten</loc><priority>0.7</priority></url>
+  <url><loc>https://www.linkgrp.nl/verhaal-acquisitie-uitbesteden</loc><priority>0.7</priority></url>
+  <url><loc>https://www.linkgrp.nl/verhaal-de-juiste-beslisser</loc><priority>0.7</priority></url>
 </urlset>

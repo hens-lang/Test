@@ -26,6 +26,11 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://www.linkgrp.nl"
+
+
+def clean(u):
+    """Publieke URL zonder .html (zie .htaccess)."""
+    return re.sub(r"\.html$", "", u)
 LIVE = "--live" in sys.argv
 MAANDEN = ["januari", "februari", "maart", "april", "mei", "juni", "juli",
            "augustus", "september", "oktober", "november", "december"]
@@ -115,13 +120,13 @@ def head(title, desc, url, og_type="website", extra=""):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{t}</title>
 <meta name="description" content="{d}">
-<link rel="canonical" href="{SITE}/{url}">
+<link rel="canonical" href="{SITE}/{clean(url)}">
 <meta property="og:type" content="{og_type}">
 <meta property="og:locale" content="nl_NL">
 <meta property="og:site_name" content="LINK.">
 <meta property="og:title" content="{t}">
 <meta property="og:description" content="{d}">
-<meta property="og:url" content="{SITE}/{url}">
+<meta property="og:url" content="{SITE}/{clean(url)}">
 <meta property="og:image" content="{SITE}/assets/img/og-image.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#000000">
@@ -183,7 +188,7 @@ def story_page(v, others):
           "description": v["excerpt"], "datePublished": v["date"], "inLanguage": "nl-NL",
           "author": {"@type": "Person" if v.get("author", "") != "LINK." else "Organization", "name": v.get("author", "LINK.")},
           "publisher": {"@type": "Organization", "name": "LINK.", "logo": {"@type": "ImageObject", "url": f"{SITE}/assets/img/logo-zwart.png"}},
-          "mainEntityOfPage": f"{SITE}/{v['url']}"}
+          "mainEntityOfPage": f"{SITE}/{clean(v['url'])}"}
     extra = f'<script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>\n'
     if v["status"] != "live":
         extra += '<meta name="robots" content="noindex">\n'
@@ -269,7 +274,7 @@ def main():
     pages += [(v["url"], "0.7") for v in items if v["status"] == "live"]
     sm = ['<?xml version="1.0" encoding="UTF-8"?>',
           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    sm += [f"  <url><loc>{SITE}/{u}</loc><priority>{p}</priority></url>" for u, p in pages]
+    sm += [f"  <url><loc>{SITE}/{clean(u)}</loc><priority>{p}</priority></url>" for u, p in pages]
     sm.append("</urlset>")
     open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8").write("\n".join(sm) + "\n")
 
