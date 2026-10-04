@@ -84,7 +84,13 @@
     font: inherit; font-weight: 700; cursor: pointer; border-radius: 12px;
     padding: 10px 16px; border: 1px solid var(--line); background: var(--soft); color: var(--ink);
   }
-  button:hover { filter: brightness(.97); }
+  button:hover, a.knop:hover { filter: brightness(.97); }
+  a.knop {
+    display: inline-block; font-weight: 700; text-decoration: none; border-radius: 9px;
+    padding: 6px 10px; font-size: 14px; border: 1px solid var(--line); background: var(--soft); color: var(--ink);
+  }
+  button:focus-visible, a.knop:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  textarea.handmatig { flex-basis: 100%; min-height: 60px; font-size: 13px; margin-top: 6px; }
   button.primair { background: var(--red); color: var(--red-ink); border-color: transparent; padding: 13px 22px; font-size: 17px; }
   button.klein { padding: 6px 10px; font-size: 14px; border-radius: 9px; }
   button.link { background: none; border: none; color: var(--muted); padding: 6px; text-decoration: underline; }
@@ -142,6 +148,23 @@
   .rijm { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
   .rijm span { background: var(--soft); border-radius: 99px; padding: 3px 10px; font-size: 14px; }
   footer { text-align: center; margin-top: 28px; }
+  select {
+    width: 100%; font: inherit; font-weight: 700; color: var(--ink); background: var(--bg);
+    border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+  }
+  select:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  .tussenkop { font-size: 16px; margin-top: 18px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .chip { background: var(--soft); border-radius: 99px; padding: 3px 10px; font-size: 14px; color: var(--muted); }
+  .chip.klaar { color: var(--ok); font-weight: 700; }
+  .chip.klaar::before { content: "✓ "; }
+  .sectiekop { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 30px 0 10px; }
+  .feit { white-space: pre-line; }
+  .vastBlok { margin-bottom: 16px; }
+  .vastBlok summary { cursor: pointer; font-weight: 700; color: var(--muted); }
+  .vastRij { display: grid; grid-template-columns: 1fr auto 1fr auto; gap: 8px; align-items: center; margin-top: 8px; }
+  .vastRij select { font-weight: 600; padding: 8px 10px; }
 </style>
 </head>
 <body>
@@ -157,12 +180,46 @@
     </div>
     <div>
       <h1>Sinterklaas Lootjes</h1>
-      <p class="muted">Eerlijk lootjes trekken voor gedichten. Niemand ziet wie wie heeft — ook de organisator niet.</p>
+      <p class="muted">Lootjes trekken voor Sinterklaasgedichten. Iedereen ziet alleen zijn eigen lootje.</p>
     </div>
   </header>
 
+  <!-- ===================== GEDEELD (in Claude) ===================== -->
+  <section id="gedeeld" class="verborgen">
+    <div class="card">
+      <div class="head">
+        <h2>Wie ben jij?</h2>
+        <p class="muted small" id="gedeeldUitleg">Kies je naam. Daarna kun je je wensen invullen en, als er getrokken is, je lootje openen.</p>
+      </div>
+      <select id="ikBen" aria-label="Kies je naam"></select>
+    </div>
+
+    <div class="card" id="wensKaart">
+      <div class="head">
+        <h2>Mijn wensen</h2>
+        <p class="muted small">Wat zou je graag krijgen, wat zijn je hobby's, waar mag de Sint je mee plagen? Alleen jouw dichter krijgt dit bij het lootje te zien.</p>
+      </div>
+      <textarea id="mijnWens" placeholder="Bijv. Ik lees graag thrillers, drink te veel koffie en ben altijd mijn sleutels kwijt. Wens: een goede leesbril."></textarea>
+      <div class="acties">
+        <button id="bewaarWens">Wensen opslaan</button>
+        <span class="small muted" id="wensStatus"></span>
+      </div>
+      <h3 class="tussenkop">Wie heeft al wensen ingevuld?</h3>
+      <div class="chips" id="wensOverzicht"></div>
+    </div>
+
+    <div class="card">
+      <div class="head">
+        <h2>Mijn lootje</h2>
+        <p class="muted small" id="lotStatus">Er is nog niet getrokken.</p>
+      </div>
+      <button class="primair" id="openMijnLot" disabled>✉️ Open mijn lootje</button>
+    </div>
+  </section>
+
   <!-- ===================== ORGANISATOR ===================== -->
   <section id="organisator">
+    <p class="sectiekop verborgen" id="orgKop">Alleen voor de organisator</p>
 
     <div class="card">
       <div class="head">
@@ -203,21 +260,27 @@
     <div class="card">
       <div class="head">
         <h2>3. Trekken</h2>
-        <p class="muted small">Je krijgt per persoon een geheime link. Stuur die alleen naar die persoon (bijv. via WhatsApp).</p>
+        <p class="muted small" id="trekUitleg">Je krijgt per persoon een geheime link. Stuur die alleen naar die persoon (bijv. via WhatsApp).</p>
       </div>
+      <details class="vastBlok" id="vastBlok">
+        <summary>Vaste trekkingen <span class="muted small" id="vastTeller"></span></summary>
+        <p class="muted small">Leg vast wie wie moet trekken. Alleen jij ziet dit; de rest wordt eerlijk verloot.</p>
+        <div id="vastLijst"></div>
+        <div class="acties"><button class="klein" id="vastErbij">+ Vaste trekking</button></div>
+      </details>
       <button class="primair" id="trek">🎁 Trek de lootjes</button>
       <div class="fout" id="fout"></div>
       <div id="resultaat" class="verborgen" style="margin-top:18px">
         <div id="lotenLijst"></div>
         <div class="melding" id="hostMelding"></div>
-        <div class="acties">
+        <div class="acties" id="backupActies">
           <button class="klein" id="kopieerAlles">Alle links kopiëren (backup)</button>
           <button class="klein" id="downloadAlles">Backup downloaden</button>
         </div>
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="codeKaart">
       <div class="head">
         <h2>Heb je een code gekregen?</h2>
         <p class="muted small">Plak je link of code hieronder om je lootje te openen.</p>
@@ -290,6 +353,85 @@
   }
   function bewaar() {
     try { localStorage.setItem(OPSLAG, JSON.stringify(verzamel())); } catch (e) { /* geen opslag beschikbaar */ }
+    if (gedeeld && gedeeld.isOrg) bewaarGedeeldStraks();
+  }
+
+  // ---------- Gedeelde modus (alleen in Claude, met gedeelde database) ----------
+  var gedeeld = null;          // { db, isOrg } zodra de database beschikbaar is
+  var instellingen = null;     // { info, personen } van de organisator
+  var trekking = null;         // { codes: { sleutel: code }, op, namen }
+  var wensen = {};             // sleutel -> { naam, tekst, bijgewerkt }
+  var huidigLot = null;        // het lootje dat nu open staat
+  var PAD_INSTELLINGEN = 'data/beheer/doc/instellingen';
+  var PAD_TREKKING = 'data/beheer/doc/trekking';
+  var IK_OPSLAG = 'sint-lootjes-ik';
+  // Vaste trekkingen: alleen leesbaar voor de eigenaar (zie de db-regels bij het publiceren).
+  var PAD_VAST = 'data/geheim/doc/vast';
+  var VAST_OPSLAG = 'sint-lootjes-vast';
+  var vast = [];
+
+  function laadVastLokaal() {
+    try { vast = JSON.parse(localStorage.getItem(VAST_OPSLAG)) || []; } catch (e) { vast = []; }
+  }
+  function bewaarVast() {
+    var schoon = vast.filter(function (v) { return v.gever && v.ontvanger; });
+    try { localStorage.setItem(VAST_OPSLAG, JSON.stringify(schoon)); } catch (e) { /* geen opslag */ }
+    if (gedeeld && gedeeld.isOrg) {
+      schrijfRij = schrijfRij.then(function () {
+        return gedeeld.db.doc(PAD_VAST).set({ paren: schoon });
+      }).catch(function () { $('fout').textContent = 'De vaste trekkingen konden niet worden opgeslagen.'; });
+    }
+  }
+  function toonVast() {
+    var namen = verzamel().personen.map(function (p) { return p.naam; }).filter(Boolean);
+    var lijst = $('vastLijst');
+    lijst.innerHTML = '';
+    vast.forEach(function (v, i) {
+      var rij = document.createElement('div');
+      rij.className = 'vastRij';
+      var kies = function (waarde, veld) {
+        var sel = document.createElement('select');
+        sel.setAttribute('aria-label', veld === 'gever' ? 'Wie trekt' : 'Moet trekken');
+        [''].concat(namen).forEach(function (n) {
+          var o = document.createElement('option');
+          o.value = n;
+          o.textContent = n || (veld === 'gever' ? 'Wie…' : 'trekt…');
+          sel.appendChild(o);
+        });
+        if (waarde && namen.indexOf(waarde) === -1) {
+          var weg = document.createElement('option');
+          weg.value = waarde;
+          weg.textContent = waarde + ' (doet niet mee)';
+          sel.appendChild(weg);
+        }
+        sel.value = waarde || '';
+        sel.addEventListener('change', function () { vast[i][veld] = sel.value; bewaarVast(); toonVastTeller(); });
+        return sel;
+      };
+      var pijl = document.createElement('span');
+      pijl.textContent = '→';
+      var x = knop('✕', function () { vast.splice(i, 1); bewaarVast(); toonVast(); });
+      x.setAttribute('aria-label', 'Verwijder');
+      rij.append(kies(v.gever, 'gever'), pijl, kies(v.ontvanger, 'ontvanger'), x);
+      lijst.appendChild(rij);
+    });
+    toonVastTeller();
+  }
+  function toonVastTeller() {
+    var n = vast.filter(function (v) { return v.gever && v.ontvanger; }).length;
+    $('vastTeller').textContent = n ? '(' + n + ')' : '';
+  }
+
+  var schrijfTimer = null, schrijfRij = Promise.resolve();
+  function bewaarGedeeldStraks() {
+    clearTimeout(schrijfTimer);
+    schrijfTimer = setTimeout(function () {
+      var d = verzamel();
+      var body = { info: d.info, personen: d.personen.filter(function (p) { return p.naam; }) };
+      schrijfRij = schrijfRij.then(function () {
+        return gedeeld.db.doc(PAD_INSTELLINGEN).set(body);
+      }).catch(function () { $('fout').textContent = 'Opslaan lukte niet. Controleer je verbinding en probeer het opnieuw.'; });
+    }, 800);
   }
 
   // ---------- Deelnemers-formulier ----------
@@ -332,15 +474,24 @@
     $('aantal').textContent = n;
     // Een oude trekking hoort niet meer bij een gewijzigde lijst
     $('resultaat').classList.add('verborgen');
+    if ($('vastBlok').open) toonVast();
     bewaar();
   }
 
   // ---------- Trekken ----------
   var laatsteLinks = [];
 
-  function basisUrl() {
+  // Persoonlijke links wijzen altijd naar een plek die iedereen kan openen.
+  var LIVE_URL = 'https://hens-lang.github.io/Test/sinterklaas-lootjes/';
+  function eigenUrl() {
     return location.href.split('#')[0];
   }
+  function basisUrl() {
+    var h = location.hostname;
+    var eigenHost = /^https?:$/.test(location.protocol) && (/github\.io$/.test(h) || h === 'localhost' || h === '127.0.0.1');
+    return eigenHost ? eigenUrl() : LIVE_URL;
+  }
+  var inFrame = (function () { try { return window.self !== window.top; } catch (e) { return true; } })();
 
   function trek() {
     $('fout').textContent = '';
@@ -348,17 +499,42 @@
     var personen = data.personen.filter(function (p) { return p.naam; });
     var paren;
     try {
-      paren = Lootjes.trek(personen);
+      paren = Lootjes.trek(personen, null, vast);
     } catch (e) {
       $('fout').textContent = e.message;
       $('resultaat').classList.add('verborgen');
       return;
     }
+    if (gedeeld) return trekGedeeld(paren, data, personen);
     laatsteLinks = paren.map(function (paar) {
       var code = Lootjes.maakCode(paar, data.info);
       return { naam: paar.gever.naam, code: code, link: basisUrl() + '#lot=' + code };
     });
     toonLinks(data.info);
+  }
+
+  function trekGedeeld(paren, data, personen) {
+    var codes = {};
+    paren.forEach(function (paar) {
+      // Tips van de organisator gaan mee; de eigen wensen worden live bijgelezen.
+      codes[Lootjes.sleutel(paar.gever.naam)] = Lootjes.maakCode(paar, data.info);
+    });
+    var body = { codes: codes, op: new Date().toISOString(), namen: personen.map(function (p) { return Lootjes.sleutel(p.naam); }) };
+    clearTimeout(schrijfTimer);
+    var instBody = { info: data.info, personen: personen };
+    $('trek').disabled = true;
+    schrijfRij = schrijfRij
+      .then(function () { return gedeeld.db.doc(PAD_INSTELLINGEN).set(instBody); })
+      .then(function () { return gedeeld.db.doc(PAD_TREKKING).set(body); })
+      .then(function () {
+        $('lotenLijst').innerHTML = '';
+        $('backupActies').classList.add('verborgen');
+        $('hostMelding').textContent = '✅ De lootjes zijn getrokken (' + personen.length + ' personen). ' +
+          'Iedereen kan nu bovenaan de pagina zijn naam kiezen en zijn eigen lootje openen. Niemand ziet de hele verdeling.';
+        $('resultaat').classList.remove('verborgen');
+      })
+      .catch(function () { $('fout').textContent = 'De trekking kon niet worden opgeslagen. Probeer het opnieuw.'; })
+      .then(function () { $('trek').disabled = false; });
   }
 
   function toonLinks(info) {
@@ -376,23 +552,22 @@
       var kopieer = knop('Kopieer link', function () { kopieerTekst(l.link, kopieer); rij.classList.add('gedeeld'); });
       var tekst = 'Hoi ' + l.naam + '! 🎁 Hier is jouw Sinterklaas-lootje' +
         (info.evenement ? ' voor ' + info.evenement : '') + '. Open hem als niemand meekijkt: ' + l.link;
-      var app = knop('WhatsApp', function () {
-        window.open('https://wa.me/?text=' + encodeURIComponent(tekst), '_blank', 'noopener');
-        rij.classList.add('gedeeld');
-      });
+      var app = document.createElement('a');
+      app.className = 'knop klein';
+      app.textContent = 'WhatsApp';
+      app.href = 'https://wa.me/?text=' + encodeURIComponent(tekst);
+      app.target = '_blank';
+      app.rel = 'noopener';
+      app.addEventListener('click', function () { rij.classList.add('gedeeld'); });
       var code = knop('Alleen code', function () { kopieerTekst(l.code, code); rij.classList.add('gedeeld'); });
       knoppen.append(kopieer, app, code);
       rij.append(naam, knoppen);
       lijst.appendChild(rij);
     });
 
-    var lokaal = location.protocol === 'file:';
-    $('hostMelding').innerHTML = lokaal
-      ? '⚠️ Je opent deze pagina als bestand op je eigen computer, dus de links werken niet bij anderen. ' +
-        'Stuur dan <b>“Alleen code”</b> en laat iedereen de code plakken in deze pagina (stuur het bestand mee), ' +
-        'of zet de pagina online (zie README).'
-      : '🤫 Tip: klik niet zelf op de links, dan blijft het ook voor jou een verrassing. ' +
-        'Trek je opnieuw? Dan zijn alle oude links ongeldig voor de nieuwe verdeling — stuur dan iedereen de nieuwe link.';
+    $('hostMelding').innerHTML =
+      '🤫 Tip: klik niet zelf op de links, dan blijft het ook voor jou een verrassing. ' +
+      'Trek je opnieuw? Dan horen de oude links bij de oude verdeling. Stuur dan iedereen de nieuwe link.';
     $('resultaat').classList.remove('verborgen');
   }
 
@@ -406,15 +581,27 @@
 
   function kopieerTekst(tekst, b) {
     var klaar = function () {
-      if (!b) return;
       var oud = b.textContent;
       b.textContent = 'Gekopieerd ✓';
       setTimeout(function () { b.textContent = oud; }, 1500);
     };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(tekst).then(klaar, function () { prompt('Kopieer:', tekst); });
-    } else {
-      prompt('Kopieer:', tekst);
+    // Lukt kopiëren niet automatisch, dan zetten we de tekst geselecteerd klaar.
+    var handmatig = function () {
+      var vak = b.parentNode.parentNode.querySelector('textarea.handmatig');
+      if (!vak) {
+        vak = document.createElement('textarea');
+        vak.className = 'handmatig';
+        vak.readOnly = true;
+        b.parentNode.parentNode.appendChild(vak);
+      }
+      vak.value = tekst;
+      vak.focus();
+      vak.select();
+    };
+    try {
+      navigator.clipboard.writeText(tekst).then(klaar, handmatig);
+    } catch (e) {
+      handmatig();
     }
   }
 
@@ -424,25 +611,24 @@
 
   // ---------- Lootje bekijken ----------
   function toonLootje(lot) {
+    if (gedeeld && instellingen && instellingen.info) {
+      // In de gedeelde versie altijd de actuele feestgegevens tonen.
+      var i = instellingen.info;
+      lot = Object.assign({}, lot, {
+        evenement: i.evenement || lot.evenement, datum: i.datum || lot.datum,
+        budget: i.budget || lot.budget, deadline: i.deadline || lot.deadline
+      });
+    }
+    huidigLot = lot;
     $('organisator').classList.add('verborgen');
+    $('gedeeld').classList.add('verborgen');
     $('deelnemer').classList.remove('verborgen');
     $('geverNaam').textContent = lot.gever;
     $('ontvangerNaam').textContent = lot.ontvanger;
     document.querySelectorAll('.ontvNaam').forEach(function (el) { el.textContent = lot.ontvanger; });
     $('evenementRegel').textContent = [lot.evenement, lot.datum].filter(Boolean).join(' · ');
 
-    var feiten = $('feiten');
-    feiten.innerHTML = '';
-    [['Tips over ' + lot.ontvanger, lot.wens], ['Budget', lot.budget], ['Gedicht klaar', lot.deadline], ['Pakjesavond', lot.datum]]
-      .forEach(function (f) {
-        if (!f[1]) return;
-        var el = document.createElement('div');
-        el.className = 'feit';
-        var b = document.createElement('b');
-        b.textContent = f[0];
-        el.append(b, document.createTextNode(f[1]));
-        feiten.appendChild(el);
-      });
+    toonFeiten();
 
     $('opzet').textContent =
       'Beste ' + lot.ontvanger + ',\n\n' +
@@ -457,6 +643,33 @@
     $('dicht').classList.remove('verborgen');
     $('open').classList.add('verborgen');
     $('hulp').classList.add('verborgen');
+  }
+
+  function toonFeiten() {
+    var lot = huidigLot;
+    if (!lot) return;
+    var eigen = wensen[Lootjes.sleutel(lot.ontvanger)];
+    var feiten = $('feiten');
+    feiten.innerHTML = '';
+    [
+      ['Wensen van ' + lot.ontvanger, eigen && eigen.tekst],
+      [(gedeeld ? 'Tips van de organisator' : 'Tips over ' + lot.ontvanger), lot.wens],
+      ['Budget', lot.budget], ['Gedicht klaar', lot.deadline], ['Pakjesavond', lot.datum]
+    ].forEach(function (f) {
+      if (!f[1]) return;
+      var el = document.createElement('div');
+      el.className = 'feit';
+      var b = document.createElement('b');
+      b.textContent = f[0];
+      el.append(b, document.createTextNode(f[1]));
+      feiten.appendChild(el);
+    });
+    if (gedeeld && !(eigen && eigen.tekst)) {
+      var leeg = document.createElement('div');
+      leeg.className = 'feit';
+      leeg.textContent = lot.ontvanger + ' heeft nog geen wensen ingevuld. Kijk later nog eens: ze verschijnen hier vanzelf.';
+      feiten.insertBefore(leeg, feiten.firstChild);
+    }
   }
 
   function openVanuitHash() {
@@ -494,14 +707,27 @@
       wijziging();
     });
     $('wisAlles').addEventListener('click', function () {
-      if (!confirm('Alle deelnemers en gegevens wissen?')) return;
+      var b = $('wisAlles');
+      if (!b.dataset.zeker) {
+        b.dataset.zeker = '1';
+        b.textContent = 'Zeker weten? Klik nog een keer';
+        setTimeout(function () { delete b.dataset.zeker; b.textContent = 'Alles wissen'; }, 4000);
+        return;
+      }
+      delete b.dataset.zeker;
+      b.textContent = 'Alles wissen';
       $('personen').innerHTML = '';
       velden.forEach(function (v) { $(v).value = ''; });
       voegPersoonToe(); voegPersoonToe(); voegPersoonToe();
       wijziging();
     });
     $('trek').addEventListener('click', trek);
+    laadVastLokaal();
+    toonVast();
+    $('vastBlok').addEventListener('toggle', toonVast);
+    $('vastErbij').addEventListener('click', function () { vast.push({ gever: '', ontvanger: '' }); toonVast(); });
     $('kopieerAlles').addEventListener('click', function () { kopieerTekst(backupTekst(), $('kopieerAlles')); });
+    if (inFrame) $('downloadAlles').classList.add('verborgen');
     $('downloadAlles').addEventListener('click', function () {
       var blob = new Blob([backupTekst() + '\n'], { type: 'text/plain;charset=utf-8' });
       var a = document.createElement('a');
@@ -528,13 +754,180 @@
     });
     $('kopieerOpzet').addEventListener('click', function () { kopieerTekst($('opzet').textContent, $('kopieerOpzet')); });
     $('naarStart').addEventListener('click', function () {
-      history.replaceState(null, '', basisUrl());
+      try { history.replaceState(null, '', eigenUrl()); } catch (e) { /* niet toegestaan */ }
+      huidigLot = null;
       $('deelnemer').classList.add('verborgen');
-      $('organisator').classList.remove('verborgen');
+      if (gedeeld) {
+        $('gedeeld').classList.remove('verborgen');
+        $('organisator').classList.toggle('verborgen', !gedeeld.isOrg);
+      } else {
+        $('organisator').classList.remove('verborgen');
+      }
     });
     window.addEventListener('hashchange', openVanuitHash);
 
+    $('ikBen').addEventListener('change', function () {
+      try { localStorage.setItem(IK_OPSLAG, $('ikBen').value); } catch (e) { /* geen opslag */ }
+      $('mijnWens').dataset.vuil = '';
+      toonGedeeld();
+    });
+    $('mijnWens').addEventListener('input', function () { $('mijnWens').dataset.vuil = '1'; $('wensStatus').textContent = 'Nog niet opgeslagen'; });
+    $('bewaarWens').addEventListener('click', bewaarWens);
+    $('openMijnLot').addEventListener('click', function () {
+      var code = trekking && trekking.codes && trekking.codes[$('ikBen').value];
+      var lot = code && Lootjes.leesCode(code);
+      if (lot) toonLootje(lot);
+    });
+    $('naarStart').textContent = 'Terug';
+
     openVanuitHash();
+    startGedeeld();
+  }
+
+  function startGedeeld() {
+    if (!window.claude || typeof window.claude.use !== 'function') return;
+    Promise.all([window.claude.use('db'), window.claude.use('user')]).then(function (r) {
+      var db = r[0], user = r[1];
+      if (!db) return;
+      var isOwner = user ? user.isOwner() : Promise.resolve(false);
+      return isOwner.then(function (isOrg) {
+        gedeeld = { db: db, isOrg: !!isOrg };
+        $('naarStart').textContent = 'Terug naar het begin';
+        $('gedeeld').classList.remove('verborgen');
+        $('organisator').classList.toggle('verborgen', !gedeeld.isOrg);
+        $('orgKop').classList.remove('verborgen');
+        $('codeKaart').classList.add('verborgen');
+        $('trekUitleg').textContent = 'Na het trekken opent iedereen bovenaan zijn eigen lootje. Niemand ziet de hele verdeling.';
+        toonGedeeld();
+
+        var eerste = true;
+        db.doc(PAD_INSTELLINGEN).onSnapshot(function (snap) {
+          instellingen = snap.exists ? snap.data() : null;
+          if (gedeeld.isOrg && eerste) {
+            eerste = false;
+            if (instellingen) vulFormulier(instellingen);
+            else if (verzamel().personen.some(function (p) { return p.naam; })) bewaarGedeeldStraks();
+          }
+          toonGedeeld();
+        }, function () {});
+        if (gedeeld.isOrg) {
+          db.doc(PAD_VAST).get().then(function (snap) {
+            if (snap.exists) { vast = (snap.data().paren || []).map(function (v) { return { gever: v.gever, ontvanger: v.ontvanger }; }); toonVast(); }
+            else if (vast.length) bewaarVast();
+          }, function () {});
+        }
+        db.doc(PAD_TREKKING).onSnapshot(function (snap) {
+          trekking = snap.exists ? snap.data() : null;
+          toonGedeeld();
+        }, function () {});
+        db.collection('wensen').onSnapshot(function (qs) {
+          var nieuw = {};
+          qs.docs.forEach(function (d) { nieuw[d.id] = d.data(); });
+          wensen = nieuw;
+          toonGedeeld();
+          toonFeiten();
+        }, function () {});
+      });
+    }).catch(function () { /* geen gedeelde modus: de pagina werkt lokaal verder */ });
+  }
+
+  function vulFormulier(d) {
+    velden.forEach(function (v) { $(v).value = (d.info || {})[v] || ''; });
+    $('personen').innerHTML = '';
+    (d.personen || []).forEach(voegPersoonToe);
+    if (!document.querySelector('.persoon')) { voegPersoonToe(); voegPersoonToe(); voegPersoonToe(); }
+    $('aantal').textContent = verzamel().personen.filter(function (p) { return p.naam; }).length;
+  }
+
+  function toonGedeeld() {
+    if (!gedeeld) return;
+    var personen = ((instellingen && instellingen.personen) || []).filter(function (p) { return p.naam; });
+
+    // Naamkiezer
+    var keuze = $('ikBen').value;
+    if (!keuze) { try { keuze = localStorage.getItem(IK_OPSLAG) || ''; } catch (e) { keuze = ''; } }
+    var sel = $('ikBen');
+    sel.innerHTML = '';
+    var leeg = document.createElement('option');
+    leeg.value = '';
+    leeg.textContent = personen.length ? '— Kies je naam —' : 'Nog geen deelnemers';
+    sel.appendChild(leeg);
+    personen.forEach(function (p) {
+      var o = document.createElement('option');
+      o.value = Lootjes.sleutel(p.naam);
+      o.textContent = p.naam;
+      sel.appendChild(o);
+    });
+    sel.value = personen.some(function (p) { return Lootjes.sleutel(p.naam) === keuze; }) ? keuze : '';
+    var ik = sel.value;
+    var mijnNaam = ik ? sel.options[sel.selectedIndex].textContent : '';
+
+    $('gedeeldUitleg').textContent = personen.length
+      ? 'Kies je naam. Daarna kun je je wensen invullen en, als er getrokken is, je lootje openen.'
+      : (gedeeld.isOrg
+        ? 'Vul hieronder het feest en de deelnemers in. Daarna kan iedereen hier zijn naam kiezen.'
+        : 'De organisator heeft nog geen deelnemers ingevuld. Kom straks terug.');
+
+    // Wensen
+    $('mijnWens').disabled = !ik;
+    $('bewaarWens').disabled = !ik;
+    if (!$('mijnWens').dataset.vuil) {
+      var w = wensen[ik];
+      $('mijnWens').value = (w && w.tekst) || '';
+      $('wensStatus').textContent = !ik ? 'Kies eerst je naam.' : (w && w.tekst ? 'Opgeslagen ✓' : '');
+    }
+    var overzicht = $('wensOverzicht');
+    overzicht.innerHTML = '';
+    personen.forEach(function (p) {
+      var c = document.createElement('span');
+      var w = wensen[Lootjes.sleutel(p.naam)];
+      c.className = 'chip' + (w && w.tekst ? ' klaar' : '');
+      c.textContent = p.naam;
+      overzicht.appendChild(c);
+    });
+
+    // Lootje
+    var codes = (trekking && trekking.codes) || {};
+    var knop = $('openMijnLot');
+    knop.disabled = true;
+    if (!trekking) {
+      $('lotStatus').textContent = 'Er is nog niet getrokken. Zodra de organisator de lootjes trekt, kun je hier je lootje openen.';
+    } else if (!ik) {
+      $('lotStatus').textContent = 'De lootjes zijn getrokken! Kies hierboven je naam.';
+    } else if (codes[ik]) {
+      $('lotStatus').textContent = 'Er ligt een lootje voor je klaar, ' + mijnNaam + '. Zorg dat niemand meekijkt.';
+      knop.disabled = false;
+    } else {
+      $('lotStatus').textContent = 'Jouw naam zat niet in de trekking. Vraag de organisator om opnieuw te trekken.';
+    }
+
+    // Organisator: waarschuwen als de lijst na de trekking is veranderd
+    if (gedeeld.isOrg && trekking) {
+      var nu = personen.map(function (p) { return Lootjes.sleutel(p.naam); }).sort().join(',');
+      var toen = (trekking.namen || []).slice().sort().join(',');
+      $('fout').textContent = nu !== toen
+        ? 'Let op: de deelnemerslijst is veranderd sinds de laatste trekking. Trek opnieuw zodat iedereen meedoet.'
+        : '';
+    }
+  }
+
+  function bewaarWens() {
+    var ik = $('ikBen').value;
+    if (!ik || !gedeeld) return;
+    var naam = $('ikBen').options[$('ikBen').selectedIndex].textContent;
+    var tekst = $('mijnWens').value.trim();
+    $('bewaarWens').disabled = true;
+    $('wensStatus').textContent = 'Bezig met opslaan…';
+    gedeeld.db.doc('wensen/' + ik).set({ naam: naam, tekst: tekst, bijgewerkt: new Date().toISOString() })
+      .then(function () {
+        $('mijnWens').dataset.vuil = '';
+        $('wensStatus').textContent = 'Opgeslagen ✓';
+      }, function (e) {
+        $('wensStatus').textContent = e && e.code === 'invalid_argument'
+          ? 'Je kunt hier (nog) niets opslaan. Vraag de organisator om je uit te nodigen als bewerker.'
+          : 'Opslaan lukte niet. Probeer het zo nog eens.';
+      })
+      .then(function () { $('bewaarWens').disabled = false; });
   }
 
   start();

@@ -26,6 +26,7 @@
   function controleer(deelnemers) {
     var fouten = [];
     var gezien = {};
+    var gezienSleutel = {};
     if (!Array.isArray(deelnemers) || deelnemers.length < 3) {
       fouten.push('Je hebt minimaal 3 deelnemers nodig.');
       return fouten;
@@ -33,8 +34,9 @@
     deelnemers.forEach(function (d, i) {
       var k = sleutelVan(d.naam);
       if (!k) fouten.push('Deelnemer ' + (i + 1) + ' heeft geen naam.');
-      else if (gezien[k]) fouten.push('De naam "' + schoon(d.naam) + '" komt dubbel voor.');
+      else if (gezien[k] || gezienSleutel[sleutel(d.naam)]) fouten.push('De naam "' + schoon(d.naam) + '" komt dubbel voor (of lijkt te veel op een andere naam).');
       gezien[k] = true;
+      if (k) gezienSleutel[sleutel(d.naam)] = true;
     });
     deelnemers.forEach(function (d) {
       (d.nietTrekken || []).forEach(function (n) {
@@ -77,17 +79,47 @@
   }
 
   /**
+   * Controleert vaste trekkingen: [{ gever, ontvanger }] met namen.
+   */
+  function controleerVast(deelnemers, vast) {
+    var fouten = [];
+    var bekend = {};
+    deelnemers.forEach(function (d) { bekend[sleutelVan(d.naam)] = true; });
+    var gevers = {}, ontvangers = {};
+    (vast || []).forEach(function (v) {
+      var g = sleutelVan(v.gever), o = sleutelVan(v.ontvanger);
+      if (!g || !o) return;
+      if (!bekend[g]) fouten.push('Vaste trekking: "' + schoon(v.gever) + '" doet niet mee.');
+      else if (!bekend[o]) fouten.push('Vaste trekking: "' + schoon(v.ontvanger) + '" doet niet mee.');
+      else if (g === o) fouten.push('Vaste trekking: ' + schoon(v.gever) + ' kan zichzelf niet trekken.');
+      else if (gevers[g]) fouten.push('Vaste trekking: ' + schoon(v.gever) + ' staat er twee keer in als trekker.');
+      else if (ontvangers[o]) fouten.push('Vaste trekking: ' + schoon(v.ontvanger) + ' wordt door twee mensen getrokken.');
+      gevers[g] = true;
+      ontvangers[o] = true;
+    });
+    return fouten;
+  }
+
+  /**
    * Trekt de lootjes. Geeft een array terug van { gever, ontvanger } (deelnemer-objecten).
+   * `vast` (optioneel) legt trekkingen vast: [{ gever: naam, ontvanger: naam }].
    * Gooit een Error als er geen geldige verdeling mogelijk is.
    */
-  function trek(deelnemers, rnd) {
-    var fouten = controleer(deelnemers);
+  function trek(deelnemers, rnd, vast) {
+    var fouten = controleer(deelnemers).concat(controleerVast(deelnemers, vast));
     if (fouten.length) throw new Error(fouten.join('\n'));
     rnd = rnd || veiligRandom();
+
+    var vastVoor = {};
+    (vast || []).forEach(function (v) {
+      if (schoon(v.gever) && schoon(v.ontvanger)) vastVoor[sleutelVan(v.gever)] = sleutelVan(v.ontvanger);
+    });
 
     var n = deelnemers.length;
     // Moeilijkste gevers (minste opties) eerst: sneller en altijd een oplossing als die bestaat.
     var opties = deelnemers.map(function (g) {
+      var doel = vastVoor[sleutelVan(g.naam)];
+      if (doel) return deelnemers.filter(function (o) { return sleutelVan(o.naam) === doel; });
       return deelnemers.filter(function (o) { return magTrekken(g, o); });
     });
     var volgorde = schud(deelnemers.map(function (_, i) { return i; }), rnd)
@@ -187,6 +219,13 @@
     }
   }
 
+  /** Veilige, vaste sleutel voor een naam (bruikbaar als document-id). "Zoë de Vries" -> "zoe-de-vries" */
+  function sleutel(naam) {
+    var k = sleutelVan(naam);
+    if (k.normalize) k = k.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return k.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'naamloos';
+  }
+
   /** Zet tekst "Anna, Piet; Klaas" om naar ['Anna','Piet','Klaas']. */
   function splitsNamen(tekst) {
     return String(tekst || '').split(/[,;\n]/).map(schoon).filter(Boolean);
@@ -194,10 +233,12 @@
 
   return {
     controleer: controleer,
+    controleerVast: controleerVast,
     magTrekken: magTrekken,
     trek: trek,
     maakCode: maakCode,
     leesCode: leesCode,
-    splitsNamen: splitsNamen
+    splitsNamen: splitsNamen,
+    sleutel: sleutel
   };
 });
