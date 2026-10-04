@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sinterklaas Lootjes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fbf5ec;
+    --paper: #ffffff;
+    --ink: #2b1d17;
+    --muted: #7a6a60;
+    --line: #eadfce;
+    --red: #b3202a;
+    --red-ink: #ffffff;
+    --gold: #c8962e;
+    --soft: #f6ecdc;
+    --ok: #2f7d4f;
+    --err: #b3202a;
+    --shadow: 0 1px 2px rgba(60, 30, 10, .06), 0 8px 24px rgba(60, 30, 10, .08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1b1311;
+      --paper: #261b18;
+      --ink: #f5ebe0;
+      --muted: #b9a89b;
+      --line: #3d2e29;
+      --red: #e0474f;
+      --red-ink: #1b1311;
+      --gold: #e2b65a;
+      --soft: #31241f;
+      --ok: #6cc391;
+      --err: #ff7a7f;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1b1311; --paper: #261b18; --ink: #f5ebe0; --muted: #b9a89b; --line: #3d2e29;
+    --red: #e0474f; --red-ink: #1b1311; --gold: #e2b65a; --soft: #31241f; --ok: #6cc391; --err: #ff7a7f;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .35);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.55 Nunito, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1, h2, h3 { font-family: Fraunces, Georgia, serif; line-height: 1.15; margin: 0; }
+  h1 { font-size: clamp(28px, 6vw, 42px); font-weight: 800; }
+  h2 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+  p { margin: 0; }
+  .muted { color: var(--muted); }
+  .small { font-size: 14px; }
+
+  header.top { display: flex; gap: 16px; align-items: center; margin-bottom: 24px; }
+  .mijter {
+    flex: none; width: 56px; height: 56px; border-radius: 16px;
+    display: grid; place-items: center; background: var(--red); color: var(--red-ink);
+  }
+  .card {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 18px;
+    padding: 22px; box-shadow: var(--shadow); margin-bottom: 18px;
+  }
+  .card > .head { margin-bottom: 16px; }
+
+  label { display: block; font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+  input, textarea {
+    width: 100%; font: inherit; color: var(--ink); background: var(--bg);
+    border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+  }
+  input:focus, textarea:focus { outline: 2px solid var(--gold); outline-offset: 1px; border-color: transparent; }
+  textarea { resize: vertical; min-height: 84px; }
+  .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 600px) { .grid2 { grid-template-columns: 1fr; } }
+
+  button {
+    font: inherit; font-weight: 700; cursor: pointer; border-radius: 12px;
+    padding: 10px 16px; border: 1px solid var(--line); background: var(--soft); color: var(--ink);
+  }
+  button:hover { filter: brightness(.97); }
+  button.primair { background: var(--red); color: var(--red-ink); border-color: transparent; padding: 13px 22px; font-size: 17px; }
+  button.klein { padding: 6px 10px; font-size: 14px; border-radius: 9px; }
+  button.link { background: none; border: none; color: var(--muted); padding: 6px; text-decoration: underline; }
+  .acties { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 16px; }
+
+  /* Deelnemers */
+  .persoon {
+    display: grid; grid-template-columns: 1.1fr 1fr 1.2fr auto; gap: 8px; align-items: start;
+    padding: 12px 0; border-top: 1px solid var(--line);
+  }
+  .persoon:first-of-type { border-top: none; }
+  .persoon .wens { grid-column: 1 / 4; }
+  .persoon .weg { align-self: center; }
+  .kolomkop { display: grid; grid-template-columns: 1.1fr 1fr 1.2fr auto; gap: 8px; font-size: 13px; color: var(--muted); font-weight: 700; }
+  .kolomkop span:last-child { width: 38px; }
+  @media (max-width: 600px) {
+    .kolomkop { display: none; }
+    .persoon { grid-template-columns: 1fr auto; }
+    .persoon .wens, .persoon .huis, .persoon .niet { grid-column: 1 / 2; }
+    .persoon .weg { grid-row: 1; grid-column: 2; }
+  }
+  .teller { display: inline-block; background: var(--soft); border-radius: 99px; padding: 2px 10px; font-size: 14px; font-weight: 700; }
+
+  .fout { color: var(--err); font-weight: 700; white-space: pre-line; margin-top: 12px; }
+  .melding { background: var(--soft); border-radius: 12px; padding: 12px 14px; font-size: 14px; margin-top: 12px; }
+
+  /* Resultaat (organisator) */
+  .lot {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between;
+    padding: 12px 0; border-top: 1px solid var(--line);
+  }
+  .lot:first-child { border-top: none; }
+  .lot .naam { font-weight: 700; font-size: 17px; }
+  .lot .knoppen { display: flex; gap: 6px; flex-wrap: wrap; }
+  .lot.gedeeld .naam::after { content: " ✓"; color: var(--ok); }
+
+  /* Lootje openen */
+  .envelop {
+    text-align: center; padding: 40px 22px;
+    background:
+      repeating-linear-gradient(45deg, transparent 0 14px, color-mix(in srgb, var(--gold) 10%, transparent) 14px 28px),
+      var(--paper);
+  }
+  .groot { font-family: Fraunces, Georgia, serif; font-weight: 800; font-size: clamp(36px, 10vw, 64px); color: var(--red); margin: 10px 0 6px; overflow-wrap: anywhere; }
+  .feiten { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 18px; text-align: left; }
+  .feit { background: var(--soft); border-radius: 12px; padding: 10px 12px; }
+  .feit b { display: block; font-size: 13px; color: var(--muted); }
+  .verborgen { display: none !important; }
+  pre.opzet {
+    white-space: pre-wrap; font: 15px/1.7 Nunito, system-ui, sans-serif; background: var(--soft);
+    border-radius: 12px; padding: 14px 16px; margin: 10px 0 0;
+  }
+  ul.tips { margin: 8px 0 0; padding-left: 20px; }
+  ul.tips li { margin-bottom: 4px; }
+  .rijm { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .rijm span { background: var(--soft); border-radius: 99px; padding: 3px 10px; font-size: 14px; }
+  footer { text-align: center; margin-top: 28px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="mijter" aria-hidden="true">
+      <svg width="30" height="34" viewBox="0 0 30 34" fill="none">
+        <path d="M15 1 C8 6 4 13 4 22 V31 H26 V22 C26 13 22 6 15 1Z" fill="currentColor" opacity=".25"/>
+        <path d="M15 1 C8 6 4 13 4 22 V31 H26 V22 C26 13 22 6 15 1Z" stroke="currentColor" stroke-width="2"/>
+        <path d="M15 9 V23 M9 15 H21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Sinterklaas Lootjes</h1>
+      <p class="muted">Eerlijk lootjes trekken voor gedichten. Niemand ziet wie wie heeft — ook de organisator niet.</p>
+    </div>
+  </header>
+
+  <!-- ===================== ORGANISATOR ===================== -->
+  <section id="organisator">
+
+    <div class="card">
+      <div class="head">
+        <h2>1. Het feest</h2>
+        <p class="muted small">Deze gegevens komen op ieders lootje te staan.</p>
+      </div>
+      <div class="grid2">
+        <div><label for="evenement">Naam</label><input id="evenement" placeholder="Pakjesavond familie De Vries"></div>
+        <div><label for="datum">Datum pakjesavond</label><input id="datum" placeholder="zaterdag 5 december"></div>
+        <div><label for="budget">Budget cadeau</label><input id="budget" placeholder="€ 20"></div>
+        <div><label for="deadline">Gedicht klaar op</label><input id="deadline" placeholder="vóór 5 december"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="head">
+        <h2>2. Wie doen er mee? <span class="teller" id="aantal">0</span></h2>
+        <p class="muted small">
+          Mensen met hetzelfde <b>huishouden</b> trekken elkaar niet (handig voor partners).
+          Bij <b>niet trekken</b> zet je namen die iemand níet mag krijgen, bijvoorbeeld wie diegene vorig jaar had.
+          De <b>tips</b> krijgt de dichter te zien die deze persoon trekt.
+        </p>
+      </div>
+      <div class="kolomkop"><span>Naam</span><span>Huishouden</span><span>Niet trekken</span><span></span></div>
+      <div id="personen"></div>
+      <div class="acties">
+        <button id="voegToe">+ Deelnemer</button>
+        <button id="plakNamen">Namen plakken</button>
+        <button class="link" id="wisAlles">Alles wissen</button>
+      </div>
+      <div id="plakVak" class="verborgen" style="margin-top:12px">
+        <label for="plakTekst">Eén naam per regel (of met komma's)</label>
+        <textarea id="plakTekst" placeholder="Oma&#10;Opa&#10;Sanne"></textarea>
+        <div class="acties"><button id="plakOk" class="klein">Toevoegen</button></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="head">
+        <h2>3. Trekken</h2>
+        <p class="muted small">Je krijgt per persoon een geheime link. Stuur die alleen naar die persoon (bijv. via WhatsApp).</p>
+      </div>
+      <button class="primair" id="trek">🎁 Trek de lootjes</button>
+      <div class="fout" id="fout"></div>
+      <div id="resultaat" class="verborgen" style="margin-top:18px">
+        <div id="lotenLijst"></div>
+        <div class="melding" id="hostMelding"></div>
+        <div class="acties">
+          <button class="klein" id="kopieerAlles">Alle links kopiëren (backup)</button>
+          <button class="klein" id="downloadAlles">Backup downloaden</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="head">
+        <h2>Heb je een code gekregen?</h2>
+        <p class="muted small">Plak je link of code hieronder om je lootje te openen.</p>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap">
+        <input id="codeInvoer" placeholder="Plak hier je code of link" style="flex:1; min-width:200px">
+        <button id="codeOpen">Open lootje</button>
+      </div>
+      <div class="fout" id="codeFout"></div>
+    </div>
+  </section>
+
+  <!-- ===================== DEELNEMER ===================== -->
+  <section id="deelnemer" class="verborgen">
+    <div class="card envelop">
+      <p class="muted" id="evenementRegel"></p>
+      <h2 style="margin-top:6px">Hallo <span id="geverNaam"></span>!</h2>
+      <div id="dicht">
+        <p class="muted" style="margin:14px 0 18px">Sinterklaas heeft een lootje voor je klaargelegd.<br>Zorg dat niemand meekijkt…</p>
+        <button class="primair" id="onthul">✉️ Open mijn lootje</button>
+      </div>
+      <div id="open" class="verborgen">
+        <p class="muted" style="margin-top:14px">Jij maakt een gedicht en surprise voor</p>
+        <div class="groot" id="ontvangerNaam"></div>
+        <div class="feiten" id="feiten"></div>
+        <div class="acties" style="justify-content:center">
+          <button class="klein" id="verberg">Verberg weer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card verborgen" id="hulp">
+      <h2>Hulp bij het gedicht</h2>
+      <p class="muted small">Een opzetje om mee te beginnen. Vul de puntjes in met iets wat je over <span class="ontvNaam"></span> weet.</p>
+      <pre class="opzet" id="opzet"></pre>
+      <div class="acties"><button class="klein" id="kopieerOpzet">Kopieer opzet</button></div>
+      <h3 style="margin-top:20px; font-size:18px">Tips van de Sint</h3>
+      <ul class="tips">
+        <li>Schrijf alsof Sinterklaas zelf aan het woord is: “Sint hoorde van zijn Pieten…”.</li>
+        <li>Plaag gerust een beetje, maar houd het lief — iedereen moet er om kunnen lachen.</li>
+        <li>Gebruik gepaard rijm (aa-bb) en ongeveer even lange regels; dat leest het makkelijkst voor.</li>
+        <li>Verwijs in het gedicht naar de surprise, zodat het pakje “klopt” bij het verhaal.</li>
+        <li>Sluit af met een groet: “Sint en Piet”.</li>
+      </ul>
+      <h3 style="margin-top:20px; font-size:18px">Handige rijmwoorden</h3>
+      <div class="rijm">
+        <span>Sint · wint · vindt · kind</span><span>Piet · niet · ziet · lied</span>
+        <span>dak · zak · gemak · pak</span><span>schoen · doen · zoen · toen</span>
+        <span>jaar · klaar · waar · paar</span><span>snoep · groep · roep</span>
+        <span>paard · waard · gespaard</span><span>feest · geweest · beest</span>
+      </div>
+    </div>
+
+    <footer><button class="link" id="naarStart">Zelf lootjes organiseren</button></footer>
+  </section>
+
+</div>
+
+<script src="lootjes.js"></script>
+<script>
+(function () {
+  'use strict';
+  var OPSLAG = 'sint-lootjes-v1';
+  var $ = function (id) { return document.getElementById(id); };
+  var velden = ['evenement', 'datum', 'budget', 'deadline'];
+
+  // ---------- Opslag (alleen instellingen, nooit de uitslag) ----------
+  function laad() {
+    try { return JSON.parse(localStorage.getItem(OPSLAG)) || null; } catch (e) { return null; }
+  }
+  function bewaar() {
+    try { localStorage.setItem(OPSLAG, JSON.stringify(verzamel())); } catch (e) { /* geen opslag beschikbaar */ }
+  }
+
+  // ---------- Deelnemers-formulier ----------
+  function voegPersoonToe(p) {
+    p = p || {};
+    var rij = document.createElement('div');
+    rij.className = 'persoon';
+    rij.innerHTML =
+      '<input class="naam" placeholder="Naam" aria-label="Naam">' +
+      '<input class="huis" placeholder="bijv. Jansen" aria-label="Huishouden">' +
+      '<input class="niet" placeholder="Namen, met komma" aria-label="Niet trekken">' +
+      '<button class="klein weg" title="Verwijder" aria-label="Verwijder">✕</button>' +
+      '<input class="wens" placeholder="Tips voor de dichter: hobby\'s, grappige gewoontes, wensen…" aria-label="Tips">';
+    rij.querySelector('.naam').value = p.naam || '';
+    rij.querySelector('.huis').value = p.huishouden || '';
+    rij.querySelector('.niet').value = (p.nietTrekken || []).join(', ');
+    rij.querySelector('.wens').value = p.wens || '';
+    rij.querySelector('.weg').addEventListener('click', function () { rij.remove(); wijziging(); });
+    rij.addEventListener('input', wijziging);
+    $('personen').appendChild(rij);
+    return rij;
+  }
+
+  function verzamel() {
+    var info = {};
+    velden.forEach(function (v) { info[v] = $(v).value; });
+    var personen = Array.prototype.map.call(document.querySelectorAll('.persoon'), function (rij) {
+      return {
+        naam: rij.querySelector('.naam').value.trim(),
+        huishouden: rij.querySelector('.huis').value.trim(),
+        nietTrekken: Lootjes.splitsNamen(rij.querySelector('.niet').value),
+        wens: rij.querySelector('.wens').value.trim()
+      };
+    });
+    return { info: info, personen: personen };
+  }
+
+  function wijziging() {
+    var n = verzamel().personen.filter(function (p) { return p.naam; }).length;
+    $('aantal').textContent = n;
+    // Een oude trekking hoort niet meer bij een gewijzigde lijst
+    $('resultaat').classList.add('verborgen');
+    bewaar();
+  }
+
+  // ---------- Trekken ----------
+  var laatsteLinks = [];
+
+  function basisUrl() {
+    return location.href.split('#')[0];
+  }
+
+  function trek() {
+    $('fout').textContent = '';
+    var data = verzamel();
+    var personen = data.personen.filter(function (p) { return p.naam; });
+    var paren;
+    try {
+      paren = Lootjes.trek(personen);
+    } catch (e) {
+      $('fout').textContent = e.message;
+      $('resultaat').classList.add('verborgen');
+      return;
+    }
+    laatsteLinks = paren.map(function (paar) {
+      var code = Lootjes.maakCode(paar, data.info);
+      return { naam: paar.gever.naam, code: code, link: basisUrl() + '#lot=' + code };
+    });
+    toonLinks(data.info);
+  }
+
+  function toonLinks(info) {
+    var lijst = $('lotenLijst');
+    lijst.innerHTML = '';
+    laatsteLinks.forEach(function (l) {
+      var rij = document.createElement('div');
+      rij.className = 'lot';
+      var naam = document.createElement('span');
+      naam.className = 'naam';
+      naam.textContent = l.naam;
+      var knoppen = document.createElement('div');
+      knoppen.className = 'knoppen';
+
+      var kopieer = knop('Kopieer link', function () { kopieerTekst(l.link, kopieer); rij.classList.add('gedeeld'); });
+      var tekst = 'Hoi ' + l.naam + '! 🎁 Hier is jouw Sinterklaas-lootje' +
+        (info.evenement ? ' voor ' + info.evenement : '') + '. Open hem als niemand meekijkt: ' + l.link;
+      var app = knop('WhatsApp', function () {
+        window.open('https://wa.me/?text=' + encodeURIComponent(tekst), '_blank', 'noopener');
+        rij.classList.add('gedeeld');
+      });
+      var code = knop('Alleen code', function () { kopieerTekst(l.code, code); rij.classList.add('gedeeld'); });
+      knoppen.append(kopieer, app, code);
+      rij.append(naam, knoppen);
+      lijst.appendChild(rij);
+    });
+
+    var lokaal = location.protocol === 'file:';
+    $('hostMelding').innerHTML = lokaal
+      ? '⚠️ Je opent deze pagina als bestand op je eigen computer, dus de links werken niet bij anderen. ' +
+        'Stuur dan <b>“Alleen code”</b> en laat iedereen de code plakken in deze pagina (stuur het bestand mee), ' +
+        'of zet de pagina online (zie README).'
+      : '🤫 Tip: klik niet zelf op de links, dan blijft het ook voor jou een verrassing. ' +
+        'Trek je opnieuw? Dan zijn alle oude links ongeldig voor de nieuwe verdeling — stuur dan iedereen de nieuwe link.';
+    $('resultaat').classList.remove('verborgen');
+  }
+
+  function knop(tekst, fn) {
+    var b = document.createElement('button');
+    b.className = 'klein';
+    b.textContent = tekst;
+    b.addEventListener('click', fn);
+    return b;
+  }
+
+  function kopieerTekst(tekst, b) {
+    var klaar = function () {
+      if (!b) return;
+      var oud = b.textContent;
+      b.textContent = 'Gekopieerd ✓';
+      setTimeout(function () { b.textContent = oud; }, 1500);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(tekst).then(klaar, function () { prompt('Kopieer:', tekst); });
+    } else {
+      prompt('Kopieer:', tekst);
+    }
+  }
+
+  function backupTekst() {
+    return laatsteLinks.map(function (l) { return l.naam + ': ' + l.link; }).join('\n');
+  }
+
+  // ---------- Lootje bekijken ----------
+  function toonLootje(lot) {
+    $('organisator').classList.add('verborgen');
+    $('deelnemer').classList.remove('verborgen');
+    $('geverNaam').textContent = lot.gever;
+    $('ontvangerNaam').textContent = lot.ontvanger;
+    document.querySelectorAll('.ontvNaam').forEach(function (el) { el.textContent = lot.ontvanger; });
+    $('evenementRegel').textContent = [lot.evenement, lot.datum].filter(Boolean).join(' · ');
+
+    var feiten = $('feiten');
+    feiten.innerHTML = '';
+    [['Tips over ' + lot.ontvanger, lot.wens], ['Budget', lot.budget], ['Gedicht klaar', lot.deadline], ['Pakjesavond', lot.datum]]
+      .forEach(function (f) {
+        if (!f[1]) return;
+        var el = document.createElement('div');
+        el.className = 'feit';
+        var b = document.createElement('b');
+        b.textContent = f[0];
+        el.append(b, document.createTextNode(f[1]));
+        feiten.appendChild(el);
+      });
+
+    $('opzet').textContent =
+      'Beste ' + lot.ontvanger + ',\n\n' +
+      'Sinterklaas zat laatst eens rustig na te denken,\n' +
+      'wat hij dit jaar aan ' + lot.ontvanger + ' zou schenken.\n' +
+      'De Pieten wisten meteen wat te vertellen:\n' +
+      'dat ' + lot.ontvanger + ' … (iets grappigs) … zonder te bellen!\n\n' +
+      '… (hier vertel je meer over hobby\'s of een leuk voorval) …\n\n' +
+      'Dus pak dit cadeautje maar snel uit,\n' +
+      'en lees dit gedicht hardop, met veel geluid!\n\n' +
+      'Sint en Piet';
+    $('dicht').classList.remove('verborgen');
+    $('open').classList.add('verborgen');
+    $('hulp').classList.add('verborgen');
+  }
+
+  function openVanuitHash() {
+    var h = location.hash;
+    if (h.indexOf('#lot=') !== 0) return false;
+    var lot = Lootjes.leesCode(h);
+    if (!lot) {
+      $('codeFout').textContent = 'Deze link klopt niet (helemaal). Vraag de organisator om een nieuwe.';
+      return false;
+    }
+    toonLootje(lot);
+    return true;
+  }
+
+  // ---------- Koppelen ----------
+  function start() {
+    var opgeslagen = laad();
+    if (opgeslagen) {
+      velden.forEach(function (v) { $(v).value = (opgeslagen.info || {})[v] || ''; });
+      (opgeslagen.personen || []).forEach(voegPersoonToe);
+    }
+    if (!document.querySelector('.persoon')) { voegPersoonToe(); voegPersoonToe(); voegPersoonToe(); }
+    $('aantal').textContent = verzamel().personen.filter(function (p) { return p.naam; }).length;
+
+    velden.forEach(function (v) { $(v).addEventListener('input', wijziging); });
+    $('voegToe').addEventListener('click', function () { voegPersoonToe().querySelector('.naam').focus(); });
+    $('plakNamen').addEventListener('click', function () { $('plakVak').classList.toggle('verborgen'); $('plakTekst').focus(); });
+    $('plakOk').addEventListener('click', function () {
+      var bestaand = verzamel().personen;
+      // Lege rijen eerst opruimen
+      document.querySelectorAll('.persoon').forEach(function (rij, i) { if (!bestaand[i].naam) rij.remove(); });
+      Lootjes.splitsNamen($('plakTekst').value).forEach(function (naam) { voegPersoonToe({ naam: naam }); });
+      $('plakTekst').value = '';
+      $('plakVak').classList.add('verborgen');
+      wijziging();
+    });
+    $('wisAlles').addEventListener('click', function () {
+      if (!confirm('Alle deelnemers en gegevens wissen?')) return;
+      $('personen').innerHTML = '';
+      velden.forEach(function (v) { $(v).value = ''; });
+      voegPersoonToe(); voegPersoonToe(); voegPersoonToe();
+      wijziging();
+    });
+    $('trek').addEventListener('click', trek);
+    $('kopieerAlles').addEventListener('click', function () { kopieerTekst(backupTekst(), $('kopieerAlles')); });
+    $('downloadAlles').addEventListener('click', function () {
+      var blob = new Blob([backupTekst() + '\n'], { type: 'text/plain;charset=utf-8' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'sinterklaas-lootjes-links.txt';
+      a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    });
+    $('codeOpen').addEventListener('click', function () {
+      var lot = Lootjes.leesCode($('codeInvoer').value);
+      $('codeFout').textContent = lot ? '' : 'Deze code herken ik niet. Controleer of je hem helemaal hebt geplakt.';
+      if (lot) { $('codeInvoer').value = ''; toonLootje(lot); }
+    });
+
+    $('onthul').addEventListener('click', function () {
+      $('dicht').classList.add('verborgen');
+      $('open').classList.remove('verborgen');
+      $('hulp').classList.remove('verborgen');
+    });
+    $('verberg').addEventListener('click', function () {
+      $('dicht').classList.remove('verborgen');
+      $('open').classList.add('verborgen');
+      $('hulp').classList.add('verborgen');
+    });
+    $('kopieerOpzet').addEventListener('click', function () { kopieerTekst($('opzet').textContent, $('kopieerOpzet')); });
+    $('naarStart').addEventListener('click', function () {
+      history.replaceState(null, '', basisUrl());
+      $('deelnemer').classList.add('verborgen');
+      $('organisator').classList.remove('verborgen');
+    });
+    window.addEventListener('hashchange', openVanuitHash);
+
+    openVanuitHash();
+  }
+
+  start();
+})();
+</script>
+</body>
+</html>
