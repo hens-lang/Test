@@ -40,9 +40,12 @@
       <div class="form reveal" id="plan" style="--d:.15s">
         <a class="book-card" data-book data-book-only hidden href="#"><span><strong>Kies direct een moment</strong><em>Plan een kennismaking in onze agenda</em></span><b aria-hidden="true">→</b></a>
         <div class="form-badge"><b aria-hidden="true"></b>Reactie binnen <strong data-c="response"></strong></div>
-        <form id="contact-form" novalidate>
+        <form id="contact-form" action="https://api.web3forms.com/submit" method="POST" novalidate>
+          <input type="hidden" name="access_key" value="38064945-fdcb-40a5-b0a3-8aaab660ecc6">
+          <input type="hidden" name="subject" value="Nieuwe aanvraag via linkgrp.nl">
+          <input type="hidden" name="from_name" value="LINK. website">
           <div class="row two">
-            <div class="field"><input id="f-naam" name="naam" placeholder=" " required autocomplete="name"><label for="f-naam">Naam *</label></div>
+            <div class="field"><input id="f-naam" name="name" placeholder=" " required autocomplete="name"><label for="f-naam">Naam *</label></div>
             <div class="field"><input id="f-bedrijf" name="bedrijf" placeholder=" " required autocomplete="organization"><label for="f-bedrijf">Bedrijf *</label></div>
           </div>
           <div class="row two">
@@ -51,7 +54,8 @@
           </div>
           <div class="field"><textarea id="f-tafel" name="tafel" placeholder=" "></textarea><label for="f-tafel">Bij wie wil je aan tafel zitten?</label></div>
           <div class="field"><textarea id="f-amb" name="ambitie" placeholder=" " style="min-height:100px"></textarea><label for="f-amb">Wat zijn je groeiambities?</label></div>
-          <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <input class="hp" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <p class="form-error" role="alert" hidden>Versturen lukte niet. Probeer het nog eens, of mail ons op <a data-c="email" href="#"></a>.</p>
           <div class="foot">
             <small>We gebruiken je gegevens alleen om contact met je op te nemen. Lees onze <a href="privacy.html">privacyverklaring</a>.</small>
             <button class="btn" type="submit">Verstuur <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>

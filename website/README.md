@@ -29,7 +29,7 @@ data/site.js  ──►  assets/js/main.js  ──►  alle pagina's
 | Anonieme referenties (functie + type bedrijf) | `data/site.js > references` | nog niet op de site; blok toevoegen in index.html met `data-refs` |
 | Vacatures | `data/site.js > jobs` | werken-bij.html (+ Google Jobs-gegevens) |
 | Partnerportaal-knop | `data/site.js > contact.portalUrl` | header, mobiel menu, footer |
-| Contactformulier-koppeling | `data/site.js > contact.form` | contactpagina |
+| Contactformulier (Web3Forms-sleutel, onderwerp) | `data/site.js > contact.form` | contactpagina |
 
 \* Het JSON-LD-blok in `index.html` (voor Google) staat statisch in de HTML. Pas het telefoonnummer daar ook aan als het verandert.
 
@@ -52,7 +52,7 @@ Later uitbreiden? De teksten staan in `content/verhalen/`. Voeg een bestand toe 
 
 1. **Foto's** staan in `assets/img/hens/` (uit Drive > Website > wetransfer-map, bijgesneden, gecomprimeerd en zonder EXIF/GPS). Welke foto waar staat, regel je in `data/site.js > photos`. Een lege `src` laat het fotovak netjes verdwijnen.
 2. **Partnerportaal-URL** in `contact.portalUrl`. Zolang dit veld leeg is, blijft de knop verborgen.
-3. **Contactformulier.** Zonder koppeling opent het formulier een ingevulde e-mail naar info@linkgrp.nl. Wil je het formulier aan een Google Form koppelen (zoals besproken in de website-evaluatie), vul dan `contact.form.endpoint` in met de `formResponse`-URL en zet bij `fields` de `entry.xxxx`-ID's.
+3. **Contactformulier.** Verstuurt via Web3Forms (sleutel in `contact.form.web3formsKey`). Berichten komen binnen op het e-mailadres dat bij Web3Forms aan die sleutel hangt. Lukt versturen niet, dan ziet de bezoeker een melding met het e-mailadres als alternatief.
 4. **Controleer** e-mail en telefoonnummer. Die komen uit de *Website Teksten Opzet*.
 
 ## Techniek

@@ -546,25 +546,39 @@
   if (form) {
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (form.website && form.website.value) return; // honeypot
+      if (form.botcheck && form.botcheck.checked) return; // honeypot
       if (!form.reportValidity()) return;
+      const F = C.form;
       const v = Object.fromEntries(new FormData(form));
       const box = form.closest(".form");
       const btn = $("button[type=submit]", form);
+      const err = $(".form-error", form);
       btn.disabled = true;
-      const F = C.form;
-      if (F.endpoint) {
-        const body = new URLSearchParams();
-        Object.entries(F.fields).forEach(([k, id]) => { if (id && v[k]) body.append(id, v[k]); });
-        try { await fetch(F.endpoint, { method: "POST", mode: "no-cors", body }); } catch (_) { /* no-cors geeft geen status */ }
+      if (err) err.hidden = true;
+      const payload = {
+        access_key: F.web3formsKey || v.access_key,
+        subject: `${F.subject || v.subject} | ${v.bedrijf}`,
+        from_name: F.fromName || v.from_name,
+        replyto: v.email,
+        name: v.name,
+        email: v.email,
+        bedrijf: v.bedrijf,
+        telefoon: v.telefoon || "-",
+        message: [`Bij wie wil ik aan tafel zitten?`, v.tafel || "-", "", `Groeiambitie:`, v.ambitie || "-"].join("\n"),
+        botcheck: false
+      };
+      try {
+        const res = await fetch(F.endpoint || form.action, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.success) throw new Error(json.message || res.status);
+        form.reset();
         box.classList.add("sent");
-      } else {
-        const lines = [
-          `Naam: ${v.naam}`, `Bedrijf: ${v.bedrijf}`, `E-mail: ${v.email}`, `Telefoon: ${v.telefoon || "-"}`, "",
-          `Bij wie wil ik aan tafel zitten?`, v.tafel || "-", "", `Groeiambitie:`, v.ambitie || "-"
-        ];
-        location.href = `mailto:${C.email}?subject=${encodeURIComponent(`Kennismaking ${v.bedrijf || ""}`.trim())}&body=${encodeURIComponent(lines.join("\n"))}`;
-        box.classList.add("sent");
+      } catch (_) {
+        if (err) err.hidden = false;
       }
       btn.disabled = false;
     });

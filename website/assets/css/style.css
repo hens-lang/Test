@@ -972,3 +972,5 @@ h1.reveal.in .dot, h2.reveal.in .dot, .split-line.in .dot { transform: none; }
 
 .nw { white-space: nowrap; }
 @media (pointer: coarse) { .story-back { display: flex; width: fit-content; } }
+.form-error { margin: 0 0 14px; padding: 12px 14px; border-radius: 12px; background: rgba(255, 80, 80, .08); color: #c0392b; font-size: 14px; }
+.form-error a { color: inherit; text-decoration: underline; }

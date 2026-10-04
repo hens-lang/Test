@@ -37,17 +37,12 @@ window.LINK = {
     // zolang dit leeg is, verbergt de site de portaal-knop.
     portalUrl: "https://admin.linkgrp.nl",
     form: {
-      // Optioneel: koppel een Google Form. Vul de formResponse-URL en de
-      // entry-ID's in. Leeg = het formulier opent een e-mail naar info@.
-      endpoint: "",
-      fields: {
-        naam: "",
-        bedrijf: "",
-        email: "",
-        telefoon: "",
-        tafel: "",
-        ambitie: ""
-      }
+      // Web3Forms: berichten uit het contactformulier komen per e-mail binnen
+      // op het adres dat bij Web3Forms aan deze sleutel hangt.
+      endpoint: "https://api.web3forms.com/submit",
+      web3formsKey: "38064945-fdcb-40a5-b0a3-8aaab660ecc6",
+      subject: "Nieuwe aanvraag via linkgrp.nl",
+      fromName: "LINK. website"
     }
   },
 
