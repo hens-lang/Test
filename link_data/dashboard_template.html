@@ -51,6 +51,14 @@ body.geenfilter .filters{display:none}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}.chips button{font:600 14px Barlow;border:1px solid var(--rand);background:var(--surface);color:var(--tekst);border-radius:16px;padding:5px 12px;cursor:pointer}
 .chips button.actief{background:var(--navy);color:#fff;border-color:var(--navy)}
 .acties{font-size:13px;color:var(--tekst-2)}
+nav .nr{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.12);font:600 12px Barlow;margin-right:6px;vertical-align:1px}
+nav button.actief .nr{background:var(--cyaan);color:var(--navy)}
+.stap{max-width:1100px;margin:0 auto}
+.stapkop{display:flex;gap:14px;align-items:center;margin:4px 0 6px}.stapkop .nr{flex:none;width:40px;height:40px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font:700 22px "Barlow Condensed"}
+.stapkop h2{margin:0;font:700 30px "Barlow Condensed"}
+.antwoord{font-size:17px;margin:0 0 14px;padding:12px 16px;border-left:4px solid var(--cyaan);background:var(--surface);border-radius:6px}
+.stapnav{display:flex;justify-content:space-between;gap:8px;margin:20px 0 4px}
+.punten{margin:0;padding-left:20px;font-size:15px;line-height:1.6}
 @media(max-width:700px){table.stapel thead{display:none}table.stapel tr{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px 10px;padding:12px 0;border-bottom:1px solid var(--rand)}
 table.stapel td{white-space:normal!important;text-align:left!important;border:0!important;padding:0!important}table.stapel td:first-child,table.stapel td.acties{grid-column:1/4}
 table.stapel td[data-l]::before{content:attr(data-l);display:block;font-size:11px;color:var(--tekst-3)}table.stapel td:empty{display:none}}
@@ -111,12 +119,18 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
 <header>
   <div class="kop"><div class="logo">LINK<b>.</b></div><div class="sub">Belprestaties en kostprijs · peildatum <span id="peildatum"></span> · gegenereerd <span id="gegenereerd"></span></div></div>
   <nav id="nav">
-    <button data-tab="stuur" class="actief">Stuurscherm</button>
+    <button data-tab="s1" class="actief"><span class="nr">1</span>Samenvatting</button>
+    <button data-tab="s2"><span class="nr">2</span>Targets</button>
+    <button data-tab="s3"><span class="nr">3</span>Marge</button>
+    <button data-tab="s4"><span class="nr">4</span>KPI's</button>
+    <button data-tab="s5"><span class="nr">5</span>Bellers</button>
+    <button data-tab="s6"><span class="nr">6</span>Acties</button>
     <button data-tab="klant">Per opdrachtgever</button>
-    <button data-tab="bellers">Bellers</button>
     <button id="navMeer" class="meerknop" type="button">Meer details ▾</button>
   </nav>
   <nav id="navDetails" class="details" hidden>
+    <button data-tab="stuur">Stuurscherm (alles op één pagina)</button>
+    <button data-tab="bellers">Bellers (alle cijfers)</button>
     <button data-tab="overzicht">Cijfers</button>
     <button data-tab="conclusies">Conclusies</button>
     <button data-tab="normen">KPI-normen</button>
@@ -144,7 +158,13 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
 <main>
 <!-- OVERZICHT -->
 <!-- STUURSCHERM -->
-<section class="tab actief" id="tab-stuur"><div id="stInhoud"></div></section>
+<section class="tab" id="tab-stuur"><div id="stInhoud"></div></section>
+<section class="tab actief" id="tab-s1"><div class="stap" id="s1"></div></section>
+<section class="tab" id="tab-s2"><div class="stap" id="s2"></div></section>
+<section class="tab" id="tab-s3"><div class="stap" id="s3"></div></section>
+<section class="tab" id="tab-s4"><div class="stap" id="s4"></div></section>
+<section class="tab" id="tab-s5"><div class="stap" id="s5"></div></section>
+<section class="tab" id="tab-s6"><div class="stap" id="s6"></div></section>
 
 <!-- PER OPDRACHTGEVER -->
 <section class="tab" id="tab-klant"><div class="chips" id="kChips"></div><div id="kInhoud"></div></section>
@@ -985,6 +1005,136 @@ function omzetAansluiting(ki) {
     <p class="uitleg" style="margin:8px 0">Twinfield telt een factuur volledig op de factuurdatum. Het dashboard telt hem als <b>verdiend</b> over de werkdagen van de periode die hij dekt, tot de peildatum. Wat al gefactureerd is voor werk na ${dmy(M.peildatum)} staat onder vooruitgefactureerd. Concepten (nog te versturen) tellen nergens mee.</p>
     <div class="tabelwrap"><table><thead><tr><th class="l">Opdrachtgever</th><th>Gefactureerd</th><th>Verdiend</th><th>Vooruit</th><th>Concept</th></tr></thead><tbody>${regels}${rij(ki == null ? "Totaal" : esc(D.klanten[ki].naam), {g: T.g, v: T.v, x: T.x, c: T.c}, true)}</tbody></table></div></details>`;
 }
+
+// ---------- rondleiding in 6 stappen (zelfde berekeningen als Stuurscherm en Per opdrachtgever)
+const STAPPEN = [["s1", "Hoe staan we ervoor?"], ["s2", "Halen we de targets?"], ["s3", "Verdienen we eraan?"],
+  ["s4", "Bellen we efficiënt genoeg?"], ["s5", "Wat levert elke beller op?"], ["s6", "Wat gaan we doen?"]];
+function stapPagina(id, antwoord, inhoud) {
+  const i = STAPPEN.findIndex(x => x[0] === id), vorige = STAPPEN[i - 1], volgende = STAPPEN[i + 1];
+  document.getElementById(id).innerHTML = `<div class="stapkop"><div class="nr">${i + 1}</div><h2>${STAPPEN[i][1]}</h2></div>
+    <p class="vs" style="margin:0 0 10px">Stand ${dmy(M.peildatum)} · normen bij € ${M.tarief_doel} per uur en ${pct(NS.marge)} marge · gemiddelden over de laatste ${NS.weken} weken</p>
+    ${naPeilMelding()}<div class="antwoord">${antwoord}</div>${inhoud}
+    <div class="stapnav">${vorige ? `<button class="knop licht" data-ga="${vorige[0]}">← ${i}. ${vorige[1]}</button>` : "<span></span>"}
+    ${volgende ? `<button class="knop" data-ga="${volgende[0]}">${i + 2}. ${volgende[1]} →</button>` : `<button class="knop licht" data-ga="klant">Verder: per opdrachtgever →</button>`}</div>`;
+  document.querySelectorAll(`#${id} [data-ga]`).forEach(b => b.onclick = () => openTab(b.dataset.ga));
+  document.querySelectorAll(`#${id} tr[data-k]`).forEach(tr => tr.onclick = () => { S.k = +tr.dataset.k; document.getElementById("fKlant").value = String(S.k); openTab("klant"); });
+}
+const naamLijst = L => L.length <= 1 ? L.join("") : L.slice(0, -1).join(", ") + " en " + L[L.length - 1];
+function weekCijfers(n) {
+  const eind = peilIdx, weken = []; for (let i = eind; i >= 0 && weken.length < n; i--) if (!weken.includes(weekVan[i])) weken.push(weekVan[i]);
+  weken.reverse();
+  return weken.map(w => { const inW = d => weekVan[d] === w && d <= eind;
+    const opbr = F.o.reduce((a, r) => a + (inW(r[0]) ? r[2] + r[3] : 0), 0), kosten = F.v.reduce((a, r) => a + (inW(r[0]) ? r[5] : 0), 0) + F.x.reduce((a, r) => a + (inW(r[0]) ? r[1] : 0), 0);
+    const res = F.c.reduce((a, r) => a + (inW(r[0]) && r[7] ? 1 : 0), 0), uren = F.v.reduce((a, r) => a + (inW(r[0]) ? r[3] : 0), 0);
+    return {w, lab: weekLab(w), opbr, kosten, marge: opbr - kosten, res, uren}; });
+}
+function renderS1() {
+  const R = stuurRegels(), tot = marge4(null);
+  const metT = R.filter(r => r.t && r.t.target && KLEUR[r.t.stoplicht]), opT = metT.filter(r => r.t.stoplicht === "groen"), achter = metT.filter(r => r.t.stoplicht === "rood" || r.t.stoplicht === "oranje");
+  const laagM = R.filter(r => r.m.pct != null && r.m.pct < NS.marge).sort((a, b) => a.m.pct - b.m.pct);
+  const goed = R.filter(r => r.x.oordeel === "goed"), gestart = R.filter(r => r.x.oordeel !== "nieuw");
+  const W = weekCijfers(6);
+  const antwoord = `Per 4 weken blijft er <b>${eurT(tot.marge)}</b> over (${pct(tot.pct)} marge, doel ${pct(NS.marge)}). <b>${opT.length} van de ${metT.length}</b> opdrachtgevers halen hun target${achter.length ? `; ${naamLijst(achter.map(r => esc(r.x.k.naam)))} ${achter.length > 1 ? "lopen" : "loopt"} achter` : ""}.`;
+  const punten = [
+    `Opbrengst ${eurT(tot.opbr)} en kosten ${eurT(tot.kosten)} per 4 weken: ${eurT(tot.marge)} onder de streep.`,
+    laagM.length ? `Marge onder het doel van ${pct(NS.marge)}: ${naamLijst(laagM.map(r => `${esc(r.x.k.naam)} (${pct(r.m.pct)})`))}.` : `Alle opdrachtgevers halen ${pct(NS.marge)} marge.`,
+    `${goed.length} van de ${gestart.length} opdrachtgevers zitten op alle KPI's goed${goed.length ? ` (${naamLijst(goed.map(r => esc(r.x.k.naam)))})` : ""}. Bij de rest zijn de uren per beldag of het beltempo het knelpunt (stap 4).`,
+  ];
+  const tegels = [
+    tegel("Opbrengst per 4 weken", eur(tot.opbr), "verdiend, gemiddeld"),
+    tegel("Kosten per 4 weken", eur(tot.kosten), "bellers, eigenaren, Steam en data"),
+    tegel("Onder de streep", `<span class="${tot.marge >= 0 ? "pos" : "neg"}">${eur(tot.marge)}</span>`, `${pct(tot.pct)} marge · doel ${pct(NS.marge)}`),
+    tegel("Targets op koers", `${opT.length} <span class="vs" style="font-size:18px">van ${metT.length}</span>`, "lopende werkperiode"),
+  ];
+  const wk = `<div class="kaart tabelwrap" style="margin-top:12px"><h3>Laatste weken</h3><table><thead><tr><th class="l">Week</th><th>Opbrengst</th><th>Kosten</th><th>Marge</th><th>Uren</th><th>Resultaten</th></tr></thead><tbody>${
+    W.map(x => `<tr><td class="l">${x.lab}</td><td>${eurT(x.opbr)}</td><td>${eurT(x.kosten)}</td><td class="${x.marge >= 0 ? "pos" : "neg"}">${eurT(x.marge)}</td><td>${num(x.uren, 1)}</td><td>${num(x.res)}</td></tr>`).join("")}</tbody></table></div>`;
+  stapPagina("s1", antwoord, `<div class="grid kpis">${tegels.join("")}</div><div class="kaart" style="margin-top:12px"><h3>In het kort</h3><ul class="punten">${punten.map(p => `<li>${p}</li>`).join("")}</ul></div>${wk}`);
+}
+function renderS2() {
+  const alle = stuurRegels().filter(r => r.t && r.t.target), R = alle.filter(r => KLEUR[r.t.stoplicht]), nog = alle.filter(r => !KLEUR[r.t.stoplicht]);
+  const volg = {rood: 0, oranje: 1, groen: 2}, rij = R.sort((a, b) => (volg[a.t.stoplicht] ?? 3) - (volg[b.t.stoplicht] ?? 3));
+  const achter = rij.filter(r => r.t.stoplicht === "rood" || r.t.stoplicht === "oranje");
+  const stand = r => r.t.werkdagen_rest ? `${num(r.t.resultaten)} van ${num(r.t.target, 0)}, nodig ${num(r.t.benodigd_per_werkdag, 2)} per werkdag` : `${num(r.t.resultaten)} van ${num(r.t.target, 0)}, periode eindigt ${dmy(r.t.periode_tot)}`;
+  const antwoord = `<b>${rij.length - achter.length} van de ${rij.length}</b> op koers.` + (achter.length ? ` Aandacht nodig: ${naamLijst(achter.map(r => `<b>${esc(r.x.k.naam)}</b> (${stand(r)})`))}.` : "")
+    + (nog.length ? ` Start binnenkort: ${naamLijst(nog.map(r => `${esc(r.x.k.naam)} (${dmy(r.t.periode_van)})`))}.` : "");
+  const t = `<div class="kaart tabelwrap"><table class="stapel"><thead><tr><th class="l">Opdrachtgever</th><th class="l">Werkperiode</th><th class="l">Stand</th><th>Prognose</th><th>Nodig per werkdag</th><th>Werkdagen over</th></tr></thead><tbody>${
+    rij.map(({x, t}) => `<tr class="klik groot" data-k="${x.i}"><td class="l"><b>${esc(x.k.naam)}</b>${x.isPilot ? " <span class='vs'>pilot</span>" : ""}</td>
+      <td class="l" data-l="Werkperiode">${t.periode_van ? dmy(t.periode_van) + " t/m " + dmy(t.periode_tot) : "-"}</td>
+      <td class="l" data-l="Stand"><span class="stip ${KLEUR[t.stoplicht] || "grijs"}">${num(t.resultaten)} van ${num(t.target, 0)}</span>${balk(t.resultaten / t.target, t.stoplicht)}</td>
+      <td data-l="Prognose">${num(t.prognose, 1)}</td><td data-l="Nodig per werkdag">${t.werkdagen_rest ? num(t.benodigd_per_werkdag, 2) : "<span class='vs'>periode klaar</span>"}</td><td data-l="Werkdagen over">${t.werkdagen_rest ?? "-"}</td></tr>`).join("")}</tbody></table>
+    ${nog.length ? `<p class="uitleg" style="margin:8px 0 0"><b>Nog niet gestart:</b> ${nog.map(r => `${esc(r.x.k.naam)} vanaf ${dmy(r.t.periode_van)}, target ${num(r.t.target, 0)}${r.x.isPilot ? " (pilot)" : ""}`).join("; ")}.</p>` : ""}
+    <p class="uitleg" style="margin:8px 0 0">Prognose = huidig tempo doorgetrokken tot het eind van de werkperiode. Groen: haalt het target, oranje: krap, rood: haalt het niet in dit tempo. Werkperiode volgens de verkoopfactuur. Klik op een opdrachtgever voor de details.</p></div>`;
+  stapPagina("s2", antwoord, t);
+}
+function renderS3() {
+  const R = stuurRegels().filter(r => r.m.opbr || r.m.kosten).sort((a, b) => (a.m.pct ?? 9) - (b.m.pct ?? 9)), tot = marge4(null);
+  const laag = R.filter(r => r.m.pct != null && r.m.pct < NS.marge);
+  const antwoord = `Ja: per 4 weken <b>${eurT(tot.marge)}</b> onder de streep (${pct(tot.pct)}). ${laag.length ? `Onder het margedoel van ${pct(NS.marge)}: ${naamLijst(laag.map(r => `<b>${esc(r.x.k.naam)}</b> (${pct(r.m.pct)})`))}.` : `Alle opdrachtgevers zitten boven ${pct(NS.marge)}.`}`;
+  const S4 = R.reduce((a, r) => ({o: a.o + r.m.opbr, k: a.k + r.m.kosten}), {o: 0, k: 0}), rest = {o: tot.opbr - S4.o, k: tot.kosten - S4.k};
+  const t = `<div class="kaart tabelwrap"><table class="stapel"><thead><tr><th class="l">Opdrachtgever</th><th>Opbrengst</th><th>Kosten</th><th>Marge</th><th>Marge %</th></tr></thead><tbody>${
+    R.map(({x, m}) => `<tr class="klik groot" data-k="${x.i}"><td class="l"><b>${esc(x.k.naam)}</b></td><td data-l="Opbrengst">${eurT(m.opbr)}</td><td data-l="Kosten">${eurT(m.kosten)}</td>
+      <td data-l="Marge" class="${m.marge >= 0 ? "pos" : "neg"}">${eurT(m.marge)}</td><td data-l="Marge %"><span class="stip ${margeKleur(m.pct)}">${m.pct != null ? pct(m.pct) : "-"}</span>${balk(Math.max(0, m.pct || 0), margeKleur(m.pct))}</td></tr>`).join("")}</tbody>
+    <tfoot>${Math.abs(rest.o - rest.k) > 1 ? `<tr><td class="l vs">Overig (gestopt, niet toegerekend)</td><td class="vs">${eurT(rest.o)}</td><td class="vs">${eurT(rest.k)}</td><td class="vs">${eurT(rest.o - rest.k)}</td><td></td></tr>` : ""}
+    <tr style="font-weight:700;border-top:2px solid var(--rand)"><td class="l">Onder de streep</td><td>${eurT(tot.opbr)}</td><td>${eurT(tot.kosten)}</td><td class="${tot.marge >= 0 ? "pos" : "neg"}">${eurT(tot.marge)}</td><td>${pct(tot.pct)}</td></tr></tfoot></table>
+    <p class="uitleg" style="margin:8px 0 0">Per 4 weken, gemiddeld over de laatste ${NS.weken} weken. Opbrengst = verkoopfacturen, verdeeld over de werkdagen van hun periode. Kosten = bellers (factuur of uren x tarief), vaste vergoeding eigenaren en overige kosten (Steam, data) naar rato. Laagste marge bovenaan.</p></div>` + omzetAansluiting(null);
+  stapPagina("s3", antwoord, t);
+}
+function renderS4() {
+  const R = stuurRegels().filter(r => r.x.oordeel !== "nieuw"), n1 = v => v == null || !isFinite(v) ? "-" : nf(1).format(v), n0 = v => v == null || !isFinite(v) ? "-" : nf(0).format(v);
+  const goed = R.filter(r => r.x.oordeel === "goed");
+  const teVeelU = R.filter(r => r.x.nu.urenD != null && r.x.moet.urenD != null && r.x.nu.urenD > r.x.moet.urenD * 1.05);
+  const traag = R.filter(r => r.x.nu.pogU != null && r.x.moet.pogU && r.x.nu.pogU < r.x.moet.pogU * 0.95);
+  const antwoord = `${goed.length} van de ${R.length} op norm. Te veel uren per beldag bij ${teVeelU.length} opdrachtgevers, beltempo te laag bij ${traag.length}. ${teVeelU.length ? "Grootste winst: minder uren per beldag inzetten, of in dezelfde uren meer resultaat halen." : ""}`;
+  const st = (nu, moet, max, d) => nu == null || !isFinite(nu) ? "<span class='vs'>-</span>" : `<span class="stip ${moet == null ? "grijs" : (max ? nu <= moet * 1.05 : nu >= moet * 0.95) ? "groen" : "rood"}">${d(nu)}</span><div class="vs">${moet == null ? "" : (max ? "max. " : "min. ") + d(moet)}</div>`;
+  const t = `<div class="kaart tabelwrap"><table class="stapel"><thead><tr><th class="l">Opdrachtgever</th><th>Beldagen per week</th><th>Uren per beldag</th><th>Resultaten per beldag</th><th>Pogingen per uur</th><th>Uren per resultaat</th></tr></thead><tbody>${
+    R.map(({x}) => `<tr class="klik groot" data-k="${x.i}"><td class="l"><b>${esc(x.k.naam)}</b></td>
+      <td data-l="Beldagen per week">${st(x.nu.dagenW, x.moet.dagenW, true, n1)}</td><td data-l="Uren per beldag">${st(x.nu.urenD, x.moet.urenD, true, n1)}</td>
+      <td data-l="Resultaten per beldag">${st(x.nu.resD, x.moet.resD, false, n1)}</td><td data-l="Pogingen per uur">${st(x.nu.pogU, x.moet.pogU, false, n0)}</td>
+      <td data-l="Uren per resultaat">${st(x.nu.upr, x.moet.upr, true, n1)}</td></tr>`).join("")}</tbody></table></div>
+    <div class="kaart" style="margin-top:12px"><h3>Hoe de normen zijn bepaald</h3><ol class="punten">
+      <li><b>Opbrengst per 4 weken</b> = fee (+ extra per afspraak) uit klanten.yaml.</li>
+      <li><b>Maximaal ${pct(1 - NS.marge)} daarvan</b> mag kosten zijn (margedoel ${pct(NS.marge)}). Min Steam en data blijft het belbudget over.</li>
+      <li><b>Belbudget / € ${M.tarief_doel}</b> = maximaal aantal beluren per 4 weken. Gedeeld door het aantal beldagen = <b>max. uren per beldag</b>.</li>
+      <li><b>Target / beldagen</b> = <b>min. resultaten per beldag</b>. Max. uren / target = <b>max. uren per resultaat</b>.</li>
+      <li><b>Min. pogingen per uur</b> = wat nodig is om met de gemeten conversie (pogingen per resultaat) binnen de max. uren per resultaat te blijven.</li>
+    </ol><p class="uitleg" style="margin:6px 0 0">"Nu" = gemeten over de laatste ${NS.weken} weken. Beldagen per week: rooster uit klanten.yaml, anders gemeten. Margedoel en meetperiode zijn aan te passen onder Meer details › KPI-normen.</p></div>`;
+  stapPagina("s4", antwoord, t);
+}
+function renderS5() {
+  const {v1, t1} = meetvenster(), inR = d => d >= v1 && d <= t1, B = new Map();
+  const g = b => { if (!B.has(b)) B.set(b, {uren: 0, kosten: 0, res: 0, pog: 0, dagen: new Set(), klanten: new Map()}); return B.get(b); };
+  F.v.forEach(r => { if (!inR(r[0]) || r[1] < 0) return; const x = g(r[1]); x.uren += r[3]; x.kosten += r[5]; if (r[3] > 0.05) x.dagen.add(r[0]); if (r[2] !== NT) x.klanten.set(r[2], (x.klanten.get(r[2]) || 0) + r[3]); });
+  F.c.forEach(r => { if (inR(r[0]) && r[7] && r[2] >= 0) g(r[2]).res++; });
+  (F.p || []).forEach(r => { if (inR(r[0]) && r[2] >= 0) g(r[2]).pog++; });
+  const L = [...B.entries()].filter(([, x]) => x.uren > 1).map(([b, x]) => ({b, x, upr: x.res ? x.uren / x.res : null, kpr: x.res ? x.kosten / x.res : null, pph: x.uren ? x.pog / x.uren : null}))
+    .sort((a, b) => (a.upr ?? 99) - (b.upr ?? 99));
+  const zzp = L.filter(r => D.bellers[r.b].type === "ZZP" && r.upr != null), best = zzp[0], zwak = zzp[zzp.length - 1];
+  const antwoord = zzp.length > 1 ? `Van de ZZP-bellers haalt <b>${esc(D.bellers[best.b].naam)}</b> het meeste resultaat per uur (${nf(1).format(best.upr)} uur per resultaat, ${eurT(best.kpr)} per resultaat). <b>${esc(D.bellers[zwak.b].naam)}</b> heeft de meeste uren per resultaat nodig (${nf(1).format(zwak.upr)}).` : "Overzicht per beller over de laatste weken.";
+  const t = `<div class="kaart tabelwrap"><table class="stapel"><thead><tr><th class="l">Beller</th><th>Uren</th><th>Beldagen</th><th>Resultaten</th><th>Uren per resultaat</th><th>Kosten</th><th>Kosten per resultaat</th><th>Pogingen per uur</th><th class="l">Belt vooral voor</th></tr></thead><tbody>${
+    L.map(({b, x, upr, kpr, pph}) => `<tr class="groot"><td class="l"><b>${esc(D.bellers[b].naam)}</b> <span class="vs">${D.bellers[b].type === "ZZP" ? "ZZP" : "eigenaar"}</span></td>
+      <td data-l="Uren">${num(x.uren, 1)}</td><td data-l="Beldagen">${x.dagen.size}</td><td data-l="Resultaten">${num(x.res)}</td><td data-l="Uren per resultaat"><b>${upr != null ? nf(1).format(upr) : "-"}</b></td>
+      <td data-l="Kosten">${eurT(x.kosten)}</td><td data-l="Kosten per resultaat">${kpr != null ? eurT(kpr) : "-"}</td><td data-l="Pogingen per uur">${pph ? nf(0).format(pph) : "-"}</td>
+      <td class="l acties" style="white-space:normal;min-width:180px" data-l="Belt vooral voor">${[...x.klanten.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k, u]) => `${esc(D.klanten[k].naam)} (${nf(0).format(u)}u)`).join(", ")}</td></tr>`).join("")}</tbody></table>
+    <p class="uitleg" style="margin:8px 0 0">Laatste ${NS.weken} weken. Kosten van eigenaren = vaste vergoeding, verdeeld over hun uren. Uren per beller per opdrachtgever volgen de verdeelsleutel. Alle cijfers per beller: Meer details › Bellers (alle cijfers).</p></div>`;
+  stapPagina("s5", antwoord, t);
+}
+function renderS6() {
+  const R = stuurRegels(), volg = {rood: 0, oranje: 1, groen: 2};
+  const lijst = R.filter(r => r.x.oordeel === "actie").sort((a, b) => (volg[a.t?.stoplicht] ?? 3) - (volg[b.t?.stoplicht] ?? 3) || (a.m.pct ?? 9) - (b.m.pct ?? 9));
+  const blok = lijst.map(({x, t, m}) => `<div class="punt"><span class="label ${!t ? "info" : t.stoplicht === "rood" ? "actie" : t.stoplicht === "oranje" ? "letop" : "goed"}" title="stand target">${t ? num(t.resultaten) + "/" + num(t.target, 0) : "-"}</span>
+    <div><div class="t">${esc(x.k.naam)} <span class="vs">· marge ${m.pct != null ? pct(m.pct) : "-"}</span></div><ul class="punten" style="font-size:14px">${x.acties.map(a => `<li>${a}</li>`).join("")}</ul></div><span></span></div>`).join("");
+  const goed = R.filter(r => r.x.oordeel === "goed");
+  const vw = D.dq.uren_verwacht || [], nf_ = (D.dq.factuurvergelijking || []).filter(r => String(r.status).startsWith("nog geen factuur") && r.week < weekVan[peilIdx]);
+  const data = [];
+  const perB = new Map(); nf_.forEach(r => perB.set(r.beller, (perB.get(r.beller) || []).concat(r.week)));
+  perB.forEach((w, b) => data.push(`Bellerfactuur ${esc(b)}: ${w.length} ${w.length === 1 ? "week" : "weken"} zonder factuur (${w.slice(-4).map(x => "wk " + +String(x).slice(-2)).join(", ")}${w.length > 4 ? ", ..." : ""}).`));
+  if (vw.length) data.push(`Urenexport voor ${naamLijst([...new Set(vw.map(v => dmy(v.datum)))])}: nu geschat.`);
+  if ((D.dq.na_peildatum || {}).bronnen && Object.keys(D.dq.na_peildatum.bronnen).length) data.push("PayableHoursPerDay tot de laatste beldag, zodat de nieuwste belexports meetellen.");
+  const antwoord = lijst.length ? `${lijst.length} opdrachtgevers hebben een actie nodig. De belangrijkste staan bovenaan: eerst wie het target niet haalt, dan wie de laagste marge heeft.` : "Geen acties nodig: alle opdrachtgevers zitten op norm.";
+  stapPagina("s6", antwoord, `<div class="kaart">${blok || "<p class='uitleg'>Geen acties.</p>"}</div>
+    ${goed.length ? `<div class="kaart" style="margin-top:12px"><h3>Zo doorgaan</h3><p style="margin:0">${naamLijst(goed.map(r => `<b>${esc(r.x.k.naam)}</b>`))}: op norm voor target, uren en tempo.</p></div>` : ""}
+    ${data.length ? `<div class="kaart" style="margin-top:12px"><h3>Nog aanleveren voor scherpe cijfers</h3><ul class="punten">${data.map(d => `<li>${d}</li>`).join("")}</ul></div>` : ""}`);
+}
 function renderStuur() {
   const R = stuurRegels(), tot = marge4(null);
   const metT = R.filter(r => r.t && r.t.target), opT = metT.filter(r => r.t.stoplicht === "groen").length;
@@ -1478,11 +1628,11 @@ function renderDQ() {
 }
 
 // ---------- algemeen
-let actieveTab = "stuur";
+let actieveTab = "s1";
 function render() {
   const n = S.tot - S.van + 1;
   document.getElementById("fInfo").textContent = `${dmy(D.datums[S.van])} t/m ${dmy(D.datums[S.tot])} · ${n} dagen`;
-  ({stuur: renderStuur, klant: renderKlant, overzicht: renderOverzicht, conclusies: renderConclusies, normen: renderNormen, beldagen: renderBeldagen, periodes: renderPeriodes, resultaten: renderResultaten, bellers: renderBellers, klanten: renderKlanten, focus: renderFocus, scenario: renderScenario, dq: renderDQ})[actieveTab]();
+  ({s1: renderS1, s2: renderS2, s3: renderS3, s4: renderS4, s5: renderS5, s6: renderS6, stuur: renderStuur, klant: renderKlant, overzicht: renderOverzicht, conclusies: renderConclusies, normen: renderNormen, beldagen: renderBeldagen, periodes: renderPeriodes, resultaten: renderResultaten, bellers: renderBellers, klanten: renderKlanten, focus: renderFocus, scenario: renderScenario, dq: renderDQ})[actieveTab]();
 }
 const navDetails = document.getElementById("navDetails");
 document.getElementById("navMeer").onclick = e => { e.stopPropagation(); navDetails.hidden = !navDetails.hidden; };
@@ -1490,7 +1640,7 @@ function openTab(tab) {
   const t = document.querySelector(`nav button[data-tab="${tab}"]`); if (!t) return;
   actieveTab = tab;
   if (t.closest("#navDetails")) navDetails.hidden = false;
-  document.body.classList.toggle("geenfilter", tab === "stuur" || tab === "klant");
+  document.body.classList.toggle("geenfilter", tab === "stuur" || tab === "klant" || /^s\d$/.test(tab));
   document.querySelectorAll("nav button[data-tab]").forEach(b => b.classList.toggle("actief", b === t));
   document.querySelectorAll(".tab").forEach(s => s.classList.toggle("actief", s.id === "tab-" + actieveTab));
   try { localStorage.setItem("link-tab", actieveTab); } catch (_) {}
@@ -1509,8 +1659,8 @@ document.getElementById("peildatum").textContent = dmy(M.peildatum);
 document.getElementById("gegenereerd").textContent = M.gegenereerd;
 initFilters();
 if (typeof Chart === "undefined") { document.querySelector("main").insertAdjacentHTML("afterbegin", "<div class='melding fout'>Grafieken konden niet laden (geen internet?). Tabellen werken wel.</div>"); window.Chart = function () { return {destroy() {}}; }; window.Chart.defaults = {font: {}}; }
-let startTab = "stuur"; try { startTab = localStorage.getItem("link-tab") || "stuur"; } catch (_) {}
-openTab(document.querySelector(`nav button[data-tab="${startTab}"]`) ? startTab : "stuur");
+let startTab = "s1"; try { startTab = localStorage.getItem("link-tab") || "s1"; } catch (_) {}
+openTab(document.querySelector(`nav button[data-tab="${startTab}"]`) ? startTab : "s1");
 </script>
 </body>
 </html>
