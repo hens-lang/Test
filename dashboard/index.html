@@ -563,8 +563,10 @@ function factuurStand(kid) {
 function werkdagen(van, tot) { let n = 0; for (let d = parseISO(van); iso(d) <= tot; d = addDays(d, 1)) if ((d.getDay() + 6) % 7 < 5) n++; return n; }
 function periodePlan(p, peil = TODAY) {
   const L = (num(p.periodeWeken) || 4) * 7;
-  let start = p.belstart || sortBy(list('facturen').filter(f => f.soort === 'verkoop' && f.partijId === p.klantId && f.periodeVan), f => f.periodeVan)[0]?.periodeVan || peil;
-  const nogNiet = start > peil;
+  const begin = p.belstart || sortBy(list('facturen').filter(f => f.soort === 'verkoop' && f.partijId === p.klantId && f.periodeVan), f => f.periodeVan)[0]?.periodeVan || peil;
+  // periodeAnker: startdatum van werkperiode periodeAnkerNr, als de periodes door een pauze verschoven zijn
+  const start = p.periodeAnker || begin, nrBasis = p.periodeAnker ? (num(p.periodeAnkerNr) || 1) - 1 : 0;
+  const nogNiet = begin > peil;
   const n = nogNiet ? 0 : Math.floor((parseISO(peil) - parseISO(start)) / 864e5 / L);
   const van = iso(addDays(parseISO(start), n * L)), tot = iso(addDays(parseISO(van), L - 1));
   const target = num(p.doelPerWeek) * (num(p.periodeWeken) || 4);
@@ -586,7 +588,7 @@ function periodePlan(p, peil = TODAY) {
   const dagenDezeWeek = restDagen ? werkdagen(wsI > van ? wsI : van, weI < tot ? weI : tot) : 0;
   const nodigWeek = restDagen ? nog * Math.min(1, dagenDezeWeek / restDagen) : 0;
   const dw = dienstenVan(d => d.projectId === p.id && d.datum >= wsI && d.datum <= iso(addDays(mondayOf(ref), 6)) && d.status !== 'afgemeld');
-  return { nogNiet, nr: n + 1, van, tot, target, gehaald, afspraken, leads, laatste4, w4, prognose, nog, restDagen, stoplicht, nodigWeek,
+  return { nogNiet, nr: n + 1 + nrBasis, van, tot, target, gehaald, afspraken, leads, laatste4, w4, prognose, nog, restDagen, stoplicht, nodigWeek,
     stoplichtTekst: target ? 'prognose ' + nf(prognose, 1) + ' van ' + nf(target, 1) : 'geen target',
     urenWeek: dw.reduce((a, d) => a + uren(d), 0), bellersWeek: [...new Set(dw.map(d => (zzp(d.zzpId)?.naam || '').split(' ')[0]))] };
 }
@@ -814,6 +816,8 @@ const PROJ_FIELDS = () => [
   { k: 'retainer', label: 'Fee per werkperiode (€)', type: 'number', hint: 'vaste retainer' },
   { k: 'periodeWeken', label: 'Werkperiode (weken)', type: 'number', def: 4, hint: 'pilot: 12' },
   { k: 'belstart', label: 'Belstart', type: 'date', hint: 'werkperiodes tellen vanaf hier' },
+  { k: 'periodeAnker', label: 'Werkperiode gestart op', type: 'date', hint: 'alleen invullen als de periodes door een pauze verschoven zijn' },
+  { k: 'periodeAnkerNr', label: 'Nummer van die werkperiode', type: 'number', hint: 'bij "werkperiode gestart op"' },
   { k: 'inbegrepenAfspraken', label: 'Afspraken inbegrepen', type: 'number', hint: 'per werkperiode' },
   { k: 'prijsPerAfspraak', label: 'Prijs per (extra) resultaat (€)', type: 'number' },
   { k: 'tariefUur', label: 'Uurtarief klant (€)', type: 'number', hint: 'alleen bij uurbasis' },
