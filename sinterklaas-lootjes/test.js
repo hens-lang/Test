@@ -58,4 +58,13 @@ assert.strictEqual(L.sleutel(' Zoë  de Vries '), 'zoe-de-vries');
 assert.ok(L.controleer([{ naam: 'Zoë' }, { naam: 'Zoe' }, { naam: 'B' }]).length > 0, 'te gelijkende namen');
 assert.strictEqual(L.sleutel('!!'), 'naamloos');
 
+// Uitnodiging en wensen-codes (de WhatsApp-route)
+const uit = L.maakUitnodiging({ evenement: 'Sint 2026' }, ['Hens (Jr)', 'Zoë']);
+assert.deepStrictEqual(L.leesUitnodiging('https://x.nl/#wensen=' + uit), { evenement: 'Sint 2026', namen: ['Hens (Jr)', 'Zoë'] });
+assert.strictEqual(L.leesUitnodiging('https://x.nl/#lot=' + code), null);
+const chat = '[12:01] Zoë: Mijn wensen!\n' + L.maakWensCode('Zoë', 'Boeken 📚') + '\n[12:05] Mart: hier\n' +
+  L.maakWensCode('Mart', 'Oud') + ' en later ' + L.maakWensCode('mart', 'Nieuw: drop');
+assert.deepStrictEqual(L.leesWensCodes(chat), [{ naam: 'Zoë', wens: 'Boeken 📚' }, { naam: 'mart', wens: 'Nieuw: drop' }]);
+assert.deepStrictEqual(L.leesWensCodes('niks hier SINT-WENS:kapot'), []);
+
 console.log('✔ Alle tests geslaagd');

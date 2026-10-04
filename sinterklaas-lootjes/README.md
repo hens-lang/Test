@@ -23,7 +23,9 @@ Trek je opnieuw, stuur dan iedereen de nieuwe link.
 De pagina staat ook als Claude-artifact: https://claude.ai/artifact/KkdKvoaaeaqdbNarCCepYT
 Daar werkt hij met een gedeelde database:
 
-- iedereen kiest zijn naam, vult **zelf zijn wensen** in en opent later zijn eigen lootje;
+- de organisator stuurt via WhatsApp een uitnodiging; iedereen vult (zonder account) zijn wensen in op de GitHub-pagina en stuurt ze terug via WhatsApp;
+- de organisator plakt die berichten in de Claude-pagina, trekt en stuurt iedereen een persoonlijke WhatsApp-link;
+- (wie wél in Claude is uitgenodigd, kan daar ook zelf wensen invullen en zijn lootje openen);
 - de dichter ziet de wensen van zijn ontvanger live, ook als die later worden aangevuld;
 - alleen de eigenaar ziet het organisator-gedeelte (deelnemers, huishoudens, trekken);
 - **vaste trekkingen** staan op een plek in de database die alleen de eigenaar kan lezen.
