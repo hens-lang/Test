@@ -102,6 +102,7 @@
     display: inline-grid; place-items: center; border-radius: 50%;
     border: 1px solid var(--rand); color: var(--goud); transform: translateY(-3px);
   }
+  #opslagStatus { color: var(--mist); letter-spacing: .08em; }
   .sectiekop { font-size: 12px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--goud); text-align: center; margin: 0 0 18px; }
   .tussenkop { font-size: 18px; margin-top: 22px; }
 
@@ -383,7 +384,7 @@
 
   <!-- ===================== ORGANISATOR ===================== -->
   <section id="organisator">
-    <p class="sectiekop verborgen" id="orgKop">Alleen voor de organisator</p>
+    <p class="sectiekop verborgen" id="orgKop">Alleen voor de organisator <span id="opslagStatus"></span></p>
 
     <div class="card">
       <div class="head">
@@ -616,16 +617,22 @@
   var formulierGeladen = false;  // pas schrijven als het formulier de opgeslagen gegevens bevat
   var bewustGewist = false;      // alleen "Alles wissen" mag de deelnemerslijst leegmaken
   function bewaarGedeeldStraks() {
-    if (!formulierGeladen) return;
+    if (!formulierGeladen) { $('opslagStatus').textContent = '· nog aan het laden…'; return; }
     clearTimeout(schrijfTimer);
     schrijfTimer = setTimeout(function () {
       var d = verzamel();
       var body = { info: d.info, personen: d.personen.filter(function (p) { return p.naam; }) };
       var opgeslagen = (instellingen && instellingen.personen) || [];
       if (!body.personen.length && opgeslagen.length && !bewustGewist) body.personen = opgeslagen;
+      $('opslagStatus').textContent = '· opslaan…';
       schrijfRij = schrijfRij.then(function () {
         return gedeeld.db.doc(PAD_INSTELLINGEN).set(body);
-      }).catch(function () { $('fout').textContent = 'Opslaan lukte niet. Controleer je verbinding en probeer het opnieuw.'; });
+      }).then(function () {
+        $('opslagStatus').textContent = '· opgeslagen ✓ ' + new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+      }).catch(function () {
+        $('opslagStatus').textContent = '· niet opgeslagen';
+        $('fout').textContent = 'Opslaan lukte niet. Controleer je verbinding en probeer het opnieuw.';
+      });
     }, 800);
   }
 
@@ -1158,8 +1165,8 @@
         toonGedeeld();
 
         db.doc(PAD_INSTELLINGEN).onSnapshot(function (snap) {
-          // Een tussenstand uit de cache is nog niet definitief: daar niets mee doen.
-          if (snap.metadata && snap.metadata.fromCache && !formulierGeladen) return;
+          // Een lege tussenstand uit de cache is nog niet definitief: daarop wachten.
+          if (snap.metadata && snap.metadata.fromCache && !snap.exists && !formulierGeladen) return;
           instellingen = snap.exists ? snap.data() : null;
           if (gedeeld.isOrg && !formulierGeladen) {
             formulierGeladen = true;
