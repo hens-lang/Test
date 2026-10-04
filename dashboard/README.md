@@ -86,6 +86,13 @@ De rapportages ("Rapportage <Klant> wk <nr>.pdf", gemaakt met de rapportage-pijp
 - Koppeling op naam: de naam in de bestandsnaam wordt vergeleken met opdrachtgever, klant, Belstat-naam en het veld
   "Naam in rapportage" (OK Creative Agency = OnzeKapel).
 
+## Geplande synchronisatie (ook als het dashboard dicht is)
+
+Een geplande Claude-taak ("LINK. dashboard sync", werkdagen 07:40 en 13:40) doet wat het dashboard doet als het open
+staat: nieuwe rapportages inlezen en verwerken, en het KPI-bord een nieuw bronbestand geven als er iets veranderd is.
+De taak gebruikt `sync/verwerk.js`, dat de rekenregels rechtstreeks uit `index.html` laadt, zodat taak en dashboard
+altijd hetzelfde rekenen. Wat de taak al verwerkt heeft, slaat het dashboard over (en andersom).
+
 ## Rekenwijze dagstart
 
 - Tempo = (afspraken + overdrachten) per gewerkt beluur over de laatste 8 weken met belexport en uren. Zonder historie: het veld "Verwacht per beluur" bij het project.
