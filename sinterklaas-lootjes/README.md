@@ -20,6 +20,8 @@ Trek je opnieuw, stuur dan iedereen de nieuwe link.
 
 ## Online zetten
 
+**Live:** https://hens-lang.github.io/Test/sinterklaas-lootjes/ (gepubliceerd via de `gh-pages`-branch).
+
 De links werken alleen als de pagina online staat. Makkelijkste manier: zet GitHub Pages aan voor deze repository
 (Settings → Pages → branch kiezen) en open `…/sinterklaas-lootjes/index.html`.
 
