@@ -18,6 +18,19 @@ De deelnemerslijst wordt in de browser van de organisator bewaard, zodat je volg
 De uitslag wordt nergens opgeslagen: die zit alleen (versleuteld) in de persoonlijke links.
 Trek je opnieuw, stuur dan iedereen de nieuwe link.
 
+## In Claude (met wensen en gedeelde opslag)
+
+De pagina staat ook als Claude-artifact: https://claude.ai/artifact/KkdKvoaaeaqdbNarCCepYT
+Daar werkt hij met een gedeelde database:
+
+- iedereen kiest zijn naam, vult **zelf zijn wensen** in en opent later zijn eigen lootje;
+- de dichter ziet de wensen van zijn ontvanger live, ook als die later worden aangevuld;
+- alleen de eigenaar ziet het organisator-gedeelte (deelnemers, huishoudens, trekken);
+- **vaste trekkingen** staan op een plek in de database die alleen de eigenaar kan lezen.
+
+Deelnemers moeten met een Claude-account zijn uitgenodigd (via *Delen*) om iets te kunnen opslaan.
+Het bestand voor Claude maak je met `python3 bouw-artifact.py` (voegt `index.html` en `lootjes.js` samen).
+
 ## Online zetten
 
 **Live:** https://hens-lang.github.io/Test/sinterklaas-lootjes/ (gepubliceerd via de `gh-pages`-branch).
@@ -34,6 +47,7 @@ en laat ze de code plakken bij *Heb je een code gekregen?*.
 |---------------|-------------------------------------------------------------------------------|
 | `index.html`  | De app: organisator-scherm én lootje-scherm.                                  |
 | `lootjes.js`  | Gedeelde logica: regels controleren, eerlijk trekken, codes maken en lezen.   |
+| `bouw-artifact.py` | Maakt één los bestand voor de Claude-versie.                          |
 | `test.js`     | Tests voor `lootjes.js` (`node test.js`).                                      |
 
 > De codes zijn versluierd zodat niemand per ongeluk een naam in de link leest; het is geen echte beveiliging.
