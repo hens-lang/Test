@@ -5,184 +5,348 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sinterklaas Lootjes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gloock&family=Instrument+Sans:wght@400;600&family=Pinyon+Script&display=swap" rel="stylesheet">
 <style>
+  /* Pakjesavond bij kaarslicht: één donkere wereld van fluweel, lak en goudfolie.
+     Kolom van één leesbreedte; het lootje zelf is het enige grote moment. */
   :root {
-    --bg: #fbf5ec;
-    --paper: #ffffff;
-    --ink: #2b1d17;
-    --muted: #7a6a60;
-    --line: #eadfce;
-    --red: #b3202a;
-    --red-ink: #ffffff;
-    --gold: #c8962e;
-    --soft: #f6ecdc;
-    --ok: #2f7d4f;
-    --err: #b3202a;
-    --shadow: 0 1px 2px rgba(60, 30, 10, .06), 0 8px 24px rgba(60, 30, 10, .08);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #1b1311;
-      --paper: #261b18;
-      --ink: #f5ebe0;
-      --muted: #b9a89b;
-      --line: #3d2e29;
-      --red: #e0474f;
-      --red-ink: #1b1311;
-      --gold: #e2b65a;
-      --soft: #31241f;
-      --ok: #6cc391;
-      --err: #ff7a7f;
-      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .35);
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #1b1311; --paper: #261b18; --ink: #f5ebe0; --muted: #b9a89b; --line: #3d2e29;
-    --red: #e0474f; --red-ink: #1b1311; --gold: #e2b65a; --soft: #31241f; --ok: #6cc391; --err: #ff7a7f;
-    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .35);
+    color-scheme: dark;
+    --nacht: #12090f;
+    --fluweel: #24101a;
+    --fluweel-2: #2f1521;
+    --rand: rgba(217, 180, 90, .22);
+    --rand-zacht: rgba(246, 239, 226, .08);
+    --ivoor: #f6efe2;
+    --mist: #bfaeb0;
+    --rood: #b3172e;
+    --rood-licht: #d63a4f;
+    --goud: #d9b45a;
+    --goud-licht: #f5e0a3;
+    --goud-donker: #8f6b25;
+    --perkament: #f5ecd8;
+    --perkament-rand: #e3d3b0;
+    --inkt: #2b1a12;
+    --inkt-zacht: #6e5a4c;
+    --groen: #7fd1a0;
+    --fout: #ff8a96;
+    --folie: linear-gradient(100deg, var(--goud-donker) 0%, var(--goud) 22%, var(--goud-licht) 45%, var(--goud) 62%, var(--goud-donker) 100%);
+    --f-display: "Gloock", "Georgia", serif;
+    --f-tekst: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+    --f-hand: "Pinyon Script", "Snell Roundhand", cursive;
   }
 
   * { box-sizing: border-box; }
   html, body { margin: 0; }
   body {
-    background: var(--bg);
-    color: var(--ink);
-    font: 16px/1.55 Nunito, system-ui, sans-serif;
+    min-height: 100vh;
+    color: var(--ivoor);
+    font: 16px/1.6 var(--f-tekst);
     -webkit-font-smoothing: antialiased;
+    background-color: var(--nacht);
+    background-image:
+      radial-gradient(ellipse 70% 45% at 50% -8%, rgba(214, 58, 79, .28), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 85% 30%, rgba(217, 180, 90, .07), transparent 70%),
+      radial-gradient(ellipse 60% 50% at 10% 85%, rgba(179, 23, 46, .12), transparent 70%),
+      radial-gradient(1px 1px at 20% 30%, rgba(245, 224, 163, .5), transparent 60%),
+      radial-gradient(1px 1px at 70% 12%, rgba(245, 224, 163, .4), transparent 60%),
+      radial-gradient(1.5px 1.5px at 85% 60%, rgba(245, 224, 163, .35), transparent 60%),
+      radial-gradient(1px 1px at 35% 75%, rgba(245, 224, 163, .3), transparent 60%),
+      radial-gradient(1px 1px at 55% 45%, rgba(245, 224, 163, .25), transparent 60%);
   }
-  .wrap { max-width: 860px; margin: 0 auto; padding: 32px 16px 64px; }
-  h1, h2, h3 { font-family: Fraunces, Georgia, serif; line-height: 1.15; margin: 0; }
-  h1 { font-size: clamp(28px, 6vw, 42px); font-weight: 800; }
-  h2 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+  /* In het wensen- en lootjescherm is de kop alleen nog een sierlijke titel. */
+  body.modus-gast .hero .lead, body.modus-gast .hero .oogje { display: none; }
+  body.modus-gast .hero { margin-bottom: 26px; }
+  body.modus-gast .hero h1 { font-size: clamp(36px, 9vw, 56px); margin-bottom: 0; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px; padding-block: 40px 72px; }
+  h1, h2, h3 { font-family: var(--f-display); font-weight: 400; line-height: 1.1; margin: 0; text-wrap: balance; }
   p { margin: 0; }
-  .muted { color: var(--muted); }
+  b { font-weight: 600; }
+  .muted { color: var(--mist); }
   .small { font-size: 14px; }
+  .verborgen { display: none !important; }
 
-  header.top { display: flex; gap: 16px; align-items: center; margin-bottom: 24px; }
-  .mijter {
-    flex: none; width: 56px; height: 56px; border-radius: 16px;
-    display: grid; place-items: center; background: var(--red); color: var(--red-ink);
+  /* ---------- Hero ---------- */
+  .hero { text-align: center; margin-bottom: 40px; }
+  .embleem { width: 74px; height: 84px; margin: 0 auto 18px; filter: drop-shadow(0 6px 18px rgba(217, 180, 90, .25)); }
+  .oogje {
+    font-size: 12px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--goud);
   }
+  .hero h1 {
+    font-size: clamp(44px, 11vw, 84px); letter-spacing: -.01em; margin: 10px 0 14px;
+    background: var(--folie); background-size: 200% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: glans 9s ease-in-out infinite;
+  }
+  .hero h1 em { font-family: var(--f-hand); font-style: normal; font-size: .9em; padding: 0 .08em; }
+  .lead { color: var(--mist); font-size: 17px; max-width: 46ch; margin: 0 auto; }
+  @keyframes glans { 0%, 100% { background-position: 0% 0; } 50% { background-position: 100% 0; } }
+
+  /* ---------- Panelen ---------- */
   .card {
-    background: var(--paper); border: 1px solid var(--line); border-radius: 18px;
-    padding: 22px; box-shadow: var(--shadow); margin-bottom: 18px;
+    position: relative;
+    background: linear-gradient(180deg, var(--fluweel-2), var(--fluweel));
+    border: 1px solid var(--rand-zacht);
+    border-radius: 20px;
+    padding: 26px 24px;
+    margin-bottom: 18px;
+    box-shadow: 0 24px 60px -30px rgba(0, 0, 0, .8), inset 0 1px 0 rgba(245, 224, 163, .06);
   }
-  .card > .head { margin-bottom: 16px; }
+  .card::before {
+    content: ""; position: absolute; left: 24px; right: 24px; top: -1px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--goud), transparent); opacity: .55;
+  }
+  .card > .head { margin-bottom: 18px; }
+  .card h2 { font-size: 26px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+  .nr {
+    font-family: var(--f-display); font-size: 15px; width: 30px; height: 30px; flex: none;
+    display: inline-grid; place-items: center; border-radius: 50%;
+    border: 1px solid var(--rand); color: var(--goud); transform: translateY(-3px);
+  }
+  .sectiekop { font-size: 12px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--goud); text-align: center; margin: 0 0 18px; }
+  .tussenkop { font-size: 18px; margin-top: 22px; }
 
-  label { display: block; font-weight: 700; font-size: 14px; margin-bottom: 6px; }
-  input, textarea {
-    width: 100%; font: inherit; color: var(--ink); background: var(--bg);
-    border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+  /* ---------- Formulieren ---------- */
+  label { display: block; font-size: 13px; font-weight: 600; letter-spacing: .04em; color: var(--mist); margin-bottom: 7px; }
+  input, textarea, select {
+    width: 100%; font: inherit; color: var(--ivoor);
+    background: rgba(0, 0, 0, .28); border: 1px solid var(--rand-zacht); border-radius: 12px; padding: 11px 13px;
+    transition: border-color .2s, box-shadow .2s;
   }
-  input:focus, textarea:focus { outline: 2px solid var(--gold); outline-offset: 1px; border-color: transparent; }
-  textarea { resize: vertical; min-height: 84px; }
-  .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  input::placeholder, textarea::placeholder { color: rgba(191, 174, 176, .55); }
+  input:focus, textarea:focus, select:focus { outline: none; border-color: var(--goud); box-shadow: 0 0 0 3px rgba(217, 180, 90, .18); }
+  textarea { resize: vertical; min-height: 92px; }
+  select { font-weight: 600; appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--goud) 50%), linear-gradient(135deg, var(--goud) 50%, transparent 50%); background-position: calc(100% - 20px) 55%, calc(100% - 14px) 55%; background-size: 6px 6px; background-repeat: no-repeat; padding-right: 38px; }
+  select option { color: #1a0f14; }
+  .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
   @media (max-width: 600px) { .grid2 { grid-template-columns: 1fr; } }
 
-  button {
-    font: inherit; font-weight: 700; cursor: pointer; border-radius: 12px;
-    padding: 10px 16px; border: 1px solid var(--line); background: var(--soft); color: var(--ink);
+  /* ---------- Knoppen ---------- */
+  button, a.knop {
+    font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    border-radius: 999px; padding: 10px 18px;
+    color: var(--ivoor); background: rgba(246, 239, 226, .06); border: 1px solid var(--rand);
+    transition: transform .15s, background .2s, border-color .2s, box-shadow .2s;
   }
-  button:hover, a.knop:hover { filter: brightness(.97); }
-  a.knop {
-    display: inline-block; font-weight: 700; text-decoration: none; border-radius: 9px;
-    padding: 6px 10px; font-size: 14px; border: 1px solid var(--line); background: var(--soft); color: var(--ink);
+  button:hover, a.knop:hover { background: rgba(217, 180, 90, .12); border-color: var(--goud); }
+  button:active, a.knop:active { transform: translateY(1px); }
+  button:focus-visible, a.knop:focus-visible, summary:focus-visible { outline: 2px solid var(--goud-licht); outline-offset: 3px; }
+  button.klein, a.knop.klein { padding: 7px 13px; font-size: 14px; }
+  button.primair, a.knop.primair-link {
+    padding: 15px 28px; font-size: 17px; border: none; color: #fff;
+    background: linear-gradient(180deg, var(--rood-licht), var(--rood));
+    box-shadow: 0 10px 30px -10px rgba(214, 58, 79, .7), inset 0 1px 0 rgba(255, 255, 255, .25);
   }
-  button:focus-visible, a.knop:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-  textarea.handmatig { flex-basis: 100%; min-height: 60px; font-size: 13px; margin-top: 6px; }
-  button.primair { background: var(--red); color: var(--red-ink); border-color: transparent; padding: 13px 22px; font-size: 17px; }
-  button.klein { padding: 6px 10px; font-size: 14px; border-radius: 9px; }
-  button.link { background: none; border: none; color: var(--muted); padding: 6px; text-decoration: underline; }
-  .acties { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 16px; }
+  button.primair:hover, a.knop.primair-link:hover { background: linear-gradient(180deg, #e04a5f, #c21d35); }
+  button.link { background: none; border: none; color: var(--mist); text-decoration: underline; text-underline-offset: 3px; padding: 6px 8px; }
+  button.link:hover { color: var(--goud-licht); background: none; }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  a.knop[aria-disabled="true"] { opacity: .4; pointer-events: none; }
+  .acties { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 18px; }
 
-  /* Deelnemers */
-  .persoon {
-    display: grid; grid-template-columns: 1.1fr 1fr 1.2fr auto; gap: 8px; align-items: start;
-    padding: 12px 0; border-top: 1px solid var(--line);
-  }
+  /* ---------- Deelnemers ---------- */
+  .kolomkop, .persoon { display: grid; grid-template-columns: 1.1fr 1fr 1.2fr 40px; gap: 8px; }
+  .kolomkop { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--goud); margin-bottom: 4px; }
+  .persoon { align-items: start; padding: 12px 0; border-top: 1px solid var(--rand-zacht); }
   .persoon:first-of-type { border-top: none; }
-  .persoon .wens { grid-column: 1 / 4; }
-  .persoon .weg { align-self: center; }
-  .kolomkop { display: grid; grid-template-columns: 1.1fr 1fr 1.2fr auto; gap: 8px; font-size: 13px; color: var(--muted); font-weight: 700; }
-  .kolomkop span:last-child { width: 38px; }
+  .persoon .wens { grid-column: 1 / 4; font-size: 14px; }
+  .persoon .weg { align-self: center; width: 36px; height: 36px; padding: 0; }
+  .persoon .naam { font-weight: 600; }
   @media (max-width: 600px) {
     .kolomkop { display: none; }
-    .persoon { grid-template-columns: 1fr auto; }
+    .persoon { grid-template-columns: 1fr 40px; }
     .persoon .wens, .persoon .huis, .persoon .niet { grid-column: 1 / 2; }
     .persoon .weg { grid-row: 1; grid-column: 2; }
   }
-  .teller { display: inline-block; background: var(--soft); border-radius: 99px; padding: 2px 10px; font-size: 14px; font-weight: 700; }
-
-  .fout { color: var(--err); font-weight: 700; white-space: pre-line; margin-top: 12px; }
-  .melding { background: var(--soft); border-radius: 12px; padding: 12px 14px; font-size: 14px; margin-top: 12px; }
-
-  /* Resultaat (organisator) */
-  .lot {
-    display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between;
-    padding: 12px 0; border-top: 1px solid var(--line);
+  .teller {
+    font-family: var(--f-tekst); font-size: 13px; font-weight: 600; color: var(--goud);
+    border: 1px solid var(--rand); border-radius: 999px; padding: 2px 10px; font-variant-numeric: tabular-nums;
   }
-  .lot:first-child { border-top: none; }
-  .lot .naam { font-weight: 700; font-size: 17px; }
-  .lot .knoppen { display: flex; gap: 6px; flex-wrap: wrap; }
-  .lot.gedeeld .naam::after { content: " ✓"; color: var(--ok); }
-
-  /* Lootje openen */
-  .envelop {
-    text-align: center; padding: 40px 22px;
-    background:
-      repeating-linear-gradient(45deg, transparent 0 14px, color-mix(in srgb, var(--gold) 10%, transparent) 14px 28px),
-      var(--paper);
-  }
-  .groot { font-family: Fraunces, Georgia, serif; font-weight: 800; font-size: clamp(36px, 10vw, 64px); color: var(--red); margin: 10px 0 6px; overflow-wrap: anywhere; }
-  .feiten { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 18px; text-align: left; }
-  .feit { background: var(--soft); border-radius: 12px; padding: 10px 12px; }
-  .feit b { display: block; font-size: 13px; color: var(--muted); }
-  .verborgen { display: none !important; }
-  pre.opzet {
-    white-space: pre-wrap; font: 15px/1.7 Nunito, system-ui, sans-serif; background: var(--soft);
-    border-radius: 12px; padding: 14px 16px; margin: 10px 0 0;
-  }
-  ul.tips { margin: 8px 0 0; padding-left: 20px; }
-  ul.tips li { margin-bottom: 4px; }
-  .rijm { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-  .rijm span { background: var(--soft); border-radius: 99px; padding: 3px 10px; font-size: 14px; }
-  footer { text-align: center; margin-top: 28px; }
-  select {
-    width: 100%; font: inherit; font-weight: 700; color: var(--ink); background: var(--bg);
-    border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
-  }
-  select:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
-  button:disabled { opacity: .45; cursor: not-allowed; }
-  .tussenkop { font-size: 16px; margin-top: 18px; }
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-  .chip { background: var(--soft); border-radius: 99px; padding: 3px 10px; font-size: 14px; color: var(--muted); }
-  .chip.klaar { color: var(--ok); font-weight: 700; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .chip { border: 1px solid var(--rand-zacht); border-radius: 999px; padding: 4px 11px; font-size: 13px; color: var(--mist); }
+  .chip.klaar { color: var(--groen); border-color: rgba(127, 209, 160, .35); background: rgba(127, 209, 160, .07); }
   .chip.klaar::before { content: "✓ "; }
-  .sectiekop { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 30px 0 10px; }
-  .feit { white-space: pre-line; }
-  .vastBlok { margin-bottom: 16px; }
-  .vastBlok summary { cursor: pointer; font-weight: 700; color: var(--muted); }
-  .vastRij { display: grid; grid-template-columns: 1fr auto 1fr auto; gap: 8px; align-items: center; margin-top: 8px; }
-  .vastRij select { font-weight: 600; padding: 8px 10px; }
+
+  .fout { color: var(--fout); font-weight: 600; white-space: pre-line; margin-top: 14px; }
+  .fout:empty { display: none; }
+  .melding { background: rgba(217, 180, 90, .08); border: 1px solid var(--rand); border-radius: 14px; padding: 13px 15px; font-size: 14px; margin-top: 14px; color: var(--ivoor); }
+
+  .vastBlok { margin-bottom: 18px; border: 1px dashed var(--rand-zacht); border-radius: 14px; padding: 10px 14px; }
+  .vastBlok summary { cursor: pointer; font-weight: 600; color: var(--mist); font-size: 14px; }
+  .vastBlok[open] summary { margin-bottom: 8px; }
+  .vastRij { display: grid; grid-template-columns: 1fr auto 1fr 36px; gap: 8px; align-items: center; margin-top: 8px; }
+  .vastRij select { padding: 8px 32px 8px 10px; font-size: 14px; }
+  .vastRij button { width: 36px; height: 36px; padding: 0; }
+  @media (max-width: 480px) { .vastRij { grid-template-columns: 1fr 36px; } .vastRij span { display: none; } }
+
+  /* Resultaat: links per persoon */
+  .lot { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between; padding: 12px 0; border-top: 1px solid var(--rand-zacht); }
+  .lot:first-child { border-top: none; }
+  .lot .naam { font-family: var(--f-display); font-size: 20px; }
+  .lot .knoppen { display: flex; gap: 6px; flex-wrap: wrap; }
+  .lot.gedeeld .naam::after { content: " ✓"; color: var(--groen); font-family: var(--f-tekst); font-size: 15px; }
+  textarea.handmatig { flex-basis: 100%; min-height: 60px; font-size: 13px; margin-top: 6px; }
+
+  /* ---------- Verlanglijstje (brief aan de Sint) ---------- */
+  .brief {
+    position: relative; color: var(--inkt);
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(255, 255, 255, .6), transparent 60%),
+      radial-gradient(ellipse at 100% 100%, rgba(185, 150, 90, .25), transparent 55%),
+      var(--perkament);
+    border-radius: 6px; padding: 40px 32px 32px;
+    box-shadow: 0 40px 80px -30px rgba(0, 0, 0, .9), 0 0 0 1px var(--perkament-rand);
+    transform: rotate(-.6deg);
+  }
+  .brief::after {
+    content: ""; position: absolute; right: 26px; top: -14px; width: 54px; height: 54px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #e0475b, var(--rood) 55%, #6f0a1a);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .35), inset 0 -3px 6px rgba(0, 0, 0, .3);
+  }
+  .brief .oogje { color: #9a3b2a; }
+  .brief h2 { font-size: clamp(30px, 7vw, 40px); margin: 8px 0 22px; color: var(--inkt); }
+  .aanhef, .ondertekening { font-family: var(--f-hand); font-size: 34px; line-height: 1.2; color: #3a2216; }
+  .aanhef { margin-bottom: 14px; }
+  .ondertekening { margin-top: 16px; text-align: right; }
+  .brief label { color: var(--inkt-zacht); }
+  .brief select, .brief textarea { color: var(--inkt); background: rgba(255, 255, 255, .45); border-color: var(--perkament-rand); }
+  .brief select { background-image: linear-gradient(45deg, transparent 50%, #9a3b2a 50%), linear-gradient(135deg, #9a3b2a 50%, transparent 50%); background-position: calc(100% - 20px) 55%, calc(100% - 14px) 55%; background-size: 6px 6px; background-repeat: no-repeat; }
+  .brief textarea {
+    min-height: 190px; line-height: 32px; padding-top: 4px;
+    background: repeating-linear-gradient(transparent 0 31px, rgba(110, 90, 76, .25) 31px 32px), rgba(255, 255, 255, .35);
+    background-attachment: local;
+  }
+  .brief textarea::placeholder { color: rgba(110, 90, 76, .7); }
+  .brief select:focus, .brief textarea:focus { border-color: #9a3b2a; box-shadow: 0 0 0 3px rgba(154, 59, 42, .15); }
+  .brief .veld { margin-bottom: 16px; }
+  .brief button { color: var(--inkt); border-color: rgba(110, 90, 76, .35); background: rgba(255, 255, 255, .4); }
+  .brief .melding { color: var(--inkt); background: rgba(154, 59, 42, .07); border-color: rgba(154, 59, 42, .2); }
+
+  /* ---------- Het lootje ---------- */
+  .podium { text-align: center; padding: 8px 0 26px; }
+  .groet { font-size: clamp(30px, 7vw, 44px); margin: 10px 0 10px; }
+  .envelop {
+    position: relative; width: min(340px, 100%); aspect-ratio: 3 / 2; margin: 34px auto 12px; perspective: 900px;
+  }
+  .env-achter, .env-voor, .env-flap { position: absolute; border-radius: 8px; }
+  .env-achter { inset: 0; background: linear-gradient(160deg, #7a0f20, #4e0814); box-shadow: 0 40px 70px -30px rgba(0, 0, 0, .95); }
+  .env-brief {
+    position: absolute; left: 7%; right: 7%; top: 8%; bottom: 6%; border-radius: 4px; z-index: 2;
+    background: var(--perkament); display: grid; place-items: center;
+    font-family: var(--f-hand); font-size: 30px; color: #9a3b2a;
+    transition: transform .8s cubic-bezier(.2, .8, .2, 1) .45s;
+  }
+  .env-voor {
+    inset: 0; z-index: 3;
+    background: linear-gradient(200deg, #a3162b, #6d0c1c);
+    clip-path: polygon(0 0, 50% 56%, 100% 0, 100% 100%, 0 100%);
+  }
+  .env-flap {
+    left: 0; right: 0; top: 0; height: 60%; z-index: 4; transform-origin: top center;
+    background: linear-gradient(180deg, #8c1225, #5e0a18);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transition: transform .65s cubic-bezier(.5, 0, .3, 1), z-index 0s linear .3s;
+  }
+  .env-goudrand { position: absolute; inset: 7px; border: 1px solid rgba(217, 180, 90, .35); border-radius: 5px; z-index: 5; pointer-events: none; transition: opacity .3s; }
+  button.zegel {
+    position: absolute; left: 50%; top: 60%; z-index: 6; width: 76px; height: 76px; padding: 0; border: none; border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle at 35% 30%, #f0d48a, var(--goud) 40%, var(--goud-donker) 85%);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .5), inset 0 -4px 8px rgba(0, 0, 0, .25), inset 0 3px 6px rgba(255, 255, 255, .35);
+    color: #5a3d0e; font-family: var(--f-hand); font-size: 40px; line-height: 1;
+    animation: klop 2.6s ease-in-out infinite;
+    transition: transform .4s, opacity .4s;
+  }
+  button.zegel:hover { background: radial-gradient(circle at 35% 30%, #f6dd98, #e0bd63 40%, var(--goud-donker) 85%); }
+  @keyframes klop { 0%, 100% { box-shadow: 0 8px 20px rgba(0, 0, 0, .5), 0 0 0 0 rgba(217, 180, 90, .45), inset 0 -4px 8px rgba(0, 0, 0, .25); } 50% { box-shadow: 0 8px 20px rgba(0, 0, 0, .5), 0 0 0 14px rgba(217, 180, 90, 0), inset 0 -4px 8px rgba(0, 0, 0, .25); } }
+  .envelop.opent .env-flap { transform: rotateX(180deg); z-index: 1; }
+  .envelop.opent .env-brief { transform: translateY(-62%); }
+  .envelop.opent .zegel { transform: translate(-50%, -50%) scale(1.5) rotate(25deg); opacity: 0; pointer-events: none; animation: none; }
+  .envelop.opent .env-goudrand { opacity: 0; }
+  .tik { font-size: 13px; letter-spacing: .18em; text-transform: uppercase; color: var(--goud); }
+
+  #open { animation: verschijn .9s cubic-bezier(.2, .8, .2, 1) both; }
+  @keyframes verschijn { from { opacity: 0; transform: translateY(18px) scale(.98); } to { opacity: 1; transform: none; } }
+  .groot {
+    font-family: var(--f-hand); font-size: clamp(64px, 18vw, 120px); line-height: 1.15; margin: 4px 0 8px; padding: 0 .1em;
+    background: var(--folie); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: glans 7s ease-in-out infinite; overflow-wrap: anywhere;
+  }
+  .feiten { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 22px 0 10px; text-align: left; }
+  .feit {
+    background: rgba(246, 239, 226, .04); border: 1px solid var(--rand-zacht); border-radius: 14px; padding: 13px 15px;
+    white-space: pre-line; min-width: 0; overflow-wrap: anywhere;
+  }
+  .feiten { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .feit { font-size: 15px; }
+  .feit:first-child:not(:only-child) { font-size: 16px; }
+  .feit:first-child:not(:only-child) { grid-column: 1 / -1; border-color: var(--rand); background: rgba(217, 180, 90, .06); }
+  .feit b { display: block; font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--goud); margin-bottom: 4px; }
+
+  pre.opzet {
+    white-space: pre-wrap; font: 17px/1.75 var(--f-display); color: var(--ivoor);
+    background: rgba(0, 0, 0, .22); border-left: 2px solid var(--goud); border-radius: 0 12px 12px 0; padding: 16px 20px; margin: 14px 0 0;
+  }
+  ul.tips { margin: 10px 0 0; padding-left: 20px; color: var(--mist); }
+  ul.tips li { margin-bottom: 6px; }
+  ul.tips li::marker { color: var(--goud); }
+  .rijm { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .rijm span { border: 1px solid var(--rand-zacht); border-radius: 999px; padding: 4px 12px; font-size: 14px; color: var(--mist); }
+  footer { text-align: center; margin-top: 30px; }
+
+  #confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <header class="top">
-    <div class="mijter" aria-hidden="true">
-      <svg width="30" height="34" viewBox="0 0 30 34" fill="none">
-        <path d="M15 1 C8 6 4 13 4 22 V31 H26 V22 C26 13 22 6 15 1Z" fill="currentColor" opacity=".25"/>
-        <path d="M15 1 C8 6 4 13 4 22 V31 H26 V22 C26 13 22 6 15 1Z" stroke="currentColor" stroke-width="2"/>
-        <path d="M15 9 V23 M9 15 H21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <div>
-      <h1>Sinterklaas Lootjes</h1>
-      <p class="muted">Lootjes trekken voor Sinterklaasgedichten. Iedereen ziet alleen zijn eigen lootje.</p>
-    </div>
+  <header class="hero">
+    <svg class="embleem" viewBox="0 0 74 84" aria-hidden="true">
+      <defs>
+        <linearGradient id="goudfolie" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#f5e0a3"/><stop offset=".45" stop-color="#d9b45a"/><stop offset="1" stop-color="#8f6b25"/>
+        </linearGradient>
+        <linearGradient id="mijterrood" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#d63a4f"/><stop offset="1" stop-color="#7a0f20"/>
+        </linearGradient>
+      </defs>
+      <path d="M37 3 C22 14 12 30 12 52 V76 H62 V52 C62 30 52 14 37 3 Z" fill="url(#mijterrood)" stroke="url(#goudfolie)" stroke-width="2.5"/>
+      <path d="M12 66 H62" stroke="url(#goudfolie)" stroke-width="5"/>
+      <path d="M37 6 V64" stroke="url(#goudfolie)" stroke-width="5"/>
+      <path d="M37 22 V48 M26 33 H48" stroke="url(#goudfolie)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M30 76 L27 83 M44 76 L47 83" stroke="url(#goudfolie)" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    <p class="oogje" id="heroOog">Pakjesavond · 5 december</p>
+    <h1>Sinterklaas <em>Lootjes</em></h1>
+    <p class="lead">Lootjes trekken voor de gedichten. Iedereen ziet alleen zijn eigen lootje.</p>
   </header>
+
+  <!-- ===================== WENSEN INVULLEN (via uitnodigingslink) ===================== -->
+  <section id="wensenInvullen" class="verborgen">
+    <article class="brief">
+      <p class="oogje" id="uitEvenement"></p>
+      <h2>Mijn verlanglijstje</h2>
+      <p class="aanhef">Lieve Sinterklaas,</p>
+      <div class="veld">
+        <label for="uitNaam">Ik ben</label>
+        <select id="uitNaam"></select>
+      </div>
+      <div class="veld">
+        <label for="uitWens">Dit jaar zou ik graag… (en dit mag de Sint over mij weten)</label>
+        <textarea id="uitWens" rows="6" placeholder="Wat zou je graag krijgen? Wat zijn je hobby's? Waar mag de Sint je mee plagen?"></textarea>
+      </div>
+      <p class="ondertekening">Groetjes, <span id="uitOnder">…</span></p>
+      <div class="acties">
+        <a class="knop primair-link" id="uitStuur" target="_blank" rel="noopener" href="#">Stuur naar de Sint via WhatsApp</a>
+        <button class="klein" id="uitKopieer">Kopieer bericht</button>
+      </div>
+      <p class="melding" id="uitHulp">Alleen degene die jouw lootje trekt, leest dit. Tik op de rode knop en stuur het bericht naar de organisator. Later iets veranderd? Stuur gewoon opnieuw; het laatste bericht telt.</p>
+    </article>
+  </section>
 
   <!-- ===================== GEDEELD (in Claude) ===================== -->
   <section id="gedeeld" class="verborgen">
@@ -213,7 +377,7 @@
         <h2>Mijn lootje</h2>
         <p class="muted small" id="lotStatus">Er is nog niet getrokken.</p>
       </div>
-      <button class="primair" id="openMijnLot" disabled>✉️ Open mijn lootje</button>
+      <button class="primair" id="openMijnLot" disabled>Open mijn lootje</button>
     </div>
   </section>
 
@@ -223,7 +387,7 @@
 
     <div class="card">
       <div class="head">
-        <h2>1. Het feest</h2>
+        <h2><span class="nr">1</span>Het feest</h2>
         <p class="muted small">Deze gegevens komen op ieders lootje te staan.</p>
       </div>
       <div class="grid2">
@@ -236,7 +400,7 @@
 
     <div class="card">
       <div class="head">
-        <h2>2. Wie doen er mee? <span class="teller" id="aantal">0</span></h2>
+        <h2><span class="nr">2</span>Wie doen er mee? <span class="teller" id="aantal">0</span></h2>
         <p class="muted small">
           Mensen met hetzelfde <b>huishouden</b> trekken elkaar niet (handig voor partners).
           Bij <b>niet trekken</b> zet je namen die iemand níet mag krijgen, bijvoorbeeld wie diegene vorig jaar had.
@@ -257,10 +421,28 @@
       </div>
     </div>
 
+    <div class="card" id="verzamelKaart">
+      <div class="head">
+        <h2><span class="nr">3</span>Wensen verzamelen <span class="teller" id="wensTeller">0</span></h2>
+        <p class="muted small">Stuur de familie de uitnodiging. Iedereen kiest zijn naam, typt zijn wensen en stuurt je een WhatsApp-bericht terug. Plak die berichten hieronder: de wensen komen dan vanzelf bij de juiste persoon te staan.</p>
+      </div>
+      <div class="acties" style="margin-top:0">
+        <a class="knop primair-link" id="uitnodigApp" target="_blank" rel="noopener" href="#">Uitnodiging via WhatsApp</a>
+        <button class="klein" id="uitnodigKopieer">Kopieer uitnodiging</button>
+      </div>
+      <label for="wensPlak" style="margin-top:16px">Ontvangen berichten plakken</label>
+      <textarea id="wensPlak" placeholder="Plak hier een of meer WhatsApp-berichten met SINT-WENS:…"></textarea>
+      <div class="acties">
+        <button id="wensVerwerk">Wensen verwerken</button>
+        <span class="small muted" id="wensVerwerkStatus"></span>
+      </div>
+      <div class="chips" id="wensBinnen"></div>
+    </div>
+
     <div class="card">
       <div class="head">
-        <h2>3. Trekken</h2>
-        <p class="muted small" id="trekUitleg">Je krijgt per persoon een geheime link. Stuur die alleen naar die persoon (bijv. via WhatsApp).</p>
+        <h2><span class="nr">4</span>Trekken</h2>
+        <p class="muted small" id="trekUitleg">Je krijgt per persoon een geheime link, met de wensen van wie diegene getrokken heeft. Stuur die alleen naar die persoon (bijv. via WhatsApp).</p>
       </div>
       <details class="vastBlok" id="vastBlok">
         <summary>Vaste trekkingen <span class="muted small" id="vastTeller"></span></summary>
@@ -268,7 +450,7 @@
         <div id="vastLijst"></div>
         <div class="acties"><button class="klein" id="vastErbij">+ Vaste trekking</button></div>
       </details>
-      <button class="primair" id="trek">🎁 Trek de lootjes</button>
+      <button class="primair" id="trek">Trek de lootjes</button>
       <div class="fout" id="fout"></div>
       <div id="resultaat" class="verborgen" style="margin-top:18px">
         <div id="lotenLijst"></div>
@@ -295,20 +477,26 @@
 
   <!-- ===================== DEELNEMER ===================== -->
   <section id="deelnemer" class="verborgen">
-    <div class="card envelop">
-      <p class="muted" id="evenementRegel"></p>
-      <h2 style="margin-top:6px">Hallo <span id="geverNaam"></span>!</h2>
+    <div class="podium">
+      <p class="oogje" id="evenementRegel"></p>
+      <h2 class="groet">Hallo <span id="geverNaam"></span></h2>
       <div id="dicht">
-        <p class="muted" style="margin:14px 0 18px">Sinterklaas heeft een lootje voor je klaargelegd.<br>Zorg dat niemand meekijkt…</p>
-        <button class="primair" id="onthul">✉️ Open mijn lootje</button>
+        <p class="lead">Sinterklaas heeft een lootje voor je verzegeld. Zorg dat niemand meekijkt.</p>
+        <div class="envelop" id="envelop">
+          <div class="env-achter"></div>
+          <div class="env-brief" aria-hidden="true">Sint &amp; Piet</div>
+          <div class="env-voor"></div>
+          <div class="env-flap"></div>
+          <div class="env-goudrand"></div>
+          <button class="zegel" id="onthul" aria-label="Open mijn lootje">S</button>
+        </div>
+        <p class="tik">Tik op het zegel</p>
       </div>
       <div id="open" class="verborgen">
-        <p class="muted" style="margin-top:14px">Jij maakt een gedicht en surprise voor</p>
+        <p class="lead">Jij maakt een gedicht en surprise voor</p>
         <div class="groot" id="ontvangerNaam"></div>
         <div class="feiten" id="feiten"></div>
-        <div class="acties" style="justify-content:center">
-          <button class="klein" id="verberg">Verberg weer</button>
-        </div>
+        <button class="link" id="verberg">Verberg weer</button>
       </div>
     </div>
 
@@ -317,7 +505,7 @@
       <p class="muted small">Een opzetje om mee te beginnen. Vul de puntjes in met iets wat je over <span class="ontvNaam"></span> weet.</p>
       <pre class="opzet" id="opzet"></pre>
       <div class="acties"><button class="klein" id="kopieerOpzet">Kopieer opzet</button></div>
-      <h3 style="margin-top:20px; font-size:18px">Tips van de Sint</h3>
+      <h3 class="tussenkop">Tips van de Sint</h3>
       <ul class="tips">
         <li>Schrijf alsof Sinterklaas zelf aan het woord is: “Sint hoorde van zijn Pieten…”.</li>
         <li>Plaag gerust een beetje, maar houd het lief — iedereen moet er om kunnen lachen.</li>
@@ -325,7 +513,7 @@
         <li>Verwijs in het gedicht naar de surprise, zodat het pakje “klopt” bij het verhaal.</li>
         <li>Sluit af met een groet: “Sint en Piet”.</li>
       </ul>
-      <h3 style="margin-top:20px; font-size:18px">Handige rijmwoorden</h3>
+      <h3 class="tussenkop">Handige rijmwoorden</h3>
       <div class="rijm">
         <span>Sint · wint · vindt · kind</span><span>Piet · niet · ziet · lied</span>
         <span>dak · zak · gemak · pak</span><span>schoen · doen · zoen · toen</span>
@@ -339,6 +527,7 @@
 
 </div>
 
+<canvas id="confetti" class="verborgen" aria-hidden="true"></canvas>
 <script src="lootjes.js"></script>
 <script>
 (function () {
@@ -367,6 +556,7 @@
   var IK_OPSLAG = 'sint-lootjes-ik';
   // Vaste trekkingen: alleen leesbaar voor de eigenaar (zie de db-regels bij het publiceren).
   var PAD_VAST = 'data/geheim/doc/vast';
+  var PAD_LINKS = 'data/geheim/doc/links';
   var VAST_OPSLAG = 'sint-lootjes-vast';
   var vast = [];
 
@@ -423,11 +613,16 @@
   }
 
   var schrijfTimer = null, schrijfRij = Promise.resolve();
+  var formulierGeladen = false;  // pas schrijven als het formulier de opgeslagen gegevens bevat
+  var bewustGewist = false;      // alleen "Alles wissen" mag de deelnemerslijst leegmaken
   function bewaarGedeeldStraks() {
+    if (!formulierGeladen) return;
     clearTimeout(schrijfTimer);
     schrijfTimer = setTimeout(function () {
       var d = verzamel();
       var body = { info: d.info, personen: d.personen.filter(function (p) { return p.naam; }) };
+      var opgeslagen = (instellingen && instellingen.personen) || [];
+      if (!body.personen.length && opgeslagen.length && !bewustGewist) body.personen = opgeslagen;
       schrijfRij = schrijfRij.then(function () {
         return gedeeld.db.doc(PAD_INSTELLINGEN).set(body);
       }).catch(function () { $('fout').textContent = 'Opslaan lukte niet. Controleer je verbinding en probeer het opnieuw.'; });
@@ -475,6 +670,7 @@
     // Een oude trekking hoort niet meer bij een gewijzigde lijst
     $('resultaat').classList.add('verborgen');
     if ($('vastBlok').open) toonVast();
+    werkUitnodigingBij();
     bewaar();
   }
 
@@ -505,12 +701,12 @@
       $('resultaat').classList.add('verborgen');
       return;
     }
-    if (gedeeld) return trekGedeeld(paren, data, personen);
     laatsteLinks = paren.map(function (paar) {
       var code = Lootjes.maakCode(paar, data.info);
       return { naam: paar.gever.naam, code: code, link: basisUrl() + '#lot=' + code };
     });
     toonLinks(data.info);
+    if (gedeeld) trekGedeeld(paren, data, personen);
   }
 
   function trekGedeeld(paren, data, personen) {
@@ -519,21 +715,18 @@
       // Tips van de organisator gaan mee; de eigen wensen worden live bijgelezen.
       codes[Lootjes.sleutel(paar.gever.naam)] = Lootjes.maakCode(paar, data.info);
     });
-    var body = { codes: codes, op: new Date().toISOString(), namen: personen.map(function (p) { return Lootjes.sleutel(p.naam); }) };
+    var op = new Date().toISOString();
+    var body = { codes: codes, op: op, namen: personen.map(function (p) { return Lootjes.sleutel(p.naam); }) };
     clearTimeout(schrijfTimer);
     var instBody = { info: data.info, personen: personen };
+    var links = laatsteLinks.map(function (l) { return { naam: l.naam, code: l.code, link: l.link }; });
     $('trek').disabled = true;
     schrijfRij = schrijfRij
       .then(function () { return gedeeld.db.doc(PAD_INSTELLINGEN).set(instBody); })
       .then(function () { return gedeeld.db.doc(PAD_TREKKING).set(body); })
-      .then(function () {
-        $('lotenLijst').innerHTML = '';
-        $('backupActies').classList.add('verborgen');
-        $('hostMelding').textContent = '✅ De lootjes zijn getrokken (' + personen.length + ' personen). ' +
-          'Iedereen kan nu bovenaan de pagina zijn naam kiezen en zijn eigen lootje openen. Niemand ziet de hele verdeling.';
-        $('resultaat').classList.remove('verborgen');
-      })
-      .catch(function () { $('fout').textContent = 'De trekking kon niet worden opgeslagen. Probeer het opnieuw.'; })
+      // De links bewaren op de plek die alleen de eigenaar kan lezen, zodat je ze later opnieuw kunt sturen.
+      .then(function () { return gedeeld.db.doc(PAD_LINKS).set({ links: links, op: op, info: data.info }); })
+      .catch(function () { $('fout').textContent = 'De trekking kon niet worden opgeslagen. De links hieronder werken wel; stuur ze nu.'; })
       .then(function () { $('trek').disabled = false; });
   }
 
@@ -611,6 +804,7 @@
 
   // ---------- Lootje bekijken ----------
   function toonLootje(lot) {
+    document.body.classList.add('modus-gast');
     if (gedeeld && instellingen && instellingen.info) {
       // In de gedeelde versie altijd de actuele feestgegevens tonen.
       var i = instellingen.info;
@@ -627,6 +821,8 @@
     $('ontvangerNaam').textContent = lot.ontvanger;
     document.querySelectorAll('.ontvNaam').forEach(function (el) { el.textContent = lot.ontvanger; });
     $('evenementRegel').textContent = [lot.evenement, lot.datum].filter(Boolean).join(' · ');
+    if (lot.datum) $('heroOog').textContent = 'Pakjesavond · ' + lot.datum;
+    $('envelop').classList.remove('opent');
 
     toonFeiten();
 
@@ -645,6 +841,51 @@
     $('hulp').classList.add('verborgen');
   }
 
+  // Strooigoed: pepernoten en goudsnippers die over het scherm vallen.
+  function pepernoten() {
+    var doek = $('confetti');
+    var ctx = doek.getContext && doek.getContext('2d');
+    if (!ctx) return;
+    doek.classList.remove('verborgen');
+    var dpr = window.devicePixelRatio || 1;
+    var w = doek.clientWidth, h = doek.clientHeight;
+    doek.width = w * dpr; doek.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var stukjes = [];
+    for (var i = 0; i < 110; i++) {
+      var noot = i % 3 !== 0;
+      stukjes.push({
+        x: w / 2 + (Math.random() - .5) * w * .3, y: h * .35 + (Math.random() - .5) * 40,
+        vx: (Math.random() - .5) * 9, vy: -Math.random() * 11 - 4,
+        r: noot ? 4 + Math.random() * 4 : 3 + Math.random() * 3,
+        hoek: Math.random() * 6.3, draai: (Math.random() - .5) * .3, noot: noot,
+        kleur: noot ? ['#8a4b22', '#a35d2c', '#6f3a1a'][i % 3] : ['#f5e0a3', '#d9b45a', '#b3172e'][i % 3]
+      });
+    }
+    var start = performance.now();
+    (function stap(nu) {
+      var t = nu - start;
+      ctx.clearRect(0, 0, w, h);
+      stukjes.forEach(function (p) {
+        p.vy += .32; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.hoek += p.draai;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, 1 - Math.max(0, t - 2200) / 800);
+        ctx.translate(p.x, p.y); ctx.rotate(p.hoek);
+        ctx.fillStyle = p.kleur;
+        if (p.noot) {
+          ctx.beginPath(); ctx.arc(0, 0, p.r, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = 'rgba(255,220,170,.35)';
+          ctx.beginPath(); ctx.arc(-p.r * .3, -p.r * .3, p.r * .35, 0, Math.PI * 2); ctx.fill();
+        } else {
+          ctx.fillRect(-p.r, -p.r / 3, p.r * 2, p.r / 1.5);
+        }
+        ctx.restore();
+      });
+      if (t < 3000) requestAnimationFrame(stap);
+      else { ctx.clearRect(0, 0, w, h); doek.classList.add('verborgen'); }
+    })(start);
+  }
+
   function toonFeiten() {
     var lot = huidigLot;
     if (!lot) return;
@@ -653,7 +894,7 @@
     feiten.innerHTML = '';
     [
       ['Wensen van ' + lot.ontvanger, eigen && eigen.tekst],
-      [(gedeeld ? 'Tips van de organisator' : 'Tips over ' + lot.ontvanger), lot.wens],
+      ['Wensen & tips over ' + lot.ontvanger, lot.wens],
       ['Budget', lot.budget], ['Gedicht klaar', lot.deadline], ['Pakjesavond', lot.datum]
     ].forEach(function (f) {
       if (!f[1]) return;
@@ -664,7 +905,7 @@
       el.append(b, document.createTextNode(f[1]));
       feiten.appendChild(el);
     });
-    if (gedeeld && !(eigen && eigen.tekst)) {
+    if (gedeeld && !(eigen && eigen.tekst) && !lot.wens) {
       var leeg = document.createElement('div');
       leeg.className = 'feit';
       leeg.textContent = lot.ontvanger + ' heeft nog geen wensen ingevuld. Kijk later nog eens: ze verschijnen hier vanzelf.';
@@ -672,8 +913,107 @@
     }
   }
 
+  // ---------- Wensen invullen (familie, via uitnodigingslink) ----------
+  var uitnodiging = null;
+
+  function wensBericht() {
+    var naam = $('uitNaam').value, wens = $('uitWens').value.trim();
+    if (!naam || !wens) return '';
+    return '🎅 Mijn Sinterklaas-wensen (' + naam + '):\n' + wens + '\n\n' + Lootjes.maakWensCode(naam, wens);
+  }
+  function werkWensKnopBij() {
+    $('uitOnder').textContent = $('uitNaam').value || '…';
+    var b = wensBericht();
+    var a = $('uitStuur');
+    a.href = b ? 'https://wa.me/?text=' + encodeURIComponent(b) : '#';
+    a.setAttribute('aria-disabled', b ? 'false' : 'true');
+    $('uitKopieer').disabled = !b;
+    try {
+      localStorage.setItem('sint-lootjes-mijnwens', JSON.stringify({ naam: $('uitNaam').value, wens: $('uitWens').value }));
+    } catch (e) { /* geen opslag */ }
+  }
+  function toonWensenInvullen(u) {
+    document.body.classList.add('modus-gast');
+    uitnodiging = u;
+    $('organisator').classList.add('verborgen');
+    $('gedeeld').classList.add('verborgen');
+    $('deelnemer').classList.add('verborgen');
+    $('wensenInvullen').classList.remove('verborgen');
+    $('uitEvenement').textContent = u.evenement;
+    if (u.evenement) $('heroOog').textContent = u.evenement;
+    var sel = $('uitNaam');
+    sel.innerHTML = '';
+    var leeg = document.createElement('option');
+    leeg.value = '';
+    leeg.textContent = '— Kies je naam —';
+    sel.appendChild(leeg);
+    u.namen.forEach(function (n) {
+      var o = document.createElement('option');
+      o.value = n;
+      o.textContent = n;
+      sel.appendChild(o);
+    });
+    try {
+      var eerder = JSON.parse(localStorage.getItem('sint-lootjes-mijnwens')) || {};
+      if (u.namen.indexOf(eerder.naam) !== -1) sel.value = eerder.naam;
+      if (eerder.wens) $('uitWens').value = eerder.wens;
+    } catch (e) { /* geen opslag */ }
+    werkWensKnopBij();
+  }
+
+  // ---------- Wensen verzamelen (organisator) ----------
+  function uitnodigingsTekst() {
+    var d = verzamel();
+    var namen = d.personen.map(function (p) { return p.naam; }).filter(Boolean);
+    var link = basisUrl() + '#wensen=' + Lootjes.maakUitnodiging(d.info, namen);
+    return '🎅 Hoi allemaal! Dit jaar trekken we online lootjes voor de Sinterklaasgedichten' +
+      (d.info.evenement ? ' (' + d.info.evenement + ')' : '') + '.\n\n' +
+      'Open deze link, kies je naam, vul je wensen in en stuur ze met de knop terug naar mij:\n' + link +
+      '\n\nAls iedereen zijn wensen heeft gestuurd, trek ik de lootjes en krijg je je eigen lootje via WhatsApp. 🎁';
+  }
+  function werkUitnodigingBij() {
+    $('uitnodigApp').href = 'https://wa.me/?text=' + encodeURIComponent(uitnodigingsTekst());
+    var personen = verzamel().personen.filter(function (p) { return p.naam; });
+    var lijst = $('wensBinnen');
+    lijst.innerHTML = '';
+    var n = 0;
+    personen.forEach(function (p) {
+      var c = document.createElement('span');
+      c.className = 'chip' + (p.wens ? ' klaar' : '');
+      c.textContent = p.naam;
+      if (p.wens) n++;
+      lijst.appendChild(c);
+    });
+    $('wensTeller').textContent = n + ' / ' + personen.length;
+  }
+  function verwerkWensen() {
+    var gevonden = Lootjes.leesWensCodes($('wensPlak').value);
+    if (!gevonden.length) {
+      $('wensVerwerkStatus').textContent = 'Geen wensen gevonden. Plak het hele bericht, inclusief de regel met SINT-WENS:';
+      return;
+    }
+    var rijen = Array.prototype.slice.call(document.querySelectorAll('.persoon'));
+    var gelukt = [], onbekend = [];
+    gevonden.forEach(function (w) {
+      var rij = rijen.filter(function (r) {
+        return r.querySelector('.naam').value.trim().toLowerCase() === w.naam.trim().toLowerCase();
+      })[0];
+      if (rij) { rij.querySelector('.wens').value = w.wens; gelukt.push(w.naam); }
+      else onbekend.push(w.naam);
+    });
+    $('wensVerwerkStatus').textContent =
+      (gelukt.length ? '✓ Verwerkt: ' + gelukt.join(', ') + '. ' : '') +
+      (onbekend.length ? 'Niet gevonden in de lijst: ' + onbekend.join(', ') + '.' : '');
+    if (gelukt.length) $('wensPlak').value = '';
+    wijziging();
+  }
+
   function openVanuitHash() {
     var h = location.hash;
+    if (h.indexOf('#wensen=') === 0) {
+      var u = Lootjes.leesUitnodiging(h);
+      if (u) { toonWensenInvullen(u); return true; }
+    }
     if (h.indexOf('#lot=') !== 0) return false;
     var lot = Lootjes.leesCode(h);
     if (!lot) {
@@ -716,12 +1056,19 @@
       }
       delete b.dataset.zeker;
       b.textContent = 'Alles wissen';
+      bewustGewist = true;
       $('personen').innerHTML = '';
       velden.forEach(function (v) { $(v).value = ''; });
       voegPersoonToe(); voegPersoonToe(); voegPersoonToe();
       wijziging();
     });
     $('trek').addEventListener('click', trek);
+    werkUitnodigingBij();
+    $('uitnodigKopieer').addEventListener('click', function () { kopieerTekst(uitnodigingsTekst(), $('uitnodigKopieer')); });
+    $('wensVerwerk').addEventListener('click', verwerkWensen);
+    $('uitNaam').addEventListener('change', werkWensKnopBij);
+    $('uitWens').addEventListener('input', werkWensKnopBij);
+    $('uitKopieer').addEventListener('click', function () { kopieerTekst(wensBericht(), $('uitKopieer')); });
     laadVastLokaal();
     toonVast();
     $('vastBlok').addEventListener('toggle', toonVast);
@@ -743,11 +1090,19 @@
     });
 
     $('onthul').addEventListener('click', function () {
-      $('dicht').classList.add('verborgen');
-      $('open').classList.remove('verborgen');
-      $('hulp').classList.remove('verborgen');
+      var rustig = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var toon = function () {
+        $('dicht').classList.add('verborgen');
+        $('open').classList.remove('verborgen');
+        $('hulp').classList.remove('verborgen');
+        if (!rustig) pepernoten();
+      };
+      if (rustig) return toon();
+      $('envelop').classList.add('opent');
+      setTimeout(toon, 1350);
     });
     $('verberg').addEventListener('click', function () {
+      $('envelop').classList.remove('opent');
       $('dicht').classList.remove('verborgen');
       $('open').classList.add('verborgen');
       $('hulp').classList.add('verborgen');
@@ -756,9 +1111,10 @@
     $('naarStart').addEventListener('click', function () {
       try { history.replaceState(null, '', eigenUrl()); } catch (e) { /* niet toegestaan */ }
       huidigLot = null;
+      document.body.classList.remove('modus-gast');
       $('deelnemer').classList.add('verborgen');
       if (gedeeld) {
-        $('gedeeld').classList.remove('verborgen');
+        $('gedeeld').classList.toggle('verborgen', gedeeld.isOrg);
         $('organisator').classList.toggle('verborgen', !gedeeld.isOrg);
       } else {
         $('organisator').classList.remove('verborgen');
@@ -793,24 +1149,36 @@
       return isOwner.then(function (isOrg) {
         gedeeld = { db: db, isOrg: !!isOrg };
         $('naarStart').textContent = 'Terug naar het begin';
-        $('gedeeld').classList.remove('verborgen');
+        // De eigenaar is de organisator; de familie gebruikt de WhatsApp-links.
+        $('gedeeld').classList.toggle('verborgen', gedeeld.isOrg);
         $('organisator').classList.toggle('verborgen', !gedeeld.isOrg);
         $('orgKop').classList.remove('verborgen');
         $('codeKaart').classList.add('verborgen');
-        $('trekUitleg').textContent = 'Na het trekken opent iedereen bovenaan zijn eigen lootje. Niemand ziet de hele verdeling.';
+        $('backupActies').classList.add('verborgen');
         toonGedeeld();
 
-        var eerste = true;
         db.doc(PAD_INSTELLINGEN).onSnapshot(function (snap) {
+          // Een tussenstand uit de cache is nog niet definitief: daar niets mee doen.
+          if (snap.metadata && snap.metadata.fromCache && !formulierGeladen) return;
           instellingen = snap.exists ? snap.data() : null;
-          if (gedeeld.isOrg && eerste) {
-            eerste = false;
+          if (gedeeld.isOrg && !formulierGeladen) {
+            formulierGeladen = true;
             if (instellingen) vulFormulier(instellingen);
             else if (verzamel().personen.some(function (p) { return p.naam; })) bewaarGedeeldStraks();
           }
           toonGedeeld();
         }, function () {});
         if (gedeeld.isOrg) {
+          db.doc(PAD_LINKS).get().then(function (snap) {
+            if (!snap.exists || laatsteLinks.length) return;
+            var d = snap.data();
+            laatsteLinks = d.links || [];
+            if (!laatsteLinks.length) return;
+            toonLinks(d.info || {});
+            $('hostMelding').textContent = 'Dit zijn de links van je laatste trekking (' +
+              new Date(d.op).toLocaleString('nl-NL', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) +
+              '). Een vinkje betekent dat je de link in deze sessie al hebt gedeeld.';
+          }, function () {});
           db.doc(PAD_VAST).get().then(function (snap) {
             if (snap.exists) { vast = (snap.data().paren || []).map(function (v) { return { gever: v.gever, ontvanger: v.ontvanger }; }); toonVast(); }
             else if (vast.length) bewaarVast();
@@ -837,6 +1205,7 @@
     (d.personen || []).forEach(voegPersoonToe);
     if (!document.querySelector('.persoon')) { voegPersoonToe(); voegPersoonToe(); voegPersoonToe(); }
     $('aantal').textContent = verzamel().personen.filter(function (p) { return p.naam; }).length;
+    werkUitnodigingBij();
   }
 
   function toonGedeeld() {

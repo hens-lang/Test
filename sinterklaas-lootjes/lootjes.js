@@ -226,6 +226,51 @@
     return k.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'naamloos';
   }
 
+  function pak(data) {
+    return b64url(husselBytes(naarBytes(JSON.stringify(data))));
+  }
+  function uitpak(s) {
+    try { return JSON.parse(vanBytes(husselBytes(vanB64url(s)))); } catch (e) { return null; }
+  }
+
+  // ---------- Uitnodiging: link waarmee iedereen zijn wensen invult ----------
+
+  /** Maakt de code voor de wensen-uitnodiging. */
+  function maakUitnodiging(info, namen) {
+    return pak({ v: VERSIE, t: 'u', e: schoon((info || {}).evenement), n: (namen || []).map(schoon).filter(Boolean) });
+  }
+  /** Leest een uitnodiging (code of link met #wensen=...). Geeft { evenement, namen } of null. */
+  function leesUitnodiging(codeOfLink) {
+    var s = String(codeOfLink || '').trim();
+    var hekje = s.indexOf('#');
+    if (hekje !== -1) s = s.slice(hekje + 1);
+    s = s.replace(/^wensen=/, '');
+    var d = uitpak(s);
+    if (!d || d.v !== VERSIE || d.t !== 'u' || !Array.isArray(d.n)) return null;
+    return { evenement: d.e || '', namen: d.n };
+  }
+
+  // ---------- Wensen-codes: zo komen de wensen via WhatsApp bij de organisator ----------
+
+  var WENS_PREFIX = 'SINT-WENS:';
+
+  /** Maakt een wensen-code, bijv. "SINT-WENS:abc..." */
+  function maakWensCode(naam, tekst) {
+    return WENS_PREFIX + pak({ v: VERSIE, t: 'w', n: schoon(naam), w: String(tekst || '').trim() });
+  }
+  /** Zoekt alle wensen-codes in een stuk tekst (bijv. geplakte WhatsApp-berichten). Laatste per naam wint. */
+  function leesWensCodes(tekst) {
+    var re = /SINT-WENS:([A-Za-z0-9_-]+)/g, m, perNaam = {}, volgorde = [];
+    while ((m = re.exec(String(tekst || '')))) {
+      var d = uitpak(m[1]);
+      if (!d || d.v !== VERSIE || d.t !== 'w' || !d.n) continue;
+      var k = sleutelVan(d.n);
+      if (!perNaam[k]) volgorde.push(k);
+      perNaam[k] = { naam: d.n, wens: d.w || '' };
+    }
+    return volgorde.map(function (k) { return perNaam[k]; });
+  }
+
   /** Zet tekst "Anna, Piet; Klaas" om naar ['Anna','Piet','Klaas']. */
   function splitsNamen(tekst) {
     return String(tekst || '').split(/[,;\n]/).map(schoon).filter(Boolean);
@@ -239,6 +284,10 @@
     maakCode: maakCode,
     leesCode: leesCode,
     splitsNamen: splitsNamen,
+    maakUitnodiging: maakUitnodiging,
+    leesUitnodiging: leesUitnodiging,
+    maakWensCode: maakWensCode,
+    leesWensCodes: leesWensCodes,
     sleutel: sleutel
   };
 });
