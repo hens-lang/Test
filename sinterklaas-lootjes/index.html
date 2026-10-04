@@ -423,11 +423,16 @@
   }
 
   var schrijfTimer = null, schrijfRij = Promise.resolve();
+  var formulierGeladen = false;  // pas schrijven als het formulier de opgeslagen gegevens bevat
+  var bewustGewist = false;      // alleen "Alles wissen" mag de deelnemerslijst leegmaken
   function bewaarGedeeldStraks() {
+    if (!formulierGeladen) return;
     clearTimeout(schrijfTimer);
     schrijfTimer = setTimeout(function () {
       var d = verzamel();
       var body = { info: d.info, personen: d.personen.filter(function (p) { return p.naam; }) };
+      var opgeslagen = (instellingen && instellingen.personen) || [];
+      if (!body.personen.length && opgeslagen.length && !bewustGewist) body.personen = opgeslagen;
       schrijfRij = schrijfRij.then(function () {
         return gedeeld.db.doc(PAD_INSTELLINGEN).set(body);
       }).catch(function () { $('fout').textContent = 'Opslaan lukte niet. Controleer je verbinding en probeer het opnieuw.'; });
@@ -716,6 +721,7 @@
       }
       delete b.dataset.zeker;
       b.textContent = 'Alles wissen';
+      bewustGewist = true;
       $('personen').innerHTML = '';
       velden.forEach(function (v) { $(v).value = ''; });
       voegPersoonToe(); voegPersoonToe(); voegPersoonToe();
@@ -800,11 +806,12 @@
         $('trekUitleg').textContent = 'Na het trekken opent iedereen bovenaan zijn eigen lootje. Niemand ziet de hele verdeling.';
         toonGedeeld();
 
-        var eerste = true;
         db.doc(PAD_INSTELLINGEN).onSnapshot(function (snap) {
+          // Een tussenstand uit de cache is nog niet definitief: daar niets mee doen.
+          if (snap.metadata && snap.metadata.fromCache && !formulierGeladen) return;
           instellingen = snap.exists ? snap.data() : null;
-          if (gedeeld.isOrg && eerste) {
-            eerste = false;
+          if (gedeeld.isOrg && !formulierGeladen) {
+            formulierGeladen = true;
             if (instellingen) vulFormulier(instellingen);
             else if (verzamel().personen.some(function (p) { return p.naam; })) bewaarGedeeldStraks();
           }
