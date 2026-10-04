@@ -56,17 +56,20 @@ klanten ──< projecten ──< diensten >── zzp
 
 ## KPI-bord (Apps Script)
 
-Het KPI-bord voor de bellers (`kpibord/Code.gs` en `kpibord/Index.html`, web-app "LINK. KPI-bord") rekent met
-dezelfde gegevens als dit dashboard:
+Het KPI-bord voor de bellers (`kpibord/Code.gs` en `kpibord/Index.html`, web-app "LINK. KPI-bord") is realtime
+gekoppeld aan dit dashboard, via de Drive-map "LINK. KPI-bord bron":
 
-- Claude maakt met `kpibord/maak_bron.py` uit de database (projecten + resultaten) het bestand
-  `kpibord-bron.json` en zet het in de Drive-map "LINK. KPI-bord bron". Het script leest altijd het nieuwste
-  bestand (5 minuten gecachet) en ruimt oudere versies op.
-- Uit de bron komen opdrachtgevers, targets, lengte en start van de werkperiodes en de Steam-telling per week.
-  Pilots verschijnen vanzelf vanaf hun startweek.
-- Afgelopen weken tellen volgens Steam; de lopende week telt het hoogste van de +/−-telling en Steam.
-- Inhaal (tekort doorschuiven) loopt binnen een werkperiode en begint bij een nieuwe periode opnieuw.
-- Zonder bronbestand draait het bord op de ingebouwde lijst.
+- **Dashboard naar bord**: wijzigt er iets in opdrachtgevers of resultaten (target, werkperiode, nieuwe belexport),
+  dan schrijft het dashboard binnen een paar seconden een nieuw `kpibord-bron.json` (via de Google Drive-connector).
+  Het bord leest het nieuwste bestand, hooguit een minuut oud, en ruimt oudere versies op. Dit gebeurt zodra het
+  dashboard open staat; `kpibord/maak_bron.py` maakt hetzelfde bestand vanuit Claude.
+- **Bord naar dashboard**: elke +/− schrijft het bord meteen in het Google Doc "KPI-bord stand". Het dashboard leest dat
+  elke minuut en telt voor de lopende week (en weken zonder belexport) het verschil tussen bord en export mee
+  ("incl. x van het bord").
+- Op het bord tellen afgelopen weken volgens Steam; de lopende week telt het hoogste van +/− en Steam. Inhaal loopt
+  binnen een werkperiode. Pilots verschijnen vanaf hun startweek. Zonder bronbestand draait het bord op de
+  ingebouwde lijst.
+- In het overzicht (onder de Twinfield-stand) staat wanneer het bord voor het laatst gevoed is en hoe oud de stand is.
 
 ## Rekenwijze dagstart
 

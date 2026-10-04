@@ -1,10 +1,12 @@
 // LINK. KPI-bord — server (Google Apps Script)
 // Handmatige tellingen (+/−) staan in Script Properties; tellen gaat atomair met een lock.
-// Opdrachtgevers, targets, werkperiodes en de Steam-cijfers komen uit het management dashboard:
-// dat zet elke ochtend een bestand kpibord-bron.json in de Drive-map "LINK. KPI-bord bron".
-// Zo rekent het bord altijd met dezelfde targets en periodes als het dashboard.
+// Realtime koppeling met het management dashboard, via de Drive-map "LINK. KPI-bord bron":
+// - het dashboard schrijft bij elke wijziging (targets, werkperiodes, nieuwe belexport) een nieuw
+//   kpibord-bron.json; het bord leest altijd het nieuwste (hooguit 1 minuut oud)
+// - elke +/− schrijft het bord meteen in het Google Doc "KPI-bord stand"; het dashboard leest dat elke minuut
 
 const BRON_MAP = "LINK. KPI-bord bron";
+const STAND_DOC = "KPI-bord stand";
 
 function doGet(e) {
   if (e && e.parameter && e.parameter.get === "state") {
@@ -22,7 +24,7 @@ function handmatig() {
   return raw ? JSON.parse(raw) : { weeks: {} };
 }
 
-// Nieuwste kpibord-bron.json uit de bronmap; 5 minuten gecachet. Oudere versies gaan naar de prullenbak
+// Nieuwste kpibord-bron.json uit de bronmap; 1 minuut gecachet. Oudere versies gaan naar de prullenbak
 // (de laatste 3 blijven staan). Lukt het lezen niet, dan draait het bord door op de ingebouwde lijst.
 function bron() {
   const cache = CacheService.getScriptCache();
@@ -33,7 +35,7 @@ function bron() {
     const mappen = DriveApp.getFoldersByName(BRON_MAP);
     if (mappen.hasNext()) {
       const files = [];
-      const it = mappen.next().getFiles();
+      const it = mappen.next().getFilesByName("kpibord-bron.json");
       while (it.hasNext()) files.push(it.next());
       files.sort(function (a, b) { return b.getDateCreated() - a.getDateCreated(); });
       if (files.length) data = JSON.parse(files[0].getBlob().getDataAsString());
@@ -42,7 +44,7 @@ function bron() {
   } catch (err) {
     data = null;
   }
-  if (data) cache.put("bron", JSON.stringify(data), 300);
+  if (data) cache.put("bron", JSON.stringify(data), 60);
   return data;
 }
 
@@ -63,10 +65,33 @@ function bump(weekKey, id, delta) {
     const cur = state.weeks[weekKey][id] || 0;
     state.weeks[weekKey][id] = Math.max(0, cur + delta);
     props.setProperty("state", JSON.stringify(state));
+    schrijfStand(state);
   } finally {
     lock.releaseLock();
   }
   return getState();
+}
+
+// Stand van de laatste 8 weken in het Google Doc "KPI-bord stand" (één regel JSON tussen KPIBORD en EINDE).
+// Mislukt dit, dan telt het bord gewoon door; de volgende tik probeert het opnieuw.
+function schrijfStand(state) {
+  try {
+    const props = PropertiesService.getScriptProperties();
+    let id = props.getProperty("standDoc");
+    if (!id) {
+      const mappen = DriveApp.getFoldersByName(BRON_MAP);
+      if (!mappen.hasNext()) return;
+      const it = mappen.next().getFilesByName(STAND_DOC);
+      if (!it.hasNext()) return;
+      id = it.next().getId();
+      props.setProperty("standDoc", id);
+    }
+    const weeks = {};
+    Object.keys(state.weeks).sort().slice(-8).forEach(function (k) { weeks[k] = state.weeks[k]; });
+    DocumentApp.openById(id).getBody().setText("KPIBORD " + JSON.stringify({ bijgewerkt: new Date().toISOString(), weeks: weeks }) + " EINDE");
+  } catch (err) {
+    PropertiesService.getScriptProperties().deleteProperty("standDoc");
+  }
 }
 
 // Eenmalig uitvoeren vanuit de editor om Drive-toegang te geven en de bron te testen.
@@ -74,4 +99,6 @@ function testBron() {
   CacheService.getScriptCache().remove("bron");
   const b = bron();
   Logger.log(b ? "Bron gevonden: " + b.klanten.length + " opdrachtgevers, gemaakt " + b.gemaakt : "Geen bron gevonden in map " + BRON_MAP);
+  schrijfStand(handmatig());
+  Logger.log(PropertiesService.getScriptProperties().getProperty("standDoc") ? "Stand geschreven naar " + STAND_DOC : "Doc " + STAND_DOC + " niet gevonden");
 }

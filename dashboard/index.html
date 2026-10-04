@@ -527,7 +527,7 @@ function vOverzicht() {
     const k = klant(p.klantId);
     const f = factuurStand(p.klantId);
     const sl = x.nogNiet ? '<span class="sl grijs" title="nog niet gestart"></span>' : '<span class="sl ' + x.stoplicht + '" title="' + esc(x.stoplichtTekst) + '"></span>';
-    const res = x.nogNiet ? '<span class="meta">start ' + fmtD(x.van) + '</span>' : '<b>' + nf(x.gehaald) + '</b> / ' + nf(x.target, x.target % 1 ? 1 : 0) + '<div class="meta">' + esc(codeRegel(p, x)) + '</div><div class="meta">laatste 4 wkn: <b>' + x.laatste4 + '</b></div><div class="bar-mini"><i style="width:' + Math.min(100, pct(x.gehaald, x.target)) + '%;background:' + slKleur(x.stoplicht) + '"></i></div>';
+    const res = x.nogNiet ? '<span class="meta">start ' + fmtD(x.van) + '</span>' : '<b>' + nf(x.gehaald) + '</b> / ' + nf(x.target, x.target % 1 ? 1 : 0) + '<div class="meta">' + esc(codeRegel(p, x)) + (x.bord ? ' · incl. ' + x.bord + ' van het bord' : '') + '</div><div class="meta">laatste 4 wkn: <b>' + x.laatste4 + '</b></div><div class="bar-mini"><i style="width:' + Math.min(100, pct(x.gehaald, x.target)) + '%;background:' + slKleur(x.stoplicht) + '"></i></div>';
     const nodig = x.nogNiet ? '<span class="meta">' + nf(x.target, 0) + ' in ' + (num(p.periodeWeken) || 4) + ' wkn</span>' : x.nog > 0 ? '<b>' + nf(x.nog, x.nog % 1 ? 1 : 0) + '</b> in ' + x.restDagen + ' werkdg<div class="meta">' + (x.restDagen ? nf(x.nog / x.restDagen, 1) + ' per dag' : 'periode voorbij') + '</div>' : '<span class="pill ok">gehaald</span>';
     const plan = x.urenWeek ? nf2(x.urenWeek) + ' u<div class="meta">' + esc(x.bellersWeek.join(', ')) + '</div>' : '<span class="pill ' + (x.nogNiet ? '' : 'bad') + '">niemand</span>';
     return '<tr class="click' + (x.nogNiet ? ' dim' : '') + '" data-act="project:' + p.id + '"><td>' + sl + '</td><td><b>' + esc(k?.naam || p.naam) + '</b><div class="meta">' + (x.nogNiet ? 'pilot · ' : 'WP ' + x.nr + ' · ') + fmtD(x.van) + ' – ' + fmtD(x.tot) + '</div></td><td class="n">' + res + '</td><td class="n">' + (x.nogNiet ? '–' : nf(x.prognose, 1)) + '</td><td class="n">' + nodig + '</td><td class="n">' + plan + '</td><td class="meta" style="white-space:nowrap">' + (beltijdKort(p) ? '<b style="color:var(--fg)">' + esc(beltijdKort(p)) + '</b>' + (p.beltijd.zekerheid === 'indicatief' ? '<br>indicatief' : '') : '–') + '</td><td>' + f + '</td><td class="meta">' + esc(prijsLabel(p.id)) + (p.testEinde ? '<br>einde ' + fmtD(p.testEinde) : '') + '</td></tr>';
@@ -540,7 +540,7 @@ function vOverzicht() {
     + '<section class="kpis k4">' + kpis.map(k => '<div class="kpi' + (k.hl ? ' hl' : '') + '"><div class="lbl">' + esc(k.lbl) + '</div><div class="val">' + esc(k.val) + '</div><div class="foot' + (k.bad ? ' bad' : '') + '">' + esc(k.foot) + '</div></div>').join('') + '</section>'
     + '<section class="card" style="margin-bottom:16px"><div class="card-head"><h2>Opdrachtgevers · lopende werkperiode</h2><span class="sub">groen = prognose haalt target · oranje = 80-100% · rood = onder 80%</span></div><div class="tbl-wrap"><table class="ov"><thead><tr><th></th><th>Opdrachtgever</th><th class="n">Resultaat</th><th class="n">Prognose</th><th class="n">Nog nodig</th><th class="n">Ingepland wk</th><th>Beste beltijd</th><th>Facturen</th><th>Afspraak</th></tr></thead><tbody>' + rows + '</tbody></table></div></section>'
     + '<div class="grid2"><section class="card"><div class="card-head"><h2>Vandaag doen</h2><span class="pill' + (aandacht.some(i => i.lvl === 'bad') ? ' bad' : aandacht.length ? ' warn' : ' ok') + '">' + aandacht.length + '</span></div>' + doen + '</section>'
-    + '<section class="card"><div class="card-head"><h2>Facturen in de mail</h2><span class="sub">laatste 14 dagen</span></div>' + mailHtml() + twHtml + '</section></div>';
+    + '<section class="card"><div class="card-head"><h2>Facturen in de mail</h2><span class="sub">laatste 14 dagen</span></div>' + mailHtml() + twHtml + kbStatusHtml() + '</section></div>';
 }
 function codeRegel(p, x) {
   const t = p.targetsPerCode || {};
@@ -571,11 +571,12 @@ function periodePlan(p, peil = TODAY) {
   const van = iso(addDays(parseISO(start), n * L)), tot = iso(addDays(parseISO(van), L - 1));
   const target = num(p.doelPerWeek) * (num(p.periodeWeken) || 4);
   const inP = list('resultaten').filter(r => r.projectId === p.id && iso(weekMonday(r.jaar, r.week)) >= iso(mondayOf(parseISO(van))) && iso(weekMonday(r.jaar, r.week)) <= tot);
-  const gehaald = inP.reduce((a, r) => a + telt(p.id, r), 0);
+  const bord = bordExtra(p, van, tot, peil);
+  const gehaald = inP.reduce((a, r) => a + telt(p.id, r), 0) + bord;
   const afspraken = inP.reduce((a, r) => a + num(r.afspraak), 0), leads = inP.reduce((a, r) => a + num(r.overdracht), 0);
   // laatste 4 volle/lopende weken t/m peildatum, los van de periodegrens
   const w4 = iso(addDays(mondayOf(parseISO(peil)), -21));
-  const laatste4 = list('resultaten').filter(r => r.projectId === p.id && iso(weekMonday(r.jaar, r.week)) >= w4 && iso(weekMonday(r.jaar, r.week)) <= peil).reduce((a, r) => a + telt(p.id, r), 0);
+  const laatste4 = list('resultaten').filter(r => r.projectId === p.id && iso(weekMonday(r.jaar, r.week)) >= w4 && iso(weekMonday(r.jaar, r.week)) <= peil).reduce((a, r) => a + telt(p.id, r), 0) + bord;
   const gisteren = iso(addDays(parseISO(peil), -1));
   const verstreken = nogNiet || gisteren < van ? 0 : werkdagen(van, gisteren < tot ? gisteren : tot);
   const totaal = werkdagen(van, tot), restDagen = Math.max(0, totaal - Math.max(0, verstreken));
@@ -588,7 +589,7 @@ function periodePlan(p, peil = TODAY) {
   const dagenDezeWeek = restDagen ? werkdagen(wsI > van ? wsI : van, weI < tot ? weI : tot) : 0;
   const nodigWeek = restDagen ? nog * Math.min(1, dagenDezeWeek / restDagen) : 0;
   const dw = dienstenVan(d => d.projectId === p.id && d.datum >= wsI && d.datum <= iso(addDays(mondayOf(ref), 6)) && d.status !== 'afgemeld');
-  return { nogNiet, nr: n + 1 + nrBasis, van, tot, target, gehaald, afspraken, leads, laatste4, w4, prognose, nog, restDagen, stoplicht, nodigWeek,
+  return { nogNiet, nr: n + 1 + nrBasis, bord, van, tot, target, gehaald, afspraken, leads, laatste4, w4, prognose, nog, restDagen, stoplicht, nodigWeek,
     stoplichtTekst: target ? 'prognose ' + nf(prognose, 1) + ' van ' + nf(target, 1) : 'geen target',
     urenWeek: dw.reduce((a, d) => a + uren(d), 0), bellersWeek: [...new Set(dw.map(d => (zzp(d.zzpId)?.naam || '').split(' ')[0]))] };
 }
@@ -619,10 +620,96 @@ function mailHtml() {
   const lbl = { verkoop: ['info', 'verstuurd'], inkoop: ['warn', 'binnen'], klant: ['', 'klant'] };
   return '<ul class="list">' + items.slice(0, 8).map(x => '<li><span class="pill ' + lbl[x.soort][0] + '" style="min-width:64px;text-align:center">' + lbl[x.soort][1] + '</span><div class="main"><div class="title">' + esc(x.subj) + '</div><div class="meta">' + esc(fmtD(x.datum)) + ' · ' + esc(x.partij) + (x.f ? ' · <b>' + esc(x.f.nummer) + '</b> ' + factPill(factStatus(x.f)) : '') + '</div></div>' + (x.actie ? '<button class="btn small" data-act="' + esc(x.actie.act) + '">' + esc(x.actie.t) + '</button>' : '') + (x.url ? '<a class="btn small" href="' + esc(x.url) + '" target="_blank" rel="noopener">Gmail</a>' : '') + '</li>').join('') + '</ul>';
 }
+/* KPI-bord (Apps Script) realtime koppelen via Drive:
+   - dashboard -> bord: bij elke wijziging in opdrachtgevers of resultaten schrijft het dashboard kpibord-bron.json in de bronmap
+   - bord -> dashboard: het bord houdt de +/- telling bij in het Google Doc "KPI-bord stand"; het dashboard leest dat elke minuut */
+const KPIBORD = { map: '1sbupMDGH3sTmmrKSZqsyqb3cOReObCiD', stand: '1BLh-L8RIYZMBBY1F2PyZXrEaE7y1mRWdhFMcBb-RkB0' };
+const KB = { mcp: null, timer: null, bezig: false, weeks: null, standTijd: null, fout: '', leesFout: '' };
+const BORD_ID = { 'p-mostware': 'mostware', 'p-moyee': 'moyee', 'p-okcreative': 'ok', 'p-growon': 'growon', 'p-pivot': 'pivot', 'p-greenearth': 'greenearth', 'p-bloei': 'bloei', 'p-buildingbricks': 'bb', 'p-secondlife': 'slt', 'p-mostwarenext': 'mwnext', 'p-kubus': 'kubus' };
+function bordId(p) { return p.bordId || BORD_ID[p.id] || String(p.id).replace(/^p-/, ''); }
+function wkStr(j, w) { return j + '-W' + String(w).padStart(2, '0'); }
+function kpibordBron() {
+  const ps = sortBy(list('projecten').filter(p => p.status === 'actief' && p.belstart), p => p.naam);
+  const klanten = ps.map(p => {
+    const weken = num(p.periodeWeken) || 4;
+    return { id: bordId(p), name: klant(p.klantId)?.naam || p.naam, target: Math.round(num(p.doelPerWeek) * weken), weken,
+      wp: p.periodeAnker ? (num(p.periodeAnkerNr) || 1) : 1, wpStart: p.periodeAnker || p.belstart, telt: p.teltAls || '100+101', pilot: weken > 4 };
+  }).sort((a, b) => a.pilot - b.pilot);
+  const steam = {}; let tot = '';
+  list('resultaten').forEach(r => {
+    const p = project(r.projectId); if (!p || p.status !== 'actief') return;
+    const k = wkStr(r.jaar, r.week), id = bordId(p);
+    (steam[k] = steam[k] || {})[id] = (steam[k][id] || 0) + telt(r.projectId, r);
+    if (k > tot) tot = k;
+  });
+  return { bron: 'LINK. management dashboard', steamTot: tot, klanten, steam };
+}
+function hashStr(t) { let h = 5381; for (let i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) | 0; return (h >>> 0).toString(36); }
+function kbPlan() { clearTimeout(KB.timer); KB.timer = setTimeout(kbSchrijf, 4000); }
+async function kbSchrijf() {
+  if (!KB.mcp || KB.bezig || store?.mode !== 'gedeeld' || !['projecten', 'resultaten', 'sync', 'klanten'].every(c => S.loaded.has(c))) return;
+  const b = kpibordBron(); if (!b.klanten.length) return;
+  const h = hashStr(JSON.stringify(b));
+  if (S.sync?.kpibord?.hash === h) return;
+  KB.bezig = true;
+  try {
+    const nu = new Date().toISOString();
+    await KB.mcp.callTool('Google Drive', 'create_file', { title: 'kpibord-bron.json', parentId: KPIBORD.map, contentMimeType: 'application/json', disableConversionToGoogleType: true, textContent: JSON.stringify({ ...b, gemaakt: nu.slice(0, 19) + 'Z' }) }, { cache: false });
+    await save('sync', 'kpibord', { ...(S.sync?.kpibord || {}), hash: h, bronGeschreven: nu });
+    KB.fout = '';
+  } catch (e) {
+    const c = e && e.code;
+    KB.fout = c === 'needs_reauth' ? 'Google Drive opnieuw verbinden (claude.ai > Instellingen > Connectors)'
+      : c === 'server_not_connected' ? 'Google Drive is niet verbonden'
+      : c === 'not_in_manifest' ? 'Google Drive staat uit voor dit dashboard (menu Rechten)'
+      : 'bijwerken mislukt (' + (c || 'fout') + '), volgt bij de volgende wijziging';
+  } finally { KB.bezig = false; render(); }
+}
+function kbLees(ev) {
+  if (ev.type === 'data') {
+    const p = ev.result.payload, t = typeof p === 'string' ? p : (p && p.fileContent) || '';
+    const m = /KPIBORD\s*(\{[\s\S]*\})\s*EINDE/.exec(t);
+    if (m) {
+      try {
+        const st = JSON.parse(m[1].replace(/\\([\\`*_{}\[\]()#+\-.!|~<>])/g, '$1'));
+        KB.weeks = st.weeks || {}; KB.standTijd = st.bijgewerkt || null; KB.leesFout = '';
+      } catch (e) { KB.leesFout = 'stand van het bord niet leesbaar'; }
+    } else KB.leesFout = 'bord heeft nog geen stand geschreven';
+  } else {
+    const c = ev.error.code;
+    if (['needs_reauth', 'server_not_connected', 'blocked_by_policy', 'approval_required', 'not_in_manifest'].includes(c)) KB.weeks = null;
+    KB.leesFout = c === 'needs_reauth' ? 'Google Drive opnieuw verbinden' : c === 'not_in_manifest' ? 'Google Drive staat uit voor dit dashboard' : 'stand van het bord niet opgehaald (' + c + ')';
+  }
+  render();
+}
+// Telling van het KPI-bord voor de lopende week (en weken zonder belexport) bovenop de resultaten
+function bordExtra(p, van, tot, peil) {
+  if (!KB.weeks) return 0;
+  const id = bordId(p), nu = isoWeek(parseISO(peil)), nuK = wkStr(nu.jaar, nu.week);
+  let extra = 0;
+  Object.keys(KB.weeks).forEach(k => {
+    const n = num((KB.weeks[k] || {})[id]); if (!n || k < nuK) return;
+    const [j, w] = k.split('-W').map(Number), ma = iso(weekMonday(j, w));
+    if (ma < iso(mondayOf(parseISO(van))) || ma > tot) return;
+    const r = list('resultaten').find(x => x.projectId === p.id && x.jaar === j && x.week === w);
+    extra += Math.max(0, n - (r ? telt(p.id, r) : 0));
+  });
+  return extra;
+}
+function kbStatusHtml() {
+  if (!KB.mcp) return '';
+  const k = S.sync?.kpibord, bits = [];
+  bits.push(k?.bronGeschreven ? 'bord gevoed ' + fmtD(iso(new Date(k.bronGeschreven))) + ' ' + new Date(k.bronGeschreven).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' }) : 'bord nog niet gevoed');
+  if (KB.weeks) bits.push('stand bord ' + (KB.standTijd ? new Date(KB.standTijd).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' }) : 'gelezen'));
+  const fout = KB.fout || KB.leesFout;
+  return '<div class="tw"><span>KPI-bord</span>' + bits.map(b => '<span>' + esc(b) + '</span>').join('') + (fout ? '<span class="neg">' + esc(fout) + '</span>' : '<span class="pos">realtime</span>') + '</div>';
+}
 async function startMail() {
   let mcp = null;
   try { mcp = window.claude && await window.claude.use('mcp'); } catch (e) { mcp = null; }
   if (!mcp) { MAIL.state = 'geen'; render(); return; }
+  KB.mcp = mcp; kbPlan();
+  mcp.watchTool('Google Drive', 'read_file_content', { fileId: KPIBORD.stand }, kbLees, { cache: { staleTime: 30000 }, refetchInterval: 60000 });
   const q = '(factuur OR invoice OR betalingsherinnering OR creditnota) newer_than:14d -in:draft';
   mcp.watchTool('Gmail', 'search_threads', { query: q, pageSize: 25 }, ev => {
     if (ev.type === 'data') { MAIL.state = 'ok'; MAIL.err = null; MAIL.threads = (ev.result.payload && ev.result.payload.threads) || []; }
@@ -1587,7 +1674,7 @@ document.addEventListener('drop', e => { const d = e.target.closest && e.target.
     mode.textContent = st.mode === 'gedeeld' ? 'live gedeeld' : 'lokaal';
     mode.className = 'mode' + (st.mode === 'gedeeld' ? '' : ' local');
     mode.title = st.mode === 'gedeeld' ? 'Alle wijzigingen worden gedeeld met iedereen met toegang.' : 'Gegevens staan alleen in deze browser. Open het dashboard via claude.ai voor gedeelde opslag.';
-    COLL.forEach(c => st.subscribe(c, data => { S[c] = data; S.loaded.add(c); render(); }));
+    COLL.forEach(c => st.subscribe(c, data => { S[c] = data; S.loaded.add(c); render(); if (['projecten', 'resultaten', 'sync', 'klanten'].includes(c)) kbPlan(); }));
     startMail();
   };
   if (window.claude && typeof window.claude.use === 'function') {
