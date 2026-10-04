@@ -967,13 +967,30 @@ function renderBeldagen() {
 const KLEUR = {groen: "groen", oranje: "oranje", rood: "rood"};
 function meetvenster() { const t1 = peilIdx, v1 = Math.max(0, peilIdx - NS.weken * 7 + 1); return {v1, t1, per4: 4 / NS.weken}; }
 // Opbrengst, kosten (bellers + overige naar rato) en marge per 4 weken, gemiddeld over de meetperiode
-function marge4(ki) {
-  const {v1, t1, per4} = meetvenster(), inR = d => d >= v1 && d <= t1;
-  let kostAll = 0, kostK = 0, opbr = 0; F.v.forEach(r => { if (!inR(r[0])) return; kostAll += r[5]; if (ki == null || r[2] === ki) kostK += r[5]; });
+// Marge per werkperiode (4 weken). Actieve opdrachtgever: opbrengst = fee per werkperiode (klanten.yaml) plus
+// gefactureerde extra's; kosten = gemeten sinds de start van die klant (max. de meetperiode), omgerekend naar
+// 20 werkdagen. Overige opdrachtgevers: verkoopfacturen over de meetperiode. Onder de streep = som van alles.
+const werkdagenIn = (v, t) => { let n = 0; for (let i = v; i <= t; i++) { const g = datumObj[i].getDay(); if (g > 0 && g < 6) n++; } return n; };
+const klantStartIdx = ki => { const eerste = (D.klanten[ki].perioden || [])[0]; if (eerste && eerste.van > M.peildatum) return Infinity;
+  const p = klantPerioden(ki); return p.length ? p[0].vanI : 0; };
+const perWP = ki => D.klanten[ki].status === "actief" && D.klanten[ki].fee;
+function margeKlant(ki) {
+  const {v1, t1, per4} = meetvenster(), K = D.klanten[ki], wp = perWP(ki);
+  const v = wp ? Math.max(v1, klantStartIdx(ki)) : v1;
+  if (v > t1) return {opbr: 0, kosten: 0, marge: 0, pct: null, vanaf: v};
+  const f = wp ? 20 / (werkdagenIn(v, t1) || 1) : per4, inR = d => d >= v && d <= t1;
+  let kostAll = 0, kostK = 0, extra = 0, opb = 0;
+  F.v.forEach(r => { if (!inR(r[0])) return; kostAll += r[5]; if (r[2] === ki) kostK += r[5]; });
   const xs = som(F.x.filter(r => inR(r[0])), 1);
-  F.o.forEach(r => { if (inR(r[0]) && (ki == null || r[1] === ki)) opbr += r[2] + r[3]; });
-  const kosten = kostK + (ki == null ? xs : kostAll ? xs * kostK / kostAll : 0);
-  return {opbr: opbr * per4, kosten: kosten * per4, marge: (opbr - kosten) * per4, pct: opbr ? (opbr - kosten) / opbr : null};
+  F.o.forEach(r => { if (inR(r[0]) && r[1] === ki) { opb += r[2] + r[3]; extra += r[3]; } });
+  const kosten = (kostK + (kostAll ? xs * kostK / kostAll : 0)) * f, opbr = wp ? K.fee + extra * f : opb * f;
+  return {opbr, kosten, marge: opbr - kosten, pct: opbr ? (opbr - kosten) / opbr : null, vanaf: v, fee: wp ? K.fee : null, extra: extra * f};
+}
+function marge4(ki) {
+  if (ki != null) return margeKlant(ki);
+  const t = {opbr: 0, kosten: 0};
+  D.klanten.forEach((k, i) => { const m = margeKlant(i); t.opbr += m.opbr; t.kosten += m.kosten; });
+  return {opbr: t.opbr, kosten: t.kosten, marge: t.opbr - t.kosten, pct: t.opbr ? (t.opbr - t.kosten) / t.opbr : null};
 }
 const kopActies = x => (x.acties || []).map(a => (a.match(/<b>(.*?)<\/b>/) || [, a])[1].replace(/[.:]$/, "")).join(" · ");
 const balk = (v, kleur) => `<div class="balk"><i style="width:${Math.max(0, Math.min(100, v * 100))}%;background:var(--${kleur === "groen" ? "goed" : kleur === "oranje" ? "let-op" : kleur === "rood" ? "slecht" : "rand"})"></i></div>`;
@@ -1034,19 +1051,19 @@ function renderS1() {
   const laagM = R.filter(r => r.m.pct != null && r.m.pct < NS.marge).sort((a, b) => a.m.pct - b.m.pct);
   const goed = R.filter(r => r.x.oordeel === "goed"), gestart = R.filter(r => r.x.oordeel !== "nieuw");
   const W = weekCijfers(6);
-  const antwoord = `Per 4 weken blijft er <b>${eurT(tot.marge)}</b> over (${pct(tot.pct)} marge, doel ${pct(NS.marge)}). <b>${opT.length} van de ${metT.length}</b> opdrachtgevers halen hun target${achter.length ? `; ${naamLijst(achter.map(r => esc(r.x.k.naam)))} ${achter.length > 1 ? "lopen" : "loopt"} achter` : ""}.`;
+  const antwoord = `Per werkperiode van 4 weken blijft er <b>${eurT(tot.marge)}</b> over (${pct(tot.pct)} marge, doel ${pct(NS.marge)}). <b>${opT.length} van de ${metT.length}</b> opdrachtgevers halen hun target${achter.length ? `; ${naamLijst(achter.map(r => esc(r.x.k.naam)))} ${achter.length > 1 ? "lopen" : "loopt"} achter` : ""}.`;
   const punten = [
-    `Opbrengst ${eurT(tot.opbr)} en kosten ${eurT(tot.kosten)} per 4 weken: ${eurT(tot.marge)} onder de streep.`,
+    `Fees ${eurT(tot.opbr)} en kosten ${eurT(tot.kosten)} per werkperiode: ${eurT(tot.marge)} onder de streep. In de afgelopen 4 weken was het werkelijk ${eurT(W.slice(-4).reduce((a, x) => a + x.marge, 0))} (zie tabel hieronder): niet elke klant betaalt al de volle fee per werkperiode.`,
     laagM.length ? `Marge onder het doel van ${pct(NS.marge)}: ${naamLijst(laagM.map(r => `${esc(r.x.k.naam)} (${pct(r.m.pct)})`))}.` : `Alle opdrachtgevers halen ${pct(NS.marge)} marge.`,
     `${goed.length} van de ${gestart.length} opdrachtgevers zitten op alle KPI's goed${goed.length ? ` (${naamLijst(goed.map(r => esc(r.x.k.naam)))})` : ""}. Bij de rest zijn de uren per beldag of het beltempo het knelpunt (stap 4).`,
   ];
   const tegels = [
-    tegel("Opbrengst per 4 weken", eur(tot.opbr), "verdiend, gemiddeld"),
+    tegel("Opbrengst per werkperiode", eur(tot.opbr), "fees van de actieve opdrachtgevers"),
     tegel("Kosten per 4 weken", eur(tot.kosten), "bellers, eigenaren, Steam en data"),
-    tegel("Onder de streep", `<span class="${tot.marge >= 0 ? "pos" : "neg"}">${eur(tot.marge)}</span>`, `${pct(tot.pct)} marge · doel ${pct(NS.marge)}`),
+    tegel("Onder de streep per werkperiode", `<span class="${tot.marge >= 0 ? "pos" : "neg"}">${eur(tot.marge)}</span>`, `${pct(tot.pct)} marge · doel ${pct(NS.marge)}`),
     tegel("Targets op koers", `${opT.length} <span class="vs" style="font-size:18px">van ${metT.length}</span>`, "lopende werkperiode"),
   ];
-  const wk = `<div class="kaart tabelwrap" style="margin-top:12px"><h3>Laatste weken</h3><table><thead><tr><th class="l">Week</th><th>Opbrengst</th><th>Kosten</th><th>Marge</th><th>Uren</th><th>Resultaten</th></tr></thead><tbody>${
+  const wk = `<div class="kaart tabelwrap" style="margin-top:12px"><h3>Werkelijk per week</h3><p class="uitleg">Opbrengst = verstuurde facturen, verdeeld over de werkdagen van hun periode. Dit sluit aan op Twinfield (stap 3, onderaan).</p><table><thead><tr><th class="l">Week</th><th>Opbrengst</th><th>Kosten</th><th>Marge</th><th>Uren</th><th>Resultaten</th></tr></thead><tbody>${
     W.map(x => `<tr><td class="l">${x.lab}</td><td>${eurT(x.opbr)}</td><td>${eurT(x.kosten)}</td><td class="${x.marge >= 0 ? "pos" : "neg"}">${eurT(x.marge)}</td><td>${num(x.uren, 1)}</td><td>${num(x.res)}</td></tr>`).join("")}</tbody></table></div>`;
   stapPagina("s1", antwoord, `<div class="grid kpis">${tegels.join("")}</div><div class="kaart" style="margin-top:12px"><h3>In het kort</h3><ul class="punten">${punten.map(p => `<li>${p}</li>`).join("")}</ul></div>${wk}`);
 }
@@ -1069,14 +1086,14 @@ function renderS2() {
 function renderS3() {
   const R = stuurRegels().filter(r => r.m.opbr || r.m.kosten).sort((a, b) => (a.m.pct ?? 9) - (b.m.pct ?? 9)), tot = marge4(null);
   const laag = R.filter(r => r.m.pct != null && r.m.pct < NS.marge);
-  const antwoord = `Ja: per 4 weken <b>${eurT(tot.marge)}</b> onder de streep (${pct(tot.pct)}). ${laag.length ? `Onder het margedoel van ${pct(NS.marge)}: ${naamLijst(laag.map(r => `<b>${esc(r.x.k.naam)}</b> (${pct(r.m.pct)})`))}.` : `Alle opdrachtgevers zitten boven ${pct(NS.marge)}.`}`;
+  const antwoord = `Ja: per werkperiode <b>${eurT(tot.marge)}</b> onder de streep (${pct(tot.pct)}). ${laag.length ? `Onder het margedoel van ${pct(NS.marge)}: ${naamLijst(laag.map(r => `<b>${esc(r.x.k.naam)}</b> (${pct(r.m.pct)})`))}.` : `Alle opdrachtgevers zitten boven ${pct(NS.marge)}.`}`;
   const S4 = R.reduce((a, r) => ({o: a.o + r.m.opbr, k: a.k + r.m.kosten}), {o: 0, k: 0}), rest = {o: tot.opbr - S4.o, k: tot.kosten - S4.k};
-  const t = `<div class="kaart tabelwrap"><table class="stapel"><thead><tr><th class="l">Opdrachtgever</th><th>Opbrengst</th><th>Kosten</th><th>Marge</th><th>Marge %</th></tr></thead><tbody>${
-    R.map(({x, m}) => `<tr class="klik groot" data-k="${x.i}"><td class="l"><b>${esc(x.k.naam)}</b></td><td data-l="Opbrengst">${eurT(m.opbr)}</td><td data-l="Kosten">${eurT(m.kosten)}</td>
+  const t = `<div class="kaart tabelwrap"><table class="stapel"><thead><tr><th class="l">Opdrachtgever</th><th>Opbrengst per werkperiode</th><th>Kosten per 4 weken</th><th>Marge</th><th>Marge %</th></tr></thead><tbody>${
+    R.map(({x, m}) => `<tr class="klik groot" data-k="${x.i}"><td class="l"><b>${esc(x.k.naam)}</b></td><td data-l="Opbrengst">${eurT(m.opbr)}${m.fee != null && m.extra > 1 ? `<div class="vs">fee ${eurT(m.fee)} + extra ${eurT(m.extra)}</div>` : ""}</td><td data-l="Kosten">${eurT(m.kosten)}</td>
       <td data-l="Marge" class="${m.marge >= 0 ? "pos" : "neg"}">${eurT(m.marge)}</td><td data-l="Marge %"><span class="stip ${margeKleur(m.pct)}">${m.pct != null ? pct(m.pct) : "-"}</span>${balk(Math.max(0, m.pct || 0), margeKleur(m.pct))}</td></tr>`).join("")}</tbody>
     <tfoot>${Math.abs(rest.o - rest.k) > 1 ? `<tr><td class="l vs">Overig (gestopt, niet toegerekend)</td><td class="vs">${eurT(rest.o)}</td><td class="vs">${eurT(rest.k)}</td><td class="vs">${eurT(rest.o - rest.k)}</td><td></td></tr>` : ""}
     <tr style="font-weight:700;border-top:2px solid var(--rand)"><td class="l">Onder de streep</td><td>${eurT(tot.opbr)}</td><td>${eurT(tot.kosten)}</td><td class="${tot.marge >= 0 ? "pos" : "neg"}">${eurT(tot.marge)}</td><td>${pct(tot.pct)}</td></tr></tfoot></table>
-    <p class="uitleg" style="margin:8px 0 0">Per 4 weken, gemiddeld over de laatste ${NS.weken} weken. Opbrengst = verkoopfacturen, verdeeld over de werkdagen van hun periode. Kosten = bellers (factuur of uren x tarief), vaste vergoeding eigenaren en overige kosten (Steam, data) naar rato. Laagste marge bovenaan.</p></div>` + omzetAansluiting(null);
+    <p class="uitleg" style="margin:8px 0 0">Per werkperiode van 4 weken. <b>Opbrengst</b> = de fee per werkperiode (plus gefactureerde extra's, zoals tastings bij Moyee). <b>Kosten</b> = bellers (factuur of uren x tarief), vaste vergoeding eigenaren en overige kosten (Steam, data) naar rato, gemeten sinds de start van de klant (max. ${NS.weken} weken) en omgerekend naar 4 weken. Overig = gestopte opdrachtgevers op basis van hun facturen. Laagste marge bovenaan.</p></div>` + omzetAansluiting(null);
   stapPagina("s3", antwoord, t);
 }
 function renderS4() {
