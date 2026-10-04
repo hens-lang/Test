@@ -307,6 +307,8 @@ section{position:relative}
 .maanden button.actief{background:var(--kalk);color:var(--inkt)}
 .maanden button.actief .thermo i{opacity:1;background:var(--volet-diep)}
 .maanden .seiz{position:absolute;left:0;right:0;top:0;height:3px}
+@media (min-width:861px){.zonder-prijs .maand-detail{grid-template-columns:minmax(0,1fr) minmax(0,1.6fr)}}
+[hidden]{display:none!important}
 .maand-detail{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:clamp(24px,5vw,70px);align-items:center;margin-top:54px}
 .maand-detail h3{font-size:clamp(3.2rem,7vw,6rem);font-style:italic;text-transform:capitalize}
 .maand-detail .zin{font-family:var(--display);font-size:clamp(1.3rem,2vw,1.75rem);line-height:1.3}
@@ -554,11 +556,12 @@ html.lenis,html.lenis body{height:auto}
       <li><a href="#huis">Het huis</a></li>
       <li><a href="#dag">Een dag</a></li>
       <li><a href="#omgeving">Omgeving</a></li>
-      <li><a href="#tarieven">Tarieven</a></li>
-      <li><a href="#boeken">Beschikbaarheid</a></li>
+      <li class="prijs-alleen"><a href="#tarieven">Tarieven</a></li>
+      <li class="prijs-alleen"><a href="#boeken">Beschikbaarheid</a></li>
+      <li><a href="#strook">Foto's</a></li>
       <li><a href="#vragen">Info</a></li>
     </ul>
-    <a href="#boeken" class="knop">Plan je verblijf</a>
+    <a href="#huis" class="knop" id="navKnop">Rondleiding</a>
     <button class="hamburger" id="hamburger" aria-label="Menu openen"><span></span><span></span></button>
   </div>
 </header>
@@ -654,7 +657,7 @@ html.lenis,html.lenis body{height:auto}
 
 <section class="blok nacht" id="seizoenen">
   <div class="wrap">
-    <div class="kop"><div><div class="oog">Het jaar rond</div><h2>Wanneer ga <em>jij</em>?</h2></div><p class="lead">Kies een maand voor het weer, wat er te beleven valt en de prijs in die periode.</p></div>
+    <div class="kop"><div><div class="oog">Het jaar rond</div><h2>Wanneer ga <em>jij</em>?</h2></div><p class="lead" id="maandLead">Kies een maand voor het weer en wat er te beleven valt.</p></div>
     <div class="maanden" id="maanden"></div>
     <div class="maand-detail" id="maandDetail"></div>
   </div>
@@ -720,7 +723,7 @@ html.lenis,html.lenis body{height:auto}
   <div class="wrap">
     <div class="oog">À bientôt</div>
     <h2>Tot snel in <em id="slotPlaats"></em></h2>
-    <a href="#boeken" class="knop vol licht-knop" style="background:var(--wit);color:var(--inkt);border-color:var(--wit)">Plan je verblijf <span class="pijl">→</span></a>
+    <button class="knop vol licht-knop" id="slotKnop" style="background:var(--wit);color:var(--inkt);border-color:var(--wit)" data-cursor="Bekijk">Bekijk alle foto's <span class="pijl">→</span></button>
   </div>
 </section>
 </main>
@@ -730,7 +733,7 @@ html.lenis,html.lenis body{height:auto}
     <div><a href="#top" class="merk" id="voetMerk"></a><p style="margin-top:22px;max-width:40ch" id="voetIntro"></p></div>
     <div><h4>Het huis</h4><div id="voetHuis"></div></div>
     <div><h4>Contact</h4><div id="voetContact"></div></div>
-    <div class="onder mono"><span id="voetRef"></span><span>Prijzen en beschikbaarheid onder voorbehoud</span></div>
+    <div class="onder mono"><span id="voetRef"></span><span id="voetNoot">Een impressie van ons huis in de Provence</span></div>
   </div>
 </footer>
 
@@ -752,6 +755,8 @@ const FOTOS = /*FOTOS*/{};
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const ingevuld=v=>v&&!/VUL_IN/i.test(v);
+const PRIJZEN=HUIS.toonPrijzen!==false;
+if(!PRIJZEN){document.documentElement.classList.add("zonder-prijs");["#tarieven","#boeken","#mobielCta"].forEach(id=>{const e=document.querySelector(id);if(e)e.hidden=true});document.querySelectorAll(".prijs-alleen").forEach(e=>e.remove())}
 const rustig=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const klem=(v,a,b)=>Math.max(a,Math.min(b,v));
 
@@ -798,7 +803,7 @@ $("#dorpNaam").textContent=HUIS.plaats;$("#uitPlaats").textContent=HUIS.plaats;$
 $("#voetIntro").textContent=HUIS.ondertitel;
 $("#voetRef").textContent=`${HUIS.naam}${HUIS.referentie?` · ref. ${HUIS.referentie}`:""} · ${HUIS.coordinatenTekst||""}`;
 $("#voetHuis").innerHTML=HUIS.kerncijfers.map(c=>`<div>${c.waarde}${c.eenheid?" "+esc(c.eenheid):""} · ${esc(c.label.toLowerCase())}</div>`).join("");
-$("#voetContact").innerHTML=[ingevuld(C.naam)?`<div>${esc(C.naam)}</div>`:"",ingevuld(C.whatsapp)?`<div>WhatsApp ${esc(C.whatsapp)}</div>`:"",ingevuld(C.email)?`<div>${esc(C.email)}</div>`:""].join("")||`<div><a href="#boeken">Via de aanvraag op deze pagina</a></div>`;
+$("#voetContact").innerHTML=[ingevuld(C.naam)?`<div>${esc(C.naam)}</div>`:"",ingevuld(C.whatsapp)?`<div>WhatsApp ${esc(C.whatsapp)}</div>`:"",ingevuld(C.email)?`<div>${esc(C.email)}</div>`:""].join("")||(PRIJZEN?`<div><a href="#boeken">Via de aanvraag op deze pagina</a></div>`:`<div>Interesse? Laat het ons gerust weten.</div>`);
 
 /* ---------- intro ---------- */
 $("#introNaam").innerHTML=`${esc(delen[0])} <i>${esc(delen.slice(1).join(" "))}</i>`;
@@ -1041,12 +1046,12 @@ const K=HUIS.klimaat,mN=["januari","februari","maart","april","mei","juni","juli
 const inMaand=m=>periodes.filter(p=>{for(let d=new Date(p.v);d<p.t;d.setDate(d.getDate()+7))if(d.getMonth()===m)return true;return false});
 let maand=vandaag.getMonth();
 $("#maanden").innerHTML=K.maanden.map((m,i)=>{const pm=inMaand(i),top=(36-K.max[i])/36*100,h=(K.max[i]-K.min[i])/36*100;
-  return `<button data-m="${i}" aria-label="${mN[i]}" title="${K.min[i]}° – ${K.max[i]}°"><span class="seiz" style="background:${pm.length?pm[pm.length-1].k:"transparent"}"></span><span class="thermo"><i style="top:calc(${top*.85}% + 10px);height:${h*.85}%"></i></span><span class="mono">${m}</span></button>`}).join("");
+  return `<button data-m="${i}" aria-label="${mN[i]}" title="${K.min[i]}° – ${K.max[i]}°"><span class="seiz" style="background:${PRIJZEN&&pm.length?pm[pm.length-1].k:"transparent"}"></span><span class="thermo"><i style="top:calc(${top*.85}% + 10px);height:${h*.85}%"></i></span><span class="mono">${m}</span></button>`}).join("");
 $$("#maanden button").forEach(b=>b.onclick=()=>{maand=+b.dataset.m;tekenMaand()});
 function tekenMaand(){$$("#maanden button").forEach((b,i)=>b.classList.toggle("actief",i===maand));const pm=inMaand(maand);
   $("#maandDetail").innerHTML=`<h3 class="inval">${mN[maand]}</h3><div class="inval"><div class="zin">${esc(K.hoogtepunten[maand])}</div><div class="stats mono"><div><b>${K.max[maand]}°</b>overdag</div><div><b>${K.min[maand]}°</b>'s nachts</div><div><b>${Math.round(K.zonuren[maand]/30)} u</b>zon / dag</div></div></div>
-   <div class="prijs inval"><span class="mono">${pm.length?esc([...new Set(pm.map(p=>p.naam))].join(" / ")):"Prijs"}</span><b>${pm.length?"vanaf "+euro(Math.min(...pm.map(p=>p.prijsPerWeek))):"Op aanvraag"}</b><button class="tekstlink" id="maandKal">Bekijk in kalender →</button></div>`;
-  $("#maandKal").onclick=()=>{let j=vandaag.getFullYear();if(maand<vandaag.getMonth())j++;naarKal(new Date(j,maand,1))}}
+   ${!PRIJZEN?"":`<div class="prijs inval"><span class="mono">${pm.length?esc([...new Set(pm.map(p=>p.naam))].join(" / ")):"Prijs"}</span><b>${pm.length?"vanaf "+euro(Math.min(...pm.map(p=>p.prijsPerWeek))):"Op aanvraag"}</b><button class="tekstlink" id="maandKal">Bekijk in kalender →</button></div>`}`;
+  if(PRIJZEN)$("#maandKal").onclick=()=>{let j=vandaag.getFullYear();if(maand<vandaag.getMonth())j++;naarKal(new Date(j,maand,1))}}
 tekenMaand();
 
 /* ---------- kalender + aanvraag (hele weken) ---------- */
@@ -1119,6 +1124,8 @@ $("#vragenLijst").innerHTML=[0,1].map(k=>`<div>${HUIS.huisinfo.filter((_,i)=>i%2
 $("#slotBg").style.backgroundImage=`url("${url(opBestand(HUIS.slotFoto||"2-zwembad.jpg")||galerij[0])}")`;
 
 /* ---------- lichtbak ---------- */
+$("#slotKnop").onclick=()=>openLb(0);
+if(PRIJZEN){$("#navKnop").textContent="Plan je verblijf";$("#navKnop").setAttribute("href","#boeken")}
 let lb=0;
 $("#duimen").innerHTML=galerij.map((g,i)=>`<button data-i="${i}" style="background-image:url('${url(g)}')" aria-label="${esc(g.titel)}"></button>`).join("");
 $$("#duimen button").forEach(b=>b.onclick=()=>toonLb(+b.dataset.i));
@@ -1165,7 +1172,7 @@ function opScroll(){const y=scrollY,vh=innerHeight;
   nav.classList.toggle("weg",y>laatste+2&&y>vh&&!document.body.classList.contains("menu-open"));if(Math.abs(y-laatste)>2)laatste=y;
   let act=null;$$("#menu a").forEach(a=>{const s=$(a.getAttribute("href"));if(s&&s.getBoundingClientRect().top<vh*.4)act=a});$$("#menu a").forEach(a=>a.classList.toggle("actief",a===act));
   const bk=$("#boeken").getBoundingClientRect(),sl=$("#slot").getBoundingClientRect();
-  $("#mobielCta").classList.toggle("zichtbaar",y>vh&&(bk.top>vh||bk.bottom<0)&&sl.top>vh);
+  if(PRIJZEN)$("#mobielCta").classList.toggle("zichtbaar",y>vh&&(bk.top>vh||bk.bottom<0)&&sl.top>vh);
   if(!rustig&&sl.top<vh&&sl.bottom>0)$("#slotBg").style.transform=`translateY(${(sl.top/vh-.5)*-70}px)`;
 }
 let tik=false;addEventListener("scroll",()=>{if(!tik){tik=true;requestAnimationFrame(()=>{opScroll();tik=false})}},{passive:true});

@@ -20,6 +20,10 @@ template.html┘
 - **`template.html`**: het ontwerp en de animaties.
 - **`bouw.py`**: voegt alles samen en waarschuwt als er iets niet klopt (ontbrekende foto, contact niet ingevuld, …).
 
+## Impressie of verhuursite
+In `huis.json` staat `"toonPrijzen": false`: de site is dan een impressie, zonder tarieven, prijzen en boekingskalender.
+Zet het op `true` en draai `python3 bouw.py`, dan komen tarieven, kalender en aanvraag terug.
+
 ## Nog in te vullen in `huis.json`
 1. `contact`: naam, WhatsApp-nummer (bv. `+32 470 12 34 56`) en e-mail. Zolang dit `VUL_IN` is, zijn de aanvraagknoppen verborgen
    (de knop "Kopieer aanvraagbericht" werkt altijd).

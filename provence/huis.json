@@ -257,6 +257,12 @@
       "stijl": "gevel"
     },
     {
+      "bestand": "12-tuin.jpg",
+      "titel": "Lounge in de tuin, onder de moerbeiboom",
+      "categorie": "Buiten",
+      "ruimte": "terras"
+    },
+    {
       "bestand": "11-zonsondergang-2.jpg",
       "titel": "Avondlicht over het domein",
       "categorie": "Buiten",
@@ -484,10 +490,6 @@
       "antwoord": "Verhuur per week, van zondag 16:00 tot zondag 10:00."
     },
     {
-      "vraag": "Wat is inbegrepen?",
-      "antwoord": "Energiekosten (bij normaal verbruik) en draadloos internet. Extra: eindschoonmaak € 95, bed- en badlinnen € 100 per verblijf (optioneel), waarborg € 300 en verblijfstaks (>18 jaar) aan het tarief van de COPAVO."
-    },
-    {
       "vraag": "Hoeveel personen?",
       "antwoord": "Maximaal 4 personen, in twee slaapkamers met elk een tweepersoonsbed (180 en 160) met aparte eenpersoonsdekbedden."
     },
@@ -602,6 +604,7 @@
   "heroFotos": [
     "10-zonsondergang-1.jpg",
     "2-zwembad.jpg",
+    "12-tuin.jpg",
     "1-gevel-terras.jpg",
     "3-eethoek.jpg",
     "6-slaapkamer1.jpg",
@@ -670,5 +673,6 @@
     }
   ],
   "coordinatenTekst": "44°11′ N · 5°00′ O",
-  "slotFoto": "11-zonsondergang-2.jpg"
+  "slotFoto": "11-zonsondergang-2.jpg",
+  "toonPrijzen": false
 }
