@@ -86,12 +86,14 @@ De rapportages ("Rapportage <Klant> wk <nr>.pdf", gemaakt met de rapportage-pijp
 - Koppeling op naam: de naam in de bestandsnaam wordt vergeleken met opdrachtgever, klant, Belstat-naam en het veld
   "Naam in rapportage" (OK Creative Agency = OnzeKapel).
 
-## Geplande synchronisatie (ook als het dashboard dicht is)
+## Synchronisatie buiten het dashboard om
 
-Een geplande Claude-taak ("LINK. dashboard sync", werkdagen 07:40 en 13:40) doet wat het dashboard doet als het open
-staat: nieuwe rapportages inlezen en verwerken, en het KPI-bord een nieuw bronbestand geven als er iets veranderd is.
-De taak gebruikt `sync/verwerk.js`, dat de rekenregels rechtstreeks uit `index.html` laadt, zodat taak en dashboard
-altijd hetzelfde rekenen. Wat de taak al verwerkt heeft, slaat het dashboard over (en andersom).
+- Het dashboard verwerkt rapportages en voedt het KPI-bord zodra het open staat. Wie de dagstart of het overzicht
+  bekijkt, ziet dus altijd de verwerkte stand.
+- Tikken op het KPI-bord gaan niet verloren: het bord schrijft ze zelf in "KPI-bord stand"; het dashboard leest ze bij openen.
+- Werkt Claude de database bij (bijv. na een belexport), dan draait Claude `sync/verwerk.js` en zet het bronbestand
+  voor het bord in Drive. Het script laadt de rekenregels uit `index.html`, dus Claude en het dashboard rekenen gelijk.
+- De geplande taak "LINK. dashboard sync" staat uit: geplande taken krijgen in deze organisatie geen Google Drive-toegang.
 
 ## Rekenwijze dagstart
 
