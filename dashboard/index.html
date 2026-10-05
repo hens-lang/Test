@@ -611,6 +611,31 @@ function mailClassify(t) {
   if (!f && soort === 'inkoop' && zz) actie = { t: 'Inkoopfactuur toevoegen', act: 'newfact:inkoop:' + zz.id };
   return { id: t.id, datum: (m.date || '').slice(0, 10), subj, partij, soort, f, actie, url: t.viewUrl || m.viewUrl };
 }
+// Verstuurde verkoopfacturen ("Factuur 2026-0099 voor Kubus Heerenveen B.V.", van facturatie@linkgrp.nl) zetten
+// de klaargezette conceptfactuur van die klant automatisch op verstuurd, met het echte factuurnummer.
+const MAILBOEK = { gedaan: new Set() };
+async function mailBoeken() {
+  if (store?.mode !== 'gedeeld' || !S.loaded.has('facturen') || !S.loaded.has('klanten')) return;
+  for (const t of MAIL.threads) {
+    for (const m of (t.messages || [])) {
+      const subj = m.subject || '', from = (m.sender || '').toLowerCase();
+      const mt = /factuur\s+(20\d{2}-\d{4})\s+voor\s+(.+)$/i.exec(subj);
+      if (!mt || !/linkgrp\.nl/.test(from) || MAILBOEK.gedaan.has(m.id)) continue;
+      MAILBOEK.gedaan.add(m.id);
+      const nr = mt[1], naam = rapNorm(mt[2]), datum = (m.date || '').slice(0, 10);
+      const bm = /bedrag van\s*€\s*([\d.,]+)/i.exec(m.snippet || ''), bedrag = bm ? num(bm[1].replace(/\.(?=\d{3}(\D|$))/g, '').replace(',', '.')) : null;
+      const al = list('facturen').find(f => f.soort === 'verkoop' && f.nummer === nr);
+      if (al) { if (al.status === 'concept') await save('facturen', al.id, { ...S.facturen[al.id], status: 'verstuurd', verstuurdOp: datum }); continue; }
+      const kand = list('facturen').filter(f => f.soort === 'verkoop' && f.status === 'concept' && !/^20\d{2}-\d{4}$/.test(f.nummer || '')
+        && Math.abs((parseISO(f.datum || datum) - parseISO(datum)) / 864e5) <= 10).filter(f => {
+          const n = rapNorm(f.debiteur || klant(f.partijId)?.naam || ''); return n && (n === naam || n.startsWith(naam + ' ') || naam.startsWith(n + ' ') || n.split(' ')[0] === naam.split(' ')[0]);
+        });
+      const f = sortBy(kand, f => (bedrag != null && Math.abs(factTotals(f).tot - bedrag) < 0.5 ? 0 : 1) + Math.abs(parseISO(f.datum || datum) - parseISO(datum)) / 864e9)[0];
+      if (f) await save('facturen', f.id, { ...S.facturen[f.id], nummer: nr, status: 'verstuurd', verstuurdOp: datum,
+        ...(bedrag != null && Math.abs(factTotals(f).tot - bedrag) >= 0.5 ? { notitie: 'Mail noemt ' + eur(bedrag) + ', dashboard ' + eur(factTotals(f).tot) } : {}) });
+    }
+  }
+}
 function mailHtml() {
   if (MAIL.state === 'geen') return '<p class="empty">Mailkoppeling is in deze weergave niet beschikbaar. Open het dashboard op claude.ai en sta Gmail toe.</p>';
   if (MAIL.state === 'laden') return '<p class="empty">Mail ophalen…</p>';
@@ -847,7 +872,7 @@ async function startMail() {
   mcp.watchTool('Google Drive', 'search_files', { query: "title contains 'Rapportage' and title contains ' wk ' and mimeType = 'application/pdf' and modifiedTime > '" + sinds + "'", pageSize: 100, excludeContentSnippets: true }, rapZoeken, { cache: { staleTime: 60000 }, refetchInterval: 300000 });
   const q = '(factuur OR invoice OR betalingsherinnering OR creditnota) newer_than:14d -in:draft';
   mcp.watchTool('Gmail', 'search_threads', { query: q, pageSize: 25 }, ev => {
-    if (ev.type === 'data') { MAIL.state = 'ok'; MAIL.err = null; MAIL.threads = (ev.result.payload && ev.result.payload.threads) || []; }
+    if (ev.type === 'data') { MAIL.state = 'ok'; MAIL.err = null; MAIL.threads = (ev.result.payload && ev.result.payload.threads) || []; mailBoeken(); }
     else {
       const c = ev.error.code;
       MAIL.state = 'ok';
@@ -1810,7 +1835,7 @@ document.addEventListener('drop', e => { const d = e.target.closest && e.target.
     mode.textContent = st.mode === 'gedeeld' ? 'live gedeeld' : 'lokaal';
     mode.className = 'mode' + (st.mode === 'gedeeld' ? '' : ' local');
     mode.title = st.mode === 'gedeeld' ? 'Alle wijzigingen worden gedeeld met iedereen met toegang.' : 'Gegevens staan alleen in deze browser. Open het dashboard via claude.ai voor gedeelde opslag.';
-    COLL.forEach(c => st.subscribe(c, data => { S[c] = data; S.loaded.add(c); render(); if (['projecten', 'resultaten', 'sync', 'klanten'].includes(c)) kbPlan(); if (c === 'rapportages' && RAP.wacht.length) rapVerwerk(); }));
+    COLL.forEach(c => st.subscribe(c, data => { S[c] = data; S.loaded.add(c); render(); if (['projecten', 'resultaten', 'sync', 'klanten'].includes(c)) kbPlan(); if (c === 'rapportages' && RAP.wacht.length) rapVerwerk(); if (c === 'facturen' && MAIL.threads.length) mailBoeken(); }));
     startMail();
   };
   if (window.claude && typeof window.claude.use === 'function') {

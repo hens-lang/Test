@@ -48,6 +48,7 @@ klanten ──< projecten ──< diensten >── zzp
 - **Nodig deze week** = wat nog ontbreekt in de periode, naar rato van de werkdagen die deze week nog in de periode vallen.
 - **Inkoopfacturen van zzp'ers** worden binnen 14 dagen betaald. Na de vervaldatum (factuurdatum + 14) staan ze automatisch op betaald.
 - **Twinfield**: Hens stuurt dagelijks een screenshot van de factuurstatussen; Claude zet de statussen gelijk en legt de totalen vast in `sync/twinfield`. Het overzicht laat zien of dashboard en Twinfield aansluiten.
+- **Verstuurde facturen**: een mail "Factuur 2026-NNNN voor <klant>" van facturatie@linkgrp.nl zet de klaargezette conceptfactuur van die klant (rond dezelfde datum, bij voorkeur met hetzelfde bedrag) automatisch op verstuurd, met het echte factuurnummer. Wijkt het bedrag af, dan staat dat in de notitie.
 - **Mail**: het dashboard leest (alleen lezen) Gmail op factuurmails van de laatste 14 dagen: verstuurde facturen, binnenkomende facturen van bellers en doorsturingen naar Basecone. Het maakt nooit concepten aan; per mail is er hooguit een knop om de factuur in het dashboard bij te werken.
 
 - **Briefing = koude acquisitie**: bellers krijgen alleen koude acquisitie (nieuwe bedrijven, terugbelafspraken en infomails nabellen). Afspraken en leads bevestigen, voorbereiden en opvolgen doet Hens aan de achterkant; die punten staan alleen bij de opdrachtgever onder "Achterkant (Hens)".
