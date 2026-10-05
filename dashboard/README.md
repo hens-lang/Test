@@ -57,6 +57,9 @@ klanten ──< projecten ──< diensten >── zzp
 
 ## KPI-bord (Apps Script)
 
+Sinds 5 oktober 2026 voedt de LINK. Cockpit het bord. Dit dashboard schrijft geen `kpibord-bron.json` meer
+(`KPIBORD.schrijven = false` in `index.html`); het leest de stand nog wel. Wat hieronder staat, beschrijft de oude werking.
+
 Het KPI-bord voor de bellers (`kpibord/Code.gs` en `kpibord/Index.html`, web-app "LINK. KPI-bord") is realtime
 gekoppeld aan dit dashboard, via de Drive-map "LINK. KPI-bord bron":
 
