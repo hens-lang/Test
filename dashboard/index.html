@@ -638,7 +638,7 @@ function kpibordBron() {
   const steam = {}; let tot = '';
   list('resultaten').forEach(r => {
     const p = project(r.projectId); if (!p || p.status !== 'actief') return;
-    const k = wkStr(r.jaar, r.week), id = bordId(p);
+    const k = wkStr(r.jaar, r.week), id = bordId({ id: r.projectId, ...p });
     (steam[k] = steam[k] || {})[id] = (steam[k][id] || 0) + telt(r.projectId, r);
     if (k > tot) tot = k;
   });
@@ -648,7 +648,7 @@ function hashStr(t) { let h = 5381; for (let i = 0; i < t.length; i++) h = ((h <
 function kbPlan() { clearTimeout(KB.timer); KB.timer = setTimeout(kbSchrijf, 4000); }
 async function kbSchrijf() {
   if (!KB.mcp || KB.bezig || store?.mode !== 'gedeeld' || !['projecten', 'resultaten', 'sync', 'klanten'].every(c => S.loaded.has(c))) return;
-  const b = kpibordBron(); if (!b.klanten.length) return;
+  const b = kpibordBron(); if (!b.klanten.length || JSON.stringify(b.steam).includes('"undefined"')) return;
   const h = hashStr(JSON.stringify(b));
   if (S.sync?.kpibord?.hash === h) return;
   KB.bezig = true;
