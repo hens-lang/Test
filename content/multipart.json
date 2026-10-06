@@ -195,10 +195,10 @@
       "eyebrow": "Het potentieel",
       "title": [
         {
-          "t": "Ruim "
+          "t": "Precies "
         },
         {
-          "t": "1.500 autobedrijven",
+          "t": "1.751 autobedrijven",
           "accent": true
         },
         {
@@ -207,7 +207,7 @@
       ],
       "cards": [
         {
-          "value": "1.500+",
+          "value": "1.751",
           "unit": "autobedrijven",
           "label": "In heel Nederland, geteld in onze eigen datatool op 6 oktober 2026, met naam, website en vestiging erbij."
         },
@@ -217,7 +217,7 @@
           "label": "Bij ongeveer honderd gesprekspogingen per beldag en gemiddeld 1,25 poging per bedrijf."
         },
         {
-          "value": "± 19",
+          "value": "± 22",
           "unit": "beldagen voor de markt",
           "label": "Zoveel beldagen kost het om elk autobedrijf in Nederland één keer gesproken te hebben."
         },
@@ -228,7 +228,7 @@
           "label": "Dat is wat de pilot oplevert. Daarna weten we wat een afspraak werkelijk kost."
         }
       ],
-      "closing": "De aantallen zijn een indicatie. Het aantal pogingen per bedrijf komt uit onze eigen campagnes, de marktomvang uit onze datatool. In de kick-off scherpen we de lijst aan op merk, omvang en regio."
+      "closing": "Het aantal bedrijven is geteld, niet geschat. Het aantal pogingen per bedrijf komt uit onze eigen campagnes en is dus een indicatie. In de kick-off scherpen we de lijst aan op merk, omvang en regio."
     },
     {
       "id": "doorlooptijd",
@@ -256,27 +256,27 @@
         {
           "cells": [
             "4 beldagen",
-            "5 werkperiodes",
-            "20 weken"
+            "6 werkperiodes",
+            "24 weken"
           ]
         },
         {
           "cells": [
             "6 beldagen",
             "4 werkperiodes",
-            "13 weken"
+            "16 weken"
           ]
         },
         {
           "cells": [
             "8 beldagen",
             "3 werkperiodes",
-            "10 weken"
+            "12 weken"
           ],
           "highlight": true
         }
       ],
-      "closing": "Na één ronde begin je opnieuw bij de bedrijven die toen net getekend hadden of geen tijd hadden. Elke ronde levert nieuwe kansen op, want contracten lopen af en voorraden wisselen."
+      "closing": "Met 22 beldagen heb je elk autobedrijf in Nederland één keer gesproken. Daarna begin je opnieuw bij de bedrijven die toen net getekend hadden of geen tijd hadden. Contracten lopen af en voorraden wisselen, dus elke ronde levert nieuwe kansen op."
     },
     {
       "id": "pilot",
