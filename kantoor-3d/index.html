@@ -154,89 +154,95 @@ const COL={purple:'#5b4c9c',navy:'#26385c',mint:'#79c3b2',lilac:'#9b90d6',olive:
 
 const FLOORS=[
  { short:'BG', name:'Begane grond', y:0, clear:3.2, finish:'polished',
-   stair:{x1:4.6,x2:7.1,z1:5.6,z2:6.95,raw:true},
+   stair:{x1:4.7,x2:7.2,z1:5.64,z2:6.95,raw:true},
    glass:{front:[0,1.9,3.8,5.75,6.55], door:[5.75,6.55], rawGlass:false},
    rooms:[
-     {name:'Entree & lounge', rects:[[0,0,4.5,6.95]]},
-     {name:'Bar & keuken', rects:[[4.5,0,7.25,5.6]]},
-     {name:'Magazijn', area:21, rects:[[7.25,0,11.85,4.2],[9.5,4.2,11.85,6.95]]},
-     {name:'Toiletten', rects:[[7.1,5.6,9.5,6.95]]},
-     {name:'Gang', rects:[[7.25,4.2,9.5,5.6]], hidden:true},
+     {name:'Entree & lounge', rects:[[0,0,2.45,6.95]]},
+     {name:'Keuken & lange tafel', rects:[[2.45,0,7.25,5.64]]},
+     {name:'IT / kluis', rects:[[7.25,4.33,9.15,5.64]]},
+     {name:'Toiletten', rects:[[7.25,5.64,9.6,6.95]]},
+     {name:'Magazijn', area:21, rects:[[7.25,0,11.85,4.33],[9.15,4.33,11.85,5.64],[9.6,5.64,11.85,6.95]]},
    ],
    walls:[
-     [7.25,0,7.25,4.2],
-     [7.25,4.2,9.5,4.2,[[7.95,8.75]]],
-     [9.5,4.2,9.5,6.95],
-     [7.1,5.6,9.5,5.6,[[7.2,7.8],[7.98,8.68],[8.85,9.42]]],
-     [7.1,5.6,7.1,6.95],[7.9,5.6,7.9,6.95],[8.75,5.6,8.75,6.95],
+     [7.25,0,7.25,4.33],
+     [7.25,4.33,9.15,4.33,[[8.15,8.75]]],
+     [9.15,3.07,9.15,5.64,[[4.45,5.5]]],
+     [7.25,5.64,9.6,5.64,[[7.35,7.85],[8.05,8.72],[8.9,9.5]]],
+     [7.25,5.64,7.25,6.95],[7.95,5.64,7.95,6.95],[8.82,5.64,8.82,6.95],[9.6,5.64,9.6,6.95],
    ],
    items:[
-     {t:'sofa',r:[.4,1.3,1.0,2.6],f:'+x',c:COL.purple},
-     {t:'tub',p:[1.75,.75],f:'+z',c:COL.purple},
-     {t:'tub',p:[1.95,1.5],f:'-x',c:COL.navy},
-     {t:'tub',p:[1.9,2.45],f:'-x',c:COL.mint},
-     {t:'tub',p:[2.55,1.95],f:'-x',c:COL.lilac},
-     {t:'coffee',p:[1.3,1.95],s:.34},
-     {t:'plant',p:[.5,.5],s:1.15},{t:'plant',p:[4.15,.45],s:.9},
-     {t:'bar',r:[4.6,.8,5.6,3.7]},
-     ...[1.05,1.55,2.05,2.5,2.95,3.45].map(z=>({t:'stool',p:[4.32,z]})),
-     {t:'greenwall',r:[2.95,3.55,3.37,6.95],h:2.6},
-     {t:'planter',r:[1.85,6.2,2.95,6.65],h:.5},
-     {t:'kitchen',r:[6.55,.2,7.25,4.2],f:'-x',upper:true},
-     {t:'rack',r:[7.35,.05,9.1,.45]},{t:'rack',r:[7.35,.5,7.75,2.35]},
-     {t:'rack',r:[7.35,2.5,9.1,2.9]},{t:'rack',r:[9.15,2.5,10.3,2.9]},
-     {t:'rack',r:[9.15,2.95,9.55,4.1]},{t:'rack',r:[11.42,.1,11.82,5.75]},
-     {t:'hatch',r:[9.3,1.0,10.5,1.8]},
-     {t:'trolley',r:[10.1,6.15,11.5,6.75]},
-     {t:'wc',p:[7.5,6.6],f:'-z'},{t:'sink',p:[8.32,6.75],f:'-z'},{t:'wc',p:[9.12,6.6],f:'-z'},
-     {t:'pallet',p:[2.2,4.6],phase:'raw'},{t:'pallet',p:[5.6,2.2],phase:'raw'},
+     {t:'sofa',r:[.3,1.15,.8,2.9],f:'+x',c:COL.purple},
+     {t:'tub',p:[1.57,.72],f:'+x',c:COL.purple},
+     {t:'tub',p:[1.62,1.45],f:'-x',c:COL.navy},
+     {t:'tub',p:[1.58,2.3],f:'-x',c:COL.mint},
+     {t:'tub',p:[2.2,1.88],f:'-x',c:COL.lilac},
+     {t:'coffee',p:[1.1,1.9],s:.28},
+     {t:'plant',p:[.52,.55],s:1.15},
+     {t:'planter',r:[.4,3.7,1.6,4.2],h:.7},
+     {t:'cabinet',r:[1.6,6.5,2.85,6.93],h:2.1,c:COL.olive},
+     {t:'greenwall',r:[2.5,3.62,5.9,4.04],h:2.6},
+     {t:'bar',r:[2.6,4.04,5.8,4.36]},
+     ...[2.9,3.4,3.9,4.4,4.9,5.4].map(x=>({t:'stool',p:[x,4.66]})),
+     {t:'table',r:[2.97,.84,5.93,1.82],c:COL.olive},
+     ...[3.25,3.75,4.25,4.7,5.2,5.65].map(x=>({t:'mchair',p:[x,.55],f:'+z'})),
+     ...[3.25,3.75,4.25,4.7,5.2,5.65].map(x=>({t:'mchair',p:[x,2.11],f:'-z'})),
+     {t:'kitchen',r:[6.55,.02,7.2,4.33],f:'-x',upper:true},
+     {t:'rack',r:[7.31,.02,7.71,2.64]},{t:'rack',r:[7.71,.02,9.15,.42]},
+     {t:'rack',r:[7.71,2.6,9.1,3.0]},{t:'rack',r:[9.25,2.6,10.38,3.0]},
+     {t:'rack',r:[9.25,3.89,10.47,4.27]},{t:'rack',r:[11.42,.05,11.82,6.13]},
+     {t:'pallet',p:[9.75,2.06],phase:'both'},
+     {t:'sidedoor',r:[9.95,-.28,10.9,.03],phase:'both'},
+     {t:'trolley',r:[10.2,6.2,11.6,6.8]},
+     {t:'wc',p:[7.6,6.6],f:'-z'},{t:'sink',p:[8.38,6.75],f:'-z'},{t:'wc',p:[9.22,6.6],f:'-z'},
+     {t:'pallet',p:[2.2,5.1],phase:'raw'},{t:'pallet',p:[4.6,2.4],phase:'raw'},
    ],
-   lines:[[5.1,1.1,5.1,3.4],[6.15,.7,6.15,3.7],[8.3,1.6,10.9,1.6],[8.3,3.6,10.9,3.6]],
-   spots:[[1.6,1.95],[1.2,5.2],[7.5,6.3],[8.32,6.3],[9.12,6.3],[8.4,4.9],[10.7,5.4]],
+   lines:[[3.2,1.33,5.7,1.33],[6.15,.6,6.15,3.9],[8.2,1.3,10.8,1.3],[8.2,3.55,10.8,3.55],[3.0,4.2,5.4,4.2]],
+   spots:[[1.4,1.85],[1.0,5.4],[7.6,6.3],[8.38,6.3],[9.22,6.3],[8.2,5.0],[10.6,5.6]],
    views:[
      {name:'Binnenkomst',p:[.7,6.1],look:[5.5,.9]},
-     {name:'Lounge',p:[3.6,3.2],look:[0,1.3]},
-     {name:'Bar & keuken',p:[3.0,.95],look:[7,3.6]},
-     {name:'Trap',p:[3.9,5.0],look:[7.1,6.4]},
-     {name:'Magazijn',p:[8.4,3.6],look:[11.6,.4]},
+     {name:'Lounge',p:[2.3,3.2],look:[0,1.6]},
+     {name:'Lange tafel & keuken',p:[2.4,.4],look:[7,2.6]},
+     {name:'Groene wand',p:[6.2,5.2],look:[2.6,4.2]},
+     {name:'Trap',p:[3.6,5.2],look:[7.2,6.4]},
+     {name:'Magazijn',p:[8.4,3.7],look:[11.6,.4]},
    ]},
  { short:'1e', name:'1e verdieping', y:3.5, clear:2.9, finish:'oak',
-   stair:{x1:7.15,x2:10.1,z1:5.6,z2:6.95,raw:false},
+   stair:{x1:7.25,x2:10.15,z1:5.64,z2:6.95,raw:false},
    glass:{front:[0,1.64,3.28,4.91,6.55]},
    rooms:[
-     {name:'Open kantoor', rects:[[0,0,9.1,4.26]]},
-     {name:'Kantoor', note:'2575 × 4258', rects:[[9.1,0,11.85,4.26]]},
-     {name:'Kantoor voor', rects:[[0,4.26,4.25,6.95]]},
-     {name:'Gang & trap', rects:[[4.25,4.26,10.15,6.95]]},
-     {name:'Printer', rects:[[10.15,4.26,11.85,6.95]]},
+     {name:'Open kantoor', rects:[[0,0,9.1,4.24]]},
+     {name:'Kantoor', note:'2575 × 4258', rects:[[9.1,0,11.85,4.24]]},
+     {name:'Kantoor voor', rects:[[0,4.24,4.21,6.95]]},
+     {name:'Gang & trap', note:'1300 breed', rects:[[4.21,4.24,10.25,6.95]]},
+     {name:'Printer', note:'2692 × 1672', rects:[[10.25,4.24,11.85,6.95]]},
    ],
    walls:[
-     [0,4.26,11.85,4.26,[[3.0,3.9],[4.6,5.45]]],
-     [4.25,4.26,4.25,6.95],
-     [10.15,4.26,10.15,6.95,[[4.45,5.25]]],
-     [9.1,0,9.1,4.26,[[3.1,3.9]]],
+     [0,4.24,11.85,4.24,[[3.0,3.9],[4.6,5.5]]],
+     [4.21,4.24,4.21,6.95],
+     [10.25,4.24,10.25,6.95,[[4.45,5.25]]],
+     [9.1,0,9.1,4.24,[[3.0,3.88]]],
    ],
    items:[
-     {t:'desk',r:[.9,1.37,3.1,2.17]},{t:'desk',r:[.9,2.17,3.1,2.97]},
-     {t:'desk',r:[3.1,1.37,4.7,2.17]},{t:'desk',r:[3.1,2.17,4.7,2.97]},
-     {t:'divider',r:[.9,2.15,4.7,2.19]},
-     {t:'seat',p:[1.9,1.1],f:'+z'},{t:'seat',p:[3.8,1.1],f:'+z'},
-     {t:'seat',p:[1.9,3.25],f:'-z'},{t:'seat',p:[3.8,3.25],f:'-z'},
-     {t:'desk',r:[8.05,.15,9.0,2.15]},{t:'seat',p:[7.75,1.15],f:'+x'},
-     {t:'standdesk',r:[6.2,.2,6.8,1.45]},
-     {t:'cabinet',r:[6.6,3.84,8.15,4.2],h:.75,c:'#ecebe6'},
-     {t:'plant',p:[.45,.5]},{t:'plant',p:[2.9,.4],s:.85},{t:'plant',p:[11.45,.4]},
-     {t:'desk',r:[10.05,.6,11.05,3.0]},
-     {t:'seat',p:[9.75,1.8],f:'+x'},{t:'seat',p:[11.35,1.8],f:'-x'},
-     {t:'desk',r:[1.35,5.3,2.15,6.9]},{t:'desk',r:[2.15,5.3,2.95,6.9]},
-     {t:'divider',r:[2.13,5.3,2.17,6.9]},
-     {t:'seat',p:[1.05,6.1],f:'+x'},{t:'seat',p:[3.25,6.1],f:'-x'},
-     {t:'printer',r:[10.5,6.25,11.4,6.85]},
+     {t:'desk',r:[.84,1.31,3.04,2.11]},{t:'desk',r:[.84,2.11,3.04,2.91]},
+     {t:'desk',r:[3.04,1.31,4.64,2.11]},{t:'desk',r:[3.04,2.11,4.64,2.91]},
+     {t:'divider',r:[.84,2.09,4.64,2.13]},
+     {t:'seat',p:[2.03,1.05],f:'+z'},{t:'seat',p:[3.86,1.05],f:'+z'},
+     {t:'seat',p:[2.03,3.17],f:'-z'},{t:'seat',p:[3.86,3.17],f:'-z'},
+     {t:'standdesk',r:[7.08,.15,7.6,1.4]},
+     {t:'plant',p:[.3,1.45]},{t:'plant',p:[2.97,.38],s:.85},{t:'plant',p:[11.55,.3]},
+     {t:'desk',r:[10.14,.79,11.12,3.19]},
+     {t:'seat',p:[9.85,1.4],f:'+x'},{t:'seat',p:[11.4,1.4],f:'-x'},
+     {t:'cabinet',r:[11.07,3.77,11.85,4.19],h:.75,c:'#ecebe6'},
+     {t:'desk',r:[1.28,5.33,2.07,6.93]},{t:'desk',r:[2.07,5.33,2.85,6.93]},
+     {t:'divider',r:[2.05,5.33,2.09,6.93]},
+     {t:'seat',p:[1.0,6.15],f:'+x'},{t:'seat',p:[3.12,6.15],f:'-x'},
+     {t:'cabinet',r:[3.43,6.5,4.16,6.93],h:.75,c:'#ecebe6'},
+     {t:'printer',r:[10.6,6.25,11.5,6.85]},
      {t:'cabinet',r:[11.42,4.45,11.82,6.0],h:2.0,c:'#ecebe6'},
      {t:'ladder',phase:'raw'},
    ],
-   lines:[[1.0,2.17,4.6,2.17],[8.55,.5,8.55,1.8],[10.55,.9,10.55,2.7],[2.15,5.5,2.15,6.7]],
-   spots:[[6.5,2.8],[7.7,2.8],[5.0,4.9],[9.4,4.9],[11.0,5.5]],
+   lines:[[1.0,2.11,4.5,2.11],[10.63,1.0,10.63,3.0],[2.07,5.5,2.07,6.75]],
+   spots:[[6.0,1.6],[6.0,3.2],[7.9,2.8],[5.0,4.9],[9.4,4.9],[11.0,5.5]],
    views:[
      {name:'Werkplekken',p:[8.6,3.4],look:[0,1.6]},
      {name:'Kantoor achter',p:[9.5,3.8],look:[11.8,.4]},
@@ -247,46 +253,48 @@ const FLOORS=[
    stair:null,
    glass:{front:[0,1.64,3.28,4.91,6.55]},
    rooms:[
-     {name:'Kantoor', area:31.4, rects:[[0,0,7.27,4.17]]},
-     {name:'Kantoor', area:16.4, rects:[[0,4.17,6.0,6.95]]},
-     {name:'Vergaderruimte', area:19.5, rects:[[7.27,0,11.85,4.17]]},
-     {name:'Gang', note:'1300 breed', rects:[[6.0,4.17,10.2,6.95]]},
-     {name:'Keukentje', rects:[[10.2,4.17,11.85,5.9]]},
-     {name:'Toilet', rects:[[10.2,5.9,11.85,6.95]]},
+     {name:'Kantoor', area:31.4, rects:[[0,0,7.36,4.26]]},
+     {name:'Kantoor', area:16.4, rects:[[0,4.26,6.08,6.95]]},
+     {name:'Vergaderruimte', area:19.5, rects:[[7.36,0,11.85,4.26]]},
+     {name:'Gang', note:'1300 breed', rects:[[6.08,4.26,10.37,6.95]]},
+     {name:'Keukentje', rects:[[10.37,4.26,11.85,5.92]]},
+     {name:'Toilet', note:'1400 × 1000', rects:[[10.37,5.92,11.85,6.95]]},
    ],
    walls:[
-     [6.0,4.17,11.85,4.17,[[7.5,8.4]]],
-     [7.27,0,7.27,4.17],
-     [6.0,4.17,6.0,6.95,[[4.4,5.3]]],
-     [10.2,4.17,10.2,6.95,[[4.3,5.1]]],
-     [10.2,5.9,11.85,5.9,[[10.35,11.1]]],
+     [0,4.26,6.08,4.26,[[5.0,5.8]]],
+     [6.08,4.26,11.85,4.26,[[6.2,7.1],[7.6,8.5]]],
+     [6.08,4.26,6.08,6.95],
+     [7.36,0,7.36,4.26],
+     [10.37,4.26,10.37,6.95,[[4.35,5.15]]],
+     [10.37,5.92,11.85,5.92,[[10.5,11.2]]],
    ],
    items:[
-     {t:'desk',r:[.3,1.25,2.2,2.05]},{t:'desk',r:[2.2,1.25,4.1,2.05]},
-     {t:'desk',r:[.3,2.05,2.2,2.85]},{t:'desk',r:[2.2,2.05,4.1,2.85]},
-     {t:'divider',r:[.3,2.03,4.1,2.07]},
-     {t:'seat',p:[1.05,.98],f:'+z'},{t:'seat',p:[2.9,.98],f:'+z'},
-     {t:'seat',p:[1.05,3.12],f:'-z'},{t:'seat',p:[2.9,3.12],f:'-z'},
-     {t:'desk',r:[1.25,4.75,2.05,6.35]},{t:'desk',r:[2.05,4.75,2.85,6.35]},
-     {t:'divider',r:[2.03,4.75,2.07,6.35]},
-     {t:'seat',p:[.95,5.55],f:'+x'},{t:'seat',p:[3.15,5.55],f:'-x'},
-     {t:'table',r:[8.5,1.4,10.9,2.4]},
-     ...[8.85,9.45,10.0,10.55].map(x=>({t:'mchair',p:[x,1.1],f:'+z'})),
-     ...[8.85,9.45,10.0,10.55].map(x=>({t:'mchair',p:[x,2.7],f:'-z'})),
-     {t:'mchair',p:[8.18,1.9],f:'+x'},{t:'mchair',p:[11.22,1.9],f:'-x'},
-     {t:'tv',r:[11.78,.75,11.85,3.05]},
-     {t:'tub',p:[7.75,.45],f:'+z',c:COL.grey},{t:'tub',p:[11.35,.45],f:'+z',c:COL.grey},
-     {t:'plant',p:[6.9,.35]},{t:'plant',p:[5.6,6.55],s:.95},{t:'plant',p:[11.5,3.8],s:.8},
-     {t:'kitchen',r:[11.2,4.25,11.85,5.85],f:'-x',upper:true},
+     {t:'desk',r:[.05,1.28,2.15,2.08]},{t:'desk',r:[2.15,1.28,4.25,2.08]},
+     {t:'desk',r:[.05,2.08,2.15,2.88]},{t:'desk',r:[2.15,2.08,4.25,2.88]},
+     {t:'divider',r:[.05,2.06,4.25,2.1]},
+     {t:'seat',p:[.95,1.02],f:'+z'},{t:'seat',p:[2.9,1.02],f:'+z'},
+     {t:'seat',p:[.95,3.14],f:'-z'},{t:'seat',p:[2.9,3.14],f:'-z'},
+     {t:'desk',r:[1.24,4.95,2.03,6.55]},{t:'desk',r:[2.03,4.95,2.81,6.55]},
+     {t:'divider',r:[2.01,4.95,2.05,6.55]},
+     {t:'seat',p:[.98,6.0],f:'+x'},{t:'seat',p:[3.07,6.0],f:'-x'},
+     {t:'table',r:[8.62,1.5,11.0,2.5]},
+     ...[8.95,9.5,10.1,10.65].map(x=>({t:'mchair',p:[x,1.22],f:'+z'})),
+     ...[8.95,9.5,10.1,10.65].map(x=>({t:'mchair',p:[x,2.78],f:'-z'})),
+     {t:'mchair',p:[8.32,2.0],f:'+x'},{t:'mchair',p:[11.3,2.0],f:'-x'},
+     {t:'tv',r:[11.78,.84,11.85,3.12]},
+     {t:'tub',p:[7.78,.42],f:'+z',c:COL.grey},{t:'tub',p:[11.4,.42],f:'+z',c:COL.grey},
+     {t:'plant',p:[7.0,.4]},{t:'plant',p:[5.56,6.53],s:.95},
+     {t:'speaker',p:[11.65,4.0]},
+     {t:'kitchen',r:[11.3,4.3,11.85,5.88],f:'-x',upper:true,c:'#d23b33'},
      {t:'wc',p:[11.45,6.6],f:'-z'},{t:'sink',p:[10.6,6.75],f:'-z'},
    ],
-   lines:[[.4,2.05,4.0,2.05],[2.05,4.9,2.05,6.2],[8.7,1.9,10.7,1.9]],
-   spots:[[5.5,1.6],[5.5,3.2],[3.6,5.6],[8.0,4.8],[11.0,5.0],[11.0,6.4]],
+   lines:[[.3,2.08,4.0,2.08],[2.03,5.1,2.03,6.4],[8.9,2.0,10.8,2.0]],
+   spots:[[5.6,1.6],[5.6,3.2],[4.6,5.6],[8.0,4.8],[11.0,5.0],[11.0,6.4]],
    views:[
-     {name:'Vergaderruimte',p:[7.7,3.7],look:[11.8,1.9]},
+     {name:'Vergaderruimte',p:[7.8,3.7],look:[11.8,1.9]},
      {name:'Kantoor 31,4 m²',p:[6.6,3.6],look:[0,1.2]},
-     {name:'Kantoor 16,4 m²',p:[5.4,4.6],look:[.4,6.4]},
-     {name:'Keukentje',p:[7.0,4.7],look:[11.8,4.75]},
+     {name:'Kantoor 16,4 m²',p:[5.4,4.7],look:[.4,6.4]},
+     {name:'Keukentje',p:[7.0,4.8],look:[11.8,4.75]},
    ]},
 ];
 const FACE={'+x':[1,0],'-x':[-1,0],'+z':[0,1],'-z':[0,-1]};
@@ -527,13 +535,13 @@ function plant(s){ s=s||1; const g=new THREE.Group(); const pot=cyl(.2*s,.16*s,.
   for(let i=0;i<7;i++){ const m=new THREE.Mesh(new THREE.IcosahedronGeometry((.18+rnd()*.12)*s,0),MAT.leaf[i%3]); const a=rnd()*6.28, r=rnd()*.22*s; m.position.set(Math.cos(a)*r,(.6+rnd()*.75)*s,Math.sin(a)*r); m.scale.y=1.4; m.castShadow=true; g.add(m); } return g; }
 
 function addItem(F,it,desks){
-  const f=F.i, y=F.y, ph=it.phase||'fit'; let o=null;
+  const f=F.i, y=F.y, ph=it.phase==='both'?null:(it.phase||'fit'); let o=null;
   const at=(obj,p,face)=>{ obj.position.set(p[0],y,p[1]); if(face) orient(obj,face); return obj; };
   const r=it.r;
   switch(it.t){
   case 'desk': o=deskMesh(r,y); break;
   case 'standdesk': o=deskMesh(r,y,1.05); break;
-  case 'table': { o=new THREE.Group(); o.add(bx(r[0],y+.72,r[1],r[2],y+.76,r[3],MAT.oakSolid)); const zc=(r[1]+r[3])/2; [r[0]+.35,r[2]-.35].forEach(x=>{o.add(bx(x-.04,y,zc-.35,x+.04,y+.72,zc+.35,MAT.black));}); break; }
+  case 'table': { o=new THREE.Group(); o.add(bx(r[0],y+.72,r[1],r[2],y+.76,r[3],it.c?cm(it.c):MAT.oakSolid)); const zc=(r[1]+r[3])/2; [r[0]+.35,r[2]-.35].forEach(x=>{o.add(bx(x-.04,y,zc-.35,x+.04,y+.72,zc+.35,MAT.black));}); break; }
   case 'divider': o=bx(r[0],y+.755,r[1],r[2],y+1.17,r[3],MAT.felt); break;
   case 'seat': { o=new THREE.Group(); o.add(at(officeChair(),it.p,it.f));
       const [dx,dz]=FACE[it.f], px=it.p[0]+dx*.6, pz=it.p[1]+dz*.6, d=desks.find(q=>px>=q[0]&&px<=q[2]&&pz>=q[1]&&pz<=q[3]);
@@ -550,21 +558,21 @@ function addItem(F,it,desks){
       [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,b])=>g.add(bx(a*(D/2-.06)-.02,0,b*(Lz/2-.06)-.02,a*(D/2-.06)+.02,.08,b*(Lz/2-.06)+.02,MAT.black)));
       g.position.set((x1+x2)/2,y,(z1+z2)/2); orient(g,it.f); o.add(g); break; }
   case 'bar': { o=new THREE.Group(); o.add(bx(r[0],y+1.02,r[1],r[2],y+1.07,r[3],MAT.olive)); [r[1]+.25,r[3]-.25].forEach(z=>o.add(bx(r[0]+.2,y,z-.04,r[2]-.2,y+1.02,z+.04,MAT.frame))); o.add(bx(r[0]+.05,y+.25,r[1]+.25,r[0]+.09,y+.29,r[3]-.25,MAT.steel)); break; }
-  case 'greenwall': { o=new THREE.Group(); const h=it.h; o.add(wbox(r[0],r[1],r[2],r[3],y,h,MAT.frame));
-      const mw=bx(r[0]-.015,y+.12,r[1]+.1,r[2]+.015,y+h-.12,r[3]-.05,MAT.moss,true); o.add(mw);
-      const led=bx(r[0]-.03,y+h-.06,r[1]+.02,r[2]+.03,y+h-.02,r[3]-.02,MAT.led); led.castShadow=false; o.add(led);
-      const led2=bx(r[0]-.03,y+.04,r[1]+.02,r[0]-.01,y+.08,r[3]-.02,MAT.led); led2.castShadow=false; o.add(led2);
-      const gl=new THREE.PointLight(C('#d9ffd0'),.35,4,2); gl.position.set(r[0]-.6,y+1.4,(r[1]+r[3])/2); o.add(gl); break; }
+  case 'greenwall': { o=new THREE.Group(); const h=it.h, ax=(r[2]-r[0])>(r[3]-r[1]); o.add(wbox(r[0],r[1],r[2],r[3],y,h,MAT.frame));
+      const e=.015, i=.1, cx=(r[0]+r[2])/2, cz=(r[1]+r[3])/2;
+      o.add(ax?bx(r[0]+i,y+.12,r[1]-e,r[2]-i,y+h-.12,r[3]+e,MAT.moss,true):bx(r[0]-e,y+.12,r[1]+i,r[2]+e,y+h-.12,r[3]-i,MAT.moss,true));
+      const led=bx(r[0]-.03,y+h-.06,r[1]-.03,r[2]+.03,y+h-.02,r[3]+.03,MAT.led); led.castShadow=false; o.add(led);
+      const gl=new THREE.PointLight(C('#d9ffd0'),.35,4,2); gl.position.set(ax?cx:r[0]-.6,y+1.4,ax?r[1]-.6:cz); o.add(gl); break; }
   case 'planter': { o=new THREE.Group(); o.add(bx(r[0],y,r[1],r[2],y+it.h,r[3],MAT.frame)); o.add(bx(r[0]+.04,y+it.h,r[1]+.04,r[2]-.04,y+it.h+.06,r[3]-.04,MAT.moss,true)); [[r[0]+.3,(r[1]+r[3])/2],[r[2]-.3,(r[1]+r[3])/2]].forEach(p=>{ const pl=plant(.7); pl.children[0].visible=false; pl.position.set(p[0],y+it.h-.1,p[1]); o.add(pl); }); break; }
   case 'kitchen': { const [x1,z1,x2,z2]=r, alongZ=it.f[1]==='x', D=alongZ?x2-x1:z2-z1, Lz=alongZ?z2-z1:x2-x1, g=new THREE.Group();
       g.add(bx(-D/2,.1,-Lz/2,D/2-.02,.86,Lz/2,MAT.white)); g.add(bx(-D/2,0,-Lz/2,D/2-.06,.1,Lz/2,MAT.dark));
       const n=Math.max(1,Math.round(Lz/.6)), u=Lz/n;
-      for(let i=0;i<n;i++){ const z0=-Lz/2+i*u; g.add(bx(D/2-.02,.12,z0+.003,D/2,.85,z0+u-.003,MAT.kitchenFront)); g.add(bx(D/2,.78,z0+.15,D/2+.02,.8,z0+u-.15,MAT.steel)); }
+      for(let i=0;i<n;i++){ const z0=-Lz/2+i*u; g.add(bx(D/2-.02,.12,z0+.003,D/2,.85,z0+u-.003,it.c?cm(it.c):MAT.kitchenFront)); g.add(bx(D/2,.78,z0+.15,D/2+.02,.8,z0+u-.15,MAT.steel)); }
       g.add(bx(-D/2,.86,-Lz/2,D/2+.02,.9,Lz/2,MAT.worktop));
       g.add(bx(-.2,.895,-.35,.15,.902,.15,MAT.steel)); const tap=cyl(.015,.015,.28,MAT.steel,8); tap.position.set(-.27,1.04,-.1); g.add(tap);
       g.add(bx(-D/2,.9,-Lz/2,-D/2+.015,1.45,Lz/2,MAT.tile));
       o=new THREE.Group(); g.position.set((x1+x2)/2,y,(z1+z2)/2); orient(g,it.f); o.add(g);
-      if(it.upper){ const up=new THREE.Group(); up.add(bx(-D/2,1.5,-Lz/2,-D/2+.36,2.22,Lz/2,MAT.kitchenFront)); up.position.copy(g.position); up.rotation.copy(g.rotation); reg(up,f,{phase:ph,hideOnCut:1}); }
+      if(it.upper){ const up=new THREE.Group(); up.add(bx(-D/2,1.5,-Lz/2,-D/2+.36,2.22,Lz/2,it.c?cm(it.c):MAT.kitchenFront)); up.position.copy(g.position); up.rotation.copy(g.rotation); reg(up,f,{phase:ph,hideOnCut:1}); }
       break; }
   case 'rack': { const [x1,z1,x2,z2]=r, alongX=(x2-x1)>(z2-z1), len=alongX?x2-x1:z2-z1, h=2.4; o=new THREE.Group();
       const n=Math.max(1,Math.ceil(len/1.8)); for(let i=0;i<=n;i++){ const a=(alongX?x1:z1)+len*i/n; o.add(alongX?bx(a-.03,y,z1,a+.03,y+h,z2,MAT.rackBlue):bx(x1,y,a-.03,x2,y+h,a+.03,MAT.rackBlue)); }
@@ -576,6 +584,8 @@ function addItem(F,it,desks){
   case 'trolley': { o=new THREE.Group(); o.add(bx(r[0],y+.7,r[1],r[2],y+.73,r[3],MAT.yellow)); [[r[0]+.06,r[1]+.06],[r[2]-.06,r[1]+.06],[r[0]+.06,r[3]-.06],[r[2]-.06,r[3]-.06]].forEach(([x,z])=>{ o.add(bx(x-.02,y+.08,z-.02,x+.02,y+.7,z+.02,MAT.frame)); const w=cyl(.04,.04,.03,MAT.black,12); w.rotation.x=Math.PI/2; w.position.set(x,y+.04,z); o.add(w); }); break; }
   case 'wc': { const g=new THREE.Group(); const b=cyl(.19,.16,.4,MAT.porcelain,20); b.position.set(.08,.2,0); g.add(b); g.add(bx(-.28,.35,-.2,-.1,.85,.2,MAT.porcelain)); o=at(g,it.p,it.f); break; }
   case 'sink': { const g=new THREE.Group(); g.add(bx(-.2,.78,-.24,.2,.9,.24,MAT.porcelain)); g.add(bx(-.2,1.15,-.25,-.18,1.75,.25,M('#cfd8dc',{roughness:.05,metalness:.9}))); o=at(g,it.p,it.f); break; }
+  case 'sidedoor': o=bx(r[0],y,r[1],r[2],y+2.4,r[3],cm('#c8352e')); break;
+  case 'speaker': { o=cyl(.14,.14,1.0,MAT.dark,20); o.position.set(it.p[0],y+.5,it.p[1]); break; }
   case 'cabinet': o=bx(r[0],y,r[1],r[2],y+it.h,r[3],cm(it.c)); break;
   case 'printer': { o=new THREE.Group(); o.add(bx(r[0],y,r[1],r[2],y+1.05,r[3],cm('#d9dbdc'))); o.add(bx(r[0]+.1,y+1.05,r[1]+.1,r[2]-.1,y+1.12,r[3]-.1,MAT.dark)); break; }
   case 'tv': { o=bx(r[0],y+.85,r[1],r[2],y+2.2,r[3],MAT.screen); reg(o,f,{phase:ph,hideOnCut:1}); return; }
