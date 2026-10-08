@@ -1,31 +1,30 @@
 # Mail aan Bart Rook (Techmetric3d)
 
 **Aan:** bart@techmetric3d.com
-**Onderwerp:** Nieuw voorstel LINK. x Techmetric3d
+**Onderwerp:** Even bijpraten
 **Bijlage:** LINK. voorstel Techmetric3d.pdf
+
+**Context:** gesproken op 18 september. Bart wilde zijn collega eerst de ruimte
+geven op outbound sales. Die collega heeft een hersenbloeding gehad. Dit is de
+opvolging uit de agenda.
 
 ---
 
 Hoi Bart,
 
-Na onze kennismaking in september stuurde ik je een voorstel met drie werkperiodes. Sindsdien hebben we onze manier van werken gelijkgetrokken over al onze klanten, en dat pakt een stuk duidelijker uit. Vandaar dit nieuwe voorstel.
+Toen we elkaar op 18 september spraken gaf je aan dat je je collega eerst de ruimte wilde geven op outbound. Dat begreep ik goed en ik vond het mooi dat je het zo aanpakt.
 
-In de bijlage staat het volledige verhaal: wie wij zijn, hoe een samenwerking loopt, wat wij een gekwalificeerde afspraak noemen en wat de pilot inhoudt.
+Hoe gaat het inmiddels met hem?
 
-De kern:
+Van mijn kant is er geen enkele haast. Ik neem liever over een paar maanden weer contact op dan dat ik je nu zit te duwen.
 
-- Een pilot met een looptijd van twaalf weken. We bellen daarin op de dagen en dagdelen die in onze data het beste werken voor jullie branche, met een regionaal nummer op jullie naam.
-- Tien gekwalificeerde afspraken. Een afspraak telt pas mee als het bedrijf past, de interesse echt is en de beslisser aan tafel zit.
-- Eén vaste prijs van € 4.950 excl. btw. Geen aparte opstartkosten en geen succesfee. De kick-off, het belscript, de bellijst, het belsysteem, het nummer en de wekelijkse rapportage zitten er allemaal in.
-- Elke week een rapportage, om de week een evaluatie.
+Ik stuur het voorstel wel alvast mee, zodat je het hebt liggen voor als het moment er wel is. Het is inmiddels iets anders dan wat ik je in september stuurde. We werken nu bij al onze klanten met één vaste prijs: een looptijd van twaalf weken, tien gekwalificeerde afspraken en € 4.950 excl. btw waar alles in zit. Geen opstartkosten en geen succesfee.
 
-Het verschil met het vorige voorstel is vooral de eenvoud. Eén bedrag, één looptijd, alles inbegrepen, en je hoeft niet per werkperiode opnieuw te rekenen.
+Eén gedachte wil ik je nog meegeven. Het hoeft geen of-of te zijn. Als wij het koude bellen voor onze rekening nemen, houdt je collega zijn handen vrij voor de gesprekken en de klanten die hij al kent. Dat is vaak precies het stuk waar iemand die weer opbouwt energie uit haalt, terwijl het bellen zelf het zwaarste deel is. Mocht dat een idee zijn, dan denk ik graag mee over hoe je dat zou kunnen invullen.
 
-Van jullie kant kost het vooraf ongeveer een halve dag: een kick-off van anderhalf tot twee uur, een uitsluitlijst met bestaande relaties en jouw akkoord op het belscript. Daarna draaien wij.
+En zo niet, ook prima. Laat het me gewoon weten, dan plan ik het verder naar achteren.
 
-Na twaalf weken weten we hoeveel tijd er in één afspraak zit en hoeveel afspraken er nodig zijn voor een nieuwe klant. Niet geschat, gewoon geteld. Op basis daarvan beslis je over het vervolg.
-
-Laat maar weten wat je ervan vindt. Als het goed voelt plannen we de kick-off en kunnen we snel starten.
+Sterkte aan jullie allebei.
 
 Met vriendelijke groet,
 
@@ -39,17 +38,17 @@ Flemingweg 8, 2408 AV Alphen aan den Rijn
 
 ---
 
-## Kortere variant
+## Kortere variant, zonder het voorstel eraan
 
 Hoi Bart,
 
-In september stuurde ik je een voorstel met drie werkperiodes. We hebben onze manier van werken sindsdien gelijkgetrokken over al onze klanten, dus hierbij een nieuw en simpeler voorstel.
+We spraken elkaar op 18 september. Je gaf toen aan dat je je collega eerst de ruimte wilde geven op outbound.
 
-De kern: een pilot met een looptijd van twaalf weken en tien gekwalificeerde afspraken, voor één vaste prijs van € 4.950 excl. btw. Geen opstartkosten en geen succesfee, alles zit erin. Elke week een rapportage, om de week een evaluatie.
+Ik wilde vooral even vragen hoe het met hem gaat.
 
-Van jouw kant kost het vooraf ongeveer een halve dag. Daarna draaien wij.
+Verder is er van mijn kant geen haast. Zeg maar wanneer het bij jullie wel een goed moment is, dan pak ik het weer op. Mocht je in de tussentijd het voorstel willen zien zoals we het nu bij al onze klanten doen, dan stuur ik het zo door.
 
-Laat maar weten wat je ervan vindt, dan plannen we de kick-off.
+Sterkte aan jullie allebei.
 
 Met vriendelijke groet,
 
