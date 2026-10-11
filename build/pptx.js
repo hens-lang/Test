@@ -636,9 +636,10 @@ async function main() {
 
     if (s.type === 'compare') {
       const n = s.columns.length;
-      const gap = n > 2 ? 24 : 32;
+      const gap = n > 3 ? 18 : n > 2 ? 24 : 32;
       const w = (1728 - gap * (n - 1)) / n, y = 392, h = 436;
-      const fs = n > 2 ? { head: 12.5, key: 9.5, val: 11.5, pad: 34 } : { head: 15, key: 11, val: 13.5, pad: 52 };
+      const fs = n > 3 ? { head: 10.5, key: 8, val: 10, pad: 26 }
+        : n > 2 ? { head: 12.5, key: 9.5, val: 11.5, pad: 34 } : { head: 15, key: 11, val: 13.5, pad: 52 };
       s.columns.forEach((col, n) => {
         const x = 96 + n * (w + gap);
         const hl = !!col.highlight;

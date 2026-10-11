@@ -756,6 +756,14 @@ h1.title { font-size:104px; letter-spacing:-0.03em; }
 .cols-3 .cmp-row { padding:15px 0; gap:16px; }
 .cols-3 .cmp-key { font-size:18px; }
 .cols-3 .cmp-val { font-size:23px; }
+.compare-grid.cols-4 { gap:18px; }
+.cols-4 .cmp-card { padding:32px 26px; }
+.cols-4 .cmp-head { font-size:21px; }
+.cols-4 .cmp-tag { font-size:14px; letter-spacing:0.14em; }
+.cols-4 .cmp-rows { margin-top:20px; }
+.cols-4 .cmp-row { padding:13px 0; gap:10px; }
+.cols-4 .cmp-key { font-size:16px; }
+.cols-4 .cmp-val { font-size:20px; }
 .cmp-card { padding:40px 48px; }
 .cmp-tag {
   font-size:16px; font-weight:700; text-transform:uppercase; letter-spacing:0.18em;

@@ -344,7 +344,7 @@
         "Wat we leveren",
         "Per beldag",
         "Per 4 beldagen",
-        "Per 8 beldagen"
+        "Per 6 beldagen"
       ],
       "rows": [
         {
@@ -352,7 +352,7 @@
             "Contactpogingen",
             "150",
             "600",
-            "1.200"
+            "900"
           ],
           "note": "vast"
         },
@@ -361,7 +361,7 @@
             "Bedrijven gesproken",
             "± 90",
             "± 360",
-            "± 720"
+            "± 540"
           ],
           "note": "verwachting"
         },
@@ -370,13 +370,13 @@
             "Afspraken",
             "2,5",
             "10",
-            "20"
+            "15"
           ],
           "highlight": true,
           "note": "gegarandeerd"
         }
       ],
-      "closing": "De zes uur bellen maken we altijd vol, dus die honderdvijftig pogingen staan. Garanderen doen we alleen de tien afspraken, en halen we die niet, dan krijgen jullie een beldag cadeau."
+      "closing": "De honderdvijftig pogingen per beldag staan vast. Hoeveel bedrijven we spreken hangt af van de bereikbaarheid. Garanderen doen we alleen de tien afspraken, en halen we die niet, dan krijgen jullie een beldag cadeau."
     },
     {
       "id": "staffel",
@@ -500,10 +500,10 @@
       "columns": [
         {
           "tag": "Nu",
-          "head": "Zoals het de afgelopen twaalf weken liep",
+          "head": "Zoals het nu loopt",
           "rows": [
             {
-              "key": "Beldagen per periode",
+              "key": "Beldagen",
               "value": "± 2,7"
             },
             {
@@ -511,26 +511,26 @@
               "value": "± 400"
             },
             {
-              "key": "Gekwalificeerde afspraken",
+              "key": "Afspraken",
               "value": "± 8"
             },
             {
-              "key": "Prijs per beldag",
+              "key": "Per beldag",
               "value": "± € 593"
             },
             {
-              "key": "Prijs per werkperiode",
+              "key": "Per werkperiode",
               "value": "€ 1.600"
             }
           ]
         },
         {
-          "tag": "Vanaf werkperiode 4",
-          "head": "Vier beldagen per vier weken",
+          "tag": "Voorstel",
+          "head": "Vier beldagen",
           "highlight": true,
           "rows": [
             {
-              "key": "Beldagen per periode",
+              "key": "Beldagen",
               "value": "4"
             },
             {
@@ -538,25 +538,51 @@
               "value": "600"
             },
             {
-              "key": "Gekwalificeerde afspraken",
+              "key": "Afspraken",
               "value": "10"
             },
             {
-              "key": "Prijs per beldag",
+              "key": "Per beldag",
               "value": "€ 600"
             },
             {
-              "key": "Prijs per werkperiode",
+              "key": "Per werkperiode",
               "value": "€ 2.400"
             }
           ]
         },
         {
-          "tag": "Of dubbel",
-          "head": "Acht beldagen per vier weken",
+          "tag": "Of",
+          "head": "Zes beldagen",
           "rows": [
             {
-              "key": "Beldagen per periode",
+              "key": "Beldagen",
+              "value": "6"
+            },
+            {
+              "key": "Contactpogingen",
+              "value": "900"
+            },
+            {
+              "key": "Afspraken",
+              "value": "15"
+            },
+            {
+              "key": "Per beldag",
+              "value": "€ 575"
+            },
+            {
+              "key": "Per werkperiode",
+              "value": "€ 3.450"
+            }
+          ]
+        },
+        {
+          "tag": "Of",
+          "head": "Acht beldagen",
+          "rows": [
+            {
+              "key": "Beldagen",
               "value": "8"
             },
             {
@@ -564,21 +590,21 @@
               "value": "1.200"
             },
             {
-              "key": "Gekwalificeerde afspraken",
+              "key": "Afspraken",
               "value": "20"
             },
             {
-              "key": "Prijs per beldag",
+              "key": "Per beldag",
               "value": "€ 550"
             },
             {
-              "key": "Prijs per werkperiode",
+              "key": "Per werkperiode",
               "value": "€ 4.400"
             }
           ]
         }
       ],
-      "closing": "De dagprijs blijft gelijk aan wat je nu per beldag betaalt. Neem je het dubbele af, dan zakt die naar 550 euro per beldag en betaal je 220 euro per afspraak in plaats van 240."
+      "closing": "De dagprijs blijft gelijk aan wat je nu per beldag betaalt. Neem je er meer af, dan zakt die naar 575 of 550 euro per beldag."
     },
     {
       "id": "nodig",
