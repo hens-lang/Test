@@ -263,11 +263,10 @@
         {
           "icon": "spark",
           "title": "En negen andere",
-          "text": "Verpact, Zorgwerk, Hotel Specials, Doen'r, Aluwdoors, AAme, BNU Personeel, Rotterdam Leisure Group en TC Productions.",
+          "text": "Verpact, Zorgwerk, Hotel Specials, Doen'r, Aluwdoors, AAme, BNU Personeel, Rotterdam Leisure Group en TC Productions. Allemaal met naam, aanleiding en contactpersoon vastgelegd.",
           "highlight": true
         }
-      ],
-      "closing": "Dit zijn geen namen op een lijst maar gesprekken die gevoerd zijn. Negen daarvan zijn ingepland of overgedragen in de laatste twee werkperiodes."
+      ]
     },
     {
       "id": "pijplijn",
