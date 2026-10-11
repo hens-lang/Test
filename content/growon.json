@@ -327,17 +327,17 @@
       "id": "kpi",
       "type": "tiers",
       "theme": "dark",
-      "eyebrow": "De afspraken die we met elkaar maken",
+      "eyebrow": "Wat je krijgt",
       "title": [
         {
-          "t": "Vier cijfers waar je ons op mag "
+          "t": "Eén belofte: "
         },
         {
-          "t": "afrekenen",
+          "t": "tien afspraken",
           "accent": true
         },
         {
-          "t": "."
+          "t": " per werkperiode."
         }
       ],
       "columns": [
@@ -353,7 +353,8 @@
             "150",
             "600",
             "1.200"
-          ]
+          ],
+          "note": "vast"
         },
         {
           "cells": [
@@ -361,27 +362,21 @@
             "± 90",
             "± 360",
             "± 720"
-          ]
+          ],
+          "note": "verwachting"
         },
         {
           "cells": [
-            "Terugbelafspraken",
-            "± 35",
-            "± 140",
-            "± 280"
-          ]
-        },
-        {
-          "cells": [
-            "Gekwalificeerde afspraken",
+            "Afspraken",
             "2,5",
             "10",
             "20"
           ],
-          "highlight": true
+          "highlight": true,
+          "note": "gegarandeerd"
         }
       ],
-      "closing": "De zes uur bellen maken we altijd vol, dus de bovenste drie liggen vast. Halen we de tien afspraken niet, dan krijgen jullie de volgende periode een beldag van ons cadeau."
+      "closing": "De zes uur bellen maken we altijd vol, dus die honderdvijftig pogingen staan. Garanderen doen we alleen de tien afspraken, en halen we die niet, dan krijgen jullie een beldag cadeau."
     },
     {
       "id": "staffel",
@@ -458,8 +453,8 @@
           "text": "Je betaalt per beldag, vooraf gefactureerd per werkperiode. Geen nacalculatie, geen kosten per afspraak en geen succesfee meer."
         },
         {
-          "title": "Vier harde KPI's",
-          "text": "Contactpogingen, gesproken bedrijven, terugbelafspraken en gekwalificeerde afspraken. Vastgelegd per beldag en zichtbaar in elke rapportage."
+          "title": "Tien afspraken per periode",
+          "text": "Dat is de afspraak waar je ons aan mag houden. Het aantal pogingen en gesprekken laten we zien in de rapportage, maar de tien afspraken zijn wat we garanderen."
         },
         {
           "title": "Niet gehaald is een gratis beldag",
@@ -648,8 +643,8 @@
           "text": "Vooraf gefactureerd, per werkperiode. Geen nacalculatie achteraf."
         },
         {
-          "title": "Vier KPI's in de overeenkomst",
-          "text": "Pogingen, gesproken bedrijven, terugbelafspraken en gekwalificeerde afspraken, per beldag vastgelegd."
+          "title": "Tien afspraken per werkperiode",
+          "text": "Dat is wat we garanderen bij vier beldagen. Alles eromheen laten we zien in de wekelijkse rapportage."
         },
         {
           "title": "Niet gehaald is een gratis beldag",
