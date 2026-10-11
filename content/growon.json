@@ -305,12 +305,12 @@
           "label": "Netto aan de telefoon. Voorbereiding, notities en rapportage zitten daarbuiten en zijn inbegrepen."
         },
         {
-          "value": "± 100",
+          "value": "± 120",
           "unit": "contactpogingen",
-          "label": "Ongeveer zeventien pogingen per uur bellen, gemeten over jullie hele pilot."
+          "label": "Onze bellers draaien twintig tot zevenentwintig pogingen per uur. Gemeten in onze eigen urenregistratie."
         },
         {
-          "value": "± 60",
+          "value": "± 70",
           "unit": "bedrijven gesproken",
           "label": "Zes van de tien pogingen leveren de juiste persoon aan de lijn op."
         },
@@ -318,10 +318,10 @@
           "value": "± 2",
           "unit": "gekwalificeerde afspraken",
           "highlight": true,
-          "label": "Vierentwintig afspraken over ruim twaalf beldagen. Dit is het getal waar we op sturen."
+          "label": "Met het rendement uit jullie pilot komt een beldag op 2,4 uit. Wij rekenen bewust met twee."
         }
       ],
-      "closing": "Wij rekenen in beldagen en niet in uren, omdat een uur niets zegt over wat eruit komt. Een beldag is dit rijtje, elke periode opnieuw."
+      "closing": "Wij rekenen in beldagen en niet in uren, omdat een uur niets zegt over wat eruit komt. Deze aantallen komen uit onze eigen urenregistratie en uit jullie pilot."
     },
     {
       "id": "staffel",
@@ -373,7 +373,7 @@
           "highlight": true
         }
       ],
-      "closing": "De verwachte aantallen zijn een indicatie, gebaseerd op twee gekwalificeerde afspraken per beldag uit jullie eigen pilot. Minimaal vier beldagen per periode, prijzen excl. btw."
+      "closing": "De verwachte aantallen gaan uit van honderdtwintig contactpogingen en twee gekwalificeerde afspraken per beldag. In jullie pilot lag dat rendement op 2,4 per beldag, dus we rekenen met een marge. Minimaal vier beldagen per periode, prijzen excl. btw."
     },
     {
       "id": "model",
@@ -449,11 +449,7 @@
           "rows": [
             {
               "key": "Beldagen",
-              "value": "± 4"
-            },
-            {
-              "key": "Uur bellen",
-              "value": "± 24"
+              "value": "± 3,5"
             },
             {
               "key": "Contactpogingen",
@@ -462,6 +458,10 @@
             {
               "key": "Afspraken",
               "value": "± 8"
+            },
+            {
+              "key": "Prijs per beldag",
+              "value": "± € 460"
             },
             {
               "key": "Prijs per afspraak",
@@ -478,16 +478,16 @@
               "value": "4"
             },
             {
-              "key": "Uur bellen",
-              "value": "24"
-            },
-            {
               "key": "Contactpogingen",
-              "value": "± 400"
+              "value": "± 480"
             },
             {
               "key": "Afspraken",
               "value": "± 8"
+            },
+            {
+              "key": "Prijs per beldag",
+              "value": "€ 600"
             },
             {
               "key": "Prijs per afspraak",
@@ -505,16 +505,16 @@
               "value": "8"
             },
             {
-              "key": "Uur bellen",
-              "value": "48"
-            },
-            {
               "key": "Contactpogingen",
-              "value": "± 800"
+              "value": "± 960"
             },
             {
               "key": "Afspraken",
               "value": "± 16"
+            },
+            {
+              "key": "Prijs per beldag",
+              "value": "€ 500"
             },
             {
               "key": "Prijs per afspraak",
@@ -523,7 +523,7 @@
           ]
         }
       ],
-      "closing": "In de pilot betaalde je het minst per afspraak, omdat de pilotprijs onder onze dagprijs lag. Bij acht beldagen zakt de prijs per afspraak terug naar ongeveer tweehonderdvijftig euro."
+      "closing": "Je koopt nu ongeveer drieënhalve beldag per werkperiode. Vanaf vier beldagen gaat het volume met twintig procent omhoog, bij acht beldagen verdubbelt het en zakt de dagprijs naar vijfhonderd euro."
     },
     {
       "id": "nodig",
