@@ -450,7 +450,7 @@
       "cards": [
         {
           "title": "Vaste prijs per beldag",
-          "text": "Je betaalt per beldag, vooraf gefactureerd per werkperiode. Geen nacalculatie, geen kosten per afspraak en geen succesfee meer."
+          "text": "Je betaalt per beldag, vooraf gefactureerd per werkperiode. Geen nacalculatie en geen kosten per afspraak."
         },
         {
           "title": "Tien afspraken per periode",
@@ -461,8 +461,8 @@
           "text": "Komt een werkperiode onder de tien afspraken, dan bellen we de volgende periode een dag extra die niet op de rekening komt."
         },
         {
-          "title": "Elke periode opnieuw kiezen",
-          "text": "Jullie bepalen per werkperiode het aantal beldagen, vanaf vier. Een maand opzegtermijn, geen jaarcontract en geen opstartkosten meer.",
+          "title": "Succesfee van 5 procent",
+          "text": "Over de omzet die een klant uit onze afspraken jullie in het eerste jaar oplevert. Zo blijven wij sturen op afspraken die ook echt klant worden, niet op aantallen.",
           "highlight": true
         }
       ],
@@ -476,7 +476,7 @@
           "150 contactpogingen per beldag",
           "10 gekwalificeerde afspraken per periode",
           "Niet gehaald is een gratis beldag",
-          "Prijs staat vast tot en met 2027"
+          "Succesfee van 5% blijft ongewijzigd"
         ]
       }
     },
@@ -685,8 +685,8 @@
           "text": "Per werkperiode bepalen jullie het aantal beldagen, vanaf vier."
         },
         {
-          "title": "Prijs vast tot en met 2027",
-          "text": "De dagprijs en de staffel blijven ongewijzigd. Geen jaarlijkse indexatie."
+          "title": "Succesfee van 5 procent",
+          "text": "Ongewijzigd ten opzichte van nu. Over het eerste jaar omzet uit een klant die uit onze afspraken komt."
         },
         {
           "title": "Maand opzegtermijn",
