@@ -876,6 +876,7 @@
     $('hulp').classList.add('verborgen');
     $('mijnLijst').classList.add('verborgen');
     $('naarStart').textContent = groep ? 'Ben jij niet ' + lot.gever + '? Kies je naam' : $('naarStart').textContent;
+    $('naarStart').parentNode.classList.toggle('verborgen', !groep && !gedeeld && location.hash.indexOf('#lot=') === 0);
   }
 
   // Strooigoed: pepernoten en goudsnippers die over het scherm vallen.
@@ -931,7 +932,7 @@
     feiten.innerHTML = '';
     [
       ['Wensen van ' + lot.ontvanger, eigen && eigen.tekst],
-      ['Wensen & tips over ' + lot.ontvanger, lot.wens || (groep ? 'Kijk in de familie-app: daar deelt ' + lot.ontvanger + ' zijn of haar verlanglijstje.' : '')],
+      ['Wensen & tips over ' + lot.ontvanger, lot.wens || (!gedeeld ? 'Kijk in de familie-app: daar deelt ' + lot.ontvanger + ' zijn of haar verlanglijstje.' : '')],
       ['Budget', lot.budget], ['Gedicht klaar', lot.deadline], ['Pakjesavond', lot.datum]
     ].forEach(function (f) {
       if (!f[1]) return;
@@ -1107,6 +1108,8 @@
       return false;
     }
     toonLootje(lot);
+    try { $('lijstTekst').value = localStorage.getItem('sint-lootjes-lijst-' + Lootjes.sleutel(lot.gever)) || ''; } catch (e) { $('lijstTekst').value = ''; }
+    werkLijstBij();
     return true;
   }
 
@@ -1182,7 +1185,7 @@
         $('dicht').classList.add('verborgen');
         $('open').classList.remove('verborgen');
         $('hulp').classList.remove('verborgen');
-        if (groep) $('mijnLijst').classList.remove('verborgen');
+        if (!gedeeld) $('mijnLijst').classList.remove('verborgen');
         if (!rustig) pepernoten();
       };
       if (rustig) return toon();
