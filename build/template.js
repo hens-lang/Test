@@ -366,7 +366,7 @@ function slideTiers(s) {
   const cols = s.columns;
   return `
   <div class="head">${eyebrow(s.eyebrow)}${title(s.title)}</div>
-  <div class="tier-wrap">
+  <div class="tier-wrap rows-${s.rows.length}">
     <div class="tier-row tier-head">
       ${cols.map((c) => `<span>${esc(c)}</span>`).join('')}
     </div>
@@ -735,6 +735,9 @@ h1.title { font-size:104px; letter-spacing:-0.03em; }
   font-size:20px; letter-spacing:0; color:var(--accent);
 }
 .tier-highlight { background:rgba(56,182,255,0.11); }
+/* vier of meer rijen moeten binnen dezelfde hoogte blijven */
+.tier-wrap.rows-4 .tier-row { padding-top:26px; padding-bottom:26px; }
+.tier-wrap.rows-5 .tier-row { padding-top:18px; padding-bottom:18px; }
 .tier-highlight span { font-weight:800; color:var(--dark-text); }
 .tier-highlight .tier-first em { color:var(--accent); }
 

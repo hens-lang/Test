@@ -586,7 +586,9 @@ async function main() {
     }
 
     if (s.type === 'tiers') {
-      const x0 = 96, tw = 1728, y0 = 420, rowH = 99, headH = 74;
+      const x0 = 96, tw = 1728, y0 = 420, headH = 74;
+      // rijhoogte krimpt mee zodat ook vier rijen boven de sluitregel blijven
+      const rowH = Math.min(99, (440 - headH) / s.rows.length);
       const colX = [44, 516, 900, 1280];
       const colW = [460, 370, 370, 400];
       slide.addShape('roundRect', {

@@ -183,7 +183,7 @@
           "text": "De afspraak staat met de eigenaar of de marketingverantwoordelijke. In retail is dat vaak dezelfde persoon."
         }
       ],
-      "closing": "Ontevredenheid over de huidige partner is veruit de sterkste ingang. Dat kwam in bijna elke week terug en levert de beste afspraken op."
+      "closing": "Ontevredenheid over de huidige partner is veruit de sterkste ingang. Bij de start van werkperiode 4 scherpen we deze drie eisen samen aan op wat de pilot heeft laten zien, zodat we allebei hetzelfde bedoelen met een goede afspraak."
     },
     {
       "id": "cijfers",
@@ -305,23 +305,83 @@
           "label": "Netto aan de telefoon. Voorbereiding, notities en rapportage zitten daarbuiten en zijn inbegrepen."
         },
         {
-          "value": "± 120",
+          "value": "150",
           "unit": "contactpogingen",
-          "label": "Onze bellers draaien twintig tot zevenentwintig pogingen per uur. Gemeten in onze eigen urenregistratie."
+          "label": "Vijfentwintig pogingen per uur. Dat is het tempo dat onze bellers nu draaien, gemeten in de urenregistratie."
         },
         {
-          "value": "± 70",
+          "value": "± 90",
           "unit": "bedrijven gesproken",
           "label": "Zes van de tien pogingen leveren de juiste persoon aan de lijn op."
         },
         {
-          "value": "± 2",
+          "value": "2,5",
           "unit": "gekwalificeerde afspraken",
           "highlight": true,
-          "label": "Met het rendement uit jullie pilot komt een beldag op 2,4 uit. Wij rekenen bewust met twee."
+          "label": "De ene dag twee, de andere vier. Over de pilot gemeten komt het op 3 per beldag uit, wij leggen ons vast op 2,5."
         }
       ],
       "closing": "Wij rekenen in beldagen en niet in uren, omdat een uur niets zegt over wat eruit komt. Deze aantallen komen uit onze eigen urenregistratie en uit jullie pilot."
+    },
+    {
+      "id": "kpi",
+      "type": "tiers",
+      "theme": "dark",
+      "eyebrow": "De afspraken die we met elkaar maken",
+      "title": [
+        {
+          "t": "Vier cijfers waar je ons op mag "
+        },
+        {
+          "t": "afrekenen",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "columns": [
+        "Wat we leveren",
+        "Per beldag",
+        "Per 4 beldagen",
+        "Per 8 beldagen"
+      ],
+      "rows": [
+        {
+          "cells": [
+            "Contactpogingen",
+            "150",
+            "600",
+            "1.200"
+          ]
+        },
+        {
+          "cells": [
+            "Bedrijven gesproken",
+            "± 90",
+            "± 360",
+            "± 720"
+          ]
+        },
+        {
+          "cells": [
+            "Terugbelafspraken",
+            "± 35",
+            "± 140",
+            "± 280"
+          ]
+        },
+        {
+          "cells": [
+            "Gekwalificeerde afspraken",
+            "2,5",
+            "10",
+            "20"
+          ],
+          "highlight": true
+        }
+      ],
+      "closing": "De zes uur bellen maken we altijd vol, dus de bovenste drie liggen vast. Halen we de afspraken niet, dan bellen we door tot het aantal er staat, zonder dat daar een factuur tegenover staat."
     },
     {
       "id": "staffel",
@@ -352,7 +412,7 @@
             "4 beldagen",
             "€ 600",
             "€ 2.400",
-            "± 8"
+            "± 10"
           ]
         },
         {
@@ -360,7 +420,7 @@
             "5 tot 7 beldagen",
             "€ 550",
             "€ 2.750 tot € 3.850",
-            "± 10 tot 14"
+            "± 13 tot 18"
           ]
         },
         {
@@ -368,12 +428,12 @@
             "8 beldagen of meer",
             "€ 500",
             "vanaf € 4.000",
-            "± 16"
+            "± 20"
           ],
           "highlight": true
         }
       ],
-      "closing": "De verwachte aantallen gaan uit van honderdtwintig contactpogingen en twee gekwalificeerde afspraken per beldag. In jullie pilot lag dat rendement op 2,4 per beldag, dus we rekenen met een marge. Minimaal vier beldagen per periode, prijzen excl. btw."
+      "closing": "De aantallen gaan uit van honderdvijftig contactpogingen en 2,5 gekwalificeerde afspraken per beldag. In jullie pilot lag dat rendement op 3 per beldag, dus we rekenen met een marge. Minimaal vier beldagen per periode, prijzen excl. btw."
     },
     {
       "id": "model",
@@ -395,19 +455,19 @@
       "cards": [
         {
           "title": "Vaste prijs per beldag",
-          "text": "Je betaalt per beldag, vooraf gefactureerd per werkperiode. Geen nacalculatie, geen rekening per afspraak en geen succesfee meer."
+          "text": "Je betaalt per beldag, vooraf gefactureerd per werkperiode. Geen nacalculatie, geen kosten per afspraak en geen succesfee meer."
         },
         {
-          "title": "Target van twee per beldag",
-          "text": "Twee gekwalificeerde afspraken per beldag, het gemiddelde uit jullie eigen pilot. We meten per werkperiode, want de ene dag is de andere niet."
+          "title": "Vier harde KPI's",
+          "text": "Contactpogingen, gesproken bedrijven, terugbelafspraken en gekwalificeerde afspraken. Vastgelegd per beldag en zichtbaar in elke rapportage."
         },
         {
-          "title": "Inhaaldag als vangnet",
-          "text": "Blijft een werkperiode onder target, dan bellen we de volgende periode een dag extra die niet op de rekening komt. Maximaal één per periode."
+          "title": "Niet gehaald, dan bellen we door",
+          "text": "Blijft een werkperiode onder de KPI's, dan bellen we in de volgende periode door tot het aantal er staat. Zonder extra factuur."
         },
         {
-          "title": "Elke periode opnieuw kiezen",
-          "text": "Jullie bepalen per werkperiode het aantal beldagen, vanaf vier. Een maand opzegtermijn, geen jaarcontract.",
+          "title": "Goedkoper naarmate je langer blijft",
+          "text": "De dagprijs zakt van 600 naar 500 euro bij acht beldagen. Daarmee kom je op dezelfde prijs per afspraak als in de pilot, met tweeënhalf keer zoveel afspraken.",
           "highlight": true
         }
       ],
@@ -418,10 +478,10 @@
         "items": [
           "Vooraf gefactureerd per werkperiode",
           "Geen kosten per afspraak",
-          "Target van 2 afspraken per beldag",
-          "Inhaaldag als we eronder blijven",
-          "Bellijst, belsysteem en nummer inbegrepen",
-          "Wekelijkse rapportage"
+          "150 contactpogingen per beldag",
+          "2,5 gekwalificeerde afspraken per beldag",
+          "Niet gehaald is doorbellen zonder factuur",
+          "Prijs staat vast tot en met 2027"
         ]
       }
     },
@@ -449,7 +509,7 @@
           "rows": [
             {
               "key": "Beldagen",
-              "value": "± 3,5"
+              "value": "± 2,7"
             },
             {
               "key": "Contactpogingen",
@@ -461,7 +521,7 @@
             },
             {
               "key": "Prijs per beldag",
-              "value": "± € 460"
+              "value": "± € 590"
             },
             {
               "key": "Prijs per afspraak",
@@ -479,11 +539,11 @@
             },
             {
               "key": "Contactpogingen",
-              "value": "± 480"
+              "value": "600"
             },
             {
               "key": "Afspraken",
-              "value": "± 8"
+              "value": "± 10"
             },
             {
               "key": "Prijs per beldag",
@@ -491,7 +551,7 @@
             },
             {
               "key": "Prijs per afspraak",
-              "value": "± € 300"
+              "value": "± € 240"
             }
           ]
         },
@@ -506,11 +566,11 @@
             },
             {
               "key": "Contactpogingen",
-              "value": "± 960"
+              "value": "1.200"
             },
             {
               "key": "Afspraken",
-              "value": "± 16"
+              "value": "± 20"
             },
             {
               "key": "Prijs per beldag",
@@ -518,12 +578,12 @@
             },
             {
               "key": "Prijs per afspraak",
-              "value": "± € 250"
+              "value": "± € 200"
             }
           ]
         }
       ],
-      "closing": "Je koopt nu ongeveer drieënhalve beldag per werkperiode. Vanaf vier beldagen gaat het volume met twintig procent omhoog, bij acht beldagen verdubbelt het en zakt de dagprijs naar vijfhonderd euro."
+      "closing": "Je betaalt nu al bijna zeshonderd euro per beldag, alleen koop je er maar bijna drie per periode. Bij acht beldagen betaal je dezelfde prijs per afspraak als nu, met tweeënhalf keer zoveel afspraken."
     },
     {
       "id": "nodig",
@@ -588,32 +648,32 @@
           "text": "Vooraf gefactureerd, per werkperiode. Geen nacalculatie achteraf."
         },
         {
-          "title": "Target van 2 afspraken per beldag",
-          "text": "Het getal uit jullie eigen pilot. Daar sturen wij op en daar belonen wij onze bellers op."
+          "title": "Vier KPI's in de overeenkomst",
+          "text": "Pogingen, gesproken bedrijven, terugbelafspraken en gekwalificeerde afspraken, per beldag vastgelegd."
         },
         {
-          "title": "Inhaaldag als we eronder blijven",
-          "text": "Maximaal een extra beldag per werkperiode, zonder dat die op de rekening komt."
+          "title": "Niet gehaald is doorbellen",
+          "text": "We bellen door tot het aantal er staat, zonder extra factuur."
+        },
+        {
+          "title": "Kwalificatie-eisen samen vastgesteld",
+          "text": "Bij de start van werkperiode 4 leggen we samen vast wanneer een afspraak meetelt."
         },
         {
           "title": "Op- en afschalen",
           "text": "Per werkperiode bepalen jullie het aantal beldagen, vanaf vier."
         },
         {
-          "title": "Maand opzegtermijn",
-          "text": "Vastgelegd, met een maand opzegtermijn. Geen jaarcontract."
+          "title": "Prijs vast tot en met 2027",
+          "text": "De dagprijs en de staffel blijven ongewijzigd. Geen jaarlijkse indexatie."
         },
         {
-          "title": "Geen opstartkosten meer",
-          "text": "De inrichting staat. Die fee is eenmalig geweest."
+          "title": "Maand opzegtermijn",
+          "text": "Geen jaarcontract en geen opstartkosten meer."
         },
         {
           "title": "Bestaande relaties blijven van jullie",
           "text": "Uitsluitlijst vooraf, die bedrijven benaderen wij niet."
-        },
-        {
-          "title": "Gegevens veilig",
-          "text": "Vastgelegd in de verwerkersovereenkomst, met een korte aanvulling op de samenwerkingsovereenkomst."
         }
       ]
     },
