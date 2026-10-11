@@ -234,14 +234,14 @@
       "eyebrow": "Het verloop",
       "title": [
         {
-          "t": "Meer bellen leverde "
+          "t": "Drie werkperiodes, en één duidelijke "
         },
         {
-          "t": "niet meer afspraken",
+          "t": "les",
           "accent": true
         },
         {
-          "t": " op."
+          "t": "."
         }
       ],
       "columns": [
@@ -278,7 +278,7 @@
           "note": "loopt nog"
         }
       ],
-      "closing": "Werkperiode 1 was een kleine periode: 200 pogingen en vijf afspraken. Daarna ging het volume vier en zes keer omhoog en zakte het rendement naar vijf per duizend. Het aantal gesprekken is dus niet het probleem."
+      "closing": "Werkperiode 1 was klein: 200 pogingen. Daarna ging het volume fors omhoog en werd de lijst tegelijk kouder. Dat verklaart het verschil in rendement en het wijst precies aan welke knop vanaf werkperiode 4 omhoog moet."
     },
     {
       "id": "lijsten",
