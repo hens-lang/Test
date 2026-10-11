@@ -307,7 +307,7 @@
         {
           "value": "150",
           "unit": "contactpogingen",
-          "label": "Vijfentwintig pogingen per uur. Dat is het tempo dat onze bellers nu draaien, gemeten in de urenregistratie."
+          "label": "Gegarandeerd, tenzij de afspraken er eerder staan. Onze bellers draaien vijfentwintig pogingen per uur."
         },
         {
           "value": "± 90",
@@ -318,117 +318,10 @@
           "value": "2,5",
           "unit": "gekwalificeerde afspraken",
           "highlight": true,
-          "label": "De ene dag twee, de andere vier. Over de pilot gemeten komt het op 3 per beldag uit, wij leggen ons vast op 2,5."
+          "label": "Daar gaan we voor. De ene dag twee, de andere vier. In jullie pilot kwam het op 3 per beldag uit."
         }
       ],
-      "closing": "Wij rekenen in beldagen en niet in uren, omdat een uur niets zegt over wat eruit komt. Deze aantallen komen uit onze eigen urenregistratie en uit jullie pilot."
-    },
-    {
-      "id": "kpi",
-      "type": "tiers",
-      "theme": "dark",
-      "eyebrow": "Wat je krijgt",
-      "title": [
-        {
-          "t": "Tien afspraken per werkperiode, "
-        },
-        {
-          "t": "hoe dan ook",
-          "accent": true
-        },
-        {
-          "t": "."
-        }
-      ],
-      "columns": [
-        "Wat we leveren",
-        "Per beldag",
-        "Per 4 beldagen",
-        "Per 6 beldagen"
-      ],
-      "rows": [
-        {
-          "cells": [
-            "Contactpogingen",
-            "150",
-            "600",
-            "900"
-          ],
-          "note": "ondergrens"
-        },
-        {
-          "cells": [
-            "Bedrijven gesproken",
-            "± 90",
-            "± 360",
-            "± 540"
-          ],
-          "note": "verwachting"
-        },
-        {
-          "cells": [
-            "Afspraken",
-            "2,5",
-            "10",
-            "15"
-          ],
-          "highlight": true,
-          "note": "gegarandeerd"
-        }
-      ],
-      "closing": "Staan de tien afspraken er eerder, dan gebruiken we de resterende tijd voor de bellijst en de terugbelafspraken van de volgende periode. Staan ze er na zeshonderd pogingen niet, dan bellen we een extra dag die niet op de rekening komt."
-    },
-    {
-      "id": "staffel",
-      "type": "tiers",
-      "theme": "dark",
-      "eyebrow": "Het voorstel",
-      "title": [
-        {
-          "t": "Vaste beldagen per vier weken, "
-        },
-        {
-          "t": "één dagprijs",
-          "accent": true
-        },
-        {
-          "t": "."
-        }
-      ],
-      "columns": [
-        "Beldagen per 4 weken",
-        "Prijs per beldag",
-        "Per 4 weken",
-        "Verwachte afspraken"
-      ],
-      "rows": [
-        {
-          "cells": [
-            "4 beldagen",
-            "€ 600",
-            "€ 2.400",
-            "± 10"
-          ]
-        },
-        {
-          "cells": [
-            "5 tot 7 beldagen",
-            "€ 575",
-            "€ 2.875 tot € 4.025",
-            "± 13 tot 18"
-          ]
-        },
-        {
-          "cells": [
-            "8 beldagen of meer",
-            "€ 550",
-            "vanaf € 4.400",
-            "± 20"
-          ],
-          "highlight": true
-        }
-      ],
-      "closing": "De aantallen gaan uit van honderdvijftig contactpogingen en 2,5 gekwalificeerde afspraken per beldag. In jullie pilot lag dat rendement op 3 per beldag, dus we rekenen met een marge. Minimaal vier beldagen per periode, prijzen excl. btw."
+      "closing": "Komt een werkperiode onder de tien afspraken uit, dan bellen we een extra dag die niet op de rekening komt. Maximaal een per periode."
     },
     {
       "id": "model",
