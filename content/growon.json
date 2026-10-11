@@ -27,7 +27,7 @@
           "t": "."
         }
       ],
-      "sub": "Er verandert weinig. Zelfde team, zelfde bellijst en dezelfde wekelijkse rapportage. Vanaf werkperiode 4 rekenen we in beldagen, met harde aantallen en een scherpere afspraak over wat een afspraak is."
+      "sub": "Er verandert weinig. Zelfde team, zelfde bellijst en dezelfde prijs per beldag. Wat erbij komt: twee afspraken meer per periode, vaste aantallen op papier en een gratis beldag als we die niet halen."
     },
     {
       "id": "wie",
@@ -321,13 +321,13 @@
           "label": "Daar gaan we voor. De ene dag twee, de andere vier. In jullie pilot kwam het op 3 per beldag uit."
         }
       ],
-      "closing": "Komt een werkperiode onder de tien afspraken uit, dan bellen we een extra dag die niet op de rekening komt. Maximaal een per periode."
+      "closing": "Halen we de tien afspraken in een werkperiode niet, dan bellen we een extra dag die niet op de rekening komt. Een mindere periode kost jullie dus niets extra."
     },
     {
       "id": "model",
       "type": "offer",
       "theme": "dark",
-      "eyebrow": "Hoe we afrekenen",
+      "eyebrow": "Wat je ervoor terugkrijgt",
       "title": [
         {
           "t": "Vooraf een vaste prijs, achteraf geen "
@@ -343,19 +343,19 @@
       "cards": [
         {
           "title": "Vaste prijs per beldag",
-          "text": "Je betaalt per beldag, vooraf gefactureerd per werkperiode. Geen nacalculatie en geen kosten per afspraak."
+          "text": "Je weet vooraf precies wat een werkperiode kost. Geen nacalculatie, geen kosten per afspraak en geen rekening achteraf."
         },
         {
           "title": "Tien afspraken per periode",
-          "text": "Dat is de afspraak waar je ons aan mag houden. Het aantal pogingen en gesprekken laten we zien in de rapportage, maar de tien afspraken zijn wat we garanderen."
+          "text": "Twee meer dan je nu krijgt, voor dezelfde prijs per beldag. Dat is het getal waar je ons aan mag houden."
         },
         {
           "title": "Niet gehaald is een gratis beldag",
-          "text": "Staan de tien afspraken er na zeshonderd pogingen niet, dan bellen we een dag extra die niet op de rekening komt. Maximaal een per werkperiode."
+          "text": "Halen we de tien niet, dan bellen we een dag extra op onze kosten. Het risico van een mindere periode ligt bij ons."
         },
         {
           "title": "Succesfee van 5 procent",
-          "text": "Over de omzet die een klant uit onze afspraken jullie in het eerste jaar oplevert. Zo blijven wij sturen op afspraken die ook echt klant worden, niet op aantallen.",
+          "text": "Ongewijzigd ten opzichte van nu. Wij verdienen pas echt als een afspraak klant wordt, dus sturen we op kwaliteit en niet op aantallen.",
           "highlight": true
         }
       ],
@@ -377,13 +377,13 @@
       "id": "vergelijking",
       "type": "compare",
       "theme": "light",
-      "eyebrow": "Wat er verandert",
+      "eyebrow": "Wat het je oplevert",
       "title": [
         {
-          "t": "Hetzelfde werk, nu met "
+          "t": "Meer afspraken, "
         },
         {
-          "t": "harde aantallen",
+          "t": "dezelfde dagprijs",
           "accent": true
         },
         {
@@ -497,7 +497,7 @@
           ]
         }
       ],
-      "closing": "De dagprijs blijft gelijk aan wat je nu per beldag betaalt. Neem je er meer af, dan zakt die naar 575 of 550 euro per beldag."
+      "closing": "Je betaalt per beldag wat je nu al betaalt. Wat erbij komt: twee afspraken meer, vaste aantallen op papier en een gratis beldag als we ze niet halen."
     },
     {
       "id": "nodig",
@@ -558,32 +558,32 @@
       ],
       "rules": [
         {
-          "title": "Werkperiodes van 4 weken",
-          "text": "Vooraf gefactureerd, per werkperiode. Geen nacalculatie achteraf."
-        },
-        {
           "title": "Tien afspraken per werkperiode",
-          "text": "Dat is wat we garanderen bij vier beldagen. Alles eromheen laten we zien in de wekelijkse rapportage."
+          "text": "Vastgelegd. Halen we ze niet, dan krijg je een extra beldag van ons."
         },
         {
-          "title": "Niet gehaald is een gratis beldag",
-          "text": "Maximaal een per werkperiode. Halen we het dan nog niet, dan gaan we om tafel over lijst, script of kwalificatie."
+          "title": "Prijs vast tot en met 2027",
+          "text": "De dagprijs en de staffel blijven ongewijzigd. Geen jaarlijkse indexatie."
         },
         {
-          "title": "Kwalificatie-eisen samen vastgesteld",
-          "text": "Bij de start van werkperiode 4 leggen we samen vast wanneer een afspraak meetelt."
-        },
-        {
-          "title": "Op- en afschalen",
-          "text": "Per werkperiode bepalen jullie het aantal beldagen, vanaf vier."
-        },
-        {
-          "title": "Succesfee van 5 procent",
-          "text": "Ongewijzigd ten opzichte van nu. Over het eerste jaar omzet uit een klant die uit onze afspraken komt."
+          "title": "Geen opstartkosten meer",
+          "text": "De inrichting staat. Die fee is eenmalig geweest."
         },
         {
           "title": "Maand opzegtermijn",
-          "text": "Geen jaarcontract en geen opstartkosten meer."
+          "text": "Geen jaarcontract. Jullie zitten nergens aan vast."
+        },
+        {
+          "title": "Op- en afschalen per periode",
+          "text": "Jullie bepalen het aantal beldagen, vanaf vier."
+        },
+        {
+          "title": "Kwalificatie samen vastgesteld",
+          "text": "Bij de start van werkperiode 4 leggen we samen vast wanneer een afspraak meetelt."
+        },
+        {
+          "title": "Succesfee van 5 procent",
+          "text": "Ongewijzigd. Wij verdienen pas echt als een afspraak klant wordt."
         },
         {
           "title": "Bestaande relaties blijven van jullie",
