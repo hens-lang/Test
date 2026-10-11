@@ -1,0 +1,556 @@
+{
+  "meta": {
+    "title": "LINK. voorstel GrowOn Agency",
+    "footerLeft": "LINK. · Voorstel GrowOn Agency",
+    "webTitle": "LINK. x GrowOn Agency",
+    "slug": "growon",
+    "logoText": "LINK",
+    "partner": {
+      "name": "GrowOn Agency"
+    }
+  },
+  "slides": [
+    {
+      "id": "cover",
+      "type": "cover",
+      "theme": "dark",
+      "eyebrow": "Voor Jaap · GrowOn Agency · evaluatie 16 oktober 2026",
+      "title": [
+        {
+          "t": "Van pilot naar een "
+        },
+        {
+          "t": "vast ritme",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "sub": "Twaalf weken bellen zit erop. In deze presentatie staat wat het heeft opgeleverd, wat we onderweg hebben geleerd en hoe we het vanaf november willen inrichten."
+    },
+    {
+      "id": "wie",
+      "type": "about",
+      "theme": "light",
+      "eyebrow": "Wie wij zijn",
+      "title": [
+        {
+          "t": "Bellen is een "
+        },
+        {
+          "t": "vak",
+          "accent": true
+        },
+        {
+          "t": ". Wij doen niets anders."
+        }
+      ],
+      "paragraphs": [
+        "LINK. is de vaste acquisitiepartner van B2B-bedrijven. Wij bellen dagelijks namens onze klanten en leveren gekwalificeerde afspraken op. Geen lijstjes met namen, maar gesprekken in jullie agenda met een beslisser die weet waarom hij aan tafel zit.",
+        "We werken voor bedrijven met een sterke B2B-propositie, van een fairchain koffieleverancier tot een AI-consultancy. Geen bureau op afstand, maar een partner die elke week met je schakelt."
+      ],
+      "stats": [
+        {
+          "value": "1",
+          "label": "vast aanspreekpunt",
+          "detail": "Eén persoon die jullie campagne kent, van script tot rapportage."
+        },
+        {
+          "value": "4",
+          "label": "weken per werkperiode",
+          "detail": "Vaste rapportage en vaste evaluatiemomenten, elke werkperiode opnieuw."
+        }
+      ]
+    },
+    {
+      "id": "wat",
+      "type": "services",
+      "theme": "light",
+      "eyebrow": "Wat wij doen",
+      "title": [
+        {
+          "t": "Eén team dat belt, opvolgt en "
+        },
+        {
+          "t": "afspraken levert",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "icon": "phone",
+          "title": "Cold calling",
+          "text": "Ervaren B2B-bellers die het gesprek voeren met de beslisser. Eigen belsysteem, een regionaal telefoonnummer op jullie naam en elk gesprek vastgelegd met notities."
+        },
+        {
+          "icon": "target",
+          "title": "Data en doelgroep",
+          "text": "Wij bouwen de bellijst op jullie ideale klant: retailers en webshops met een draaiende shop, lopende advertenties en budget. Die filtering hebben we onderweg flink aangescherpt."
+        },
+        {
+          "icon": "repeat",
+          "title": "Opvolging",
+          "text": "Terugbelafspraken komen echt terug in de bellijst en warme leads dragen we direct aan jullie over, met de reden en de context erbij."
+        },
+        {
+          "icon": "calendar",
+          "title": "Gekwalificeerde afspraken",
+          "text": "Het resultaat waar we op sturen. Een afspraak staat pas als het bedrijf past, de interesse echt is en de juiste persoon aan tafel zit.",
+          "highlight": true
+        }
+      ]
+    },
+    {
+      "id": "hoe",
+      "type": "process",
+      "theme": "dark",
+      "eyebrow": "Hoe een werkperiode loopt",
+      "title": [
+        {
+          "t": "Vier weken, van bellijst naar "
+        },
+        {
+          "t": "afspraken",
+          "accent": true
+        },
+        {
+          "t": " in de agenda."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Lijst klaarzetten",
+          "text": "We zetten de lijst voor de periode klaar, gefilterd op draaiende webshop en lopende advertenties, met de terugbelafspraken uit de vorige periode bovenaan."
+        },
+        {
+          "title": "Bellen",
+          "text": "We bellen op de dagen en dagdelen die in onze data het beste werken. In retail zijn dat maandag en dinsdag, vrijdag juist niet."
+        },
+        {
+          "title": "Wekelijkse rapportage",
+          "text": "Elke week het rapport dat je nu ook krijgt: pogingen, gesproken bedrijven, warme uitkomsten, afspraken en wat we terughoren uit de markt."
+        },
+        {
+          "title": "Bijsturen",
+          "text": "Na elke periode kijken we samen naar de cijfers en bepalen we het aantal beldagen voor de volgende."
+        }
+      ],
+      "deliverables": {
+        "title": "Wat jullie ontvangen",
+        "items": [
+          "Afspraak in de agenda met bedrijfsinfo, contactpersoon en aanleiding",
+          "Bevestiging naar de prospect uit jullie naam",
+          "Wekelijks rapport in PDF plus alle gespreksnotities",
+          "Een vast aanspreekpunt"
+        ]
+      }
+    },
+    {
+      "id": "kwalificatie",
+      "type": "qualification",
+      "theme": "light",
+      "eyebrow": "Wat wij een gekwalificeerde afspraak noemen",
+      "title": [
+        {
+          "t": "Geen afspraak om de afspraak. "
+        },
+        {
+          "t": "Drie eisen",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "icon": "building",
+          "title": "Fit",
+          "text": "Het bedrijf past: een draaiende webshop of winkel met advertentiebudget, precies het profiel waar de afspraken tot nu toe uit kwamen."
+        },
+        {
+          "icon": "spark",
+          "title": "Interesse",
+          "text": "Er is een concrete aanleiding: ontevreden over het huidige bureau, een contract dat afloopt, of advertenties die stilliggen terwijl het budget er wel is."
+        },
+        {
+          "icon": "usercheck",
+          "title": "Beslisser",
+          "text": "De afspraak staat met de eigenaar of de marketingverantwoordelijke. In retail is dat vaak dezelfde persoon."
+        }
+      ],
+      "closing": "Ontevredenheid over de huidige partner is veruit de sterkste ingang. Dat kwam in bijna elke week terug en levert de beste afspraken op."
+    },
+    {
+      "id": "cijfers",
+      "type": "figures",
+      "theme": "light",
+      "eyebrow": "Wat de pilot heeft opgeleverd",
+      "title": [
+        {
+          "t": "Negen belweken, "
+        },
+        {
+          "t": "geen gevoel maar gemeten",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "value": "1.213",
+          "unit": "contactpogingen",
+          "label": "Over negen gebelde weken, van week 32 tot en met week 41."
+        },
+        {
+          "value": "722",
+          "unit": "bedrijven gesproken",
+          "label": "Zes van de tien pogingen leverden de juiste persoon aan de lijn op."
+        },
+        {
+          "value": "290",
+          "unit": "terugbelafspraken",
+          "label": "Concrete vervolgmomenten die we hebben vastgelegd en opvolgen."
+        },
+        {
+          "value": "21",
+          "unit": "afspraken en overdrachten",
+          "highlight": true,
+          "label": "Gemiddeld één op de 58 pogingen. Werkperiode 3 loopt nog door tot 25 oktober."
+        }
+      ],
+      "closing": "Alle cijfers komen uit de wekelijkse rapportages die je elke week hebt ontvangen. Niets opgehoogd, niets weggelaten."
+    },
+    {
+      "id": "periodes",
+      "type": "tiers",
+      "theme": "dark",
+      "eyebrow": "Het verloop",
+      "title": [
+        {
+          "t": "Sterke start, dip in de zomer, "
+        },
+        {
+          "t": "nu weer omhoog",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "columns": [
+        "Werkperiode",
+        "Contactpogingen",
+        "Gesproken",
+        "Afspraken"
+      ],
+      "rows": [
+        {
+          "cells": [
+            "1 · week 32 t/m 35",
+            "604",
+            "443",
+            "10"
+          ]
+        },
+        {
+          "cells": [
+            "2 · week 36 t/m 39",
+            "379",
+            "164",
+            "6"
+          ],
+          "note": "vakantie"
+        },
+        {
+          "cells": [
+            "3 · week 40 t/m 43",
+            "230",
+            "115",
+            "5"
+          ],
+          "highlight": true,
+          "note": "loopt nog"
+        }
+      ],
+      "closing": "De dip in werkperiode 2 was vakantie: minder bereikbaarheid en in week 39 is er niet gebeld. Werkperiode 3 staat na twee weken al op vijf, met nog twee weken te gaan."
+    },
+    {
+      "id": "staffel",
+      "type": "tiers",
+      "theme": "dark",
+      "eyebrow": "Het voorstel",
+      "title": [
+        {
+          "t": "Vaste beldagen per vier weken, "
+        },
+        {
+          "t": "één dagprijs",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "columns": [
+        "Beldagen per 4 weken",
+        "Prijs per beldag",
+        "Per 4 weken",
+        "Verwachte afspraken"
+      ],
+      "rows": [
+        {
+          "cells": [
+            "4 beldagen",
+            "€ 600",
+            "€ 2.400",
+            "± 7"
+          ]
+        },
+        {
+          "cells": [
+            "5 tot 7 beldagen",
+            "€ 550",
+            "€ 2.750 tot € 3.850",
+            "± 9 tot 12"
+          ]
+        },
+        {
+          "cells": [
+            "8 beldagen of meer",
+            "€ 500",
+            "vanaf € 4.000",
+            "± 14"
+          ],
+          "highlight": true
+        }
+      ],
+      "closing": "De verwachte aantallen zijn een indicatie, gebaseerd op 17,3 afspraken per duizend contactpogingen uit jullie eigen pilot, bij ongeveer honderd pogingen per beldag. Minimaal vier beldagen per periode, prijzen excl. btw."
+    },
+    {
+      "id": "vergelijking",
+      "type": "compare",
+      "theme": "light",
+      "eyebrow": "Opschalen",
+      "title": [
+        {
+          "t": "Hetzelfde ritme, of "
+        },
+        {
+          "t": "twee keer zoveel",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "columns": [
+        {
+          "tag": "Nu",
+          "head": "€ 1.600 per werkperiode",
+          "rows": [
+            {
+              "key": "Beldagen",
+              "value": "± 4"
+            },
+            {
+              "key": "Contactpogingen",
+              "value": "± 400"
+            },
+            {
+              "key": "Bedrijven gesproken",
+              "value": "± 240"
+            },
+            {
+              "key": "Afspraken",
+              "value": "± 7"
+            }
+          ]
+        },
+        {
+          "tag": "Voorstel",
+          "head": "4 beldagen per werkperiode",
+          "rows": [
+            {
+              "key": "Beldagen",
+              "value": "4"
+            },
+            {
+              "key": "Contactpogingen",
+              "value": "± 400"
+            },
+            {
+              "key": "Bedrijven gesproken",
+              "value": "± 240"
+            },
+            {
+              "key": "Afspraken",
+              "value": "± 7"
+            }
+          ]
+        },
+        {
+          "tag": "Opschalen",
+          "head": "8 beldagen per werkperiode",
+          "highlight": true,
+          "rows": [
+            {
+              "key": "Beldagen",
+              "value": "8"
+            },
+            {
+              "key": "Contactpogingen",
+              "value": "± 800"
+            },
+            {
+              "key": "Bedrijven gesproken",
+              "value": "± 480"
+            },
+            {
+              "key": "Afspraken",
+              "value": "± 14"
+            }
+          ]
+        }
+      ],
+      "closing": "De bellijst, het script en de bezetting liggen er al. Verdubbelen kan vanaf de eerstvolgende werkperiode, zonder opstarttijd."
+    },
+    {
+      "id": "nodig",
+      "type": "needs",
+      "theme": "light",
+      "eyebrow": "Wat we van GrowOn nodig hebben",
+      "title": [
+        {
+          "t": "Weinig, want het "
+        },
+        {
+          "t": "draait al",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "icon": "users",
+          "title": "Scherper profiel",
+          "text": "Een halfuur om de doelgroep verder aan te scherpen op wat in de pilot het beste werkte: draaiende webshop, lopende advertenties en budget."
+        },
+        {
+          "icon": "listx",
+          "title": "Uitsluitlijst",
+          "text": "Bedrijven die al klant zijn of waar Jaap zelf al in gesprek is."
+        },
+        {
+          "icon": "check",
+          "title": "Terugkoppeling op afspraken",
+          "text": "Kort laten weten hoe een afspraak verliep, zodat we de kwalificatie blijven bijstellen."
+        },
+        {
+          "icon": "repeat",
+          "title": "Opvolging van afspraken",
+          "text": "Eén vaste persoon bij GrowOn die de afspraken voert. Tot nu toe is dat Jaap zelf."
+        }
+      ]
+    },
+    {
+      "id": "spelregels",
+      "type": "rules",
+      "theme": "light",
+      "eyebrow": "Spelregels",
+      "title": [
+        {
+          "t": "Transparant en zonder "
+        },
+        {
+          "t": "kleine lettertjes",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "rules": [
+        {
+          "title": "Werkperiodes van 4 weken",
+          "text": "Vooraf gefactureerd, per werkperiode."
+        },
+        {
+          "title": "Maand opzegtermijn",
+          "text": "Vastgelegd, met een maand opzegtermijn. Geen jaarcontract."
+        },
+        {
+          "title": "Op- en afschalen",
+          "text": "Per werkperiode bepalen jullie het aantal beldagen, vanaf vier."
+        },
+        {
+          "title": "Geen opstartkosten meer",
+          "text": "De inrichting staat. Die fee is eenmalig geweest."
+        },
+        {
+          "title": "Bestaande relaties blijven van jullie",
+          "text": "Uitsluitlijst vooraf, die bedrijven benaderen wij niet."
+        },
+        {
+          "title": "Wekelijkse rapportage",
+          "text": "Zoals je die nu ook elke week ontvangt."
+        },
+        {
+          "title": "Gegevens veilig",
+          "text": "Vastgelegd in de verwerkersovereenkomst."
+        },
+        {
+          "title": "Alles op papier",
+          "text": "Vastgelegd in een korte aanvulling op de samenwerkingsovereenkomst."
+        }
+      ]
+    },
+    {
+      "id": "volgende",
+      "type": "next",
+      "theme": "dark",
+      "eyebrow": "Volgende stap",
+      "title": [
+        {
+          "t": "Akkoord op het ritme? Dan loopt het "
+        },
+        {
+          "t": "gewoon door",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Akkoord",
+          "text": "Jaap geeft akkoord op het aantal beldagen per werkperiode."
+        },
+        {
+          "title": "Vastleggen",
+          "text": "LINK. stuurt een korte aanvulling op de samenwerkingsovereenkomst."
+        },
+        {
+          "title": "Doorbellen",
+          "text": "Werkperiode 4 start aansluitend, zonder onderbreking."
+        }
+      ],
+      "contact": {
+        "name": "Hens Boer",
+        "role": "Eigenaar LINK.",
+        "email": "hens@linkgrp.nl",
+        "site": "linkgrp.nl",
+        "address": "Flemingweg 8, Alphen aan den Rijn"
+      }
+    }
+  ]
+}
