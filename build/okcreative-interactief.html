@@ -1,0 +1,725 @@
+<title>OK Creative Doorbellen</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+/* Huisstijl LINK.: zwart en #38b6ff, Open Sans. Donkere banden met de data, witte banden met het verhaal. */
+:root{
+  --black:#000000; --panel:#0b0d12; --panel-2:#11151c; --card:#161b24;
+  --white:#ffffff; --paper:#f4f7fa; --ink:#0b0d12;
+  --fg:#ffffff; --muted:#9aa4b2; --muted-2:#79838f;
+  --ink-muted:#5b6472; --ink-muted-2:#8b95a2;
+  --accent:#38b6ff; --accent-soft:rgba(56,182,255,0.14);
+  --line:rgba(255,255,255,0.10); --line-ink:rgba(11,13,18,0.12);
+  --sans:'Open Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{
+  margin:0; background:var(--black); color:var(--fg);
+  font-family:var(--sans); -webkit-font-smoothing:antialiased;
+  font-size:17px; line-height:1.65; overflow-x:hidden;
+}
+.wrap{max-width:1180px; margin:0 auto; padding-inline:24px}
+section{padding-block:clamp(72px,9vw,124px)}
+.band-dark{background:var(--panel)}
+.band-light{background:var(--paper); color:var(--ink)}
+.band-paper{background:var(--white); color:var(--ink)}
+
+h1,h2,h3{margin:0; font-weight:800; letter-spacing:-0.025em; line-height:1.1; text-wrap:balance}
+h1{font-size:clamp(38px,6.6vw,78px); letter-spacing:-0.035em}
+h2{font-size:clamp(29px,4.3vw,52px); letter-spacing:-0.03em}
+h3{font-size:clamp(18px,1.9vw,22px); letter-spacing:-0.012em}
+.acc{color:var(--accent); font-style:normal}
+p{margin:0}
+.eyebrow::before{
+  content:''; display:inline-block; width:7px; height:7px; border-radius:50%;
+  background:var(--accent); margin-right:12px; vertical-align:0.15em;
+}
+.pt{color:var(--accent)}
+.eyebrow{
+  font-size:12.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.22em;
+  color:var(--accent); margin-bottom:20px;
+}
+.lead{font-size:clamp(17px,1.9vw,21px); line-height:1.65; color:var(--muted); max-width:62ch; margin-top:24px}
+.band-light .lead,.band-paper .lead{color:var(--ink-muted)}
+.note{margin-top:22px; font-size:14.5px; color:var(--muted-2); line-height:1.6; max-width:72ch}
+.band-light .note,.band-paper .note{color:var(--ink-muted)}
+.sub{font-size:14.5px; color:var(--muted-2)}
+
+/* ---------- hero ---------- */
+.hero{position:relative; overflow:hidden; background:var(--black); padding-block:clamp(52px,6vw,84px) clamp(76px,9vw,124px)}
+#net{position:absolute; inset:0; width:100%; height:100%; display:block}
+.hero::after{
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(980px 660px at 78% 20%, rgba(56,182,255,0.20), transparent 68%);
+}
+.hero .wrap{position:relative; z-index:2}
+.lockup{display:flex; align-items:center; gap:20px; flex-wrap:wrap; margin-bottom:clamp(40px,6vw,76px)}
+.mark{font-size:30px; font-weight:800; letter-spacing:-0.03em}
+.mark span{color:var(--accent)}
+.cross{color:#5d6672; font-size:19px}
+.lockup img{height:56px; width:auto; display:block}
+.hero h1{max-width:17ch}
+.hero-foot{display:flex; gap:12px 16px; flex-wrap:wrap; margin-top:clamp(34px,5vw,54px); align-items:center}
+.pill{
+  display:inline-flex; align-items:center; gap:10px; padding:11px 20px;
+  border:1px solid var(--line); border-radius:6px; font-size:14px; font-weight:600; color:var(--muted);
+}
+.dot{width:8px; height:8px; border-radius:50%; background:var(--accent); flex:none}
+.dot.pulse{animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)}}
+
+/* ---------- cijferkaarten ---------- */
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:52px}
+.stat{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:28px 24px; min-width:0}
+.band-light .stat,.band-paper .stat{background:var(--white); border-color:var(--line-ink); box-shadow:0 1px 2px rgba(11,13,18,.04)}
+.stat .n{font-size:clamp(34px,4vw,48px); font-weight:800; letter-spacing:-0.04em; line-height:1; font-variant-numeric:tabular-nums}
+.stat .u{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--accent); margin-top:14px}
+.stat .d{font-size:14.5px; line-height:1.55; color:var(--muted-2); margin-top:14px}
+.band-light .stat .d,.band-paper .stat .d{color:var(--ink-muted)}
+.stat.hi{background:var(--black); border-color:rgba(56,182,255,0.5); box-shadow:0 0 60px rgba(56,182,255,0.12)}
+.stat.hi .n{color:var(--accent)}
+.stat.hi .d{color:#aab3bf}
+
+/* ---------- funnel ---------- */
+.funnel{margin-top:52px; display:flex; flex-direction:column; gap:10px}
+.fr{display:grid; grid-template-columns:minmax(150px,200px) 1fr auto; gap:20px; align-items:center}
+.fr .lab{font-size:15px; font-weight:600; color:var(--muted)}
+.bar{height:36px; border-radius:5px; background:rgba(255,255,255,0.06); overflow:hidden}
+.bar i{display:block; height:100%; border-radius:5px; background:rgba(56,182,255,0.32); width:0; transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+.fr.last .bar i{background:var(--accent)}
+.fr .val{font-size:21px; font-weight:800; font-variant-numeric:tabular-nums; min-width:66px; text-align:right}
+.fr.last .val{color:var(--accent)}
+
+/* ---------- periodes ---------- */
+.periods{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:48px}
+.period{
+  text-align:left; font:inherit; color:inherit; cursor:pointer;
+  background:var(--white); border:1px solid var(--line-ink); border-radius:10px;
+  padding:26px 24px; transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease; min-width:0;
+}
+.period:hover{transform:translateY(-2px); box-shadow:0 12px 32px rgba(11,13,18,0.10)}
+.period[aria-expanded="true"]{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset}
+.period .tag{font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.14em; color:var(--ink-muted-2)}
+.period .big{font-size:42px; font-weight:800; letter-spacing:-0.04em; margin-top:12px; font-variant-numeric:tabular-nums}
+.period .big small{font-size:14.5px; font-weight:700; color:var(--ink-muted); letter-spacing:0; margin-left:8px}
+.period .rate{margin-top:14px; font-size:14.5px; color:var(--ink-muted)}
+.period .rate b{color:var(--ink)}
+.weeks{margin-top:16px; border-top:1px solid var(--line-ink); padding-top:14px; display:flex; flex-direction:column; gap:9px}
+.wk{display:flex; justify-content:space-between; gap:12px; font-size:14px; color:var(--ink-muted); font-variant-numeric:tabular-nums}
+.wk b{color:var(--ink); font-weight:700}
+.hint{font-size:13.5px; color:var(--ink-muted-2); margin-top:16px; display:flex; align-items:center; gap:9px}
+
+/* ---------- pijplijn ---------- */
+.stack{display:flex; height:64px; border-radius:8px; overflow:hidden; margin-top:40px; border:1px solid var(--line-ink)}
+.stack button{font:inherit; border:none; padding:0; cursor:pointer; position:relative; width:0;
+  transition:width 1.1s cubic-bezier(.2,.7,.2,1), filter .18s ease}
+.stack button:hover,.stack button[aria-pressed="true"]{filter:brightness(1.07)}
+.stack button::after{content:''; position:absolute; inset:0; border-right:1px solid var(--white)}
+.stack button:last-child::after{border:none}
+.legend{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px 26px; margin-top:24px}
+.lg{display:flex; gap:12px; align-items:flex-start; text-align:left; font:inherit; background:none; border:none; padding:6px 0; cursor:pointer; min-width:0}
+.lg i{width:11px; height:11px; border-radius:2px; flex:none; margin-top:7px}
+.lg .t{font-size:15px; font-weight:700; color:var(--ink)}
+.lg .s{font-size:13.5px; color:var(--ink-muted-2); font-variant-numeric:tabular-nums}
+.lg[aria-pressed="true"] .t{color:var(--accent)}
+.detail{margin-top:28px; background:var(--paper); border:1px solid var(--line-ink); border-radius:10px;
+  padding:26px 28px; display:grid; grid-template-columns:auto 1fr; gap:10px 26px; align-items:baseline}
+.detail .dn{font-size:clamp(38px,5vw,52px); font-weight:800; letter-spacing:-0.04em; line-height:1; font-variant-numeric:tabular-nums; color:var(--accent)}
+.detail .dt{font-size:16px; line-height:1.6; color:var(--ink-muted); max-width:62ch}
+.months{display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:12px; margin-top:38px; align-items:end}
+.mo{display:flex; flex-direction:column; justify-content:flex-end; gap:10px; min-width:0}
+.mo .b{background:rgba(56,182,255,0.26); border-radius:5px 5px 2px 2px; height:0; transition:height .9s cubic-bezier(.2,.7,.2,1)}
+.mo.key .b{background:var(--accent)}
+.mo .v{font-size:19px; font-weight:800; font-variant-numeric:tabular-nums}
+.mo .l{font-size:12.5px; color:var(--ink-muted-2); text-transform:uppercase; letter-spacing:0.1em}
+.mo.key .v{color:var(--accent)}
+.tiers{display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:10px; margin-top:28px}
+.tier{font:inherit; cursor:pointer; text-align:left; background:var(--card); border:1px solid var(--line);
+  border-radius:8px; padding:16px 14px; color:var(--muted); transition:border-color .18s ease, background .18s ease, color .18s ease; min-width:0}
+.tier:hover{border-color:rgba(56,182,255,0.5)}
+.tier[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:#001523}
+.tier .s{font-size:12px; font-weight:700; letter-spacing:0.02em; display:block}
+.tier .f{font-size:19px; font-weight:800; letter-spacing:-0.02em; margin-top:8px; display:block; color:var(--fg); font-variant-numeric:tabular-nums}
+.tier[aria-pressed="true"] .f{color:#001523}
+.tier-out{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; margin-top:22px;
+  border-top:1px solid var(--line); padding-top:24px}
+.tier-out > div{display:flex; flex-direction:column; gap:8px; min-width:0}
+.to-k{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--muted-2)}
+.to-v{font-size:clamp(22px,2.6vw,30px); font-weight:800; letter-spacing:-0.03em; font-variant-numeric:tabular-nums}
+.to-v.acc{color:var(--accent)}
+.quality{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin-top:38px}
+.q{border:1px solid var(--line-ink); border-radius:10px; padding:24px 26px}
+.q .n{font-size:32px; font-weight:800; letter-spacing:-0.03em; font-variant-numeric:tabular-nums}
+.q .l{font-size:14.5px; color:var(--ink-muted); margin-top:8px; line-height:1.55}
+
+/* ---------- rekenmachine ---------- */
+.calc{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.05fr); gap:clamp(28px,4vw,60px); align-items:center; margin-top:48px}
+.dial{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:clamp(26px,3vw,36px)}
+.dial .n{font-size:clamp(58px,8.6vw,98px); font-weight:800; letter-spacing:-0.05em; line-height:.94; font-variant-numeric:tabular-nums; color:var(--accent)}
+.dial .n sub{font-size:18px; font-weight:700; color:var(--muted); letter-spacing:0; vertical-align:baseline; margin-left:12px}
+input[type=range]{-webkit-appearance:none; appearance:none; width:100%; margin:28px 0 10px; height:6px; border-radius:999px; background:rgba(255,255,255,0.14); outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:30px; height:30px; border-radius:50%;
+  background:var(--accent); border:4px solid var(--card); cursor:grab;
+  box-shadow:0 0 0 1px rgba(56,182,255,.5), 0 6px 20px rgba(56,182,255,.35)}
+input[type=range]::-moz-range-thumb{width:26px; height:26px; border-radius:50%; background:var(--accent); border:4px solid var(--card); cursor:grab}
+input[type=range]:focus-visible{box-shadow:0 0 0 3px rgba(56,182,255,.45)}
+.ticks{display:flex; justify-content:space-between; font-size:12.5px; color:var(--muted-2); font-variant-numeric:tabular-nums}
+.rows{display:flex; flex-direction:column}
+.row{display:flex; justify-content:space-between; align-items:baseline; gap:20px; padding:17px 0; border-top:1px solid var(--line)}
+.row:first-child{border-top:none; padding-top:0}
+.row .k{font-size:16px; color:var(--muted)}
+.row .v{font-size:clamp(22px,2.3vw,27px); font-weight:800; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; text-align:right}
+.row.key .v{color:var(--accent)}
+.badge{display:inline-flex; align-items:center; gap:8px; margin-top:20px; padding:9px 16px; border-radius:6px;
+  background:var(--accent-soft); color:var(--accent); font-size:13.5px; font-weight:700}
+
+/* ---------- markt ---------- */
+.market{display:grid; grid-template-columns:minmax(0,320px) minmax(0,1fr); gap:clamp(28px,5vw,68px); align-items:center; margin-top:48px}
+.ring{position:relative; width:100%; max-width:320px; aspect-ratio:1; margin-inline:auto}
+.ring svg{width:100%; height:100%; display:block; transform:rotate(-90deg)}
+.ring .center{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center}
+.ring .center .p{font-size:clamp(40px,6vw,56px); font-weight:800; letter-spacing:-0.04em; line-height:1; font-variant-numeric:tabular-nums}
+.ring .center .l{font-size:12.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.13em; color:var(--muted-2); margin-top:10px; max-width:16ch}
+.mstats{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin-top:28px}
+.mstat{border:1px solid var(--line); border-radius:10px; padding:22px}
+.mstat .n{font-size:29px; font-weight:800; letter-spacing:-0.03em; font-variant-numeric:tabular-nums}
+.mstat .l{font-size:13.5px; color:var(--muted-2); margin-top:8px; line-height:1.5}
+
+/* ---------- toggle ---------- */
+.seg{display:inline-flex; gap:5px; padding:5px; border-radius:8px; background:rgba(11,13,18,0.06); margin-top:32px}
+.seg button{font:inherit; font-size:15px; font-weight:700; cursor:pointer; border:none; border-radius:6px;
+  padding:11px 22px; background:transparent; color:var(--ink-muted); transition:background .18s ease, color .18s ease}
+.seg button[aria-pressed="true"]{background:var(--black); color:var(--white)}
+.seg-dark{background:rgba(255,255,255,0.07); margin-top:22px}
+.seg-dark button{color:var(--muted); font-size:14px; padding:10px 18px}
+.seg-dark button[aria-pressed="true"]{background:var(--accent); color:#001523}
+.cmp{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; margin-top:28px}
+.cmp .c{background:var(--white); border:1px solid var(--line-ink); border-radius:10px; padding:24px 22px; min-width:0}
+.cmp .c .k{font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.13em; color:var(--ink-muted-2)}
+.cmp .c .v{font-size:clamp(27px,3.2vw,38px); font-weight:800; letter-spacing:-0.04em; margin-top:12px; font-variant-numeric:tabular-nums; transition:color .3s ease}
+.cmp .c .d{font-size:13.5px; color:var(--ink-muted); margin-top:10px}
+
+/* ---------- garantie ---------- */
+.guard{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin-top:44px}
+.g{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:28px 26px}
+.g.key{border-color:rgba(56,182,255,0.5); background:var(--black)}
+.g h3{margin-bottom:12px}
+.g.key h3{color:var(--accent)}
+.g p{font-size:15.5px; color:var(--muted); line-height:1.6}
+
+/* ---------- cta ---------- */
+.cta{background:var(--black); border-radius:14px; padding:clamp(32px,5vw,56px); border:1px solid var(--line)}
+.cta h2{max-width:18ch}
+.contact{display:flex; gap:12px 30px; flex-wrap:wrap; margin-top:32px; align-items:center}
+.contact .who{font-size:20px; font-weight:800; letter-spacing:-0.02em}
+.contact .who span{display:block; font-size:13.5px; font-weight:600; color:var(--accent); letter-spacing:0; margin-top:4px}
+.copy{font:inherit; font-size:15px; font-weight:700; cursor:pointer; color:var(--fg);
+  background:rgba(255,255,255,0.06); border:1px solid var(--line); border-radius:6px; padding:12px 20px;
+  display:inline-flex; gap:10px; align-items:center; transition:border-color .18s ease, background .18s ease}
+.copy:hover{border-color:var(--accent); background:var(--accent-soft)}
+footer{padding:34px 0 54px; font-size:13.5px; color:var(--muted-2); background:var(--black)}
+footer b{font-weight:800; color:var(--fg)}
+footer b span{color:var(--accent)}
+footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap}
+
+#prog{position:fixed; left:0; right:0; top:0; height:3px; background:var(--accent); width:0; z-index:50}
+
+.reveal{opacity:1}
+@media (prefers-reduced-motion: no-preference){
+  .reveal{opacity:0; transform:translateY(16px); transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1; transform:none}
+}
+@media (max-width:900px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .periods{grid-template-columns:1fr}
+  .calc{grid-template-columns:1fr}
+  .market{grid-template-columns:1fr}
+  .cmp{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .guard{grid-template-columns:1fr}
+  .fr{grid-template-columns:118px 1fr auto; gap:14px}
+  .legend{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .months{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .quality{grid-template-columns:1fr}
+  .tiers{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .tier-out{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .detail{grid-template-columns:1fr; gap:14px}
+}
+@media (max-width:520px){
+  .stats{grid-template-columns:1fr}
+  .cmp{grid-template-columns:1fr}
+  .fr{grid-template-columns:100px 1fr auto}
+  .fr .lab{font-size:13.5px}
+  .legend{grid-template-columns:1fr}
+  .stack{height:52px}
+  .tiers{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tier-out{grid-template-columns:1fr}
+}
+</style>
+<header class="hero">
+  <canvas id="net" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="lockup">
+      <span class="mark">LINK<span>.</span></span>
+      <span class="cross">&times;</span>
+      <img src="data:image/png;base64,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" alt="OK Creative Agency">
+    </div>
+    <h1>Twaalf weken bellen. En één cijfer dat eruit springt.</h1>
+    <p class="lead">Alles op deze pagina komt uit de belexport van 11 oktober en uit onze eigen urenregistratie. Klik en schuif zelf, dan zie je waar de afspraken vandaan kwamen.</p>
+    <div class="hero-foot">
+      <span class="pill"><span class="dot pulse"></span> Werkperiode 3 loopt nog tot 25 oktober</span>
+      <span class="pill">Evaluatie oktober 2026</span>
+    </div>
+  </div>
+</header>
+
+<section class="band-dark">
+  <div class="wrap">
+    <p class="eyebrow reveal">Wat de pilot heeft opgeleverd</p>
+    <h2 class="reveal">Twaalf weken bellen, <span class="acc">geteld in ons belsysteem</span>.</h2>
+    <div class="stats">
+      <div class="stat reveal"><div class="n" data-count="1668">1.668</div><div class="u">contactpogingen</div><div class="d">Van 24 juli tot en met 9 oktober, verdeeld over 540 bedrijven.</div></div>
+      <div class="stat reveal"><div class="n" data-count="452">452</div><div class="u">bedrijven gesproken</div><div class="d">Bij de rest kwamen we niet langs de receptie of klopte het nummer niet.</div></div>
+      <div class="stat reveal"><div class="n" data-count="116">116</div><div class="u">warm en open</div><div class="d">Terugbelafspraken en verstuurde introducties die nog lopen.</div></div>
+      <div class="stat hi reveal"><div class="n" data-count="12">12</div><div class="u">afspraken en overdrachten</div><div class="d">Zeven ingeplande afspraken en vijf overdrachten. Eén per 139 pogingen.</div></div>
+    </div>
+    <div class="funnel" id="funnel">
+      <div class="fr"><span class="lab">Contactpogingen</span><span class="bar"><i data-w="100"></i></span><span class="val">1.668</span></div>
+      <div class="fr"><span class="lab">Gesproken</span><span class="bar"><i data-w="27.1"></i></span><span class="val">452</span></div>
+      <div class="fr"><span class="lab">Warm vervolg</span><span class="bar"><i data-w="7.7"></i></span><span class="val">128</span></div>
+      <div class="fr last"><span class="lab">Afspraken</span><span class="bar"><i data-w="1"></i></span><span class="val">12</span></div>
+    </div>
+    <p class="note">Jullie markt is zwaar. Zakelijke dienstverlening vanaf vijftig medewerkers betekent een receptie die afschermt en een beslisser die zelden zelf opneemt.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow reveal">Waar het verschil zit</p>
+    <h2 class="reveal">Dezelfde bellers, <span class="acc">drie keer zoveel resultaat</span>.</h2>
+    <p class="lead reveal">Vier bellijsten, naast elkaar gelegd over de hele pilot. Klik op een lijst.</p>
+    <div class="tiers" id="lijsten" role="group" aria-label="Bellijsten"></div>
+    <div class="tier-out">
+      <div><span class="to-k">Contactpogingen</span><span class="to-v" id="lPog">207</span></div>
+      <div><span class="to-k">Afspraken</span><span class="to-v" id="lAfs">4</span></div>
+      <div><span class="to-k">Per 1.000 pogingen</span><span class="to-v" id="lRate">19,3</span></div>
+      <div><span class="to-k">Kosten per afspraak</span><span class="to-v acc" id="lKost">€ 207</span></div>
+    </div>
+    <p class="note" id="lNote">De lijst met jullie eigen relaties en gewenste klanten. Vier afspraken uit 207 pogingen, dus een richting en geen zekerheid. Maar het is het enige signaal in de data dat zo hard is.</p>
+  </div>
+</section>
+
+<section class="band-light">
+  <div class="wrap">
+    <p class="eyebrow reveal">Het verloop</p>
+    <h2 class="reveal">Meer bellen leverde <span class="acc">niet meer afspraken</span> op.</h2>
+    <p class="lead reveal">Het aantal gesprekken ging vier en zes keer omhoog. Het aantal afspraken niet.</p>
+    <div class="periods" id="periods"></div>
+    <p class="hint"><span class="dot"></span> Klik op een werkperiode voor de verdeling van de lijst</p>
+  </div>
+</section>
+
+<section class="band-paper">
+  <div class="wrap">
+    <p class="eyebrow reveal">De pijplijn van vandaag</p>
+    <h2 class="reveal">Zestig bedrijven staan <span class="acc">klaar om teruggebeld te worden</span>.</h2>
+    <p class="lead reveal">De stand in ons belsysteem op 11 oktober, over alle 618 bewerkte records. Klik op een onderdeel.</p>
+    <div class="stack" id="stack" role="group" aria-label="Verdeling van alle records"></div>
+    <div class="legend" id="legend"></div>
+    <div class="detail"><div class="dn" id="dN">60</div><div class="dt" id="dT">Openstaande terugbelafspraken en introducties met een datum vanaf vandaag. Elk met een naam, een reden en een moment erbij.</div></div>
+
+    <h3 style="margin-top:56px">Wanneer die gesprekken terugkomen</h3>
+    <div class="months" id="months"></div>
+    <p class="note">Negenendertig daarvan staan nog deze maand. Dat is werk dat al gedaan is en dat in werkperiode 4 direct rendeert.</p>
+
+    <div class="quality">
+      <div class="q"><div class="n">33%</div><div class="l">van de bellijst bleek niet geschikt. Te klein, buiten de branche of geen beslisser te bereiken.</div></div>
+      <div class="q"><div class="n">24%</div><div class="l">kwam niet langs de receptie of nam niet op. Daarom zoeken we per prospect vooraf de juiste persoon op.</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow reveal">Reken zelf</p>
+    <h2 class="reveal">Twee knoppen: <span class="acc">hoeveel dagen</span> en <span class="acc">welke lijst</span>.</h2>
+    <div class="calc">
+      <div class="dial reveal">
+        <div class="n"><span id="dDays">6</span><sub>beldagen per vier weken</sub></div>
+        <input id="slider" type="range" min="4" max="12" step="1" value="6" aria-label="Aantal beldagen per werkperiode">
+        <div class="ticks"><span>4</span><span>6</span><span>8</span><span>10</span><span>12</span></div>
+        <div class="n" style="font-size:clamp(34px,5vw,54px); margin-top:30px"><span id="dMix">20</span><sub>procent eigen relaties op de lijst</sub></div>
+        <input id="mix" type="range" min="0" max="100" step="10" value="20" aria-label="Aandeel eigen relaties op de bellijst">
+        <div class="ticks"><span>0%</span><span>50%</span><span>100%</span></div>
+        <div class="badge" id="tierBadge">Dagprijs € 575</div>
+        <p class="note">Een beldag is zes uur bellen, goed voor 150 contactpogingen. Koud levert 6 afspraken per duizend pogingen op, de lijst met eigen relaties 19,3.</p>
+      </div>
+      <div class="rows reveal">
+        <div class="row"><span class="k">Contactpogingen</span><span class="v" id="rPog">900</span></div>
+        <div class="row"><span class="k">Waarvan eigen relaties</span><span class="v" id="rWarm">180</span></div>
+        <div class="row key"><span class="k">Verwachte afspraken</span><span class="v" id="rAfs">7</span></div>
+        <div class="row"><span class="k">Prijs per werkperiode</span><span class="v" id="rPrijs">€ 3.450</span></div>
+        <div class="row"><span class="k">Prijs per afspraak</span><span class="v" id="rPerAfs">€ 493</span></div>
+      </div>
+    </div>
+    <p class="note">In de overeenkomst staat een doel van zes gekwalificeerde afspraken per maand. Met de lijst zoals die nu loopt vraagt dat zes beldagen. Met meer eigen relaties op de lijst halen we het met minder.</p>
+  </div>
+</section>
+
+<section class="band-dark">
+  <div class="wrap">
+    <p class="eyebrow reveal">Het potentieel</p>
+    <h2 class="reveal">Van jullie kernmarkt hebben we <span class="acc">een derde</span> aangeraakt.</h2>
+    <div class="market">
+      <div class="ring reveal">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="12"></circle>
+          <circle id="arc" cx="60" cy="60" r="52" fill="none" stroke="#38b6ff" stroke-width="12" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7" style="transition:stroke-dashoffset 1.4s cubic-bezier(.2,.7,.2,1)"></circle>
+        </svg>
+        <div class="center"><div class="p">34%</div><div class="l">van de kernmarkt benaderd</div></div>
+      </div>
+      <div>
+        <p class="lead" style="margin-top:0">Er zijn ruim <b class="acc">1.600</b> IT-bedrijven, accountantskantoren en verzekeraars in Nederland met vijftig of meer medewerkers. Geteld in onze datatool op 11 oktober 2026. Daarvan hebben we er 540 benaderd en 452 gesproken.</p>
+        <div class="mstats">
+          <div class="mstat"><div class="n">1.600+</div><div class="l">bedrijven in de kernbranches, heel Nederland</div></div>
+          <div class="mstat"><div class="n">540</div><div class="l">daarvan benaderd in de pilot</div></div>
+          <div class="mstat"><div class="n" id="mPer">244</div><div class="l">bedrijven die je per werkperiode spreekt</div></div>
+          <div class="mstat"><div class="n" id="mJaar">1,0 jaar</div><div class="l">om de rest van de kernmarkt te spreken</div></div>
+        </div>
+        <p class="note">De doelgroep is breder dan deze drie branches: alle zakelijke dienstverlening vanaf vijftig medewerkers telt mee. Dit is dus een ondergrens, geen plafond.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band-light">
+  <div class="wrap">
+    <p class="eyebrow reveal">Wat er verandert</p>
+    <h2 class="reveal">Zes afspraken per maand vraagt <span class="acc">zes beldagen</span>.</h2>
+    <div class="cmp">
+      <div class="c"><div class="k">Nu</div><div class="v">± 3,7</div><div class="d">beldagen per werkperiode, € 2.000</div></div>
+      <div class="c"><div class="k">Voorstel</div><div class="v acc">6</div><div class="d">beldagen per werkperiode, € 3.450</div></div>
+      <div class="c"><div class="k">Of</div><div class="v">4</div><div class="d">beldagen per werkperiode, € 2.400</div></div>
+      <div class="c"><div class="k">Per beldag</div><div class="v">€ 575</div><div class="d">nu al € 540, vanaf 8 dagen € 550</div></div>
+    </div>
+    <p class="note">Je betaalt nu al bijna de dagprijs. Het verschil zit in het aantal dagen dat erin gaat, en in hoeveel van de lijst uit jullie eigen relaties bestaat.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow reveal">De garantie</p>
+    <h2 class="reveal">Een target dat vooraf <span class="acc">is uitgerekend</span>.</h2>
+    <div class="guard">
+      <div class="g reveal"><h3>150 pogingen per beldag</h3><p>De ondergrens van onze inspanning, inclusief het voorwerk per prospect: online en op LinkedIn opzoeken wie er over marketing en communicatie gaat.</p></div>
+      <div class="g reveal"><h3>De lijst sturen we samen</h3><p>Elke werkperiode bepalen we vooraf hoeveel procent uit jullie eigen relaties en gewenste klanten bestaat. Dat is de knop die het verschil maakt.</p></div>
+      <div class="g key reveal"><h3>Niet gehaald is een gratis beldag</h3><p>Halen we het afgesproken aantal niet, dan bellen we een dag extra die niet op de rekening komt. Maximaal een per werkperiode.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band-dark" style="padding-bottom:clamp(40px,5vw,64px)">
+  <div class="wrap">
+    <div class="cta">
+      <p class="eyebrow">Volgende stap</p>
+      <h2>Akkoord op het ritme? Dan loopt het <span class="acc">gewoon door</span>.</h2>
+      <p class="lead">Jullie geven akkoord op het aantal beldagen, leveren de gewenste klanten en de uitsluitlijst aan, en werkperiode 4 start aansluitend zonder onderbreking.</p>
+      <div class="contact">
+        <div class="who">Hens Boer<span>Eigenaar LINK.</span></div>
+        <button class="copy" type="button" id="copyMail"><span class="dot"></span><span id="copyLabel">hens@linkgrp.nl</span></button>
+        <span class="sub">Flemingweg 8, Alphen aan den Rijn</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span><b>LINK<span>.</span></b> &middot; Voorstel OK Creative Agency</span>
+    <span>Belexport 11 oktober 2026 &middot; werkperiode 3 loopt nog</span>
+  </div>
+</footer>
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var nl = function(n, d){ return n.toLocaleString('nl-NL', d || {}); };
+
+  /* ---- de punt als motief ---- */
+  Array.prototype.forEach.call(document.querySelectorAll('h1,h2,h3'), function(h){
+    var last = h.lastChild;
+    while (last && last.nodeType === 3 && !last.nodeValue.trim()) last = last.previousSibling;
+    if (!last || last.nodeType !== 3) return;
+    var v = last.nodeValue.replace(/\s+$/, '');
+    if (v.slice(-1) !== '.') return;
+    last.nodeValue = v.slice(0, -1);
+    var s = document.createElement('span'); s.className = 'pt'; s.textContent = '.';
+    h.appendChild(s);
+  });
+
+  /* ---- hero netwerk ---- */
+  var cv = document.getElementById('net'), ctx = cv.getContext('2d'), nodes = [], raf = null;
+  function build(){
+    var r = cv.parentNode.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = r.width * dpr; cv.height = r.height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var count = r.width < 700 ? 22 : 42;
+    nodes = [];
+    for (var i = 0; i < count; i++){
+      nodes.push({ x: Math.random() * r.width, y: Math.random() * r.height,
+        vx: (Math.random() - .5) * .22, vy: (Math.random() - .5) * .22, r: Math.random() * 1.6 + 1 });
+    }
+    draw(r);
+  }
+  function draw(r){
+    ctx.clearRect(0, 0, r.width, r.height);
+    for (var i = 0; i < nodes.length; i++){
+      for (var j = i + 1; j < nodes.length; j++){
+        var dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y, d = Math.sqrt(dx*dx + dy*dy);
+        if (d < 170){
+          ctx.strokeStyle = 'rgba(56,182,255,' + (0.22 * (1 - d / 170)).toFixed(3) + ')';
+          ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(nodes[i].x, nodes[i].y); ctx.lineTo(nodes[j].x, nodes[j].y); ctx.stroke();
+        }
+      }
+    }
+    for (var k = 0; k < nodes.length; k++){
+      ctx.fillStyle = k % 9 === 0 ? 'rgba(56,182,255,0.95)' : 'rgba(180,200,220,0.35)';
+      ctx.beginPath(); ctx.arc(nodes[k].x, nodes[k].y, nodes[k].r, 0, 6.283); ctx.fill();
+    }
+  }
+  function tick(){
+    var r = cv.parentNode.getBoundingClientRect();
+    for (var i = 0; i < nodes.length; i++){
+      var n = nodes[i]; n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > r.width) n.vx *= -1;
+      if (n.y < 0 || n.y > r.height) n.vy *= -1;
+    }
+    draw(r); raf = requestAnimationFrame(tick);
+  }
+  build();
+  if (!reduce) raf = requestAnimationFrame(tick);
+  window.addEventListener('resize', function(){ if (raf) cancelAnimationFrame(raf); build(); if (!reduce) raf = requestAnimationFrame(tick); });
+
+  /* ---- reveal en tellers ---- */
+  var io = null;
+  if ('IntersectionObserver' in window){
+    io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        var c = e.target.querySelector('[data-count]');
+        if (c && !c.dataset.done){ c.dataset.done = '1'; count(c); }
+        io.unobserve(e.target);
+      });
+    }, { threshold: .2 });
+    Array.prototype.forEach.call(document.querySelectorAll('.reveal'), function(el){ io.observe(el); });
+  } else {
+    Array.prototype.forEach.call(document.querySelectorAll('.reveal'), function(el){ el.classList.add('in'); });
+  }
+  function count(el){
+    var to = parseInt(el.getAttribute('data-count'), 10);
+    if (reduce || !to){ el.textContent = nl(to); return; }
+    var t0 = performance.now(), dur = 1100;
+    (function step(t){
+      var p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = nl(Math.round(to * e));
+      if (p < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+  var fn = document.getElementById('funnel');
+  var didFunnel = false;
+  function fillFunnel(){
+    if (didFunnel) return; didFunnel = true;
+    Array.prototype.forEach.call(fn.querySelectorAll('.bar i'), function(b, i){
+      setTimeout(function(){ b.style.width = b.getAttribute('data-w') + '%'; }, reduce ? 0 : i * 160);
+    });
+  }
+
+  /* ---- bellijsten ---- */
+  var LIJST = [
+    { k:'Eigen relaties', pog:207,  afs:4, t:'De lijst met jullie relaties en gewenste klanten. Vier afspraken uit 207 pogingen, dus een richting en geen zekerheid. Maar het is het enige signaal in de data dat zo hard is.' },
+    { k:'Zakelijke dienstverlening', pog:1333, afs:8, t:'De koude kernlijst: IT, accountancy, verzekeringen en vergelijkbare bedrijven vanaf vijftig medewerkers. Ruim tachtig procent van alle pogingen ging hierheen.' },
+    { k:'Bouw en techniek', pog:99, afs:0, t:'Koud geprobeerd, geen enkele afspraak uit 99 pogingen. Deze branche laten we vallen.' },
+    { k:'Inbound', pog:29, afs:0, t:'Negenentwintig records uit eigen aanvragen. Geen afspraken en zeven van de tien vielen af als niet geschikt.' }
+  ];
+  var lc = document.getElementById('lijsten');
+  function pickLijst(i){
+    Array.prototype.forEach.call(lc.children, function(b, j){ b.setAttribute('aria-pressed', j === i ? 'true' : 'false'); });
+    var x = LIJST[i], rate = x.afs / x.pog * 1000;
+    document.getElementById('lPog').textContent = nl(x.pog);
+    document.getElementById('lAfs').textContent = nl(x.afs);
+    document.getElementById('lRate').textContent = x.afs ? nl(Math.round(rate * 10) / 10, { minimumFractionDigits: 1 }) : '0';
+    document.getElementById('lKost').textContent = x.afs ? '€ ' + nl(Math.round(600 / (rate * 150 / 1000))) : 'geen';
+    document.getElementById('lNote').textContent = x.t;
+  }
+  LIJST.forEach(function(x, i){
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'tier'; b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+    b.innerHTML = '<span class="s">' + x.k + '</span><span class="f">' +
+      (x.afs ? nl(Math.round(x.afs / x.pog * 1000 * 10) / 10, { minimumFractionDigits: 1 }) : '0') + '</span>';
+    b.addEventListener('click', function(){ pickLijst(i); });
+    lc.appendChild(b);
+  });
+  pickLijst(0);
+
+  /* ---- werkperiodes ---- */
+  var periods = [
+    { tag:'Werkperiode 1 · 3 t/m 30 augustus', afs:5, pog:200, per1000:25, mix:10 },
+    { tag:'Werkperiode 2 · 31 aug t/m 27 september', afs:3, pog:631, per1000:5, mix:8 },
+    { tag:'Werkperiode 3 · 28 sep t/m 25 oktober', afs:4, pog:837, per1000:5, mix:16, note:'loopt nog' }
+  ];
+  var pc = document.getElementById('periods');
+  periods.forEach(function(p){
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'period reveal'; b.setAttribute('aria-expanded', 'false');
+    b.innerHTML = '<div class="tag">' + p.tag + '</div>' +
+      '<div class="big">' + p.afs + '<small>afspraken</small></div>' +
+      '<div class="rate">' + nl(p.pog) + ' contactpogingen &middot; <b>' + p.per1000 + ' per 1.000</b>' +
+      (p.note ? '<br>' + p.note : '') + '</div>' +
+      '<div class="weeks" hidden><span class="wk"><span>Eigen relaties op de lijst</span><b>' + p.mix + '%</b></span>' +
+      '<span class="wk"><span>Koud benaderd</span><b>' + (100 - p.mix) + '%</b></span>' +
+      '<span class="wk"><span>Pogingen per afspraak</span><b>' + Math.round(p.pog / p.afs) + '</b></span></div>';
+    b.addEventListener('click', function(){
+      var open = b.getAttribute('aria-expanded') === 'true';
+      b.setAttribute('aria-expanded', open ? 'false' : 'true');
+      b.querySelector('.weeks').hidden = open;
+    });
+    pc.appendChild(b);
+    if (io) io.observe(b); else b.classList.add('in');
+  });
+
+  /* ---- pijplijn ---- */
+  var segs = [
+    { k:'Afspraak of overdracht', n:12,  c:'#38b6ff', t:'Zeven ingeplande afspraken en vijf overdrachten aan OK.' },
+    { k:'Warm, staat open', n:116, c:'rgba(56,182,255,0.42)', t:'Negentig terugbelafspraken, drieëntwintig verstuurde introducties en drie terugbelverzoeken. Zestig daarvan hebben een datum vanaf vandaag.' },
+    { k:'Geen interesse', n:123, c:'rgba(11,13,18,0.32)', t:'Gesproken, maar op dit moment geen aanleiding. Negen daarvan zijn al voorzien van een ander bureau.' },
+    { k:'Niet geschikt', n:201, c:'rgba(11,13,18,0.20)', t:'Buiten het profiel: te klein, verkeerde branche of geen beslisser te bereiken. Een derde van de hele lijst.' },
+    { k:'Niet bereikt', n:145, c:'rgba(11,13,18,0.12)', t:'Geen gehoor, voicemail of bezet. Bij deze doelgroep is de receptie de grootste drempel.' },
+    { k:'Onjuist nummer', n:21,  c:'rgba(11,13,18,0.07)', t:'Nummer klopt niet meer. Die halen we uit de lijst en vervangen we.' }
+  ];
+  var stack = document.getElementById('stack'), legend = document.getElementById('legend'),
+      dN = document.getElementById('dN'), dT = document.getElementById('dT'), TOT = 618, openIdx = -1;
+  function pick(i){
+    openIdx = i;
+    Array.prototype.forEach.call(stack.children, function(b, j){ b.setAttribute('aria-pressed', j === i ? 'true' : 'false'); });
+    Array.prototype.forEach.call(legend.children, function(b, j){ b.setAttribute('aria-pressed', j === i ? 'true' : 'false'); });
+    if (i < 0){
+      dN.textContent = '60';
+      dT.textContent = 'Openstaande terugbelafspraken en introducties met een datum vanaf vandaag. Elk met een naam, een reden en een moment erbij.';
+    } else { dN.textContent = nl(segs[i].n); dT.textContent = segs[i].t; }
+  }
+  segs.forEach(function(s, i){
+    var b = document.createElement('button');
+    b.type = 'button'; b.style.background = s.c; b.setAttribute('aria-pressed','false');
+    b.setAttribute('aria-label', s.k + ', ' + s.n + ' records');
+    b.addEventListener('click', function(){ pick(openIdx === i ? -1 : i); });
+    stack.appendChild(b);
+    var l = document.createElement('button');
+    l.type = 'button'; l.className = 'lg'; l.setAttribute('aria-pressed','false');
+    l.innerHTML = '<i style="background:' + s.c + '"></i><span><span class="t">' + s.k + '</span><br><span class="s">' +
+      nl(s.n) + ' records &middot; ' + (s.n / TOT * 100).toFixed(1).replace('.', ',') + '%</span></span>';
+    l.addEventListener('click', function(){ pick(openIdx === i ? -1 : i); });
+    legend.appendChild(l);
+  });
+  var didStack = false;
+  function growStack(){
+    if (didStack) return; didStack = true;
+    Array.prototype.forEach.call(stack.children, function(b, i){
+      setTimeout(function(){ b.style.width = (segs[i].n / TOT * 100) + '%'; }, reduce ? 0 : i * 90);
+    });
+  }
+  var months = [['okt', 39, true], ['nov', 7, false], ['dec', 2, false], ['jan', 5, false], ['feb', 1, false], ['later', 6, false]];
+  var mc = document.getElementById('months'), MAX = 39;
+  months.forEach(function(m){
+    var d = document.createElement('div');
+    d.className = 'mo' + (m[2] ? ' key' : '');
+    d.innerHTML = '<span class="v">' + m[1] + '</span><span class="b" data-h="' + Math.round(m[1] / MAX * 150) + '"></span><span class="l">' + m[0] + '</span>';
+    mc.appendChild(d);
+  });
+  var didMonths = false;
+  function growMonths(){
+    if (didMonths) return; didMonths = true;
+    Array.prototype.forEach.call(mc.querySelectorAll('.b'), function(b, i){
+      setTimeout(function(){ b.style.height = Math.max(6, parseInt(b.getAttribute('data-h'), 10)) + 'px'; }, reduce ? 0 : i * 80);
+    });
+  }
+  if (io){
+    [[fn, fillFunnel], [stack, growStack], [mc, growMonths]].forEach(function(p){
+      var o = new IntersectionObserver(function(es){
+        es.forEach(function(e){ if (e.isIntersecting){ p[1](); o.disconnect(); } });
+      }, { threshold: .3 });
+      o.observe(p[0]);
+    });
+    var ar = document.getElementById('arc');
+    var aio = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if (e.isIntersecting){ ar.style.strokeDashoffset = (326.7 * (1 - 0.34)).toFixed(1); aio.disconnect(); } });
+    }, { threshold: .3 });
+    aio.observe(ar);
+  } else { fillFunnel(); growStack(); growMonths(); }
+
+  /* ---- vangnet ---- */
+  function showAll(){
+    Array.prototype.forEach.call(document.querySelectorAll('.reveal'), function(el){
+      el.classList.add('in');
+      var c = el.querySelector('[data-count]');
+      if (c && !c.dataset.done){ c.dataset.done = '1'; c.textContent = nl(parseInt(c.getAttribute('data-count'), 10)); }
+    });
+    fillFunnel(); growStack(); growMonths();
+    document.getElementById('arc').style.strokeDashoffset = '215.6';
+  }
+  setTimeout(showAll, 2000);
+  window.addEventListener('load', function(){ setTimeout(showAll, 1400); });
+
+  /* ---- voortgangsbalk ---- */
+  var pb = document.createElement('div'); pb.id = 'prog'; document.body.appendChild(pb);
+  function prog(){
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    pb.style.width = (h > 0 ? Math.min(100, window.scrollY / h * 100) : 0) + '%';
+  }
+  window.addEventListener('scroll', prog, { passive: true });
+  window.addEventListener('resize', prog);
+  prog();
+
+  /* ---- rekenmachine met twee knoppen ---- */
+  var POG = 150, KOUD = 6.0, WARM = 19.3, MARKT = 1600, BENADERD = 540;
+  function dagprijs(d){ return d >= 8 ? 550 : (d >= 6 ? 575 : 600); }
+  var sl = document.getElementById('slider'), mx = document.getElementById('mix');
+  function render(){
+    var d = parseInt(sl.value, 10), m = parseInt(mx.value, 10) / 100;
+    var pog = d * POG, warm = Math.round(pog * m);
+    var afs = (pog * m * WARM + pog * (1 - m) * KOUD) / 1000;
+    var prijs = d * dagprijs(d);
+    document.getElementById('dDays').textContent = d;
+    document.getElementById('dMix').textContent = Math.round(m * 100);
+    document.getElementById('rPog').textContent = nl(pog);
+    document.getElementById('rWarm').textContent = nl(warm);
+    document.getElementById('rAfs').textContent = nl(Math.round(afs * 10) / 10, { minimumFractionDigits: 1 });
+    document.getElementById('rPrijs').textContent = '€ ' + nl(prijs);
+    document.getElementById('rPerAfs').textContent = '€ ' + nl(Math.round(prijs / afs));
+    document.getElementById('tierBadge').textContent = 'Dagprijs € ' + dagprijs(d);
+    var gespr = Math.round(pog * 0.271);
+    document.getElementById('mPer').textContent = nl(gespr);
+    var jaren = (MARKT - BENADERD) / (pog / 3.09) * 4 / 52;
+    document.getElementById('mJaar').textContent = jaren >= 1
+      ? nl(Math.round(jaren * 10) / 10, { minimumFractionDigits: 1 }) + ' jaar'
+      : Math.round(jaren * 12) + ' maanden';
+    sl.style.background = 'linear-gradient(90deg, #38b6ff 0%, #38b6ff ' + ((d - 4) / 8 * 100) + '%, rgba(255,255,255,0.14) ' + ((d - 4) / 8 * 100) + '%)';
+    mx.style.background = 'linear-gradient(90deg, #38b6ff 0%, #38b6ff ' + (m * 100) + '%, rgba(255,255,255,0.14) ' + (m * 100) + '%)';
+  }
+  sl.addEventListener('input', render); mx.addEventListener('input', render);
+  render();
+
+  /* ---- mailadres kopieren ---- */
+  var cb = document.getElementById('copyMail'), cl = document.getElementById('copyLabel');
+  cb.addEventListener('click', function(){
+    var mail = 'hens@linkgrp.nl';
+    function done(){ cl.textContent = 'Gekopieerd'; setTimeout(function(){ cl.textContent = mail; }, 1600); }
+    function select(){
+      var r = document.createRange(); r.selectNodeContents(cl);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(mail).then(done, select);
+    else select();
+  });
+})();
+</script>

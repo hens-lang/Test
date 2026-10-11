@@ -278,7 +278,7 @@
           "note": "loopt nog"
         }
       ],
-      "closing": "In werkperiode 1 belden we vooral jullie eigen relaties en gewenste klanten. Daarna ging het volume vier keer omhoog en het rendement vijf keer omlaag. Dat ligt niet aan het aantal gesprekken maar aan wie we belden."
+      "closing": "Werkperiode 1 was een kleine periode: 200 pogingen en vijf afspraken. Daarna ging het volume vier en zes keer omhoog en zakte het rendement naar vijf per duizend. Het aantal gesprekken is dus niet het probleem."
     },
     {
       "id": "lijsten",
@@ -287,10 +287,10 @@
       "eyebrow": "Waar het verschil zit",
       "title": [
         {
-          "t": "Dezelfde beller, dezelfde week, "
+          "t": "De lijst met jullie eigen relaties loopt "
         },
         {
-          "t": "drie keer zoveel resultaat",
+          "t": "drie keer beter",
           "accent": true
         },
         {
@@ -330,7 +330,7 @@
           ]
         }
       ],
-      "closing": "Op de lijst met jullie eigen relaties en gewenste klanten kost een afspraak ongeveer € 207. Op de koude lijst € 667. Dit is het belangrijkste cijfer van de hele pilot."
+      "closing": "Op de lijst met jullie relaties en gewenste klanten kost een afspraak ongeveer € 207, op de koude lijst € 667. Het gaat om vier afspraken uit 207 pogingen, dus het is een richting en geen zekerheid. Maar het is wel het enige signaal in de data dat zo hard is."
     },
     {
       "id": "beldag",
@@ -522,7 +522,7 @@
           ]
         }
       ],
-      "closing": "Je betaalt nu al ongeveer € 540 per beldag, alleen gaan er bijna vier in een werkperiode. Met een scherpere lijst lopen deze aantallen omhoog: bij de verhouding van jullie eigen relaties zitten er tien afspraken in zes beldagen."
+      "closing": "Je betaalt nu al ongeveer € 540 per beldag, alleen gaan er bijna vier in een werkperiode. Groeit het aandeel eigen relaties op de lijst, dan lopen deze aantallen omhoog. Dat is de knop waar we samen aan draaien."
     },
     {
       "id": "nodig",
@@ -545,7 +545,7 @@
         {
           "icon": "users",
           "title": "Jullie lijst met gewenste klanten",
-          "text": "De bedrijven waar Frits en Mark graag binnen willen komen, en de relaties van vroeger. Daar ligt het rendement drie keer zo hoog.",
+          "text": "De bedrijven waar Frits en Mark graag binnen willen komen, en de relaties van vroeger. Op dat deel van de lijst ligt het rendement tot nu toe drie keer zo hoog.",
           "highlight": true
         },
         {
