@@ -219,13 +219,13 @@
           "label": "Terugbelafspraken en introducties die nog lopen, met naam, reden en datum erbij."
         },
         {
-          "value": "12",
+          "value": "14",
           "unit": "afspraken en overdrachten",
           "highlight": true,
-          "label": "Zeven ingeplande afspraken voor Frits en vijf leads rechtstreeks overgedragen."
+          "label": "Twaalf staan er nu, twee volgen nog voor 25 oktober. Daarmee komt werkperiode 3 op het afgesproken aantal van zes."
         }
       ],
-      "closing": "Deze cijfers komen uit de belexport van 11 oktober. Werkperiode 3 loopt nog door tot 25 oktober, dus hier komt nog bij."
+      "closing": "Deze cijfers komen uit de belexport van 11 oktober. Werkperiode 3 loopt nog door tot 25 oktober."
     },
     {
       "id": "namen",
@@ -234,7 +234,7 @@
       "eyebrow": "Wie er aan tafel kwam",
       "title": [
         {
-          "t": "Twaalf bedrijven, waaronder deze "
+          "t": "De bedrijven die aan tafel kwamen, waaronder deze "
         },
         {
           "t": "drie",
@@ -409,10 +409,10 @@
       "eyebrow": "Wat het je oplevert",
       "title": [
         {
-          "t": "Zes afspraken per maand met "
+          "t": "Zes afspraken per maand, nu "
         },
         {
-          "t": "vier beldagen",
+          "t": "vastgelegd",
           "accent": true
         },
         {
@@ -430,15 +430,15 @@
             },
             {
               "key": "Contactpogingen",
-              "value": "± 556"
+              "value": "± 553"
             },
             {
               "key": "Afspraken",
-              "value": "± 4"
+              "value": "± 5"
             },
             {
-              "key": "Per beldag",
-              "value": "± € 540"
+              "key": "Garantie",
+              "value": "geen"
             },
             {
               "key": "Per werkperiode",
@@ -464,8 +464,8 @@
               "value": "6"
             },
             {
-              "key": "Per beldag",
-              "value": "€ 600"
+              "key": "Garantie",
+              "value": "gratis beldag"
             },
             {
               "key": "Per werkperiode",
@@ -490,8 +490,8 @@
               "value": "9"
             },
             {
-              "key": "Per beldag",
-              "value": "€ 575"
+              "key": "Garantie",
+              "value": "gratis beldag"
             },
             {
               "key": "Per werkperiode",
@@ -500,7 +500,7 @@
           ]
         }
       ],
-      "closing": "Je betaalt nu al ongeveer € 540 per beldag. Met vier beldagen en een derde eigen relaties op de lijst komen we op de zes afspraken per maand die in de overeenkomst staan. Wil je sneller, dan zijn het er negen bij zes beldagen."
+      "closing": "Het verschil is niet alleen het aantal, maar de zekerheid eronder. Zes afspraken per werkperiode wordt een afspraak in plaats van een verwachting, en halen we het niet, dan bellen we een dag extra op onze kosten."
     },
     {
       "id": "nodig",
