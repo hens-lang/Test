@@ -330,14 +330,14 @@
       "eyebrow": "Wat je krijgt",
       "title": [
         {
-          "t": "Eén belofte: "
+          "t": "Tien afspraken per werkperiode, "
         },
         {
-          "t": "tien afspraken",
+          "t": "hoe dan ook",
           "accent": true
         },
         {
-          "t": " per werkperiode."
+          "t": "."
         }
       ],
       "columns": [
@@ -354,7 +354,7 @@
             "600",
             "900"
           ],
-          "note": "vast"
+          "note": "ondergrens"
         },
         {
           "cells": [
@@ -376,7 +376,7 @@
           "note": "gegarandeerd"
         }
       ],
-      "closing": "De honderdvijftig pogingen per beldag staan vast. Hoeveel bedrijven we spreken hangt af van de bereikbaarheid. Garanderen doen we alleen de tien afspraken, en halen we die niet, dan krijgen jullie een beldag cadeau."
+      "closing": "Staan de tien afspraken er eerder, dan gebruiken we de resterende tijd voor de bellijst en de terugbelafspraken van de volgende periode. Staan ze er na zeshonderd pogingen niet, dan bellen we een extra dag die niet op de rekening komt."
     },
     {
       "id": "staffel",
@@ -458,7 +458,7 @@
         },
         {
           "title": "Niet gehaald is een gratis beldag",
-          "text": "Komt een werkperiode onder de tien afspraken, dan bellen we de volgende periode een dag extra die niet op de rekening komt."
+          "text": "Staan de tien afspraken er na zeshonderd pogingen niet, dan bellen we een dag extra die niet op de rekening komt. Maximaal een per werkperiode."
         },
         {
           "title": "Succesfee van 5 procent",
@@ -475,7 +475,7 @@
           "Geen kosten per afspraak",
           "150 contactpogingen per beldag",
           "10 gekwalificeerde afspraken per periode",
-          "Niet gehaald is een gratis beldag",
+          "Maximaal één gratis inhaaldag",
           "Succesfee van 5% blijft ongewijzigd"
         ]
       }
@@ -674,7 +674,7 @@
         },
         {
           "title": "Niet gehaald is een gratis beldag",
-          "text": "Onder de tien afspraken in een werkperiode, dan bellen we de volgende periode een dag extra zonder factuur."
+          "text": "Maximaal een per werkperiode. Halen we het dan nog niet, dan gaan we om tafel over lijst, script of kwalificatie."
         },
         {
           "title": "Kwalificatie-eisen samen vastgesteld",
