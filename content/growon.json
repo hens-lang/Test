@@ -418,16 +418,16 @@
         {
           "cells": [
             "5 tot 7 beldagen",
-            "€ 550",
-            "€ 2.750 tot € 3.850",
+            "€ 575",
+            "€ 2.875 tot € 4.025",
             "± 13 tot 18"
           ]
         },
         {
           "cells": [
             "8 beldagen of meer",
-            "€ 500",
-            "vanaf € 4.000",
+            "€ 550",
+            "vanaf € 4.400",
             "± 20"
           ],
           "highlight": true
@@ -467,14 +467,14 @@
         },
         {
           "title": "Goedkoper naarmate je langer blijft",
-          "text": "De dagprijs zakt van 600 naar 500 euro bij acht beldagen. Daarmee kom je op dezelfde prijs per afspraak als in de pilot, met tweeënhalf keer zoveel afspraken.",
+          "text": "De dagprijs zakt van 600 naar 550 euro bij acht beldagen. Daarmee gaat de prijs per afspraak van 240 naar 220 euro, met twee keer zoveel afspraken.",
           "highlight": true
         }
       ],
       "bar": {
         "label": "Prijs per beldag",
         "price": "€ 600",
-        "note": "vanaf 8 beldagen € 500, excl. btw",
+        "note": "vanaf 8 beldagen € 550, excl. btw",
         "items": [
           "Vooraf gefactureerd per werkperiode",
           "Geen kosten per afspraak",
@@ -574,16 +574,16 @@
             },
             {
               "key": "Prijs per beldag",
-              "value": "€ 500"
+              "value": "€ 550"
             },
             {
               "key": "Prijs per afspraak",
-              "value": "± € 200"
+              "value": "± € 220"
             }
           ]
         }
       ],
-      "closing": "Je betaalt nu al bijna zeshonderd euro per beldag, alleen koop je er maar bijna drie per periode. Bij acht beldagen betaal je dezelfde prijs per afspraak als nu, met tweeënhalf keer zoveel afspraken."
+      "closing": "Je betaalt nu al bijna zeshonderd euro per beldag, alleen koop je er maar bijna drie per periode. Bij acht beldagen zakt de dagprijs naar 550 euro en de prijs per afspraak naar 220, met twee keer zoveel afspraken."
     },
     {
       "id": "nodig",
