@@ -303,9 +303,9 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
       <div><span class="to-k">Contactpogingen</span><span class="to-v" id="lPog">207</span></div>
       <div><span class="to-k">Afspraken</span><span class="to-v" id="lAfs">4</span></div>
       <div><span class="to-k">Per 1.000 pogingen</span><span class="to-v" id="lRate">19,3</span></div>
-      <div><span class="to-k">Kosten per afspraak</span><span class="to-v acc" id="lKost">€ 207</span></div>
+      <div><span class="to-k">Pogingen per afspraak</span><span class="to-v acc" id="lKost">52</span></div>
     </div>
-    <p class="note" id="lNote">De lijst met jullie eigen relaties en gewenste klanten. Vier afspraken uit 207 pogingen, dus een richting en geen zekerheid. Maar het is het enige signaal in de data dat zo hard is.</p>
+    <p class="note" id="lNote">De lijst met jullie eigen relaties en gewenste klanten. Vier afspraken uit 207 pogingen, dus een richting en geen zekerheid. Wel het sterkste signaal uit de hele pilot.</p>
   </div>
 </section>
 
@@ -345,48 +345,48 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
     <h2 class="reveal">Twee knoppen: <span class="acc">hoeveel dagen</span> en <span class="acc">welke lijst</span>.</h2>
     <div class="calc">
       <div class="dial reveal">
-        <div class="n"><span id="dDays">6</span><sub>beldagen per vier weken</sub></div>
-        <input id="slider" type="range" min="4" max="12" step="1" value="6" aria-label="Aantal beldagen per werkperiode">
+        <div class="n"><span id="dDays">4</span><sub>beldagen per vier weken</sub></div>
+        <input id="slider" type="range" min="4" max="12" step="1" value="4" aria-label="Aantal beldagen per werkperiode">
         <div class="ticks"><span>4</span><span>6</span><span>8</span><span>10</span><span>12</span></div>
-        <div class="n" style="font-size:clamp(34px,5vw,54px); margin-top:30px"><span id="dMix">20</span><sub>procent eigen relaties op de lijst</sub></div>
-        <input id="mix" type="range" min="0" max="100" step="10" value="20" aria-label="Aandeel eigen relaties op de bellijst">
+        <div class="n" style="font-size:clamp(34px,5vw,54px); margin-top:30px"><span id="dMix">30</span><sub>procent eigen relaties op de lijst</sub></div>
+        <input id="mix" type="range" min="0" max="100" step="10" value="30" aria-label="Aandeel eigen relaties op de bellijst">
         <div class="ticks"><span>0%</span><span>50%</span><span>100%</span></div>
         <div class="badge" id="tierBadge">Dagprijs € 575</div>
-        <p class="note">Een beldag is zes uur bellen, goed voor 150 contactpogingen. Koud levert 6 afspraken per duizend pogingen op, de lijst met eigen relaties 19,3.</p>
+        <p class="note">Een beldag is zes uur bellen, goed voor 150 contactpogingen. Koud levert 6 afspraken per duizend pogingen op, de lijst met eigen relaties 19,3. Bij een derde eigen relaties kom je op anderhalve afspraak per beldag.</p>
       </div>
       <div class="rows reveal">
         <div class="row"><span class="k">Contactpogingen</span><span class="v" id="rPog">900</span></div>
         <div class="row"><span class="k">Waarvan eigen relaties</span><span class="v" id="rWarm">180</span></div>
-        <div class="row key"><span class="k">Verwachte afspraken</span><span class="v" id="rAfs">7</span></div>
+        <div class="row key"><span class="k">Verwachte afspraken</span><span class="v" id="rAfs">6</span></div>
         <div class="row"><span class="k">Prijs per werkperiode</span><span class="v" id="rPrijs">€ 3.450</span></div>
-        <div class="row"><span class="k">Prijs per afspraak</span><span class="v" id="rPerAfs">€ 493</span></div>
+        <div class="row"><span class="k">Bedrijven gesproken</span><span class="v" id="rGes">244</span></div>
       </div>
     </div>
-    <p class="note">In de overeenkomst staat een doel van zes gekwalificeerde afspraken per maand. Met de lijst zoals die nu loopt vraagt dat zes beldagen. Met meer eigen relaties op de lijst halen we het met minder.</p>
+    <p class="note">In de overeenkomst staat een doel van zes gekwalificeerde afspraken per maand. Met een derde eigen relaties op de lijst halen we dat met vier beldagen. In de pilot stond de lijst op acht tot zestien procent eigen relaties.</p>
   </div>
 </section>
 
 <section class="band-dark">
   <div class="wrap">
     <p class="eyebrow reveal">Het potentieel</p>
-    <h2 class="reveal">Van jullie kernmarkt hebben we <span class="acc">een derde</span> aangeraakt.</h2>
+    <h2 class="reveal">Van jullie markt hebben we <span class="acc">zeven procent</span> gesproken.</h2>
     <div class="market">
       <div class="ring reveal">
         <svg viewBox="0 0 120 120" aria-hidden="true">
           <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="12"></circle>
           <circle id="arc" cx="60" cy="60" r="52" fill="none" stroke="#38b6ff" stroke-width="12" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7" style="transition:stroke-dashoffset 1.4s cubic-bezier(.2,.7,.2,1)"></circle>
         </svg>
-        <div class="center"><div class="p">34%</div><div class="l">van de kernmarkt benaderd</div></div>
+        <div class="center"><div class="p">7%</div><div class="l">van de markt benaderd</div></div>
       </div>
       <div>
-        <p class="lead" style="margin-top:0">Er zijn ruim <b class="acc">1.600</b> IT-bedrijven, accountantskantoren en verzekeraars in Nederland met vijftig of meer medewerkers. Geteld in onze datatool op 11 oktober 2026. Daarvan hebben we er 540 benaderd en 452 gesproken.</p>
+        <p class="lead" style="margin-top:0">Er zijn ruim <b class="acc">7.500</b> IT-bedrijven, accountantskantoren en verzekeraars in Nederland vanaf ongeveer vijftien medewerkers. Geteld in onze datatool op 11 oktober 2026. Daarvan hebben we er 540 benaderd.</p>
         <div class="mstats">
-          <div class="mstat"><div class="n">1.600+</div><div class="l">bedrijven in de kernbranches, heel Nederland</div></div>
+          <div class="mstat"><div class="n">7.500+</div><div class="l">bedrijven in de kernbranches, heel Nederland</div></div>
           <div class="mstat"><div class="n">540</div><div class="l">daarvan benaderd in de pilot</div></div>
           <div class="mstat"><div class="n" id="mPer">244</div><div class="l">bedrijven die je per werkperiode spreekt</div></div>
-          <div class="mstat"><div class="n" id="mJaar">1,0 jaar</div><div class="l">om de rest van de kernmarkt te spreken</div></div>
+          <div class="mstat"><div class="n" id="mJaar">2,2 jaar</div><div class="l">om de rest van de markt te spreken</div></div>
         </div>
-        <p class="note">De doelgroep is breder dan deze drie branches: alle zakelijke dienstverlening vanaf vijftig medewerkers telt mee. Dit is dus een ondergrens, geen plafond.</p>
+        <p class="note">De doelgroep is breder dan deze drie branches: alle zakelijke dienstverlening telt mee. Dit is dus een ondergrens, geen plafond. Drieënnegentig procent van deze markt heeft nog nooit van oké gehoord.</p>
       </div>
     </div>
   </div>
@@ -395,14 +395,14 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
 <section class="band-light">
   <div class="wrap">
     <p class="eyebrow reveal">Wat er verandert</p>
-    <h2 class="reveal">Zes afspraken per maand vraagt <span class="acc">zes beldagen</span>.</h2>
+    <h2 class="reveal">Zes afspraken per maand met <span class="acc">vier beldagen</span>.</h2>
     <div class="cmp">
-      <div class="c"><div class="k">Nu</div><div class="v">± 3,7</div><div class="d">beldagen per werkperiode, € 2.000</div></div>
-      <div class="c"><div class="k">Voorstel</div><div class="v acc">6</div><div class="d">beldagen per werkperiode, € 3.450</div></div>
-      <div class="c"><div class="k">Of</div><div class="v">4</div><div class="d">beldagen per werkperiode, € 2.400</div></div>
-      <div class="c"><div class="k">Per beldag</div><div class="v">€ 575</div><div class="d">nu al € 540, vanaf 8 dagen € 550</div></div>
+      <div class="c"><div class="k">Nu</div><div class="v">± 4</div><div class="d">afspraken per werkperiode</div></div>
+      <div class="c"><div class="k">Voorstel</div><div class="v acc">6</div><div class="d">afspraken per werkperiode, vier beldagen</div></div>
+      <div class="c"><div class="k">Of</div><div class="v">9</div><div class="d">afspraken per werkperiode, zes beldagen</div></div>
+      <div class="c"><div class="k">Per beldag</div><div class="v">€ 600</div><div class="d">nu al € 540, vanaf 6 dagen € 575</div></div>
     </div>
-    <p class="note">Je betaalt nu al bijna de dagprijs. Het verschil zit in het aantal dagen dat erin gaat, en in hoeveel van de lijst uit jullie eigen relaties bestaat.</p>
+    <p class="note">Je betaalt nu al bijna de dagprijs. Het verschil zit in hoeveel van de lijst uit jullie eigen relaties bestaat, en daarmee in wat een beldag oplevert.</p>
   </div>
 </section>
 
@@ -412,7 +412,7 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
     <h2 class="reveal">Een target dat vooraf <span class="acc">is uitgerekend</span>.</h2>
     <div class="guard">
       <div class="g reveal"><h3>150 pogingen per beldag</h3><p>De ondergrens van onze inspanning, inclusief het voorwerk per prospect: online en op LinkedIn opzoeken wie er over marketing en communicatie gaat.</p></div>
-      <div class="g reveal"><h3>De lijst sturen we samen</h3><p>Elke werkperiode bepalen we vooraf hoeveel procent uit jullie eigen relaties en gewenste klanten bestaat. Dat is de knop die het verschil maakt.</p></div>
+      <div class="g reveal"><h3>1,5 afspraak per beldag</h3><p>Het target waar we op sturen vanaf werkperiode 4. Daarvoor bestaat ongeveer een derde van de bellijst uit jullie eigen relaties en gewenste klanten.</p></div>
       <div class="g key reveal"><h3>Niet gehaald is een gratis beldag</h3><p>Halen we het afgesproken aantal niet, dan bellen we een dag extra die niet op de rekening komt. Maximaal een per werkperiode.</p></div>
     </div>
   </div>
@@ -537,7 +537,7 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
 
   /* ---- bellijsten ---- */
   var LIJST = [
-    { k:'Eigen relaties', pog:207,  afs:4, t:'De lijst met jullie relaties en gewenste klanten. Vier afspraken uit 207 pogingen, dus een richting en geen zekerheid. Maar het is het enige signaal in de data dat zo hard is.' },
+    { k:'Eigen relaties', pog:207,  afs:4, t:'De lijst met jullie relaties en gewenste klanten. Vier afspraken uit 207 pogingen, dus een richting en geen zekerheid. Wel het sterkste signaal uit de hele pilot.' },
     { k:'Zakelijke dienstverlening', pog:1333, afs:8, t:'De koude kernlijst: IT, accountancy, verzekeringen en vergelijkbare bedrijven vanaf vijftig medewerkers. Ruim tachtig procent van alle pogingen ging hierheen.' },
     { k:'Bouw en techniek', pog:99, afs:0, t:'Koud geprobeerd, geen enkele afspraak uit 99 pogingen. Deze branche laten we vallen.' },
     { k:'Inbound', pog:29, afs:0, t:'Negenentwintig records uit eigen aanvragen. Geen afspraken en zeven van de tien vielen af als niet geschikt.' }
@@ -549,7 +549,7 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
     document.getElementById('lPog').textContent = nl(x.pog);
     document.getElementById('lAfs').textContent = nl(x.afs);
     document.getElementById('lRate').textContent = x.afs ? nl(Math.round(rate * 10) / 10, { minimumFractionDigits: 1 }) : '0';
-    document.getElementById('lKost').textContent = x.afs ? '€ ' + nl(Math.round(600 / (rate * 150 / 1000))) : 'geen';
+    document.getElementById('lKost').textContent = x.afs ? nl(Math.round(x.pog / x.afs)) : 'geen';
     document.getElementById('lNote').textContent = x.t;
   }
   LIJST.forEach(function(x, i){
@@ -652,7 +652,7 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
     });
     var ar = document.getElementById('arc');
     var aio = new IntersectionObserver(function(es){
-      es.forEach(function(e){ if (e.isIntersecting){ ar.style.strokeDashoffset = (326.7 * (1 - 0.34)).toFixed(1); aio.disconnect(); } });
+      es.forEach(function(e){ if (e.isIntersecting){ ar.style.strokeDashoffset = (326.7 * (1 - 0.072)).toFixed(1); aio.disconnect(); } });
     }, { threshold: .3 });
     aio.observe(ar);
   } else { fillFunnel(); growStack(); growMonths(); }
@@ -665,7 +665,7 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
       if (c && !c.dataset.done){ c.dataset.done = '1'; c.textContent = nl(parseInt(c.getAttribute('data-count'), 10)); }
     });
     fillFunnel(); growStack(); growMonths();
-    document.getElementById('arc').style.strokeDashoffset = '215.6';
+    document.getElementById('arc').style.strokeDashoffset = '303.2';
   }
   setTimeout(showAll, 2000);
   window.addEventListener('load', function(){ setTimeout(showAll, 1400); });
@@ -681,12 +681,12 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
   prog();
 
   /* ---- rekenmachine met twee knoppen ---- */
-  var POG = 150, KOUD = 6.0, WARM = 19.3, MARKT = 1600, BENADERD = 540;
+  var POG = 150, KOUD = 6.0, WARM = 19.3, MARKT = 7500, BENADERD = 540;
   function dagprijs(d){ return d >= 8 ? 550 : (d >= 6 ? 575 : 600); }
   var sl = document.getElementById('slider'), mx = document.getElementById('mix');
   function render(){
     var d = parseInt(sl.value, 10), m = parseInt(mx.value, 10) / 100;
-    var pog = d * POG, warm = Math.round(pog * m);
+    var pog = d * POG, warm = Math.round(pog * m), gespr = Math.round(pog * 0.271);
     var afs = (pog * m * WARM + pog * (1 - m) * KOUD) / 1000;
     var prijs = d * dagprijs(d);
     document.getElementById('dDays').textContent = d;
@@ -695,11 +695,10 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
     document.getElementById('rWarm').textContent = nl(warm);
     document.getElementById('rAfs').textContent = nl(Math.round(afs * 10) / 10, { minimumFractionDigits: 1 });
     document.getElementById('rPrijs').textContent = '€ ' + nl(prijs);
-    document.getElementById('rPerAfs').textContent = '€ ' + nl(Math.round(prijs / afs));
+    document.getElementById('rGes').textContent = nl(gespr);
     document.getElementById('tierBadge').textContent = 'Dagprijs € ' + dagprijs(d);
-    var gespr = Math.round(pog * 0.271);
     document.getElementById('mPer').textContent = nl(gespr);
-    var jaren = (MARKT - BENADERD) / (pog / 3.09) * 4 / 52;
+    var jaren = (MARKT - BENADERD) / gespr * 4 / 52;
     document.getElementById('mJaar').textContent = jaren >= 1
       ? nl(Math.round(jaren * 10) / 10, { minimumFractionDigits: 1 }) + ' jaar'
       : Math.round(jaren * 12) + ' maanden';

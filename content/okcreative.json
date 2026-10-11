@@ -330,7 +330,7 @@
           ]
         }
       ],
-      "closing": "Op de lijst met jullie relaties en gewenste klanten kost een afspraak ongeveer € 207, op de koude lijst € 667. Het gaat om vier afspraken uit 207 pogingen, dus het is een richting en geen zekerheid. Maar het is wel het enige signaal in de data dat zo hard is."
+      "closing": "Op de lijst met jullie relaties en gewenste klanten ligt het rendement ruim drie keer hoger. Het gaat om vier afspraken uit 207 pogingen, dus het is een richting en geen zekerheid. Wel is het de knop waarmee we van 1,1 naar 1,5 afspraak per beldag komen: ongeveer een derde van de lijst uit jullie eigen relaties."
     },
     {
       "id": "beldag",
@@ -366,13 +366,13 @@
           "label": "In jullie markt komen we bij ruim een op de drie pogingen langs de receptie."
         },
         {
-          "value": "1 tot 3",
+          "value": "1,5",
           "unit": "gekwalificeerde afspraken",
           "highlight": true,
-          "label": "Eén op de koude lijst, bijna drie op de lijst met jullie eigen relaties. De mix bepaalt het."
+          "label": "Waar we op mikken vanaf werkperiode 4. In de pilot stond het op 1,1 per beldag, de lijst met jullie eigen relaties op bijna 3."
         }
       ],
-      "closing": "Wij rekenen in beldagen en niet in uren, omdat een uur niets zegt over wat eruit komt. Deze aantallen komen uit jullie eigen pilot."
+      "closing": "Wij rekenen in beldagen en niet in uren, omdat een uur niets zegt over wat eruit komt. Vier beldagen met dit target zijn zes afspraken per werkperiode, precies het aantal uit de overeenkomst."
     },
     {
       "id": "model",
@@ -397,8 +397,8 @@
           "text": "Je weet vooraf precies wat een werkperiode kost. Geen nacalculatie, geen kosten per afspraak en geen rekening achteraf."
         },
         {
-          "title": "Een target dat klopt",
-          "text": "Zes afspraken per maand vraagt zes beldagen, niet de bijna vier die er nu in gaan. Dat rekenen we voortaan vooraf uit in plaats van achteraf."
+          "title": "Anderhalve afspraak per beldag",
+          "text": "Daar mikken we op vanaf werkperiode 4. Vier beldagen zijn dan zes afspraken, precies het aantal dat in de overeenkomst staat."
         },
         {
           "title": "Niet gehaald is een gratis beldag",
@@ -418,7 +418,7 @@
           "Vooraf gefactureerd per werkperiode",
           "Geen kosten per afspraak",
           "150 contactpogingen per beldag",
-          "Voorwerk per prospect inbegrepen",
+          "1,5 gekwalificeerde afspraak per beldag",
           "Niet gehaald is een gratis beldag",
           "Succesfee van 5% blijft ongewijzigd"
         ]
@@ -431,10 +431,10 @@
       "eyebrow": "Wat het je oplevert",
       "title": [
         {
-          "t": "Zes afspraken per maand vraagt "
+          "t": "Zes afspraken per maand met "
         },
         {
-          "t": "zes beldagen",
+          "t": "vier beldagen",
           "accent": true
         },
         {
@@ -470,34 +470,8 @@
         },
         {
           "tag": "Voorstel",
-          "head": "Zes beldagen",
-          "highlight": true,
-          "rows": [
-            {
-              "key": "Beldagen",
-              "value": "6"
-            },
-            {
-              "key": "Contactpogingen",
-              "value": "900"
-            },
-            {
-              "key": "Afspraken",
-              "value": "6"
-            },
-            {
-              "key": "Per beldag",
-              "value": "€ 575"
-            },
-            {
-              "key": "Per werkperiode",
-              "value": "€ 3.450"
-            }
-          ]
-        },
-        {
-          "tag": "Of",
           "head": "Vier beldagen",
+          "highlight": true,
           "rows": [
             {
               "key": "Beldagen",
@@ -509,7 +483,7 @@
             },
             {
               "key": "Afspraken",
-              "value": "4"
+              "value": "6"
             },
             {
               "key": "Per beldag",
@@ -520,9 +494,35 @@
               "value": "€ 2.400"
             }
           ]
+        },
+        {
+          "tag": "Of",
+          "head": "Zes beldagen",
+          "rows": [
+            {
+              "key": "Beldagen",
+              "value": "6"
+            },
+            {
+              "key": "Contactpogingen",
+              "value": "900"
+            },
+            {
+              "key": "Afspraken",
+              "value": "9"
+            },
+            {
+              "key": "Per beldag",
+              "value": "€ 575"
+            },
+            {
+              "key": "Per werkperiode",
+              "value": "€ 3.450"
+            }
+          ]
         }
       ],
-      "closing": "Je betaalt nu al ongeveer € 540 per beldag, alleen gaan er bijna vier in een werkperiode. Groeit het aandeel eigen relaties op de lijst, dan lopen deze aantallen omhoog. Dat is de knop waar we samen aan draaien."
+      "closing": "Je betaalt nu al ongeveer € 540 per beldag. Met vier beldagen en een derde eigen relaties op de lijst komen we op de zes afspraken per maand die in de overeenkomst staan. Wil je sneller, dan zijn het er negen bij zes beldagen."
     },
     {
       "id": "nodig",
@@ -545,7 +545,7 @@
         {
           "icon": "users",
           "title": "Jullie lijst met gewenste klanten",
-          "text": "De bedrijven waar Frits en Mark graag binnen willen komen, en de relaties van vroeger. Op dat deel van de lijst ligt het rendement tot nu toe drie keer zo hoog.",
+          "text": "De bedrijven waar Frits en Mark graag binnen willen komen, en de relaties van vroeger. Wij willen ongeveer een derde van de bellijst daaruit laten bestaan. Dat is wat het target van 1,5 haalbaar maakt.",
           "highlight": true
         },
         {
@@ -588,8 +588,8 @@
           "text": "Vooraf gefactureerd, per werkperiode. Geen nacalculatie achteraf."
         },
         {
-          "title": "Target vooraf uitgerekend",
-          "text": "Het aantal afspraken volgt uit het aantal beldagen en de mix van de lijst."
+          "title": "1,5 afspraak per beldag",
+          "text": "Het target waar we op sturen. Vier beldagen zijn zes afspraken per werkperiode."
         },
         {
           "title": "Niet gehaald is een gratis beldag",
