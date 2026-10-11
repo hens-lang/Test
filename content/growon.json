@@ -27,7 +27,7 @@
           "t": "."
         }
       ],
-      "sub": "Twaalf weken bellen zit erop. In deze presentatie staat wat het heeft opgeleverd, wat we onderweg hebben geleerd en hoe we het vanaf november willen inrichten."
+      "sub": "Er verandert weinig. Zelfde team, zelfde bellijst en dezelfde wekelijkse rapportage. Vanaf werkperiode 4 rekenen we in beldagen, met harde aantallen en een scherpere afspraak over wat een afspraak is."
     },
     {
       "id": "wie",
@@ -381,7 +381,7 @@
           "highlight": true
         }
       ],
-      "closing": "De zes uur bellen maken we altijd vol, dus de bovenste drie liggen vast. Halen we de afspraken niet, dan bellen we door tot het aantal er staat, zonder dat daar een factuur tegenover staat."
+      "closing": "De zes uur bellen maken we altijd vol, dus de bovenste drie liggen vast. Halen we de tien afspraken niet, dan krijgen jullie de volgende periode een beldag van ons cadeau."
     },
     {
       "id": "staffel",
@@ -462,12 +462,12 @@
           "text": "Contactpogingen, gesproken bedrijven, terugbelafspraken en gekwalificeerde afspraken. Vastgelegd per beldag en zichtbaar in elke rapportage."
         },
         {
-          "title": "Niet gehaald, dan bellen we door",
-          "text": "Blijft een werkperiode onder de KPI's, dan bellen we in de volgende periode door tot het aantal er staat. Zonder extra factuur."
+          "title": "Niet gehaald is een gratis beldag",
+          "text": "Komt een werkperiode onder de tien afspraken, dan bellen we de volgende periode een dag extra die niet op de rekening komt."
         },
         {
-          "title": "Goedkoper naarmate je langer blijft",
-          "text": "De dagprijs zakt van 600 naar 550 euro bij acht beldagen. Daarmee gaat de prijs per afspraak van 240 naar 220 euro, met twee keer zoveel afspraken.",
+          "title": "Elke periode opnieuw kiezen",
+          "text": "Jullie bepalen per werkperiode het aantal beldagen, vanaf vier. Een maand opzegtermijn, geen jaarcontract en geen opstartkosten meer.",
           "highlight": true
         }
       ],
@@ -479,8 +479,8 @@
           "Vooraf gefactureerd per werkperiode",
           "Geen kosten per afspraak",
           "150 contactpogingen per beldag",
-          "2,5 gekwalificeerde afspraken per beldag",
-          "Niet gehaald is doorbellen zonder factuur",
+          "10 gekwalificeerde afspraken per periode",
+          "Niet gehaald is een gratis beldag",
           "Prijs staat vast tot en met 2027"
         ]
       }
@@ -489,13 +489,13 @@
       "id": "vergelijking",
       "type": "compare",
       "theme": "light",
-      "eyebrow": "Opschalen",
+      "eyebrow": "Wat er verandert",
       "title": [
         {
-          "t": "Hetzelfde ritme, of "
+          "t": "Hetzelfde werk, nu met "
         },
         {
-          "t": "twee keer zoveel",
+          "t": "harde aantallen",
           "accent": true
         },
         {
@@ -505,10 +505,10 @@
       "columns": [
         {
           "tag": "Nu",
-          "head": "€ 1.600 per werkperiode",
+          "head": "Zoals het de afgelopen twaalf weken liep",
           "rows": [
             {
-              "key": "Beldagen",
+              "key": "Beldagen per periode",
               "value": "± 2,7"
             },
             {
@@ -516,25 +516,26 @@
               "value": "± 400"
             },
             {
-              "key": "Afspraken",
+              "key": "Gekwalificeerde afspraken",
               "value": "± 8"
             },
             {
               "key": "Prijs per beldag",
-              "value": "± € 590"
+              "value": "± € 593"
             },
             {
-              "key": "Prijs per afspraak",
-              "value": "± € 200"
+              "key": "Prijs per werkperiode",
+              "value": "€ 1.600"
             }
           ]
         },
         {
-          "tag": "Voorstel",
-          "head": "4 beldagen per werkperiode",
+          "tag": "Vanaf werkperiode 4",
+          "head": "Vier beldagen per vier weken",
+          "highlight": true,
           "rows": [
             {
-              "key": "Beldagen",
+              "key": "Beldagen per periode",
               "value": "4"
             },
             {
@@ -542,26 +543,25 @@
               "value": "600"
             },
             {
-              "key": "Afspraken",
-              "value": "± 10"
+              "key": "Gekwalificeerde afspraken",
+              "value": "10"
             },
             {
               "key": "Prijs per beldag",
               "value": "€ 600"
             },
             {
-              "key": "Prijs per afspraak",
-              "value": "± € 240"
+              "key": "Prijs per werkperiode",
+              "value": "€ 2.400"
             }
           ]
         },
         {
-          "tag": "Opschalen",
-          "head": "8 beldagen per werkperiode",
-          "highlight": true,
+          "tag": "Of dubbel",
+          "head": "Acht beldagen per vier weken",
           "rows": [
             {
-              "key": "Beldagen",
+              "key": "Beldagen per periode",
               "value": "8"
             },
             {
@@ -569,21 +569,21 @@
               "value": "1.200"
             },
             {
-              "key": "Afspraken",
-              "value": "± 20"
+              "key": "Gekwalificeerde afspraken",
+              "value": "20"
             },
             {
               "key": "Prijs per beldag",
               "value": "€ 550"
             },
             {
-              "key": "Prijs per afspraak",
-              "value": "± € 220"
+              "key": "Prijs per werkperiode",
+              "value": "€ 4.400"
             }
           ]
         }
       ],
-      "closing": "Je betaalt nu al bijna zeshonderd euro per beldag, alleen koop je er maar bijna drie per periode. Bij acht beldagen zakt de dagprijs naar 550 euro en de prijs per afspraak naar 220, met twee keer zoveel afspraken."
+      "closing": "De dagprijs blijft gelijk aan wat je nu per beldag betaalt. Neem je het dubbele af, dan zakt die naar 550 euro per beldag en betaal je 220 euro per afspraak in plaats van 240."
     },
     {
       "id": "nodig",
@@ -652,8 +652,8 @@
           "text": "Pogingen, gesproken bedrijven, terugbelafspraken en gekwalificeerde afspraken, per beldag vastgelegd."
         },
         {
-          "title": "Niet gehaald is doorbellen",
-          "text": "We bellen door tot het aantal er staat, zonder extra factuur."
+          "title": "Niet gehaald is een gratis beldag",
+          "text": "Onder de tien afspraken in een werkperiode, dan bellen we de volgende periode een dag extra zonder factuur."
         },
         {
           "title": "Kwalificatie-eisen samen vastgesteld",
