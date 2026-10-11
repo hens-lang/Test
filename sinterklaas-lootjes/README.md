@@ -18,7 +18,12 @@ De deelnemerslijst wordt in de browser van de organisator bewaard, zodat je volg
 De uitslag wordt nergens opgeslagen: die zit alleen (versleuteld) in de persoonlijke links.
 Trek je opnieuw, stuur dan iedereen de nieuwe link.
 
-## Eén link voor de hele familie (makkelijkst)
+## Persoonlijke links (geheim)
+
+`node maak-links.js instellingen.json verstuurpagina.html` trekt de lootjes en maakt voor iedereen een eigen link
+(alleen het eigen lootje staat erin) plus een verstuurpagina met per naam een WhatsApp-knop.
+
+## Eén link voor de hele familie (makkelijkst, maar spieken kan)
 
 `node maak-groepslink.js instellingen.json` trekt de lootjes (met huishoudens en vaste trekkingen) en geeft één link.
 Die link deel je in de familie-app: iedereen tikt op zijn naam, opent zijn lootje en deelt daar zijn verlanglijstje.
@@ -57,6 +62,7 @@ en laat ze de code plakken bij *Heb je een code gekregen?*.
 | `lootjes.js`  | Gedeelde logica: regels controleren, eerlijk trekken, codes maken en lezen.   |
 | `bouw-artifact.py` | Maakt één los bestand voor de Claude-versie.                          |
 | `maak-groepslink.js` | Trekt de lootjes en maakt één link voor de familie-app.          |
+| `maak-links.js` | Trekt de lootjes en maakt per persoon een geheime link + verstuurpagina. |
 | `test.js`     | Tests voor `lootjes.js` (`node test.js`).                                      |
 
 > De codes zijn versluierd zodat niemand per ongeluk een naam in de link leest; het is geen echte beveiliging.
