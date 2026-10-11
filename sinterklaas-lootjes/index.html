@@ -278,7 +278,8 @@
     background: rgba(246, 239, 226, .04); border: 1px solid var(--rand-zacht); border-radius: 14px; padding: 13px 15px;
     white-space: pre-line; min-width: 0; overflow-wrap: anywhere;
   }
-  .feiten { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .feiten { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (min-width: 520px) { .feiten { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   .feit { font-size: 15px; }
   .feit:first-child:not(:only-child) { font-size: 16px; }
   .feit:first-child:not(:only-child) { grid-column: 1 / -1; border-color: var(--rand); background: rgba(217, 180, 90, .06); }
@@ -295,6 +296,12 @@
   .rijm span { border: 1px solid var(--rand-zacht); border-radius: 999px; padding: 4px 12px; font-size: 14px; color: var(--mist); }
   footer { text-align: center; margin-top: 30px; }
 
+  .namen { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 26px; }
+  .namen button {
+    border-radius: 16px; padding: 18px 12px; font-family: var(--f-display); font-size: 21px; font-weight: 400;
+    background: linear-gradient(180deg, var(--fluweel-2), var(--fluweel)); border: 1px solid var(--rand-zacht);
+  }
+  .namen button:hover { border-color: var(--goud); background: linear-gradient(180deg, #3a1a29, var(--fluweel)); }
   #confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
 
   @media (prefers-reduced-motion: reduce) {
@@ -325,6 +332,16 @@
     <h1>Sinterklaas <em>Lootjes</em></h1>
     <p class="lead">Lootjes trekken voor de gedichten. Iedereen ziet alleen zijn eigen lootje.</p>
   </header>
+
+  <!-- ===================== GROEPSLINK: KIES JE NAAM ===================== -->
+  <section id="groepKiezer" class="verborgen">
+    <div class="podium">
+      <p class="oogje" id="groepEvenement"></p>
+      <h2 class="groet">Wie ben jij?</h2>
+      <p class="lead">Tik op je eigen naam. Niet spieken bij een ander, anders is de verrassing weg!</p>
+      <div class="namen" id="groepNamen"></div>
+    </div>
+  </section>
 
   <!-- ===================== WENSEN INVULLEN (via uitnodigingslink) ===================== -->
   <section id="wensenInvullen" class="verborgen">
@@ -498,6 +515,17 @@
         <div class="groot" id="ontvangerNaam"></div>
         <div class="feiten" id="feiten"></div>
         <button class="link" id="verberg">Verberg weer</button>
+      </div>
+    </div>
+
+    <div class="card verborgen" id="mijnLijst">
+      <div class="head">
+        <h2>Mijn verlanglijstje</h2>
+        <p class="muted small">Wat zou je zelf graag krijgen? Typ het hier en deel het in de familie-app, dan weet jouw dichter het ook.</p>
+      </div>
+      <textarea id="lijstTekst" rows="4" placeholder="Bijv. een goed boek, warme sokken, iets met koffie… en waar mag de Sint je mee plagen?"></textarea>
+      <div class="acties">
+        <a class="knop primair-link" id="lijstDeel" target="_blank" rel="noopener" href="#" aria-disabled="true">Deel in de familie-app</a>
       </div>
     </div>
 
@@ -846,6 +874,8 @@
     $('dicht').classList.remove('verborgen');
     $('open').classList.add('verborgen');
     $('hulp').classList.add('verborgen');
+    $('mijnLijst').classList.add('verborgen');
+    $('naarStart').textContent = groep ? 'Ben jij niet ' + lot.gever + '? Kies je naam' : $('naarStart').textContent;
   }
 
   // Strooigoed: pepernoten en goudsnippers die over het scherm vallen.
@@ -901,7 +931,7 @@
     feiten.innerHTML = '';
     [
       ['Wensen van ' + lot.ontvanger, eigen && eigen.tekst],
-      ['Wensen & tips over ' + lot.ontvanger, lot.wens],
+      ['Wensen & tips over ' + lot.ontvanger, lot.wens || (groep ? 'Kijk in de familie-app: daar deelt ' + lot.ontvanger + ' zijn of haar verlanglijstje.' : '')],
       ['Budget', lot.budget], ['Gedicht klaar', lot.deadline], ['Pakjesavond', lot.datum]
     ].forEach(function (f) {
       if (!f[1]) return;
@@ -918,6 +948,46 @@
       leeg.textContent = lot.ontvanger + ' heeft nog geen wensen ingevuld. Kijk later nog eens: ze verschijnen hier vanzelf.';
       feiten.insertBefore(leeg, feiten.firstChild);
     }
+  }
+
+  // ---------- Groepslink: iedereen kiest zijn naam ----------
+  var groep = null;
+  var GROEP_IK = 'sint-lootjes-groep-ik';
+
+  function toonGroepKiezer() {
+    document.body.classList.add('modus-gast');
+    ['organisator', 'gedeeld', 'deelnemer', 'wensenInvullen'].forEach(function (id) { $(id).classList.add('verborgen'); });
+    $('groepKiezer').classList.remove('verborgen');
+    $('groepEvenement').textContent = [groep.info.evenement, groep.info.datum].filter(Boolean).join(' · ');
+    var lijst = $('groepNamen');
+    lijst.innerHTML = '';
+    groep.namen.forEach(function (naam) {
+      var b = knop(naam, function () {
+        try { localStorage.setItem(GROEP_IK, naam); } catch (e) { /* geen opslag */ }
+        openGroepsLootje(naam);
+      });
+      lijst.appendChild(b);
+    });
+    window.scrollTo(0, 0);
+  }
+
+  function openGroepsLootje(naam) {
+    var lot = groep.lootje(naam);
+    if (!lot) return toonGroepKiezer();
+    $('groepKiezer').classList.add('verborgen');
+    toonLootje(lot);
+    try { $('lijstTekst').value = localStorage.getItem('sint-lootjes-lijst-' + Lootjes.sleutel(naam)) || ''; } catch (e) { $('lijstTekst').value = ''; }
+    werkLijstBij();
+    window.scrollTo(0, 0);
+  }
+
+  function werkLijstBij() {
+    if (!huidigLot) return;
+    var tekst = $('lijstTekst').value.trim();
+    var a = $('lijstDeel');
+    a.href = tekst ? 'https://wa.me/?text=' + encodeURIComponent('🎅 Verlanglijstje van ' + huidigLot.gever + ':\n' + tekst) : '#';
+    a.setAttribute('aria-disabled', tekst ? 'false' : 'true');
+    try { localStorage.setItem('sint-lootjes-lijst-' + Lootjes.sleutel(huidigLot.gever), $('lijstTekst').value); } catch (e) { /* geen opslag */ }
   }
 
   // ---------- Wensen invullen (familie, via uitnodigingslink) ----------
@@ -1017,6 +1087,15 @@
 
   function openVanuitHash() {
     var h = location.hash;
+    if (h.indexOf('#groep=') === 0) {
+      groep = Lootjes.leesGroepsCode(h);
+      if (groep) {
+        var ik = '';
+        try { ik = localStorage.getItem(GROEP_IK) || ''; } catch (e) { ik = ''; }
+        if (ik && groep.lootje(ik)) openGroepsLootje(ik); else toonGroepKiezer();
+        return true;
+      }
+    }
     if (h.indexOf('#wensen=') === 0) {
       var u = Lootjes.leesUitnodiging(h);
       if (u) { toonWensenInvullen(u); return true; }
@@ -1075,6 +1154,7 @@
     $('wensVerwerk').addEventListener('click', verwerkWensen);
     $('uitNaam').addEventListener('change', werkWensKnopBij);
     $('uitWens').addEventListener('input', werkWensKnopBij);
+    $('lijstTekst').addEventListener('input', werkLijstBij);
     $('uitKopieer').addEventListener('click', function () { kopieerTekst(wensBericht(), $('uitKopieer')); });
     laadVastLokaal();
     toonVast();
@@ -1102,6 +1182,7 @@
         $('dicht').classList.add('verborgen');
         $('open').classList.remove('verborgen');
         $('hulp').classList.remove('verborgen');
+        if (groep) $('mijnLijst').classList.remove('verborgen');
         if (!rustig) pepernoten();
       };
       if (rustig) return toon();
@@ -1109,6 +1190,7 @@
       setTimeout(toon, 1350);
     });
     $('verberg').addEventListener('click', function () {
+      $('mijnLijst').classList.add('verborgen');
       $('envelop').classList.remove('opent');
       $('dicht').classList.remove('verborgen');
       $('open').classList.add('verborgen');
@@ -1116,6 +1198,11 @@
     });
     $('kopieerOpzet').addEventListener('click', function () { kopieerTekst($('opzet').textContent, $('kopieerOpzet')); });
     $('naarStart').addEventListener('click', function () {
+      if (groep) {
+        try { localStorage.removeItem(GROEP_IK); } catch (e) { /* geen opslag */ }
+        huidigLot = null;
+        return toonGroepKiezer();
+      }
       try { history.replaceState(null, '', eigenUrl()); } catch (e) { /* niet toegestaan */ }
       huidigLot = null;
       document.body.classList.remove('modus-gast');

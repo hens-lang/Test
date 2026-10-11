@@ -67,4 +67,15 @@ const chat = '[12:01] Zoë: Mijn wensen!\n' + L.maakWensCode('Zoë', 'Boeken �
 assert.deepStrictEqual(L.leesWensCodes(chat), [{ naam: 'Zoë', wens: 'Boeken 📚' }, { naam: 'mart', wens: 'Nieuw: drop' }]);
 assert.deepStrictEqual(L.leesWensCodes('niks hier SINT-WENS:kapot'), []);
 
+// Groepslink: één link, iedereen ziet alleen zijn eigen lootje
+const groepParen = L.trek(familie, null, vast);
+const groep = L.leesGroepsCode('https://x.nl/#groep=' + L.maakGroepsCode(groepParen, { evenement: 'Pakjesavond', budget: '€ 15' }));
+assert.deepStrictEqual(groep.namen, familie.map(p => p.naam));
+groepParen.forEach(p => assert.strictEqual(groep.lootje(p.gever.naam).ontvanger, p.ontvanger.naam));
+assert.strictEqual(groep.lootje('opa').ontvanger, 'Lotte');
+assert.strictEqual(groep.lootje('Piet'), null);
+assert.strictEqual(groep.info.budget, '€ 15');
+assert.ok(!L.maakGroepsCode(groepParen, {}).includes('Lotte'));
+assert.strictEqual(L.leesGroepsCode('#groep=kapot'), null);
+
 console.log('✔ Alle tests geslaagd');

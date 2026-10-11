@@ -271,6 +271,47 @@
     return volgorde.map(function (k) { return perNaam[k]; });
   }
 
+  // ---------- Groepslink: één link voor de hele familie-app ----------
+
+  /**
+   * Maakt één code met alle lootjes erin. Iedereen kiest op de pagina zijn naam
+   * en ziet alleen het eigen lootje. `info` = { evenement, datum, budget, deadline }.
+   */
+  function maakGroepsCode(paren, info) {
+    info = info || {};
+    return pak({
+      v: VERSIE, t: 'g',
+      i: { e: schoon(info.evenement), d: schoon(info.datum), b: schoon(info.budget), l: schoon(info.deadline) },
+      n: paren.map(function (p) { return schoon(p.gever.naam); }),
+      // Elk lootje apart versluierd, zodat de namen niet leesbaar in de link staan.
+      l: paren.map(function (p, i) { return pak({ k: i, o: schoon(p.ontvanger.naam) }); })
+    });
+  }
+
+  /** Leest een groepscode (of link met #groep=...). Geeft { info, namen, lootje(naam) } of null. */
+  function leesGroepsCode(codeOfLink) {
+    var s = String(codeOfLink || '').trim();
+    var hekje = s.indexOf('#');
+    if (hekje !== -1) s = s.slice(hekje + 1);
+    s = s.replace(/^groep=/, '');
+    var d = uitpak(s);
+    if (!d || d.v !== VERSIE || d.t !== 'g' || !Array.isArray(d.n) || !Array.isArray(d.l) || d.n.length !== d.l.length) return null;
+    var info = { evenement: d.i.e || '', datum: d.i.d || '', budget: d.i.b || '', deadline: d.i.l || '' };
+    return {
+      info: info,
+      namen: d.n.slice(),
+      lootje: function (naam) {
+        var i = d.n.map(sleutelVan).indexOf(sleutelVan(naam));
+        var o = i === -1 ? null : uitpak(d.l[i]);
+        if (!o || o.k !== i || !o.o) return null;
+        return {
+          gever: d.n[i], ontvanger: o.o, wens: '',
+          evenement: info.evenement, datum: info.datum, budget: info.budget, deadline: info.deadline
+        };
+      }
+    };
+  }
+
   /** Zet tekst "Anna, Piet; Klaas" om naar ['Anna','Piet','Klaas']. */
   function splitsNamen(tekst) {
     return String(tekst || '').split(/[,;\n]/).map(schoon).filter(Boolean);
@@ -285,6 +326,8 @@
     leesCode: leesCode,
     splitsNamen: splitsNamen,
     maakUitnodiging: maakUitnodiging,
+    maakGroepsCode: maakGroepsCode,
+    leesGroepsCode: leesGroepsCode,
     leesUitnodiging: leesUitnodiging,
     maakWensCode: maakWensCode,
     leesWensCodes: leesWensCodes,
