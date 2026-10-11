@@ -219,10 +219,10 @@
           "label": "Concrete vervolgmomenten die we hebben vastgelegd en opvolgen."
         },
         {
-          "value": "21",
+          "value": "24",
           "unit": "afspraken en overdrachten",
           "highlight": true,
-          "label": "Gemiddeld één op de 58 pogingen. Werkperiode 3 loopt nog door tot 25 oktober."
+          "label": "Eenentwintig staan er, drie komen er nog bij voor 25 oktober. Gemiddeld een op de 51 pogingen."
         }
       ],
       "closing": "Alle cijfers komen uit de wekelijkse rapportages die je elke week hebt ontvangen. Niets opgehoogd, niets weggelaten."
@@ -234,10 +234,10 @@
       "eyebrow": "Het verloop",
       "title": [
         {
-          "t": "Sterke start, dip in de zomer, "
+          "t": "Hoe langer we bellen, "
         },
         {
-          "t": "nu weer omhoog",
+          "t": "hoe meer er uit komt",
           "accent": true
         },
         {
@@ -247,24 +247,24 @@
       "columns": [
         "Werkperiode",
         "Contactpogingen",
-        "Gesproken",
-        "Afspraken"
+        "Afspraken",
+        "Per 1.000 pogingen"
       ],
       "rows": [
         {
           "cells": [
             "1 · week 32 t/m 35",
             "604",
-            "443",
-            "10"
+            "10",
+            "17"
           ]
         },
         {
           "cells": [
             "2 · week 36 t/m 39",
             "379",
-            "164",
-            "6"
+            "6",
+            "16"
           ],
           "note": "vakantie"
         },
@@ -272,14 +272,56 @@
           "cells": [
             "3 · week 40 t/m 43",
             "230",
-            "115",
-            "5"
+            "8",
+            "35"
           ],
           "highlight": true,
           "note": "loopt nog"
         }
       ],
-      "closing": "De dip in werkperiode 2 was vakantie: minder bereikbaarheid en in week 39 is er niet gebeld. Werkperiode 3 staat na twee weken al op vijf, met nog twee weken te gaan."
+      "closing": "Werkperiode 3 levert per duizend pogingen twee keer zoveel op als de eerste. Dat komt door de lijst met 290 terugbelafspraken die we onderweg hebben opgebouwd. Die lijst is nu het meest waardevolle dat er ligt."
+    },
+    {
+      "id": "beldag",
+      "type": "figures",
+      "theme": "light",
+      "eyebrow": "De eenheid waarin we rekenen",
+      "title": [
+        {
+          "t": "Een beldag is geen dag, maar een "
+        },
+        {
+          "t": "vaste hoeveelheid werk",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "value": "6",
+          "unit": "uur bellen",
+          "label": "Netto aan de telefoon. Voorbereiding, notities en rapportage zitten daarbuiten en zijn inbegrepen."
+        },
+        {
+          "value": "± 100",
+          "unit": "contactpogingen",
+          "label": "Ongeveer zeventien pogingen per uur bellen, gemeten over jullie hele pilot."
+        },
+        {
+          "value": "± 60",
+          "unit": "bedrijven gesproken",
+          "label": "Zes van de tien pogingen leveren de juiste persoon aan de lijn op."
+        },
+        {
+          "value": "± 2",
+          "unit": "gekwalificeerde afspraken",
+          "highlight": true,
+          "label": "Vierentwintig afspraken over ruim twaalf beldagen. Dit is het getal waar we op sturen."
+        }
+      ],
+      "closing": "Wij rekenen in beldagen en niet in uren, omdat een uur niets zegt over wat eruit komt. Een beldag is dit rijtje, elke periode opnieuw."
     },
     {
       "id": "staffel",
@@ -310,7 +352,7 @@
             "4 beldagen",
             "€ 600",
             "€ 2.400",
-            "± 7"
+            "± 8"
           ]
         },
         {
@@ -318,7 +360,7 @@
             "5 tot 7 beldagen",
             "€ 550",
             "€ 2.750 tot € 3.850",
-            "± 9 tot 12"
+            "± 10 tot 14"
           ]
         },
         {
@@ -326,12 +368,62 @@
             "8 beldagen of meer",
             "€ 500",
             "vanaf € 4.000",
-            "± 14"
+            "± 16"
           ],
           "highlight": true
         }
       ],
-      "closing": "De verwachte aantallen zijn een indicatie, gebaseerd op 17,3 afspraken per duizend contactpogingen uit jullie eigen pilot, bij ongeveer honderd pogingen per beldag. Minimaal vier beldagen per periode, prijzen excl. btw."
+      "closing": "De verwachte aantallen zijn een indicatie, gebaseerd op twee gekwalificeerde afspraken per beldag uit jullie eigen pilot. Minimaal vier beldagen per periode, prijzen excl. btw."
+    },
+    {
+      "id": "model",
+      "type": "offer",
+      "theme": "dark",
+      "eyebrow": "Hoe we afrekenen",
+      "title": [
+        {
+          "t": "Vooraf een vaste prijs, achteraf geen "
+        },
+        {
+          "t": "verrassingen",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "title": "Vaste prijs per beldag",
+          "text": "Je betaalt per beldag, vooraf gefactureerd per werkperiode. Geen nacalculatie, geen rekening per afspraak en geen succesfee meer."
+        },
+        {
+          "title": "Target van twee per beldag",
+          "text": "Twee gekwalificeerde afspraken per beldag, het gemiddelde uit jullie eigen pilot. We meten per werkperiode, want de ene dag is de andere niet."
+        },
+        {
+          "title": "Inhaaldag als vangnet",
+          "text": "Blijft een werkperiode onder target, dan bellen we de volgende periode een dag extra die niet op de rekening komt. Maximaal één per periode."
+        },
+        {
+          "title": "Elke periode opnieuw kiezen",
+          "text": "Jullie bepalen per werkperiode het aantal beldagen, vanaf vier. Een maand opzegtermijn, geen jaarcontract.",
+          "highlight": true
+        }
+      ],
+      "bar": {
+        "label": "Prijs per beldag",
+        "price": "€ 600",
+        "note": "vanaf 8 beldagen € 500, excl. btw",
+        "items": [
+          "Vooraf gefactureerd per werkperiode",
+          "Geen kosten per afspraak",
+          "Target van 2 afspraken per beldag",
+          "Inhaaldag als we eronder blijven",
+          "Bellijst, belsysteem en nummer inbegrepen",
+          "Wekelijkse rapportage"
+        ]
+      }
     },
     {
       "id": "vergelijking",
@@ -360,16 +452,20 @@
               "value": "± 4"
             },
             {
+              "key": "Uur bellen",
+              "value": "± 24"
+            },
+            {
               "key": "Contactpogingen",
               "value": "± 400"
             },
             {
-              "key": "Bedrijven gesproken",
-              "value": "± 240"
+              "key": "Afspraken",
+              "value": "± 8"
             },
             {
-              "key": "Afspraken",
-              "value": "± 7"
+              "key": "Prijs per afspraak",
+              "value": "± € 200"
             }
           ]
         },
@@ -382,16 +478,20 @@
               "value": "4"
             },
             {
+              "key": "Uur bellen",
+              "value": "24"
+            },
+            {
               "key": "Contactpogingen",
               "value": "± 400"
             },
             {
-              "key": "Bedrijven gesproken",
-              "value": "± 240"
+              "key": "Afspraken",
+              "value": "± 8"
             },
             {
-              "key": "Afspraken",
-              "value": "± 7"
+              "key": "Prijs per afspraak",
+              "value": "± € 300"
             }
           ]
         },
@@ -405,21 +505,25 @@
               "value": "8"
             },
             {
+              "key": "Uur bellen",
+              "value": "48"
+            },
+            {
               "key": "Contactpogingen",
               "value": "± 800"
             },
             {
-              "key": "Bedrijven gesproken",
-              "value": "± 480"
+              "key": "Afspraken",
+              "value": "± 16"
             },
             {
-              "key": "Afspraken",
-              "value": "± 14"
+              "key": "Prijs per afspraak",
+              "value": "± € 250"
             }
           ]
         }
       ],
-      "closing": "De bellijst, het script en de bezetting liggen er al. Verdubbelen kan vanaf de eerstvolgende werkperiode, zonder opstarttijd."
+      "closing": "In de pilot betaalde je het minst per afspraak, omdat de pilotprijs onder onze dagprijs lag. Bij acht beldagen zakt de prijs per afspraak terug naar ongeveer tweehonderdvijftig euro."
     },
     {
       "id": "nodig",
@@ -481,15 +585,23 @@
       "rules": [
         {
           "title": "Werkperiodes van 4 weken",
-          "text": "Vooraf gefactureerd, per werkperiode."
+          "text": "Vooraf gefactureerd, per werkperiode. Geen nacalculatie achteraf."
         },
         {
-          "title": "Maand opzegtermijn",
-          "text": "Vastgelegd, met een maand opzegtermijn. Geen jaarcontract."
+          "title": "Target van 2 afspraken per beldag",
+          "text": "Het getal uit jullie eigen pilot. Daar sturen wij op en daar belonen wij onze bellers op."
+        },
+        {
+          "title": "Inhaaldag als we eronder blijven",
+          "text": "Maximaal een extra beldag per werkperiode, zonder dat die op de rekening komt."
         },
         {
           "title": "Op- en afschalen",
           "text": "Per werkperiode bepalen jullie het aantal beldagen, vanaf vier."
+        },
+        {
+          "title": "Maand opzegtermijn",
+          "text": "Vastgelegd, met een maand opzegtermijn. Geen jaarcontract."
         },
         {
           "title": "Geen opstartkosten meer",
@@ -500,16 +612,8 @@
           "text": "Uitsluitlijst vooraf, die bedrijven benaderen wij niet."
         },
         {
-          "title": "Wekelijkse rapportage",
-          "text": "Zoals je die nu ook elke week ontvangt."
-        },
-        {
           "title": "Gegevens veilig",
-          "text": "Vastgelegd in de verwerkersovereenkomst."
-        },
-        {
-          "title": "Alles op papier",
-          "text": "Vastgelegd in een korte aanvulling op de samenwerkingsovereenkomst."
+          "text": "Vastgelegd in de verwerkersovereenkomst, met een korte aanvulling op de samenwerkingsovereenkomst."
         }
       ]
     },
