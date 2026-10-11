@@ -31,6 +31,11 @@ h2{font-size:clamp(29px,4.3vw,52px); letter-spacing:-0.03em}
 h3{font-size:clamp(18px,1.9vw,22px); letter-spacing:-0.012em}
 .acc{color:var(--accent); font-style:normal}
 p{margin:0}
+.eyebrow::before{
+  content:''; display:inline-block; width:7px; height:7px; border-radius:50%;
+  background:var(--accent); margin-right:12px; vertical-align:0.15em;
+}
+.pt{color:var(--accent)}
 .eyebrow{
   font-size:12.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.22em;
   color:var(--accent); margin-bottom:20px;
@@ -129,6 +134,20 @@ p{margin:0}
 .mo .v{font-size:19px; font-weight:800; font-variant-numeric:tabular-nums}
 .mo .l{font-size:12.5px; color:var(--ink-muted-2); text-transform:uppercase; letter-spacing:0.1em}
 .mo.key .v{color:var(--accent)}
+.tiers{display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:10px; margin-top:28px}
+.tier{font:inherit; cursor:pointer; text-align:left; background:var(--card); border:1px solid var(--line);
+  border-radius:8px; padding:16px 14px; color:var(--muted); transition:border-color .18s ease, background .18s ease, color .18s ease; min-width:0}
+.tier:hover{border-color:rgba(56,182,255,0.5)}
+.tier[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:#001523}
+.tier .s{font-size:12px; font-weight:700; letter-spacing:0.02em; display:block}
+.tier .f{font-size:19px; font-weight:800; letter-spacing:-0.02em; margin-top:8px; display:block; color:var(--fg); font-variant-numeric:tabular-nums}
+.tier[aria-pressed="true"] .f{color:#001523}
+.tier-out{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; margin-top:22px;
+  border-top:1px solid var(--line); padding-top:24px}
+.tier-out > div{display:flex; flex-direction:column; gap:8px; min-width:0}
+.to-k{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--muted-2)}
+.to-v{font-size:clamp(22px,2.6vw,30px); font-weight:800; letter-spacing:-0.03em; font-variant-numeric:tabular-nums}
+.to-v.acc{color:var(--accent)}
 .quality{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin-top:38px}
 .q{border:1px solid var(--line-ink); border-radius:10px; padding:24px 26px}
 .q .n{font-size:32px; font-weight:800; letter-spacing:-0.03em; font-variant-numeric:tabular-nums}
@@ -200,6 +219,8 @@ input[type=range]:focus-visible{box-shadow:0 0 0 3px rgba(56,182,255,.45)}
   display:inline-flex; gap:10px; align-items:center; transition:border-color .18s ease, background .18s ease}
 .copy:hover{border-color:var(--accent); background:var(--accent-soft)}
 footer{padding:34px 0 54px; font-size:13.5px; color:var(--muted-2); background:var(--black)}
+footer b{font-weight:800; color:var(--fg)}
+footer b span{color:var(--accent)}
 footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap}
 
 #prog{position:fixed; left:0; right:0; top:0; height:3px; background:var(--accent); width:0; z-index:50}
@@ -220,6 +241,8 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
   .legend{grid-template-columns:repeat(2,minmax(0,1fr))}
   .months{grid-template-columns:repeat(3,minmax(0,1fr))}
   .quality{grid-template-columns:1fr}
+  .tiers{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .tier-out{grid-template-columns:repeat(2,minmax(0,1fr))}
   .detail{grid-template-columns:1fr; gap:14px}
 }
 @media (max-width:520px){
@@ -229,6 +252,8 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
   .fr .lab{font-size:13.5px}
   .legend{grid-template-columns:1fr}
   .stack{height:52px}
+  .tiers{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tier-out{grid-template-columns:1fr}
 }
 </style>
 
@@ -273,15 +298,25 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
 <section>
   <div class="wrap">
     <p class="eyebrow reveal">Wat die afspraken hebben opgeleverd</p>
-    <h2 class="reveal">Twee klanten. Die betalen de pilot <span class="acc">vier keer terug</span>.</h2>
+    <h2 class="reveal">Twee klanten. Die betalen de pilot <span class="acc">bijna vijf keer terug</span>.</h2>
     <p class="lead reveal">Messermeister en Green Earth hebben akkoord gegeven. Eén nieuwe klant per werkperiode, uit afspraken die wij hebben geboekt.</p>
     <div class="stats">
       <div class="stat reveal"><div class="n">€ 5.550</div><div class="u">betaald in twaalf weken</div><div class="d">€ 750 opstart plus drie werkperiodes van € 1.600.</div></div>
       <div class="stat reveal"><div class="n">€ 2.775</div><div class="u">per nieuwe klant</div><div class="d">De hele investering gedeeld door twee klanten. Per lead is dat € 213.</div></div>
-      <div class="stat reveal"><div class="n">€ 11.900</div><div class="u">waarde in het eerste jaar</div><div class="d">Twaalf maanden managementfee van € 950 plus € 500 opstart, uit jullie eigen staffel.</div></div>
-      <div class="stat hi reveal"><div class="n">4,3&times;</div><div class="u">rendement per klant</div><div class="d">Terugverdiend in drie maanden. Bij een fee van € 1.250 wordt het 5,6 keer.</div></div>
+      <div class="stat reveal"><div class="n" id="kJaar">€ 13.040</div><div class="u">waarde in het eerste jaar</div><div class="d">Twaalf maanden fee plus € 500 opstart, uit jullie eigen staffel.</div></div>
+      <div class="stat hi reveal"><div class="n" id="kRend">4,7&times;</div><div class="u">rendement per klant</div><div class="d" id="kTerug">Terugverdiend in 2,7 maanden.</div></div>
     </div>
-    <p class="note">Gerekend met de instapfee uit de kickoff: € 950 per maand tot € 2.250 advertentiebudget, € 1.250 bij € 2.500. Blijft een klant langer dan een jaar, dan loopt dit rendement door zonder dat er nog acquisitiekosten tegenover staan.</p>
+
+    <h3 style="margin-top:64px">En dit is pas de instap</h3>
+    <p class="lead" style="margin-top:14px">Jullie staffel loopt van € 1.045 tot € 2.480 per maand. Klik op een trede en kijk wat één klant daar waard is.</p>
+    <div class="tiers" id="tiers" role="group" aria-label="Prijsstaffel GrowOn"></div>
+    <div class="tier-out">
+      <div><span class="to-k">Maandfee</span><span class="to-v" id="tFee">€ 1.045</span></div>
+      <div><span class="to-k">Waarde per klant, jaar 1</span><span class="to-v" id="tJaar">€ 13.040</span></div>
+      <div><span class="to-k">Terugverdiend in</span><span class="to-v" id="tPay">2,7 maanden</span></div>
+      <div><span class="to-k">Deze twee klanten samen</span><span class="to-v acc" id="tTwee">€ 26.080</span></div>
+    </div>
+    <p class="note">Groeit een klant van de instap naar de bovenste trede, dan levert dat <b class="acc">€ 17.220 per jaar extra</b> op. Zonder dat daar één euro acquisitiekosten tegenover staat, want die klant zit er al.</p>
   </div>
 </section>
 
@@ -418,7 +453,7 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
 
 <footer>
   <div class="wrap">
-    <span>LINK. &middot; Voorstel GrowOn Agency</span>
+    <span><b>LINK<span>.</span></b> &middot; Voorstel GrowOn Agency</span>
     <span>Cijfers uit de rapportages week 32 t/m 41 &middot; 11 oktober 2026</span>
   </div>
 </footer>
@@ -427,6 +462,18 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
 (function(){
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var nl = function(n, d){ return n.toLocaleString('nl-NL', d || {}); };
+
+  /* ---- de punt als motief: laatste punt van elke kop in accentkleur ---- */
+  Array.prototype.forEach.call(document.querySelectorAll('h1,h2,h3'), function(h){
+    var last = h.lastChild;
+    while (last && last.nodeType === 3 && !last.nodeValue.trim()) last = last.previousSibling;
+    if (!last || last.nodeType !== 3) return;
+    var v = last.nodeValue.replace(/\s+$/, '');
+    if (v.slice(-1) !== '.') return;
+    last.nodeValue = v.slice(0, -1);
+    var s = document.createElement('span'); s.className = 'pt'; s.textContent = '.';
+    h.appendChild(s);
+  });
 
   /* ---- hero netwerk ---- */
   var cv = document.getElementById('net'), ctx = cv.getContext('2d'), nodes = [], raf = null;
@@ -655,8 +702,36 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
   /* ---- rekenmachine ---- */
   var POG = 150, SPREEK = 0.595, AFS = 2.5, MARKT = 11500;
   function dagprijs(d){ return d >= 8 ? 550 : (d >= 5 ? 575 : 600); }
+  /* ---- prijsstaffel van GrowOn ---- */
+  var TIERS = [
+    { s:'tot € 2.250',        f:1045 }, { s:'€ 2.250 – 4.500',   f:1375 },
+    { s:'€ 4.500 – 7.500',    f:1590 }, { s:'€ 7.500 – 15.000',  f:1815 },
+    { s:'€ 15.000 – 22.500',  f:2140 }, { s:'€ 22.500 – 30.000', f:2480 }
+  ];
+  var tc = document.getElementById('tiers');
+  function pickTier(i){
+    Array.prototype.forEach.call(tc.children, function(b, j){ b.setAttribute('aria-pressed', j === i ? 'true' : 'false'); });
+    var f = TIERS[i].f, jaar = f * 12 + 500, pay = CAC / f;
+    document.getElementById('tFee').textContent = '€ ' + nl(f);
+    document.getElementById('tJaar').textContent = '€ ' + nl(jaar);
+    document.getElementById('tPay').textContent = nl(Math.round(pay * 10) / 10, { minimumFractionDigits: 1 }) + ' maanden';
+    document.getElementById('tTwee').textContent = '€ ' + nl(jaar * 2);
+    document.getElementById('kJaar').textContent = '€ ' + nl(jaar);
+    document.getElementById('kRend').textContent = nl(Math.round(jaar / CAC * 10) / 10, { minimumFractionDigits: 1 }) + '\u00d7';
+    document.getElementById('kTerug').textContent = 'Terugverdiend in ' + nl(Math.round(pay * 10) / 10, { minimumFractionDigits: 1 }) + ' maanden.';
+    WAARDE = jaar;
+    render();
+  }
+  TIERS.forEach(function(x, i){
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'tier'; b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+    b.innerHTML = '<span class="s">' + x.s + '</span><span class="f">€ ' + nl(x.f) + '</span>';
+    b.addEventListener('click', function(){ pickTier(i); });
+    tc.appendChild(b);
+  });
+
   var sl = document.getElementById('slider');
-  var CONV = 0.077, WAARDE = 11900, PERIODES = 13;
+  var CONV = 0.077, WAARDE = 13040, PERIODES = 13, CAC = 2775;
   function render(){
     var d = parseInt(sl.value, 10);
     var pog = d * POG, ges = Math.round(pog * SPREEK), afs = d * AFS, prijs = d * dagprijs(d);
@@ -682,6 +757,7 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
   cvS.addEventListener('click', function(){ CONV = 0.10; cvS.setAttribute('aria-pressed','true'); cvNu.setAttribute('aria-pressed','false'); render(); });
   sl.addEventListener('input', render);
   render();
+  pickTier(0);
 
   /* ---- nu versus voorstel ---- */
   var nu = { dag: '± 2,7', pog: '± 400', afs: '± 8', prijs: '± € 593', tot: '€ 1.600 per werkperiode' },
