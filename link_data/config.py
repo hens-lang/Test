@@ -43,6 +43,8 @@ class Klant:
     pilot_target: float | None = None     # target over de hele pilot
     pilot_fee: float | None = None
     beldagen_per_week: float | None = None   # vast belrooster; leeg = gemeten uit de belpogingen
+    belofte_per_beldag: float | None = None  # afgesproken afspraken per beldag van 6 uur
+    beldag_uren_nu: float | None = None      # werkelijke lengte van een beldag nu (bv. OK: 4 uur)
 
     @property
     def actief(self) -> bool:
@@ -185,6 +187,8 @@ def laad(config_dir: Path | str = CONFIG_DIR) -> Config:
             pilot_target=(v.get("pilot") or {}).get("target"),
             pilot_fee=(v.get("pilot") or {}).get("fee"),
             beldagen_per_week=v.get("beldagen_per_week"),
+            belofte_per_beldag=v.get("belofte_per_beldag"),
+            beldag_uren_nu=v.get("beldag_uren_nu"),
         )
 
     bellers = {}

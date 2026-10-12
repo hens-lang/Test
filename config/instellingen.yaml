@@ -84,6 +84,13 @@ tijdzone: Europe/Amsterdam
 belpogingen_tijdzone: UTC
 
 # KPI-normen per opdrachtgever (tabblad KPI-normen). Alles is in het dashboard aan te passen.
+# Verdienmodel na de pilot: prijs per beldag van 6 uur, staffel op het aantal beldagen per werkperiode.
+# De prijs geldt voor alle dagen in die werkperiode.
+staffel_per_beldag:
+  - {vanaf: 1, prijs: 600}
+  - {vanaf: 5, prijs: 575}
+  - {vanaf: 7, prijs: 550}
+
 normen:
   marge_doel: 0.40          # gewenste marge op de opbrengst per opdrachtgever
   meetperiode_weken: 8      # gemeten waarden over de laatste N weken

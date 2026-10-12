@@ -319,7 +319,18 @@ def _stats(st: pd.DataFrame | None, cfg: Config) -> pd.DataFrame:
            "recordtijd_s", "gesprek_s", "beller", "klant"]
     if st is None or st.empty:
         return pd.DataFrame(columns=kol)
-    st = st[st["peildatum"] == st["peildatum"].max()].copy()   # nieuwste stand
+    # Een export is een totaalstand (cumulatief) of een losse periode (bv. alleen de laatste week). Een export met
+    # minstens 90% van de pogingen van de lopende totaalstand vervangt die; een kleinere telt erbij op.
+    delen, totaal = [], 0
+    for _, g in sorted(st.groupby("peildatum"), key=lambda x: str(x[0])):
+        n = g["contactpogingen"].sum()
+        if not delen or n >= 0.9 * totaal:
+            delen, totaal = [g], n
+        else:
+            delen.append(g)
+            totaal += n
+    st = pd.concat(delen, ignore_index=True)
+    st["peildatum"] = st["peildatum"].max()
     st["beller"] = st["agent_raw"].map(cfg.beller_voor)
     st["klant"] = st["campagne"].map(cfg.klant_voor_campagne)
     return st

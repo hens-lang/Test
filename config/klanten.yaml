@@ -23,6 +23,8 @@
 #                        stand 1-10-2026). Datakwaliteit toont het verschil met de ingelezen facturen.
 #   beldagen_per_week    vast belrooster, bv. 1 (één dag per week) of 0.5 (een ochtend). Leeg: het
 #                        dashboard meet het uit de belpogingen. KPI's per beldag rekenen hiermee.
+#   belofte_per_beldag   afgesproken aantal afspraken per beldag van 6 uur (KPI en prijs per afspraak)
+#   beldag_uren_nu       werkelijke lengte van een beldag nu, als die afwijkt van 6 uur (meetcorrectie)
 #   status               actief (standaard), pauze of gestopt. Alleen actieve klanten tellen mee
 #                        in targets, stoplichten en de scenario-rekenaar; historie blijft zichtbaar.
 #
@@ -31,6 +33,7 @@
 
 klanten:
   Moyee Coffee:
+    belofte_per_beldag: 1.9
     omzet_boekhouding: 12600
     pids: [11]
     fee_per_4wk: 1500
@@ -45,6 +48,7 @@ klanten:
     belstart: null
 
   Green Earth:
+    belofte_per_beldag: 1.4
     omzet_boekhouding: 4350
     pids: [1019]
     fee_per_4wk: 1800
@@ -55,6 +59,7 @@ klanten:
     belstart: 2026-08-31
 
   Second Life Textile:
+    belofte_per_beldag: 3
     pids: [1023]
     fee_per_4wk: 1200
     extra_per_lead: 0
@@ -74,6 +79,7 @@ klanten:
     belstart: 2026-08-24
 
   Bloei Interieurbeplanting:
+    belofte_per_beldag: 1.5
     pids: [1021]
     fee_per_4wk: 1200
     extra_per_lead: 0
@@ -103,6 +109,7 @@ klanten:
     belstart: 2026-09-07
 
   Binnenstebuiten (Pivot):
+    belofte_per_beldag: 1.2
     omzet_boekhouding: 4100
     pids: [1017]
     fee_per_4wk: 1600
@@ -124,6 +131,7 @@ klanten:
     belstart: null
 
   BuildingBricks:
+    belofte_per_beldag: 1
     omzet_boekhouding: 8352
     pids: [14]
     fee_per_4wk: 1500   # uit verkoopfactuur 2026-0092
@@ -134,6 +142,7 @@ klanten:
     belstart: null
 
   GrowOn Agency:
+    belofte_per_beldag: 2.25
     omzet_boekhouding: 5300
     pids: [1016]
     fee_per_4wk: 1600   # uit verkoopfactuur 2026-0096
@@ -144,6 +153,8 @@ klanten:
     belstart: 2026-08-03
 
   OK Creative Agency:
+    belofte_per_beldag: 1.5
+    beldag_uren_nu: 4          # beldagen bij OK zijn nu ongeveer 4 uur
     omzet_boekhouding: 6500
     pids: [1018]
     factuur_namen: ["Onze Kapel B.V."]   # bevestigd door Hens
@@ -155,6 +166,7 @@ klanten:
     belstart: 2026-08-03
 
   MostWare (Heads Up):
+    belofte_per_beldag: 1.9
     omzet_boekhouding: 8000
     pids: [1015]        # uit de export: kolom Campagne = "MostWare", CampagnePID 1015
     fee_per_4wk: 2000   # uit verkoopfactuur 2026-0089

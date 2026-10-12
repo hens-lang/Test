@@ -100,6 +100,8 @@ def payload(model: Model, cfg: Config) -> dict:
             "target_wp": (kc.pilot_target if kc and kc.pilot_weken else kc.target_per_4wk) if kc else None,
             "targets_per_code": {str(c): t for c, t in kc.targets_per_code.items()} if kc else {},
             "beldagen_pw": kc.beldagen_per_week if kc else None,
+            "belofte": kc.belofte_per_beldag if kc else None,
+            "beldag_uren_nu": kc.beldag_uren_nu if kc else None,
             "perioden": (model.dq.get("klant_perioden") or {}).get(k, []),
         })
 
@@ -142,6 +144,7 @@ def payload(model: Model, cfg: Config) -> dict:
             "tarief_nu": (inst.get("scenario") or {}).get("tarief_nu", 25),
             "tarief_doel": (inst.get("scenario") or {}).get("tarief_doel", 36),
             "normen": inst.get("normen") or {},
+            "staffel": inst.get("staffel_per_beldag") or [],
         },
         "datums": datums,
         "bellers": [{"naam": b, "type": cfg.bellers[b].type, "tarief_nu": cfg.bellers[b].tarief_nu,
