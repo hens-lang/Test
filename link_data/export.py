@@ -101,6 +101,7 @@ def payload(model: Model, cfg: Config) -> dict:
             "targets_per_code": {str(c): t for c, t in kc.targets_per_code.items()} if kc else {},
             "beldagen_pw": kc.beldagen_per_week if kc else None,
             "belofte": kc.belofte_per_beldag if kc else None,
+            "pilot": bool(kc and kc.pilot_weken),
             "beldag_uren_nu": kc.beldag_uren_nu if kc else None,
             "perioden": (model.dq.get("klant_perioden") or {}).get(k, []),
         })

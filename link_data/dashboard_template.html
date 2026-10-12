@@ -841,7 +841,7 @@ function normenData() {
     const C = F.c.filter(r => r[3] === i && inR(r[0])), f = funnel(C);
     const P = (F.p || []).filter(r => r[3] === i && inR(r[0]));
     const uren = urenK.get(i) || 0, res = f.res, pog = P.length;
-    const isPilot = (k.perioden || [])[0]?.label?.startsWith("Pilot");
+    const isPilot = k.pilot || (k.perioden || [])[0]?.label?.startsWith("Pilot");
     const tpc = k.targets_per_code || {}, extraN = tpc[k.lead_code || 101] || 0;
     const extra = (k.lead || 0) * extraN, opbr = (k.fee || 0) + extra;
     const target = k.target_wp != null ? (isPilot ? k.target_wp / 3 : k.target_wp) : null;
@@ -1140,8 +1140,10 @@ function beldagKPI(x) {
   // Met een afgesproken belofte per beldag (klanten.yaml): beldagen = target / belofte (naar boven afgerond),
   // met 25% buffer: target x 1,25 / belofte. Zonder belofte (bv. pilots): beldagen volgens het budget van de fee.
   const bel = x.k.belofte, tg = x.target;
-  const dagenWP = bel && tg ? Math.ceil(tg / bel - 1e-9) : x.maxUren ? Math.max(0.5, Math.floor(x.maxUren / H * 2) / 2) : null;
-  const dagenBuffer = bel && tg ? Math.ceil(tg * (1 + NS.buffer) / bel - 1e-9) : null;
+  // pilot: beldagen over de hele pilot (10 afspraken / belofte), omgerekend per werkperiode van 4 weken
+  const pilotWP = x.isPilot ? 3 : 1;
+  const dagenWP = bel && tg ? Math.ceil(tg * pilotWP / bel - 1e-9) / pilotWP : x.maxUren ? Math.max(0.5, Math.floor(x.maxUren / H * 2) / 2) : null;
+  const dagenBuffer = bel && tg ? Math.ceil(tg * pilotWP * (1 + NS.buffer) / bel - 1e-9) / pilotWP : null;
   const T = bel && dagenWP ? dagenWP * bel : tg != null ? tg * (1 + NS.buffer) : null;
   // meetcorrectie: is een beldag nu korter dan de toegerekende uren (OK: 4 uur), dan zijn de per-uur-cijfers hoger
   const fac = x.k.beldag_uren_nu && x.nu.urenD ? x.nu.urenD / x.k.beldag_uren_nu : 1;
@@ -1254,7 +1256,9 @@ function renderKpiPlan() {
   const plannen = k.P.map(r => {
     const {x, b, plan, nu} = r, acties = [];
     const m = margeKlant(x.i), opbr = x.opbr || m.opbr, kPlan = b.dagenWP != null ? b.dagenWP * H * M.tarief_doel + (x.overig || 0) : null;
-    const sm = b.bel ? staffelMarge(b.dagenWP, x.overig) : null, smB = b.bel ? staffelMarge(b.dagenBuffer, x.overig) : null;
+    // pilot: vaste pilotprijs in plaats van de staffel
+    const pilotM = d => { const opbr = (x.k.fee || 0) * 3, kost = d * 3 * H * M.tarief_doel + (x.overig || 0) * 3; return opbr ? {prijs: opbr / (d * 3), opbr, kost, marge: 1 - kost / opbr} : null; };
+    const sm = b.bel ? (x.isPilot ? pilotM(b.dagenWP) : staffelMarge(b.dagenWP, x.overig)) : null, smB = b.bel ? (x.isPilot ? pilotM(b.dagenBuffer) : staffelMarge(b.dagenBuffer, x.overig)) : null;
     const margePlan = sm ? sm.marge : opbr && kPlan != null ? 1 - kPlan / opbr : null;
     let gat = 0;
     if (nu) {
@@ -1281,7 +1285,8 @@ function renderKpiPlan() {
       <div class="doelregel">Per beldag van ${H} uur: <b>${n0(plan.calls)} calls</b> → <b>${n0(plan.gespr)} beslissers</b> → <b>${b.bel ? n2(plan.res) : n1(plan.res)} ${plan.res >= 1.5 ? "afspraken" : "afspraak"}</b></div>
       <div class="nuregel">${nu ? `Nu: ${n0(nu.calls)} calls → ${n0(nu.gespr)} beslissers → ${n1(nu.res)}` : "Nog niet gebeld: start met dit doel en stel bij na twee beldagen."}</div>
       ${acties.length ? `<ol class="acties">${acties.map(a => `<li>${a.t}</li>`).join("")}</ol>` : status === "goed" ? `<p class="acties" style="margin:10px 0 0">Zo doorgaan. Niet meer dan ${n1(b.dagenWP)} beldagen per werkperiode.</p>` : ""}
-      <div class="voet">${p.sm ? `Target ${n1(x.target)} per werkperiode · belofte ${n2(b.bel)} per beldag → <b>${n1(b.dagenWP)} beldagen</b> (${n1(b.T)} afspraken), klant betaalt ${eurT(p.sm.opbr)} (${eurT(p.sm.opbr / b.T)} per afspraak) · marge nu ${p.margeNu != null ? pct(p.margeNu) : "-"}, nieuw ${pct(p.sm.marge)}<br>Met 25% buffer: ${n1(b.dagenBuffer)} beldagen (${n2(b.dagenBuffer * b.bel)} afspraken), klant betaalt ${eurT(p.smB.opbr)}, ${eurT(p.smB.opbr - p.sm.opbr)} meer`
+      <div class="voet">${p.sm && x.isPilot ? `Pilot: ${n1(x.target * 3)} afspraken in 12 weken · belofte ${n2(b.bel)} per beldag → <b>${n1(b.dagenWP * 3)} beldagen</b>, € ${nf(0).format(p.sm.opbr)} (${eurT(p.sm.opbr / (x.target * 3))} per afspraak) · marge ${pct(p.sm.marge)}<br>Met 25% buffer: ${n1(b.dagenBuffer * 3)} beldagen, marge ${pct(p.smB.marge)}`
+        : p.sm ? `Target ${n1(x.target)} per werkperiode · belofte ${n2(b.bel)} per beldag → <b>${n1(b.dagenWP)} beldagen</b> (${n1(b.T)} afspraken), klant betaalt ${eurT(p.sm.opbr)} (${eurT(p.sm.opbr / b.T)} per afspraak) · marge nu ${p.margeNu != null ? pct(p.margeNu) : "-"}, nieuw ${pct(p.sm.marge)}<br>Met 25% buffer: ${n1(b.dagenBuffer)} beldagen (${n2(b.dagenBuffer * b.bel)} afspraken), klant betaalt ${eurT(p.smB.opbr)}, ${eurT(p.smB.opbr - p.sm.opbr)} meer`
         : `Target ${n1(x.target)} per werkperiode, wij mikken op ${n1(b.T)} · ${n1(b.dagenWP)} beldagen per werkperiode${p.margePlan != null ? ` · marge met dit plan ${pct(p.margePlan)}` : ""}`}</div></div>`;
   };
   document.getElementById("kpiplan").innerHTML = `<div class="stapkop"><h2>Wat moet er gebeuren?</h2></div>

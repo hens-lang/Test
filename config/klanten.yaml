@@ -211,6 +211,7 @@ klanten:
 
   # Nieuw, gezien in "te versturen" in de boekhouding (1-10-2026):
   MostWare Next:
+    belofte_per_beldag: 1   # pilot: 1 gekwalificeerde afspraak per beldag
     pids: []            # PID volgt zodra de campagne in Steam staat
     pilot: {weken: 12, target: 10, fee: 4950}   # 10 gekwalificeerde afspraken in 12 weken, € 4.950 excl.
     fee_per_4wk: 1650   # 4950 / 3 werkperiodes
@@ -221,6 +222,7 @@ klanten:
     belstart: null      # pilot nog niet gestart (stand 12-10); vul de eerste beldag in zodra we beginnen
 
   Kubus Heerenveen:
+    belofte_per_beldag: 1   # pilot: 1 gekwalificeerde afspraak per beldag
     pids: []            # pilot; PID volgt zodra de campagne in Steam staat
     pilot: {weken: 12, target: 10, fee: 4950}   # 10 gekwalificeerde afspraken in 12 weken, € 4.950 excl.
     fee_per_4wk: 1650   # 4950 / 3 werkperiodes
