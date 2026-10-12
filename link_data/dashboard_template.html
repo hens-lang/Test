@@ -1263,6 +1263,8 @@ function renderKpiPlan() {
       if (g1 > 0.08) acties.push({g: g1, t: `<b>Bel ${n0(plan.callsU)} keer per uur</b> in plaats van ${n0(nu.callsU)}. Kort voorbereiden en afronden tussen de gesprekken.`});
       if (g2 > 0.10 && eenOp(plan.conv) !== eenOp(nu.conv)) acties.push({g: g2, t: `<b>Maak van 1 op de ${eenOp(plan.conv)} beslissers een afspraak</b>, nu is dat 1 op de ${eenOp(nu.conv)}. Pitch en bellijst aanscherpen.`});
       if (g3 > 0.15) acties.push({g: g3 * 0.25, t: `<b>Bel maximaal ${n1(b.dagenWP)} dagen per werkperiode</b>, nu ${n1(nu.dagenWP)}. Dan blijft de marge ${pct(margePlan)}.`});
+      const urenDag = x.k.beldag_uren_nu || nu.urenD;
+      if (urenDag && urenDag > H * 1.1) acties.push({g: urenDag / H - 1, t: `<b>Haal het binnen ${H} uur:</b> een beldag duurt nu gemiddeld ${n1(urenDag)} uur. Langer bellen telt niet; het doel geldt per ${H} uur.`});
       acties.sort((a, b) => b.g - a.g);
       gat = acties.reduce((a, x) => a + x.g, 0);
     }
@@ -1283,7 +1285,7 @@ function renderKpiPlan() {
         : `Target ${n1(x.target)} per werkperiode, wij mikken op ${n1(b.T)} · ${n1(b.dagenWP)} beldagen per werkperiode${p.margePlan != null ? ` · marge met dit plan ${pct(p.margePlan)}` : ""}`}</div></div>`;
   };
   document.getElementById("kpiplan").innerHTML = `<div class="stapkop"><h2>Wat moet er gebeuren?</h2></div>
-    <p style="font-size:17px;margin:0 0 6px">Per opdrachtgever: wat een beldag van <b>${H} uur</b> moet opleveren om de afgesproken belofte en het target te halen, en wat we daarvoor anders doen. Onderaan elke kaart: wat 25% buffer extra kost.</p>
+    <p style="font-size:17px;margin:0 0 6px">Het uitgangspunt: <b>het doel halen binnen een beldag van ${H} uur</b>. Per opdrachtgever staat wat die ${H} uur moeten opleveren voor de belofte en het target, en wat we daarvoor anders doen. Onderaan elke kaart: wat 25% buffer extra kost.</p>
     <p class="vs" style="margin:0 0 14px">Stand t/m ${dmy(M.peildatum)} · "nu" = gemiddelde van de laatste ${NS.weken} weken · beldag ${H} uur à € ${M.tarief_doel} · doel per beldag = de afgesproken belofte · beldagen = target / belofte · prijs volgens de staffel (${(M.staffel || []).map(r => eurT(r.prijs)).join(" / ")} per beldag)</p>
     ${top.length ? `<div class="kaart prio"><h3>Eerst doen</h3><ol class="acties" style="font-size:16px">${top.map(p => `<li><b>${esc(p.x.k.naam)}:</b> ${p.acties[0].t.replace(/<\/?b>/g, "")}</li>`).join("")}</ol></div>` : ""}
     <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,460px),1fr));margin-top:12px">${plannen.map(kaart).join("")}</div>
