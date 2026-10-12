@@ -1236,26 +1236,36 @@ function renderKpiPlan() {
     const goed = nu != null && moet != null && (nu >= moet * 0.95 || d(nu) === d(moet));
     return `<td data-l="${lab}"><span class="kpinu ${nu == null ? "" : goed ? "pos" : "neg"}">${d(nu)}</span><span class="kpipijl">→</span><span class="kpimoet">${d(moet)}</span></td>`;
   };
-  const wat = ({plan, nu}) => {
-    if (!nu) return ["info", "Nieuw"];
+  // marge: nu (gemeten) tegenover moet (plan: beldagen binnen budget à € 36 per uur + overige kosten)
+  const marge = r => { const m = margeKlant(r.x.i), kPlan = r.b.dagenWP != null ? r.b.dagenWP * H * M.tarief_doel + (r.x.overig || 0) : null;
+    const opbr = r.x.opbr || m.opbr;   // fee + extra's bij het target (zoals het budget), anders gemeten
+    return {nu: r.nu ? m.pct : null, moet: opbr && kPlan != null ? 1 - kPlan / opbr : null}; };
+  const wat = r => {
+    const {plan, nu, b} = r;
+    if (!nu) return [["info", "Nieuw"]];
+    const t = [];
     const meer = plan.callsU && plan.callsU > nu.callsU * 1.05, beter = plan.conv && plan.conv > nu.conv * 1.05;
-    if (meer && beter) return ["actie", "Meer bellen én beter gesprek"];
-    if (beter) return ["actie", "Beter gesprek"];
-    if (meer) return ["letop", "Meer bellen"];
-    return ["goed", "Op koers"];
+    if (meer) t.push(["letop", "Meer bellen"]);
+    if (beter) t.push(["actie", "Beter gesprek"]);
+    if (b.dagenWP && nu.dagenWP && nu.dagenWP > b.dagenWP * 1.15) t.push(["actie", "Minder uren"]);
+    return t.length ? t : [["goed", "Op koers"]];
   };
-  const rijen = k.P.map(r => { const [kl, t] = wat(r); return `<tr><td class="l"><b>${esc(r.x.k.naam)}</b></td>
+  const pc = v => v == null || !isFinite(v) ? "-" : pct(v);
+  const rijen = k.P.map(r => { const mg = marge(r); return `<tr><td class="l"><b>${esc(r.x.k.naam)}</b></td>
     ${cel(r.nu?.calls, r.plan.calls, n0, "Calls")}${cel(r.nu?.gespr, r.plan.gespr, n0, "Beslissers gesproken")}${cel(r.nu?.res, r.plan.res, n1, "Afspraken / leads")}
-    <td class="l"><span class="label ${kl}">${t}</span></td></tr>`; }).join("");
+    <td data-l="Marge"><span class="kpinu ${mg.nu == null ? "" : mg.nu >= NS.marge ? "pos" : "neg"}">${pc(mg.nu)}</span><span class="kpipijl">→</span><span class="kpimoet">${pc(mg.moet)}</span></td>
+    <td class="l">${wat(r).map(([kl, t]) => `<span class="label ${kl}" style="margin:0 4px 4px 0;display:inline-block">${t}</span>`).join("")}</td></tr>`; }).join("");
   document.getElementById("kpiplan").innerHTML = `<div class="stapkop"><h2>KPI's per beldag</h2></div>
     <p style="font-size:17px;margin:0 0 14px">Wat een beldag van <b>${H} uur</b> moet opleveren om het target van elke opdrachtgever <b>ruim</b> te halen.</p>
     ${(() => { const wb = (D.dq.na_peildatum || {}).wacht_op_belexport || {}; return `<p class="vs" style="margin:0 0 12px">Stand t/m ${dmy(M.peildatum)}${Object.keys(wb).length ? ". De nieuwste week volgt zodra alle belexports binnen zijn" : ""}. "Nu" = gemiddelde van de laatste ${NS.weken} weken.</p>`; })()}
-    <div class="kaart tabelwrap kpisimpel"><table class="stapel"><thead><tr><th class="l">Opdrachtgever</th><th>Calls</th><th>Beslissers gesproken</th><th>Afspraken / leads</th><th class="l">Wat moet beter</th></tr></thead>
+    <div class="kaart tabelwrap kpisimpel"><table class="stapel"><thead><tr><th class="l">Opdrachtgever</th><th>Calls</th><th>Beslissers gesproken</th><th>Afspraken / leads</th><th>Marge</th><th class="l">Wat moet beter</th></tr></thead>
     <tbody>${rijen}</tbody></table>
-    <p class="uitleg" style="margin:10px 0 0"><span class="neg">rood</span> → <b>zwart</b>: nu → moet. <span class="pos">Groen</span> = al goed.</p></div>
+    <p class="uitleg" style="margin:10px 0 0"><span class="neg">rood</span> → <b>zwart</b>: nu → moet. <span class="pos">Groen</span> = al goed. Marge: groen = nu al boven ${pct(NS.marge)}.</p></div>
     <div class="kaart" style="margin-top:12px"><h3 style="margin:0 0 6px">Wat betekent het?</h3><ul class="punten">
       <li><b>Meer bellen</b>: meer calls per uur. Kort voorbereiden en afronden tussen gesprekken.</li>
       <li><b>Beter gesprek</b>: van de beslissers die je spreekt moet een groter deel een afspraak worden. Pitch en bellijst aanscherpen.</li>
+      <li><b>Minder uren</b>: er wordt vaker gebeld dan de fee toelaat. Houd je aan het aantal beldagen per werkperiode.</li>
+      <li><b>Marge</b>: nu = gemeten (fee tegenover de echte kosten). Moet = de marge als je je aan dit plan houdt: de beldagen van ${H} uur die het budget toelaat, à € ${M.tarief_doel} per uur, plus Steam en data. Dat is altijd minimaal ${pct(NS.marge)}. Ligt de marge nu hoger, dan komt dat doordat de bellers nu nog minder dan € ${M.tarief_doel} per uur kosten.</li>
     </ul></div>
     <details class="kaart" style="margin-top:12px"><summary style="cursor:pointer"><b>Details per opdrachtgever en berekening</b></summary><div style="margin-top:10px">${k.blokken}${k.basis}</div></details>`;
 }
