@@ -64,6 +64,8 @@ body.kpimodus header nav,body.kpimodus .filters,body.kpimodus footer{display:non
 .plan table{table-layout:fixed}.plan td,.plan th{padding:7px 8px}
 .plan .nu{color:var(--tekst-2)}.plan .moet{font-weight:700;font-size:16px}
 .plan .pijl{color:var(--tekst-3);text-align:center;width:28px}
+.kpisimpel td,.kpisimpel th{padding:12px 10px}.kpisimpel td{font-size:17px;white-space:nowrap}
+.kpinu{font-weight:600}.kpipijl{color:var(--tekst-3);margin:0 6px}.kpimoet{font:700 22px "Barlow Condensed";color:var(--tekst)}
 .hefboom{margin:10px 0 0;padding:10px 12px;background:var(--surface-2);border-radius:8px;font-size:14px}
 @media print{header,footer,.filters,.stapnav,details{display:none!important}.kaart{break-inside:avoid;border:1px solid #ccc}body{background:#fff}}
 @media(max-width:700px){table.stapel thead{display:none}table.stapel tr{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px 10px;padding:12px 0;border-bottom:1px solid var(--rand)}
@@ -1228,10 +1230,34 @@ function kpiPlanHtml() {
   return {overzicht, blokken: `<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr))">${sorted.map(blok).join("")}</div>`, basis, P: sorted};
 }
 function renderKpiPlan() {
-  const k = kpiPlanHtml();
-  document.getElementById("kpiplan").innerHTML = `<div class="stapkop"><h2>KPI-plan per opdrachtgever</h2></div>
-    <p class="vs" style="margin:0 0 10px">Wat de KPI's nu zijn en wat ze moeten worden om de targets ruim te halen · beldag ${NS.dagUren} uur · € ${M.tarief_doel} per uur · stand ${dmy(M.peildatum)}</p>
-    ${naPeilMelding()}${k.overzicht}${k.blokken}${k.basis}`;
+  const k = kpiPlanHtml(), H = NS.dagUren;
+  const n0 = v => v == null || !isFinite(v) ? "-" : nf(0).format(v), n1 = v => v == null || !isFinite(v) ? "-" : nf(1).format(v);
+  const cel = (nu, moet, d, lab) => {
+    const goed = nu != null && moet != null && (nu >= moet * 0.95 || d(nu) === d(moet));
+    return `<td data-l="${lab}"><span class="kpinu ${nu == null ? "" : goed ? "pos" : "neg"}">${d(nu)}</span><span class="kpipijl">→</span><span class="kpimoet">${d(moet)}</span></td>`;
+  };
+  const wat = ({plan, nu}) => {
+    if (!nu) return ["info", "Nieuw"];
+    const meer = plan.callsU && plan.callsU > nu.callsU * 1.05, beter = plan.conv && plan.conv > nu.conv * 1.05;
+    if (meer && beter) return ["actie", "Meer bellen én beter gesprek"];
+    if (beter) return ["actie", "Beter gesprek"];
+    if (meer) return ["letop", "Meer bellen"];
+    return ["goed", "Op koers"];
+  };
+  const rijen = k.P.map(r => { const [kl, t] = wat(r); return `<tr><td class="l"><b>${esc(r.x.k.naam)}</b></td>
+    ${cel(r.nu?.calls, r.plan.calls, n0, "Calls")}${cel(r.nu?.gespr, r.plan.gespr, n0, "Beslissers gesproken")}${cel(r.nu?.res, r.plan.res, n1, "Afspraken / leads")}
+    <td class="l"><span class="label ${kl}">${t}</span></td></tr>`; }).join("");
+  document.getElementById("kpiplan").innerHTML = `<div class="stapkop"><h2>KPI's per beldag</h2></div>
+    <p style="font-size:17px;margin:0 0 14px">Wat een beldag van <b>${H} uur</b> moet opleveren om het target van elke opdrachtgever <b>ruim</b> te halen.</p>
+    ${(() => { const wb = (D.dq.na_peildatum || {}).wacht_op_belexport || {}; return `<p class="vs" style="margin:0 0 12px">Stand t/m ${dmy(M.peildatum)}${Object.keys(wb).length ? ". De nieuwste week volgt zodra alle belexports binnen zijn" : ""}. "Nu" = gemiddelde van de laatste ${NS.weken} weken.</p>`; })()}
+    <div class="kaart tabelwrap kpisimpel"><table class="stapel"><thead><tr><th class="l">Opdrachtgever</th><th>Calls</th><th>Beslissers gesproken</th><th>Afspraken / leads</th><th class="l">Wat moet beter</th></tr></thead>
+    <tbody>${rijen}</tbody></table>
+    <p class="uitleg" style="margin:10px 0 0"><span class="neg">rood</span> → <b>zwart</b>: nu → moet. <span class="pos">Groen</span> = al goed.</p></div>
+    <div class="kaart" style="margin-top:12px"><h3 style="margin:0 0 6px">Wat betekent het?</h3><ul class="punten">
+      <li><b>Meer bellen</b>: meer calls per uur. Kort voorbereiden en afronden tussen gesprekken.</li>
+      <li><b>Beter gesprek</b>: van de beslissers die je spreekt moet een groter deel een afspraak worden. Pitch en bellijst aanscherpen.</li>
+    </ul></div>
+    <details class="kaart" style="margin-top:12px"><summary style="cursor:pointer"><b>Details per opdrachtgever en berekening</b></summary><div style="margin-top:10px">${k.blokken}${k.basis}</div></details>`;
 }
 function renderS4() {
   const R = stuurRegels(), H = NS.dagUren, n1 = v => v == null || !isFinite(v) ? "-" : nf(1).format(v), n0 = v => v == null || !isFinite(v) ? "-" : nf(0).format(v);
