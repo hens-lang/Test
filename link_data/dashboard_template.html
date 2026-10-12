@@ -1286,6 +1286,7 @@ function renderKpiPlan() {
   };
   document.getElementById("kpiplan").innerHTML = `<div class="stapkop"><h2>Wat moet er gebeuren?</h2></div>
     <p style="font-size:17px;margin:0 0 6px">Het uitgangspunt: <b>het doel halen binnen een beldag van ${H} uur</b>. Per opdrachtgever staat wat die ${H} uur moeten opleveren voor de belofte en het target, en wat we daarvoor anders doen. Onderaan elke kaart: wat 25% buffer extra kost.</p>
+    <p style="font-size:15px;margin:0 0 6px"><b>Garantie:</b> halen we het target niet, dan bellen we 1 beldag gratis om het alsnog te halen. <b>Bonus:</b> een beller die het target van een opdrachtgever in een werkperiode haalt, krijgt een eenmalige bonus (hoogte nog te bepalen).</p>
     <p class="vs" style="margin:0 0 14px">Stand t/m ${dmy(M.peildatum)} · "nu" = gemiddelde van de laatste ${NS.weken} weken · beldag ${H} uur à € ${M.tarief_doel} · doel per beldag = de afgesproken belofte · beldagen = target / belofte · prijs volgens de staffel (${(M.staffel || []).map(r => eurT(r.prijs)).join(" / ")} per beldag)</p>
     ${top.length ? `<div class="kaart prio"><h3>Eerst doen</h3><ol class="acties" style="font-size:16px">${top.map(p => `<li><b>${esc(p.x.k.naam)}:</b> ${p.acties[0].t.replace(/<\/?b>/g, "")}</li>`).join("")}</ol></div>` : ""}
     <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,460px),1fr));margin-top:12px">${plannen.map(kaart).join("")}</div>
