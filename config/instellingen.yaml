@@ -95,7 +95,7 @@ normen:
   marge_doel: 0.40          # gewenste marge op de opbrengst per opdrachtgever
   meetperiode_weken: 8      # gemeten waarden over de laatste N weken
   beldag_uren: 6            # een beldag = 6 uur (bij € 36 per uur)
-  target_buffer: 0.25       # 'ruim' halen: mikken op target + 25%
+  target_buffer: 0          # geen buffer: de KPI is de belofte; halen we het niet, dan 1 beldag gratis
   scenarios:
     - {naam: "€ 25 per uur, 8 uur per dag", tarief: 25, uren_per_dag: 8}
     - {naam: "€ 36 per uur, 6 uur per dag", tarief: 36, uren_per_dag: 6}
