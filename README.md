@@ -19,7 +19,7 @@ Alles draait op dezelfde dataset (`data/link.db`) en dezelfde configuratie (`con
    python run.py
    ```
 
-3. Open `dashboard/index.html` in de browser. Je hebt geen server nodig; voor de grafieken is wel internet nodig (Chart.js en lettertypes).
+3. Open `dashboard/index.html` in de browser. Het KPI-plan (Nu tegenover Moet per opdrachtgever) staat los in `dashboard/kpi-plan.html`, met dezelfde data en berekeningen. Je hebt geen server nodig; voor de grafieken is wel internet nodig (Chart.js en lettertypes).
 
 Oude exports mag je laten staan. Dezelfde export twee keer inlezen geeft geen dubbele data. Een nieuwere export van hetzelfde record of dezelfde dag werkt de bestaande regel bij.
 
@@ -51,7 +51,7 @@ pip install -r requirements.txt
 
 - **Handmatige resultaten**: `config/handmatig.yaml` voor een resultaat dat nog niet in een belexport staat. Telt direct mee en vervalt vanzelf zodra een belexport voor die opdrachtgever, dag en code hem bevat.
 - **Verwachte uren**: `uren_verwacht` in `bellers.yaml` voor een dag die nog niet in de urenexport staat (uren x tarief); vervalt vanzelf zodra de urenexport die dag bevat.
-- **Peildatum**: de laatste dag in de urenexport. Alles (resultaten, uren, kosten, opbrengst, targets) telt tot en met die dag. Belexports en belpogingen van later wachten tot de urenexport die dagen ook bevat; het Stuurscherm en `run.py` melden dat.
+- **Peildatum**: de laatste dag in de urenexport, maar niet verder dan de belexports van opdrachtgevers die de laatste 3 weken zijn gebeld (exportdatum uit de bestandsnaam). Alles (resultaten, uren, kosten, opbrengst, targets) telt tot en met die dag. Belexports en belpogingen van later wachten tot de urenexport die dagen ook bevat; het Stuurscherm en `run.py` melden dat.
 - **Uren**: `Te betalen` uit de urenexport.
 - **Kosten ZZP**: voor een week mét factuur geldt het gefactureerde bedrag. Voor een week zonder factuur is het een schatting: Steam-uren x tarief. Facturen zonder weeknummer gaan naar de week van de factuurdatum (do t/m zo) of naar de week ervoor (ma t/m wo).
 - **Kosten eigenaren**: een vaste vergoeding per maand. Die wordt verdeeld over de betaalde uren van die maand.

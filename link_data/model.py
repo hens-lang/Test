@@ -936,23 +936,44 @@ def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
     stats = _stats(stats_raw, cfg)
     extra_f = _pas_facturen_toe(uren, facturen, cfg)
     # Peildatum = laatste dag met uren: kosten en opbrengst lopen dan over dezelfde periode.
+    # Maar niet verder dan de belexports: van elke actieve opdrachtgever die de laatste 3 weken is gebeld
+    # moet de belexport tot de peildatum lopen, anders staan er uren zonder resultaten.
+    wacht_op_belexport = {}
     if len(uren):
         peildatum = uren["datum"].max()
+        echt = contacten[contacten["bron"] != "handmatig"] if len(contacten) else contacten
+        if len(echt):
+            # Tot wanneer is een klant gedekt? De exportdatum in de bestandsnaam (custom_9-10-2026_11_35_28.xls).
+            def _exportdag(naam):
+                m = re.search(r"(\d{1,2})-(\d{1,2})-(\d{4})", str(naam or ""))
+                return dt.date(int(m.group(3)), int(m.group(2)), int(m.group(1))) if m else None
+            dek = echt.assign(_d=[_exportdag(b) for b in echt.get("bestand", [None] * len(echt))]).dropna(subset=["_d"])
+            laatste = dek.groupby("klant")["_d"].max()   # zonder exportdatum in de naam: dekking onbekend, geen rem
+            gebeld = echt.groupby("klant")["datum"].max()
+            for k, d in laatste.items():
+                kc = cfg.klanten.get(k)
+                if kc and kc.actief and gebeld[k] >= peildatum - dt.timedelta(days=21) and d < peildatum:
+                    wacht_op_belexport[k] = d
+            if wacht_op_belexport:
+                peildatum = min(wacht_op_belexport.values())
     elif len(contacten):
         peildatum = contacten["datum"].max()
     else:
         peildatum = dt.date.today()
     # Eén peildatum voor alles: belregels en belpogingen van na de laatste urendag tellen pas mee
     # zodra de urenexport die dagen ook bevat (anders resultaten zonder kosten in dezelfde week).
-    na = {"peildatum": peildatum.isoformat(), "bronnen": {}, "resultaten": {}, "belregels": 0}
+    na = {"peildatum": peildatum.isoformat(), "bronnen": {}, "resultaten": {}, "belregels": 0,
+          "uren_tot": uren["datum"].max().isoformat() if len(uren) else None,
+          "wacht_op_belexport": {k: d.isoformat() for k, d in sorted(wacht_op_belexport.items())}}
     if len(uren):
         laat = contacten[contacten["datum"] > peildatum]
         na["belregels"] = int(len(laat))
         na["resultaten"] = {str(k): int(v) for k, v in laat[laat["is_resultaat"]].groupby("klant_label").size().items()}
-        for naam, df in (("belexport", contacten), ("belpogingen", pogingen)):
+        for naam, df in (("belexport", contacten), ("belpogingen", pogingen), ("urenexport", uren)):
             if len(df) and df["datum"].max() > peildatum:
                 na["bronnen"][naam] = df["datum"].max().isoformat()
         contacten = contacten[contacten["datum"] <= peildatum].copy()
+        uren = uren[uren["datum"] <= peildatum].copy()
         if len(pogingen):
             pogingen = pogingen[pogingen["datum"] <= peildatum].copy()
     eerste = min([d for d in (contacten["datum"].min() if len(contacten) else None,
@@ -976,7 +997,7 @@ def bouw(cfg: Config, contacten_raw: pd.DataFrame, uren_raw: pd.DataFrame,
     targets = _targets(cfg, contacten, peildatum, verkoop)
     dq = _datakwaliteit(cfg, contacten, uren,
                         bestanden if bestanden is not None else pd.DataFrame(columns=["naam"]),
-                        verdeling, uren_raw["te_betalen_s"].sum())
+                        verdeling, uren_raw.loc[pd.to_datetime(uren_raw["datum"]).dt.date <= peildatum, "te_betalen_s"].sum())
     dq["controles"].append({
         "controle": "Kosten: verdeelsleutel = kosten per beller (facturen / uren x tarief + vaste vergoeding)",
         "dashboard": round(verdeling["kosten"].sum(), 2),

@@ -86,7 +86,10 @@ def main(argv=None):
     for v in m.dq.get("handmatig") or []:
         print(f"  Handmatig resultaat (nog niet in een belexport): {v['klant']} {v['datum']} code {v['code']}")
     na = m.dq.get("na_peildatum") or {}
-    if na.get("bronnen"):
+    if na.get("wacht_op_belexport"):
+        print(f"  Urenexport loopt t/m {na['uren_tot']}, maar belexports nog niet: "
+              + ", ".join(f"{k} t/m {d}" for k, d in na["wacht_op_belexport"].items()))
+    if na.get("bronnen") and not na.get("wacht_op_belexport"):
         bronnen = ", ".join(f"{b} t/m {d}" for b, d in na["bronnen"].items())
         print(f"  Wacht op urenexport: {bronnen}. {na['belregels']} belregels "
               f"({sum(na['resultaten'].values())} resultaten) tellen mee zodra PayableHoursPerDay die dagen bevat.")

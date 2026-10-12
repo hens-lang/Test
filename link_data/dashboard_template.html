@@ -59,6 +59,13 @@ nav button.actief .nr{background:var(--cyaan);color:var(--navy)}
 .antwoord{font-size:17px;margin:0 0 14px;padding:12px 16px;border-left:4px solid var(--cyaan);background:var(--surface);border-radius:6px}
 .stapnav{display:flex;justify-content:space-between;gap:8px;margin:20px 0 4px}
 .punten{margin:0;padding-left:20px;font-size:15px;line-height:1.6}
+body.kpimodus header nav,body.kpimodus .filters,body.kpimodus footer{display:none}
+.plan{margin-top:16px}.plan h3{font:700 24px "Barlow Condensed";margin:0}
+.plan table{table-layout:fixed}.plan td,.plan th{padding:7px 8px}
+.plan .nu{color:var(--tekst-2)}.plan .moet{font-weight:700;font-size:16px}
+.plan .pijl{color:var(--tekst-3);text-align:center;width:28px}
+.hefboom{margin:10px 0 0;padding:10px 12px;background:var(--surface-2);border-radius:8px;font-size:14px}
+@media print{header,footer,.filters,.stapnav,details{display:none!important}.kaart{break-inside:avoid;border:1px solid #ccc}body{background:#fff}}
 @media(max-width:700px){table.stapel thead{display:none}table.stapel tr{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px 10px;padding:12px 0;border-bottom:1px solid var(--rand)}
 table.stapel td{white-space:normal!important;text-align:left!important;border:0!important;padding:0!important}table.stapel td:first-child,table.stapel td.acties{grid-column:1/4}
 table.stapel td[data-l]::before{content:attr(data-l);display:block;font-size:11px;color:var(--tekst-3)}table.stapel td:empty{display:none}}
@@ -129,6 +136,7 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
     <button id="navMeer" class="meerknop" type="button">Meer details ▾</button>
   </nav>
   <nav id="navDetails" class="details" hidden>
+    <button data-tab="kpiplan">KPI-plan</button>
     <button data-tab="stuur">Stuurscherm (alles op één pagina)</button>
     <button data-tab="bellers">Bellers (alle cijfers)</button>
     <button data-tab="overzicht">Cijfers</button>
@@ -163,6 +171,7 @@ footer{padding:20px 16px;color:var(--tekst-3);font-size:12px;text-align:center}
 <section class="tab" id="tab-s2"><div class="stap" id="s2"></div></section>
 <section class="tab" id="tab-s3"><div class="stap" id="s3"></div></section>
 <section class="tab" id="tab-s4"><div class="stap" id="s4"></div></section>
+<section class="tab" id="tab-kpiplan"><div class="stap" id="kpiplan"></div></section>
 <section class="tab" id="tab-s5"><div class="stap" id="s5"></div></section>
 <section class="tab" id="tab-s6"><div class="stap" id="s6"></div></section>
 
@@ -1007,9 +1016,11 @@ function naPeilMelding() {
   const vwT = vw.length ? `<div class="melding">Geschatte uren, nog niet in de urenexport: ${vw.map(v => `${esc(v.beller)} ${dmy(v.datum)} ${nf(1).format(v.uren)} uur`).join(", ")}. Ze worden vervangen zodra de urenexport die dag bevat.</div>` : "";
   const hm = D.dq.handmatig || [];
   const hmT = hm.length ? `<div class="melding ok">Handmatig toegevoegd, nog niet in een belexport: ${hm.map(v => `${esc(v.klant)} ${dmy(v.datum)} (${v.code === 100 ? "afspraak" : "lead"})`).join(", ")}. Vervalt vanzelf zodra de belexport hem bevat.</div>` : "";
-  if (!Object.keys(b).length) return vwT + hmT;
+  const wb = na.wacht_op_belexport || {};
+  const wbT = Object.keys(wb).length ? `<div class="melding"><b>Alles telt tot en met ${dmy(M.peildatum)}.</b> De urenexport loopt al t/m ${dmy(na.uren_tot)}, maar de belexports van ${naamLijst(Object.entries(wb).map(([k, d]) => `${esc(k)} (t/m ${dmy(d)})`))} nog niet. Zet die belexports in de inbox, dan schuift alles mee.</div>` : "";
+  if (!Object.keys(b).length || wbT) return wbT + vwT + hmT;
   const tot = Object.values(b).sort().pop(), res = na.resultaten || {}, nRes = Object.values(res).reduce((a, v) => a + v, 0);
-  return `<div class="melding"><b>Alles telt tot en met ${dmy(M.peildatum)}</b>, de laatste dag met uren. Er zijn al belexports tot ${dmy(tot)} (${num(na.belregels)} belregels, ${num(nRes)} resultaten${nRes ? ": " + Object.entries(res).map(([k, v]) => `${esc(k)} ${v}`).join(", ") : ""}). Die tellen mee zodra <b>PayableHoursPerDay t/m ${dmy(tot)}</b> in de inbox staat; dan schuiven resultaten, uren, kosten en opbrengst samen op.</div>` + vwT + hmT;
+  return `<div class="melding"><b>Alles telt tot en met ${dmy(M.peildatum)}</b>, de laatste dag met uren. Er zijn al belexports tot ${dmy(tot)} (${num(na.belregels)} belregels, ${num(nRes)} resultaten${nRes ? ": " + Object.entries(res).map(([k, v]) => `${esc(k)} ${v}`).join(", ") : ""}). Die tellen mee zodra <b>PayableHoursPerDay t/m ${dmy(tot)}</b> in de inbox staat; dan schuiven resultaten, uren, kosten en opbrengst samen op.</div>` + wbT + vwT + hmT;
 }
 // Aansluiting met de facturatie (Twinfield): gefactureerd op factuurdatum = verdiend + vooruitgefactureerd
 function omzetAansluiting(ki) {
@@ -1134,6 +1145,93 @@ function beldagKPI(x) {
   const tpc = x.tpc || {}, codes = Object.keys(tpc);
   const perCode = codes.length > 1 && dagenWP ? codes.map(c => ({c: +c, moet: tpc[c] * (1 + NS.buffer) / dagenWP, nu: genoeg && eigen.uren ? (+c === 100 ? eigen.c100 : eigen.c101) / eigen.uren * H : null})) : null;
   return {H, T, dagenWP, moet, nu, callsU, gesprPerCall, resPerGespr, haalbaar, dagenNodigNu, oordeel, kleur, genoeg, perCode, f};
+}
+
+// ---------- KPI-plan: per opdrachtgever Nu tegenover Moet, met een haalbaar plan.
+// Calls per uur gaan omhoog tot het tempo van de betere beldagen; wat daarna nog ontbreekt moet uit de conversie
+// (beslisser -> resultaat) komen. Bereik (call -> beslisser) blijft zoals gemeten: dat is de kwaliteit van de lijst.
+function kpiPlan(x) {
+  const b = beldagKPI(x), H = NS.dagUren, eigen = trechter(x.i), f = b.f;
+  const g = div(f.gespr, f.calls), c = div(f.res, f.gespr), cu = div(f.calls, f.uren);
+  const resD = b.moet.res;
+  const plan = {};
+  if (resD && g && c && cu) {
+    const nodigCU = resD / (H * g * c);
+    const max = Math.max(b.haalbaar || 0, cu);
+    plan.callsU = Math.min(nodigCU, max);
+    plan.conv = resD / (H * plan.callsU * g);
+    plan.calls = plan.callsU * H; plan.gespr = plan.calls * g; plan.res = resD;
+    plan.bereik = g;
+  }
+  // nu, gemeten op de eigen beldagen
+  const bd = x.bd, dagen = bd ? bd.dagenMetUren : [], {v1, t1} = meetvenster(), vS = Math.max(v1, klantStartIdx(x.i));
+  const nD = bd ? bd.dagen.filter(d => d.d >= vS).length : 0, perWPf = vS <= t1 ? 20 / (werkdagenIn(vS, t1) || 1) : 0;
+  const nu = b.genoeg ? {
+    dagenWP: nD ? nD * perWPf : null,
+    urenD: dagen.length ? dagen.reduce((a, d) => a + d.uren, 0) / dagen.length : null,
+    callsU: cu, calls: cu * H, gespr: div(eigen.gespr, eigen.uren) * H, bereik: g, conv: c, res: div(eigen.res, eigen.uren) * H,
+    resWP: eigen.res * perWPf,
+  } : null;
+  const doelWP = b.T;
+  // hefbomen in gewone taal
+  const hef = [];
+  if (!nu) hef.push("Nog geen eigen beldata: start met deze normen (teamgemiddelde) en stel bij na 2 beldagen.");
+  else {
+    if (plan.callsU && plan.callsU > nu.callsU * 1.05) hef.push(`<b>Tempo:</b> van ${nf(0).format(nu.callsU)} naar ${nf(0).format(plan.callsU)} calls per uur (${nf(0).format(nu.calls)} → ${nf(0).format(plan.calls)} per beldag). Minder tijd tussen gesprekken (Prepare en Finish kort houden).`);
+    if (plan.conv && plan.conv > nu.conv * 1.05) hef.push(`<b>Conversie:</b> van ${pct(nu.conv, 1)} naar ${pct(plan.conv, 1)} van de beslissers wordt een resultaat. Pitch en doelgroep aanscherpen, bellijst op de juiste functies.`);
+    if (nu.urenD && nu.urenD > H * 1.1) hef.push(`<b>Uren:</b> beldag van gemiddeld ${nf(1).format(nu.urenD)} uur terug naar ${H} uur.`);
+    if (b.dagenWP && nu.dagenWP && nu.dagenWP > b.dagenWP * 1.15) hef.push(`<b>Beldagen:</b> nu ${nf(1).format(nu.dagenWP)} per werkperiode, budget ${nf(1).format(b.dagenWP)}.`);
+    if (!hef.length) hef.push(`<b>Op koers.</b> Deze normen vasthouden: dan haal je ${nf(1).format(doelWP)} resultaten per werkperiode.`);
+  }
+  return {x, b, plan, nu, doelWP, hef, H};
+}
+function kpiPlanHtml() {
+  const R = stuurRegels().filter(r => r.x.target != null), H = NS.dagUren;
+  const P = R.map(r => kpiPlan(r.x));
+  const n0 = v => v == null || !isFinite(v) ? "-" : nf(0).format(v), n1 = v => v == null || !isFinite(v) ? "-" : nf(1).format(v), p1 = v => v == null || !isFinite(v) ? "-" : pct(v, 1);
+  const kleur = (nu, moet, max) => nu == null || moet == null ? "grijs" : (max ? nu <= moet * 1.05 : nu >= moet * 0.95) ? "groen" : "rood";
+  const rij = (lab, nu, moet, d, max, toel) => `<tr><td class="l">${lab}${toel ? `<div class="vs">${toel}</div>` : ""}</td>
+    <td class="nu"><span class="stip ${kleur(nu, moet, max)}">${d(nu)}</span></td><td class="pijl">→</td><td class="moet">${d(moet)}</td></tr>`;
+  const blok = ({x, b, plan, nu, doelWP, hef}) => {
+    const st = !nu ? "grijs" : nu.res >= (plan.res || Infinity) * 0.95 ? "groen" : b.kleur === "oranje" ? "oranje" : "rood";
+    return `<div class="kaart plan"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h3>${esc(x.k.naam)}</h3>
+      <span class="label ${st === "groen" ? "goed" : st === "rood" ? "actie" : st === "oranje" ? "letop" : "info"}">${st === "groen" ? "op koers" : st === "grijs" ? "nieuw" : "bijsturen"}</span></div>
+      <p class="uitleg" style="margin:4px 0 8px">Doel: <b>${n1(doelWP)} resultaten per werkperiode</b> (target ${n1(x.target)} + ${pct(NS.buffer)}) in <b>${n1(b.dagenWP)} beldagen van ${H} uur</b></p>
+      <table><colgroup><col style="width:52%"><col style="width:20%"><col style="width:8%"><col style="width:20%"></colgroup>
+      <thead><tr><th class="l">KPI</th><th>Nu</th><th></th><th>Moet</th></tr></thead><tbody>
+      ${rij("Beldagen per werkperiode", nu?.dagenWP, b.dagenWP, n1, true, `van ${H} uur, binnen budget € ${M.tarief_doel}/uur`)}
+      ${rij("Calls per uur", nu?.callsU, plan.callsU, n0, false)}
+      ${rij("Calls per beldag", nu?.calls, plan.calls, n0, false)}
+      ${rij("Beslissers gesproken per beldag", nu?.gespr, plan.gespr, n0, false, `${p1(plan.bereik)} van de calls`)}
+      ${rij("Conversie beslisser → resultaat", nu?.conv, plan.conv, p1, false)}
+      ${rij("Resultaten per beldag", nu?.res, plan.res, n1, false)}
+      ${rij("Resultaten per werkperiode", nu?.resWP, doelWP, n1, false)}
+      </tbody></table>
+      ${b.perCode ? `<p class="uitleg" style="margin:6px 0 0">Waarvan per beldag: ${b.perCode.map(p => `${p.c === 100 ? "afspraken/tastings" : "leads"} ${n1(p.nu)} → <b>${n1(p.moet)}</b>`).join(", ")}.</p>` : ""}
+      <div class="hefboom"><b>Wat moet er veranderen?</b><ul class="punten" style="font-size:14px;margin-top:4px">${hef.map(h => `<li>${h}</li>`).join("")}</ul></div></div>`;
+  };
+  const volg = {rood: 0, oranje: 1, groen: 2, grijs: 3};
+  const sorted = P.sort((a, b) => volg[a.b.kleur] - volg[b.b.kleur]);
+  const overzicht = `<div class="kaart tabelwrap"><h3 style="font:700 22px 'Barlow Condensed';margin:0 0 8px">Overzicht: per beldag van ${H} uur</h3><table class="stapel"><thead><tr><th class="l">Opdrachtgever</th><th>Calls per uur</th><th>Calls per beldag</th><th>Beslissers</th><th>Conversie</th><th>Resultaten</th><th>Beldagen per WP</th></tr></thead><tbody>${
+    sorted.map(({x, b, plan, nu}) => {
+      const c = (v, m, d) => `<span class="${nu ? (v >= m * 0.95 ? "pos" : "neg") : ""}">${d(v)}</span> → <b>${d(m)}</b>`;
+      return `<tr><td class="l"><b>${esc(x.k.naam)}</b></td><td data-l="Calls per uur">${c(nu?.callsU, plan.callsU, n0)}</td><td data-l="Calls per beldag">${c(nu?.calls, plan.calls, n0)}</td>
+        <td data-l="Beslissers">${c(nu?.gespr, plan.gespr, n0)}</td><td data-l="Conversie">${c(nu?.conv, plan.conv, p1)}</td><td data-l="Resultaten">${c(nu?.res, plan.res, n1)}</td><td data-l="Beldagen per WP">${n1(b.dagenWP)}</td></tr>`; }).join("")}</tbody></table>
+    <p class="uitleg" style="margin:8px 0 0">Links wat het nu is (gemeten over de laatste ${NS.weken} weken, groen = al goed), rechts wat het moet worden. Klanten zonder eigen data rekenen met het teamgemiddelde.</p></div>`;
+  const basis = `<div class="kaart" style="margin-top:12px"><h3 style="font:700 22px 'Barlow Condensed';margin:0 0 6px">Zo zijn de doelen bepaald</h3><ol class="punten">
+    <li><b>Doel</b> = target per werkperiode + ${pct(NS.buffer)}, zodat we het ruim halen.</li>
+    <li><b>Beldagen</b> = wat de fee toelaat bij € ${M.tarief_doel} per uur en ${pct(NS.marge)} marge: fee × ${pct(1 - NS.marge)}, min Steam en data, / € ${M.tarief_doel} / ${H} uur.</li>
+    <li><b>Resultaten per beldag</b> = doel / beldagen.</li>
+    <li><b>Calls per uur</b> gaan omhoog tot maximaal het tempo van onze betere beldagen bij die klant. Is dat niet genoeg, dan moet de <b>conversie</b> (beslisser → resultaat) omhoog.</li>
+    <li><b>Beslissers per call</b> blijft zoals gemeten: dat hangt af van de kwaliteit van de bellijst.</li></ol>
+    <p class="uitleg" style="margin:6px 0 0">Bronnen: Steam (Call attempts, belexports, urenexport), klanten.yaml (fee, target), kosten.yaml. Stand ${dmy(M.peildatum)}. Uren per dag, buffer en margedoel staan in instellingen.yaml.</p></div>`;
+  return {overzicht, blokken: `<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr))">${sorted.map(blok).join("")}</div>`, basis, P: sorted};
+}
+function renderKpiPlan() {
+  const k = kpiPlanHtml();
+  document.getElementById("kpiplan").innerHTML = `<div class="stapkop"><h2>KPI-plan per opdrachtgever</h2></div>
+    <p class="vs" style="margin:0 0 10px">Wat de KPI's nu zijn en wat ze moeten worden om de targets ruim te halen · beldag ${NS.dagUren} uur · € ${M.tarief_doel} per uur · stand ${dmy(M.peildatum)}</p>
+    ${naPeilMelding()}${k.overzicht}${k.blokken}${k.basis}`;
 }
 function renderS4() {
   const R = stuurRegels(), H = NS.dagUren, n1 = v => v == null || !isFinite(v) ? "-" : nf(1).format(v), n0 = v => v == null || !isFinite(v) ? "-" : nf(0).format(v);
@@ -1721,7 +1819,7 @@ let actieveTab = "s1";
 function render() {
   const n = S.tot - S.van + 1;
   document.getElementById("fInfo").textContent = `${dmy(D.datums[S.van])} t/m ${dmy(D.datums[S.tot])} · ${n} dagen`;
-  ({s1: renderS1, s2: renderS2, s3: renderS3, s4: renderS4, s5: renderS5, s6: renderS6, stuur: renderStuur, klant: renderKlant, overzicht: renderOverzicht, conclusies: renderConclusies, normen: renderNormen, beldagen: renderBeldagen, periodes: renderPeriodes, resultaten: renderResultaten, bellers: renderBellers, klanten: renderKlanten, focus: renderFocus, scenario: renderScenario, dq: renderDQ})[actieveTab]();
+  ({kpiplan: renderKpiPlan, s1: renderS1, s2: renderS2, s3: renderS3, s4: renderS4, s5: renderS5, s6: renderS6, stuur: renderStuur, klant: renderKlant, overzicht: renderOverzicht, conclusies: renderConclusies, normen: renderNormen, beldagen: renderBeldagen, periodes: renderPeriodes, resultaten: renderResultaten, bellers: renderBellers, klanten: renderKlanten, focus: renderFocus, scenario: renderScenario, dq: renderDQ})[actieveTab]();
 }
 const navDetails = document.getElementById("navDetails");
 document.getElementById("navMeer").onclick = e => { e.stopPropagation(); navDetails.hidden = !navDetails.hidden; };
@@ -1749,6 +1847,9 @@ document.getElementById("gegenereerd").textContent = M.gegenereerd;
 initFilters();
 if (typeof Chart === "undefined") { document.querySelector("main").insertAdjacentHTML("afterbegin", "<div class='melding fout'>Grafieken konden niet laden (geen internet?). Tabellen werken wel.</div>"); window.Chart = function () { return {destroy() {}}; }; window.Chart.defaults = {font: {}}; }
 let startTab = "s1"; try { startTab = localStorage.getItem("link-tab") || "s1"; } catch (_) {}
+if (window.KPI_MODUS) { document.body.classList.add("kpimodus"); normenData(); actieveTab = "kpiplan";
+  document.querySelectorAll(".tab").forEach(x => x.classList.toggle("actief", x.id === "tab-kpiplan")); render(); }
+else
 openTab(document.querySelector(`nav button[data-tab="${startTab}"]`) ? startTab : "s1");
 </script>
 </body>

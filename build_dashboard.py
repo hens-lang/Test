@@ -12,6 +12,8 @@ SJABLOON = ROOT / "link_data" / "dashboard_template.html"
 UITVOER = ROOT / "dashboard" / "index.html"
 # Versie zonder <html>/<head>/<body>-skelet, voor publicatie als privépagina op claude.ai
 PAGINA = ROOT / "dashboard" / "link-dashboard.html"
+# KPI-plan: zelfde data en berekeningen, alleen de pagina met Nu tegenover Moet per opdrachtgever
+KPI_PLAN = ROOT / "dashboard" / "kpi-plan.html"
 
 
 def bouw_dashboard(model: Model, cfg: Config, uitvoer: Path = UITVOER) -> Path:
@@ -22,6 +24,9 @@ def bouw_dashboard(model: Model, cfg: Config, uitvoer: Path = UITVOER) -> Path:
     uitvoer.write_text(html, encoding="utf-8")
     if uitvoer == UITVOER:
         PAGINA.write_text(_zonder_skelet(html), encoding="utf-8")
+        kpi = html.replace("<title>LINK. Belprestaties</title>", "<title>KPI-plan LINK.</title>").replace(
+            '<script id="data"', "<script>window.KPI_MODUS = true;</script>\n<script id=\"data\"", 1)
+        KPI_PLAN.write_text(_zonder_skelet(kpi), encoding="utf-8")
     return uitvoer
 
 
