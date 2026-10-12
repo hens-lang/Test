@@ -814,7 +814,7 @@ function beldagenPW(k, gemetenPW) {
 const NS = {marge: null, weken: null};
 function normenData() {
   const cfgN = M.normen || {};
-  if (NS.marge == null) { NS.marge = cfgN.marge_doel ?? 0.4; NS.weken = cfgN.meetperiode_weken ?? 8; }
+  if (NS.marge == null) { NS.marge = cfgN.marge_doel ?? 0.4; NS.weken = cfgN.meetperiode_weken ?? 8; NS.dagUren = cfgN.beldag_uren ?? 6; NS.buffer = cfgN.target_buffer ?? 0.25; }
   const tarief = M.tarief_doel;
   const t1 = peilIdx, v1 = Math.max(0, peilIdx - NS.weken * 7 + 1), inR = d => d >= v1 && d <= t1, per4 = 4 / NS.weken;
   const act = D.klanten.map((k, i) => ({k, i})).filter(x => x.k.status === "actief" && x.k.config && (x.k.fee || x.k.target_wp));
@@ -1025,7 +1025,7 @@ function omzetAansluiting(ki) {
 
 // ---------- rondleiding in 6 stappen (zelfde berekeningen als Stuurscherm en Per opdrachtgever)
 const STAPPEN = [["s1", "Hoe staan we ervoor?"], ["s2", "Halen we de targets?"], ["s3", "Verdienen we eraan?"],
-  ["s4", "Bellen we efficiënt genoeg?"], ["s5", "Wat levert elke beller op?"], ["s6", "Wat gaan we doen?"]];
+  ["s4", "Wat moet een beldag opleveren?"], ["s5", "Wat levert elke beller op?"], ["s6", "Wat gaan we doen?"]];
 function stapPagina(id, antwoord, inhoud) {
   const i = STAPPEN.findIndex(x => x[0] === id), vorige = STAPPEN[i - 1], volgende = STAPPEN[i + 1];
   document.getElementById(id).innerHTML = `<div class="stapkop"><div class="nr">${i + 1}</div><h2>${STAPPEN[i][1]}</h2></div>
@@ -1096,7 +1096,79 @@ function renderS3() {
     <p class="uitleg" style="margin:8px 0 0">Per werkperiode van 4 weken. <b>Opbrengst</b> = de fee per werkperiode (plus gefactureerde extra's, zoals tastings bij Moyee). <b>Kosten</b> = bellers (factuur of uren x tarief), vaste vergoeding eigenaren en overige kosten (Steam, data) naar rato, gemeten sinds de start van de klant (max. ${NS.weken} weken) en omgerekend naar 4 weken. Overig = gestopte opdrachtgevers op basis van hun facturen. Laagste marge bovenaan.</p></div>` + omzetAansluiting(null);
   stapPagina("s3", antwoord, t);
 }
+
+// Beldag-KPI's: wat een beldag van NS.dagUren uur moet opleveren om het target + buffer te halen, teruggerekend
+// via de gemeten trechter calls -> beslissers gesproken -> resultaten (sinds de start van de klant, max. meetperiode).
+const BEREIKT = new Set([100, 101, 200, 201, 500, 501]);
+function trechter(ki) {
+  const {v1, t1} = meetvenster(), v = ki == null ? v1 : Math.max(v1, klantStartIdx(ki)), inR = d => d >= v && d <= t1, ok = k => ki == null ? perWP(k) : k === ki;
+  const t = {uren: 0, calls: 0, gespr: 0, res: 0, c100: 0, c101: 0};
+  if (v > t1) return t;
+  F.v.forEach(r => { if (inR(r[0]) && ok(r[2])) t.uren += r[3]; });
+  (F.p || []).forEach(r => { if (inR(r[0]) && ok(r[3])) t.calls++; });
+  F.c.forEach(r => { if (!inR(r[0]) || !ok(r[3])) return; if (BEREIKT.has(r[4])) t.gespr++; if (r[7]) { t.res++; if (r[4] === 100) t.c100++; if (r[4] === 101) t.c101++; } });
+  return t;
+}
+function beldagKPI(x) {
+  const H = NS.dagUren, eigen = trechter(x.i), team = trechter(null), genoeg = eigen.calls >= 150 && eigen.res >= 3;
+  const f = genoeg ? eigen : team;
+  const callsU = div(f.calls, f.uren), gesprPerCall = div(f.gespr, f.calls), resPerGespr = div(f.res, f.gespr);
+  const T = x.target != null ? x.target * (1 + NS.buffer) : null;
+  const dagenWP = x.maxUren ? Math.max(0.5, Math.floor(x.maxUren / H * 2) / 2) : null;
+  const moet = {}, nu = {};
+  if (T && dagenWP && resPerGespr && gesprPerCall) {
+    moet.res = T / dagenWP; moet.gespr = moet.res / resPerGespr; moet.calls = moet.gespr / gesprPerCall; moet.callsU = moet.calls / H;
+  }
+  if (genoeg) { nu.calls = callsU * H; nu.gespr = div(eigen.gespr, eigen.uren) * H; nu.res = div(eigen.res, eigen.uren) * H; nu.callsU = callsU; }
+  // haalbaar tempo: 75e percentiel van calls per uur op de eigen beldagen (min. 1 uur)
+  const dagT = (x.bd ? x.bd.dagenMetUren : []).filter(d => d.uren >= 1 && d.pog).map(d => d.pog / d.uren).sort((a, b) => a - b);
+  const haalbaar = dagT.length >= 3 ? dagT[Math.floor(dagT.length * 0.75)] : null;
+  const dagenNodigNu = nu.res ? T / nu.res : null;
+  let oordeel, kleur;
+  if (!moet.res) { oordeel = "Nog geen norm: target of budget ontbreekt."; kleur = "grijs"; }
+  else if (!genoeg) { oordeel = "Nog te weinig eigen data: norm op basis van het teamgemiddelde."; kleur = "grijs"; }
+  else if (nu.res >= moet.res) { oordeel = `Op koers: in het huidige tempo haal je ${nf(1).format(nu.res)} resultaten per beldag, ${nf(1).format(moet.res)} is nodig.`; kleur = "groen"; }
+  else if (haalbaar && moet.callsU <= haalbaar * 1.05) { oordeel = `Haalbaar met meer calls: van ${nf(0).format(nu.callsU)} naar ${nf(0).format(moet.callsU)} per uur. Op de betere beldagen lukt al ${nf(0).format(haalbaar)} per uur.`; kleur = "oranje"; }
+  else { oordeel = `Alleen meer calls is niet genoeg (nodig ${nf(0).format(moet.callsU)} per uur, beste dagen ${haalbaar ? nf(0).format(haalbaar) : "-"}). Conversie omhoog via lijst en pitch, of ${nf(1).format(dagenNodigNu)} beldagen in plaats van ${nf(1).format(dagenWP)}.`; kleur = "rood"; }
+  // verdeling per code (bv. Moyee: tastings en leads)
+  const tpc = x.tpc || {}, codes = Object.keys(tpc);
+  const perCode = codes.length > 1 && dagenWP ? codes.map(c => ({c: +c, moet: tpc[c] * (1 + NS.buffer) / dagenWP, nu: genoeg && eigen.uren ? (+c === 100 ? eigen.c100 : eigen.c101) / eigen.uren * H : null})) : null;
+  return {H, T, dagenWP, moet, nu, callsU, gesprPerCall, resPerGespr, haalbaar, dagenNodigNu, oordeel, kleur, genoeg, perCode, f};
+}
 function renderS4() {
+  const R = stuurRegels(), H = NS.dagUren, n1 = v => v == null || !isFinite(v) ? "-" : nf(1).format(v), n0 = v => v == null || !isFinite(v) ? "-" : nf(0).format(v);
+  const K = R.map(r => ({...r, b: beldagKPI(r.x)}));
+  const nOk = K.filter(k => k.b.kleur === "groen").length, nOr = K.filter(k => k.b.kleur === "oranje").length, nR = K.filter(k => k.b.kleur === "rood").length;
+  const antwoord = `Een beldag is <b>${H} uur</b>. Per opdrachtgever staat hieronder hoeveel calls, gesprekken met een beslisser en resultaten die dag moet opleveren om het target <b>ruim (+${pct(NS.buffer)})</b> te halen binnen het budget van € ${M.tarief_doel} per uur. Nu: ${nOk} op koers, ${nOr} haalbaar met meer calls, ${nR} vragen een betere conversie.`;
+  const vak = (lab, moet, nu, d, sub) => `<div style="flex:1;min-width:88px;background:var(--surface-2);border-radius:8px;padding:8px 10px">
+    <div class="vs">${lab}</div><div style="font:700 26px 'Barlow Condensed'">${d(moet)}</div>
+    <div class="vs">nu <span class="stip ${nu == null || moet == null ? "grijs" : nu >= moet * 0.95 ? "groen" : "rood"}">${d(nu)}</span>${sub ? " · " + sub : ""}</div></div>`;
+  const kaart = ({x, b}) => {
+    const lab = x.k.naam.startsWith("Moyee") ? "Resultaten" : "Afspraken / leads";
+    return `<div class="kaart"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><h3 style="margin:0">${esc(x.k.naam)}</h3><span class="stip ${b.kleur}"></span></div>
+      <p class="uitleg" style="margin:4px 0 10px">Target ${n1(x.target)} per werkperiode, wij mikken op <b>${n1(b.T)}</b> · budget <b>${n1(b.dagenWP)} beldagen</b> van ${H} uur (max. ${n1(x.maxUren)} uur bij € ${M.tarief_doel})</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${vak("Calls per beldag", b.moet.calls, b.nu.calls, n0, `${n0(b.moet.callsU)} per uur`)}
+        ${vak("Beslissers gesproken", b.moet.gespr, b.nu.gespr, n0, "")}
+        ${vak(lab + " per beldag", b.moet.res, b.nu.res, n1, "")}
+      </div>
+      ${b.perCode ? `<p class="uitleg" style="margin:8px 0 0">Waarvan ${b.perCode.map(p => `${p.c === 100 ? "afspraken/tastings (100)" : "leads (101)"}: <b>${n1(p.moet)}</b> per beldag (nu ${n1(p.nu)})`).join(" en ")}.</p>` : ""}
+      <p style="margin:10px 0 0;font-size:14px">${b.oordeel}</p>
+      <details style="margin-top:6px"><summary class="vs" style="cursor:pointer">Hoe berekend</summary><p class="uitleg" style="margin:6px 0 0">
+        Gemeten${b.genoeg ? "" : " (teamgemiddelde, te weinig eigen data)"}: ${n0(b.callsU)} calls per uur, ${pct(b.gesprPerCall)} van de calls is een gesprek met een beslisser, ${pct(b.resPerGespr, 1)} van die gesprekken wordt een resultaat.
+        Nodig: ${n1(b.T)} resultaten / ${n1(b.dagenWP)} beldagen = ${n1(b.moet.res)} per beldag → / ${pct(b.resPerGespr, 1)} = ${n0(b.moet.gespr)} gesprekken → / ${pct(b.gesprPerCall)} = ${n0(b.moet.calls)} calls (${n0(b.moet.callsU)} per uur).
+        Budget: fee × ${pct(1 - NS.marge)} min Steam en data, / € ${M.tarief_doel} = ${n1(x.maxUren)} uur = ${n1(b.dagenWP)} beldagen van ${H} uur.</p></details></div>`;
+  };
+  const volg = {rood: 0, oranje: 1, groen: 2, grijs: 3};
+  const kaarten = K.sort((a, b) => volg[a.b.kleur] - volg[b.b.kleur]).map(kaart).join("");
+  // compacte tabel om uit te printen / door te sturen naar de bellers
+  const tabel = `<div class="kaart tabelwrap" style="margin-top:12px"><h3>KPI-kaart voor de bellers (per beldag van ${H} uur)</h3><table class="stapel"><thead><tr><th class="l">Opdrachtgever</th><th>Calls</th><th>Per uur</th><th>Beslissers gesproken</th><th>Resultaten</th><th>Beldagen per werkperiode</th></tr></thead><tbody>${
+    K.filter(k => k.b.moet.res).map(({x, b}) => `<tr><td class="l"><b>${esc(x.k.naam)}</b></td><td data-l="Calls">${n0(b.moet.calls)}</td><td data-l="Per uur">${n0(b.moet.callsU)}</td><td data-l="Beslissers">${n0(b.moet.gespr)}</td><td data-l="Resultaten">${n1(b.moet.res)}</td><td data-l="Beldagen">${n1(b.dagenWP)}</td></tr>`).join("")}</tbody></table>
+    <p class="uitleg" style="margin:8px 0 0">Minimaal per beldag om het target + ${pct(NS.buffer)} te halen. Calls = belpogingen (Steam Call attempts). Beslissers gesproken = belregels met uitkomst bereikt (100, 101, 200, 201, 500, 501). Beldag-uren, buffer en margedoel staan in instellingen.yaml (normen).</p></div>`;
+  const oud = `<details class="kaart" style="margin-top:12px"><summary style="cursor:pointer"><b>Alle efficiëntie-KPI's</b> <span class="vs">uren per beldag, pogingen per uur, uren per resultaat, normen per opdrachtgever</span></summary><div style="margin-top:10px">${oudeS4()}</div></details>`;
+  stapPagina("s4", antwoord, `<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr))">${kaarten}</div>${tabel}${oud}`);
+}
+function oudeS4() {
   const R = stuurRegels().filter(r => r.x.oordeel !== "nieuw"), n1 = v => v == null || !isFinite(v) ? "-" : nf(1).format(v), n0 = v => v == null || !isFinite(v) ? "-" : nf(0).format(v);
   const goed = R.filter(r => r.x.oordeel === "goed");
   const teVeelU = R.filter(r => r.x.nu.urenD != null && r.x.moet.urenD != null && r.x.nu.urenD > r.x.moet.urenD * 1.05);
@@ -1115,7 +1187,7 @@ function renderS4() {
       <li><b>Target / beldagen</b> = <b>min. resultaten per beldag</b>. Max. uren / target = <b>max. uren per resultaat</b>.</li>
       <li><b>Min. pogingen per uur</b> = wat nodig is om met de gemeten conversie (pogingen per resultaat) binnen de max. uren per resultaat te blijven.</li>
     </ol><p class="uitleg" style="margin:6px 0 0">"Nu" = gemeten over de laatste ${NS.weken} weken. Beldagen per week: rooster uit klanten.yaml, anders gemeten. Margedoel en meetperiode zijn aan te passen onder Meer details › KPI-normen.</p></div>`;
-  stapPagina("s4", antwoord, t);
+  return t;
 }
 function renderS5() {
   const {v1, t1} = meetvenster(), inR = d => d >= v1 && d <= t1, B = new Map();
