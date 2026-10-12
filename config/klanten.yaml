@@ -36,12 +36,12 @@ klanten:
     belofte_per_beldag: 1.9
     omzet_boekhouding: 12600
     pids: [11]
-    fee_per_4wk: 1500
-    extra_per_lead: 150   # per ingeplande afspraak (100), niet per lead met kortingscode
+    fee_per_4wk: 1800     # 1500 fee + 300 leadfee (stand 12-10, Hens)
+    extra_per_lead: 0     # tastings zitten in de 1800
     extra_code: 100
     beldagen_per_week: 1   # vaste beldag
-    target_per_4wk: 14
-    targets_per_code: {100: 4, 101: 10}   # 1 afspraak per week + ca. 2-3 leads per week
+    target_per_4wk: 12
+    targets_per_code: {100: 4, 101: 8}   # 4 tastings + ca. 8 leads met kortingscode per werkperiode
     memo_classificatie: true   # bellers zetten alles op 101; afspraak wordt herkend uit de memo
     deliverable: afspraak (100) + lead (101)
     telt_als_resultaat: [100, 101]
@@ -112,7 +112,7 @@ klanten:
     belofte_per_beldag: 1.2
     omzet_boekhouding: 4100
     pids: [1017]
-    fee_per_4wk: 1600
+    fee_per_4wk: 1800     # stand 12-10 (Hens)
     extra_per_lead: 0
     target_per_4wk: 6
     deliverable: afspraak
