@@ -1,0 +1,494 @@
+{
+  "meta": {
+    "title": "LINK. pilotvoorstel OK Creative Agency",
+    "footerLeft": "LINK. · Pilot makelaars · OK Creative Agency",
+    "webTitle": "LINK. x OK Creative Agency · makelaars",
+    "slug": "okpilot",
+    "logoText": "LINK",
+    "partner": {
+      "name": "OK Creative Agency",
+      "logo": "assets/okcreative-logo.png",
+      "wordmark": true
+    }
+  },
+  "slides": [
+    {
+      "id": "cover",
+      "type": "cover",
+      "theme": "dark",
+      "eyebrow": "Voor Mees · OK Creative Agency · oktober 2026",
+      "title": [
+        {
+          "t": "Jullie makelaarsverhaal, nu "
+        },
+        {
+          "t": "op schaal",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "sub": "Jullie hebben ruim twintig makelaarskantoren zelf benaderd en de reacties zijn goed. Er zijn er in Nederland ruim vijfduizend. Dit voorstel gaat over de rest."
+    },
+    {
+      "id": "wie",
+      "type": "about",
+      "theme": "light",
+      "eyebrow": "Waarom wij",
+      "title": [
+        {
+          "t": "Jullie maken het werk. Wij zorgen dat het "
+        },
+        {
+          "t": "aan tafel komt",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "paragraphs": [
+        "Sinds augustus bellen wij voor jullie in de zakelijke dienstverlening. In die twaalf weken hebben we 452 directeuren en marketingverantwoordelijken persoonlijk gesproken en veertien afspraken en overdrachten geleverd. We kennen jullie verhaal inmiddels van binnenuit.",
+        "De makelaarspropositie is scherper dan alles wat we tot nu toe hebben gebeld. Er is een duidelijke aanleiding, een herkenbare doelgroep en een demo die jullie al hebben gemaakt. Dat is precies het soort campagne dat op volume beter wordt."
+      ],
+      "stats": [
+        {
+          "value": "12",
+          "label": "weken pilot",
+          "detail": "Van kick-off tot evaluatie, met elke week een rapportage."
+        },
+        {
+          "value": "10",
+          "label": "gekwalificeerde afspraken",
+          "detail": "Het aantal waar we ons aan verbinden, voor één vaste prijs."
+        }
+      ]
+    },
+    {
+      "id": "haak",
+      "type": "services",
+      "theme": "light",
+      "eyebrow": "De aanleiding",
+      "title": [
+        {
+          "t": "Jullie hebben de haak al "
+        },
+        {
+          "t": "gevonden",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "icon": "listx",
+          "title": "Woningaanbod zonder filters",
+          "text": "Dertien pagina's doorklikken zonder één filter. Dat kost de bezoeker geduld en de makelaar een lead. Dit kwam op jullie eigen lijst keer op keer terug."
+        },
+        {
+          "icon": "spark",
+          "title": "Trage, onoverzichtelijke sites",
+          "text": "Beelden die later laden, aanbod dat door elkaar staat, beschikbaar en verkocht naast elkaar. Mooi gemaakt, maar niet gebouwd voor de zoeker."
+        },
+        {
+          "icon": "target",
+          "title": "Vindbaarheid die niet klopt",
+          "text": "URL-structuren en SEO die niet meebewegen met waar iemand op zoekt. Zichtbaar in één blik, en daarmee een concreet gespreksonderwerp."
+        },
+        {
+          "icon": "building",
+          "title": "Een platform dat vastloopt",
+          "text": "Veel kantoren zitten op een thema dat ze zelf niet meer kunnen onderhouden. Precies het moment waarop vernieuwen bespreekbaar is.",
+          "highlight": true
+        }
+      ]
+    },
+    {
+      "id": "kaart",
+      "type": "map",
+      "theme": "dark",
+      "eyebrow": "Het potentieel",
+      "title": [
+        {
+          "t": "Twintig kantoren in één hoek. "
+        },
+        {
+          "t": "Vijfduizend",
+          "accent": true
+        },
+        {
+          "t": " in het land."
+        }
+      ],
+      "image": "assets/kaart-makelaars.png",
+      "alt": "Kaart van Nederland met de plaatsen uit de lijst van OK Creative Agency",
+      "paragraphs": [
+        "De blauwe punten zijn de plaatsen van de kantoren op jullie eigen lijst: Haarlem, Heemstede, Amsterdam, Zwanenburg, Hoofddorp, Nieuw-Vennep, Den Haag en Utrecht. Een strakke cluster rond de eigen regio, met de hand opgebouwd.",
+        "De rest van de kaart is nog onaangeroerd. Groningen, Twente, Brabant, Limburg en Zeeland hebben allemaal hun eigen makelaarskantoren met precies dezelfde website."
+      ],
+      "stats": [
+        {
+          "value": "5.400+",
+          "label": "makelaarskantoren in Nederland"
+        },
+        {
+          "value": "3.000+",
+          "label": "daarvan met telefoonnummer en website in onze datatool"
+        },
+        {
+          "value": "20",
+          "label": "die jullie zelf hebben benaderd"
+        }
+      ]
+    },
+    {
+      "id": "bewijs",
+      "type": "figures",
+      "theme": "light",
+      "eyebrow": "Wat jullie zelf al hebben bewezen",
+      "title": [
+        {
+          "t": "De propositie landt. Alleen de "
+        },
+        {
+          "t": "capaciteit",
+          "accent": true
+        },
+        {
+          "t": " ontbreekt."
+        }
+      ],
+      "cards": [
+        {
+          "value": "20",
+          "unit": "kantoren benaderd",
+          "label": "Met de hand, door Mark en Swaan, naast al het andere werk."
+        },
+        {
+          "value": "8",
+          "unit": "kregen het deck te zien",
+          "label": "Vier op de tien die jullie spraken wilden het verhaal zien."
+        },
+        {
+          "value": "5",
+          "unit": "staan op later terugkomen",
+          "label": "Geen nee, maar een moment dat nog niet goed uitkwam."
+        },
+        {
+          "value": "0",
+          "unit": "uur over om door te bellen",
+          "highlight": true,
+          "label": "Dat is geen kritiek maar een rekensom. Bellen kost tijd die bij een creatief bureau nergens vandaan komt."
+        }
+      ],
+      "closing": "Deze cijfers komen uit jullie eigen overzicht. Een op de vier gesprekken leidde tot het tonen van het deck. Dat is een goede verhouding voor koud bellen."
+    },
+    {
+      "id": "wat",
+      "type": "services",
+      "theme": "light",
+      "eyebrow": "Wat wij doen",
+      "title": [
+        {
+          "t": "Eén team dat belt, opvolgt en "
+        },
+        {
+          "t": "afspraken levert",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "icon": "phone",
+          "title": "Cold calling",
+          "text": "Ervaren B2B-bellers die het gesprek voeren met de eigenaar of de marketingverantwoordelijke. Eigen belsysteem en een nummer op jullie naam."
+        },
+        {
+          "icon": "users",
+          "title": "Voorwerk per kantoor",
+          "text": "We kijken voor elk gesprek naar de site: filters, snelheid, aanbod en vindbaarheid. Zo openen we met iets concreets in plaats van een algemeen praatje."
+        },
+        {
+          "icon": "repeat",
+          "title": "Opvolging",
+          "text": "Terugbelafspraken komen echt terug in de lijst. Wie het deck wil zien krijgt het dezelfde dag, en wordt binnen drie werkdagen nagebeld."
+        },
+        {
+          "icon": "calendar",
+          "title": "Gekwalificeerde afspraken",
+          "text": "Het resultaat waar we op sturen. Een afspraak staat pas als het kantoor past en de juiste persoon tegenover jullie zit.",
+          "highlight": true
+        }
+      ]
+    },
+    {
+      "id": "hoe",
+      "type": "process",
+      "theme": "dark",
+      "eyebrow": "Hoe de pilot loopt",
+      "title": [
+        {
+          "t": "Twaalf weken, van bellijst naar "
+        },
+        {
+          "t": "afspraken",
+          "accent": true
+        },
+        {
+          "t": " in de agenda."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Kick-off",
+          "text": "Anderhalf tot twee uur. We nemen het verhaal door, scherpen de doelgroep aan en leggen vast wanneer een afspraak meetelt."
+        },
+        {
+          "title": "Lijst en script",
+          "text": "Wij bouwen de bellijst met makelaarskantoren en schrijven het belscript op jullie analyse van hun websites. Jullie geven akkoord."
+        },
+        {
+          "title": "Bellen",
+          "text": "We bellen op de dagen en dagdelen die in onze data het beste werken, namens OK Creative Agency en met een nummer op jullie naam."
+        },
+        {
+          "title": "Rapportage en evaluatie",
+          "text": "Elke week een rapportage, om de week een evaluatie. Na twaalf weken weten we wat een afspraak in deze markt kost."
+        }
+      ],
+      "deliverables": {
+        "title": "Wat jullie ontvangen",
+        "items": [
+          "Afspraak in de agenda met kantoorinfo, contactpersoon en aanleiding",
+          "Bevestiging naar de prospect uit jullie naam, dezelfde dag",
+          "Wekelijks rapport in PDF plus alle gespreksnotities",
+          "De volledige bellijst met status, ook na afloop"
+        ]
+      }
+    },
+    {
+      "id": "kwalificatie",
+      "type": "qualification",
+      "theme": "light",
+      "eyebrow": "Wat wij een gekwalificeerde afspraak noemen",
+      "title": [
+        {
+          "t": "Geen afspraak om de afspraak. "
+        },
+        {
+          "t": "Drie eisen",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "icon": "building",
+          "title": "Fit",
+          "text": "Een makelaarskantoor met een eigen website en woningaanbod, groot genoeg om in een vernieuwing te investeren."
+        },
+        {
+          "icon": "spark",
+          "title": "Aanleiding",
+          "text": "Er is iets concreets: het aanbod is niet te filteren, de site is traag of verouderd, of ze lopen al tegen hun platform aan."
+        },
+        {
+          "icon": "usercheck",
+          "title": "Beslisser",
+          "text": "De eigenaar, directeur of de verantwoordelijke voor marketing. Bij een makelaarskantoor is dat vaak dezelfde persoon."
+        }
+      ],
+      "closing": "Bij de kick-off leggen we deze drie samen vast. Een afspraak die er niet aan voldoet, telt niet mee."
+    },
+    {
+      "id": "pilot",
+      "type": "offer",
+      "theme": "dark",
+      "eyebrow": "De pilot",
+      "title": [
+        {
+          "t": "Eén vaste prijs, met "
+        },
+        {
+          "t": "tien procent",
+          "accent": true
+        },
+        {
+          "t": " relatiekorting."
+        }
+      ],
+      "cards": [
+        {
+          "title": "Twaalf weken bellen",
+          "text": "Van kick-off tot evaluatie. We bellen op de dagen en dagdelen die in onze data het beste werken voor deze doelgroep."
+        },
+        {
+          "title": "Tien gekwalificeerde afspraken",
+          "text": "Daar verbinden we ons aan. Halen we het niet binnen de twaalf weken, dan bellen we door tot ze er staan."
+        },
+        {
+          "title": "Alles inbegrepen",
+          "text": "Kick-off, belscript, bellijst, belsysteem, telefoonnummer en de wekelijkse rapportage. Geen opstartkosten en geen kosten per afspraak."
+        },
+        {
+          "title": "Tien procent relatiekorting",
+          "text": "Omdat jullie sinds augustus klant zijn en wij jullie verhaal al kennen, gaat er vierhonderdvijfennegentig euro van de prijs af.",
+          "highlight": true
+        }
+      ],
+      "bar": {
+        "label": "De pilot, twaalf weken",
+        "price": "€ 4.455",
+        "note": "normaal € 4.950, inclusief 10% relatiekorting, excl. btw",
+        "items": [
+          "Tien gekwalificeerde afspraken",
+          "Kick-off, script en bellijst",
+          "Belsysteem en nummer op jullie naam",
+          "Wekelijkse rapportage",
+          "Geen opstartkosten",
+          "Geen kosten per afspraak"
+        ]
+      }
+    },
+    {
+      "id": "nodig",
+      "type": "needs",
+      "theme": "light",
+      "eyebrow": "Wat we van OK Creative Agency nodig hebben",
+      "title": [
+        {
+          "t": "Ongeveer een "
+        },
+        {
+          "t": "halve dag",
+          "accent": true
+        },
+        {
+          "t": ", daarna draaien wij."
+        }
+      ],
+      "cards": [
+        {
+          "icon": "users",
+          "title": "Kick-off",
+          "text": "Anderhalf tot twee uur met Mark of Frits om het verhaal en de doelgroep scherp te krijgen.",
+          "highlight": true
+        },
+        {
+          "icon": "listx",
+          "title": "Uitsluitlijst",
+          "text": "De kantoren die jullie zelf al benaderen, inclusief de twintig van jullie eigen lijst."
+        },
+        {
+          "icon": "check",
+          "title": "Akkoord op het script",
+          "text": "Wij schrijven het, jullie lezen het door. Zo staat er niets in dat jullie niet zouden zeggen."
+        },
+        {
+          "icon": "calendar",
+          "title": "Agenda",
+          "text": "Vaste momenten waarop wij afspraken mogen inplannen voor het gesprek en de demo."
+        }
+      ]
+    },
+    {
+      "id": "spelregels",
+      "type": "rules",
+      "theme": "light",
+      "eyebrow": "Spelregels",
+      "title": [
+        {
+          "t": "Transparant en zonder "
+        },
+        {
+          "t": "kleine lettertjes",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "rules": [
+        {
+          "title": "Eén vaste prijs",
+          "text": "€ 4.455 excl. btw voor de hele pilot van twaalf weken."
+        },
+        {
+          "title": "Tien afspraken",
+          "text": "Halen we dat niet binnen twaalf weken, dan bellen we door tot ze er staan."
+        },
+        {
+          "title": "Geen opstartkosten",
+          "text": "Kick-off, script, lijst, belsysteem en nummer zitten in de prijs."
+        },
+        {
+          "title": "Geen kosten per afspraak",
+          "text": "Geen nacalculatie en geen rekening achteraf."
+        },
+        {
+          "title": "Kwalificatie vooraf vastgelegd",
+          "text": "Bij de kick-off bepalen we samen wanneer een afspraak meetelt."
+        },
+        {
+          "title": "Bestaande relaties blijven van jullie",
+          "text": "Uitsluitlijst vooraf, die kantoren benaderen wij niet."
+        },
+        {
+          "title": "De lijst blijft van jullie",
+          "text": "Na afloop krijgen jullie de volledige bellijst met status en notities."
+        },
+        {
+          "title": "Gegevens veilig",
+          "text": "Vastgelegd in de verwerkersovereenkomst die er al ligt."
+        }
+      ]
+    },
+    {
+      "id": "volgende",
+      "type": "next",
+      "theme": "dark",
+      "eyebrow": "Volgende stap",
+      "title": [
+        {
+          "t": "Akkoord? Dan staat de kick-off er "
+        },
+        {
+          "t": "binnen een week",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Akkoord",
+          "text": "Mees geeft akkoord op dit voorstel."
+        },
+        {
+          "title": "Kick-off",
+          "text": "Anderhalf tot twee uur met Mark of Frits, plus de uitsluitlijst."
+        },
+        {
+          "title": "Bellen",
+          "text": "Een week later staat de lijst klaar en gaan we de markt in."
+        }
+      ],
+      "contact": {
+        "name": "Hens Boer",
+        "role": "Eigenaar LINK.",
+        "email": "hens@linkgrp.nl",
+        "site": "linkgrp.nl",
+        "address": "Flemingweg 8, Alphen aan den Rijn"
+      }
+    }
+  ]
+}

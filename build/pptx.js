@@ -634,6 +634,39 @@ async function main() {
       }
     }
 
+    if (s.type === 'map') {
+      const file = path.resolve(ROOT, s.image);
+      const x0 = 96, y0 = 404, bottom = 948;
+      const artW = 430, artX = 1824 - artW;
+      if (fs.existsSync(file)) {
+        const meta = await sharp(file).metadata();
+        const h = Math.min(bottom - y0, artW * (meta.height / meta.width));
+        const w = h * (meta.width / meta.height);
+        slide.addImage({ path: file, x: p(artX + (artW - w) / 2), y: p(y0 + (bottom - y0 - h) / 2), w: p(w), h: p(h) });
+      }
+      let ty = y0;
+      s.paragraphs.forEach((txt) => {
+        const lines = Math.ceil(txt.length / 62);
+        slide.addText(txt, {
+          x: p(x0), y: p(ty), w: p(700), h: p(lines * 38), isTextBox: true, margin: 0,
+          fontFace: SANS, fontSize: 11.5, color: C.darkMuted, lineSpacingMultiple: 1.45, valign: 'top',
+        });
+        ty += lines * 38 + 24;
+      });
+      const sw = (1250 - 96) / s.stats.length;
+      s.stats.forEach((st, n) => {
+        const sx = x0 + n * sw;
+        slide.addText(st.value, {
+          x: p(sx), y: p(ty + 24), w: p(sw - 28), h: p(54), isTextBox: true, margin: 0,
+          fontFace: SANS, bold: true, fontSize: 23, color: C.accent, valign: 'middle',
+        });
+        slide.addText(st.label, {
+          x: p(sx), y: p(ty + 86), w: p(sw - 28), h: p(68), isTextBox: true, margin: 0,
+          fontFace: SANS, fontSize: 8.5, color: C.darkMuted, lineSpacingMultiple: 1.35, valign: 'top',
+        });
+      });
+    }
+
     if (s.type === 'compare') {
       const n = s.columns.length;
       const gap = n > 3 ? 18 : n > 2 ? 24 : 32;

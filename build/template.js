@@ -406,6 +406,32 @@ function slideCompare(s) {
   ${s.closing ? `<p class="closing">${esc(s.closing)}</p>` : ''}`;
 }
 
+function slideMap(s) {
+  const fs = require('fs');
+  const path = require('path');
+  let img = '';
+  const file = path.resolve(__dirname, '..', s.image);
+  if (fs.existsSync(file)) {
+    const ext = path.extname(file).slice(1).toLowerCase();
+    const mime = ext === 'svg' ? 'image/svg+xml' : `image/${ext === 'jpg' ? 'jpeg' : ext}`;
+    const b64 = fs.readFileSync(file).toString('base64');
+    img = `<img src="data:${mime};base64,${b64}" alt="${esc(s.alt || 'Kaart')}">`;
+  }
+  return `
+  <div class="head">${eyebrow(s.eyebrow)}${title(s.title)}</div>
+  <div class="map-grid">
+    <div class="map-text">
+      ${s.paragraphs.map((p) => `<p>${esc(p)}</p>`).join('')}
+      <div class="map-stats">
+        ${s.stats
+          .map((st) => `<div class="map-stat"><div class="ms-v">${esc(st.value)}</div><div class="ms-l">${esc(st.label)}</div></div>`)
+          .join('')}
+      </div>
+    </div>
+    <div class="map-art">${img}</div>
+  </div>`;
+}
+
 const RENDERERS = {
   offer: slideOffer,
   plan: slidePlan,
@@ -421,6 +447,7 @@ const RENDERERS = {
   figures: slideFigures,
   tiers: slideTiers,
   compare: slideCompare,
+  map: slideMap,
 };
 
 function renderSlides(data) {
@@ -740,6 +767,18 @@ h1.title { font-size:104px; letter-spacing:-0.03em; }
 .tier-wrap.rows-5 .tier-row { padding-top:18px; padding-bottom:18px; }
 .tier-highlight span { font-weight:800; color:var(--dark-text); }
 .tier-highlight .tier-first em { color:var(--accent); }
+
+/* ---------- kaart ---------- */
+.map-grid {
+  position:absolute; left:var(--m); right:var(--m); top:404px; bottom:132px;
+  display:grid; grid-template-columns:1fr 430px; gap:72px; align-items:center;
+}
+.map-text p { font-size:23px; line-height:1.62; color:var(--dark-muted); max-width:700px; margin-bottom:24px; }
+.map-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:28px; margin-top:34px; }
+.map-stat .ms-v { font-size:46px; font-weight:800; letter-spacing:-0.035em; color:var(--accent); line-height:1; }
+.map-stat .ms-l { font-size:16.5px; line-height:1.45; color:var(--dark-muted); margin-top:12px; }
+.map-art { display:flex; align-items:center; justify-content:flex-end; height:100%; }
+.map-art img { max-height:100%; max-width:100%; width:auto; display:block; }
 
 /* ---------- compare (nu vs nieuw) ---------- */
 .compare-grid {
