@@ -33,7 +33,7 @@
         "We werken voor bedrijven met een sterke B2B-propositie in uiteenlopende branches: van koffie voor kantoren en videoproductie tot CO2-certificaten, cybersecurity en interieurbeplanting."
       ],
       "stats": [
-        { "value": "1", "label": "vast aanspreekpunt", "detail": "Eén persoon die jullie campagne kent, van script tot rapportage." },
+        { "value": "1", "label": "vast aanspreekpunt", "detail": "Eén persoon die jullie campagne kent, van kick-off tot rapportage." },
         { "value": "4", "label": "weken per werkperiode", "detail": "Vaste rapportage en vaste evaluatiemomenten, elke werkperiode opnieuw." }
       ]
     },
@@ -84,7 +84,7 @@
       "steps": [
         {
           "title": "Kick-off",
-          "text": "Samen scherp: doelgroep, beslisser, propositie, bezwaren en wat een goede afspraak voor jullie is. Wij schrijven het belscript en de mails, jullie keuren goed."
+          "text": "Samen scherp: doelgroep, beslisser, propositie, bezwaren en wat een goede afspraak voor jullie is. Wij leggen de USP's en de mails vast, jullie keuren goed."
         },
         {
           "title": "Belstart",
@@ -176,7 +176,7 @@
         { "value": "12", "unit": "afspraken in totaal", "label": "Werkperiodes samen € 4.500 excl. btw, dat is € 375 per gekwalificeerde afspraak. De kick-off fee van € 995 staat hier eenmalig los van.", "highlight": true }
       ],
       "timeline": [
-        { "phase": "Kick-off", "period": "2 weken · eenmalig € 995", "text": "Doelgroep, script, lijst, uitsluitingen" },
+        { "phase": "Kick-off", "period": "2 weken · eenmalig € 995", "text": "Doelgroep, USP's, lijst, uitsluitingen" },
         { "phase": "Werkperiode 1", "period": "week 1 t/m 4", "text": "Belstart, eerste afspraken, eerste rapportages" },
         { "phase": "Werkperiode 2", "period": "week 5 t/m 8", "text": "Tussentijdse evaluatie" },
         { "phase": "Werkperiode 3", "period": "week 9 t/m 12", "text": "Eindevaluatie en besluit over vervolg" }
@@ -205,7 +205,7 @@
         },
         {
           "icon": "check",
-          "title": "Goedkeuring script en mails",
+          "title": "Goedkeuring USP's en mails",
           "text": "Wij schrijven, jullie lezen mee en keuren goed."
         },
         {

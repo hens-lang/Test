@@ -210,7 +210,7 @@
         {
           "icon": "phone",
           "title": "Cold calling",
-          "text": "Ervaren B2B-bellers die het gesprek voeren met de eigenaar of de marketingverantwoordelijke. Eigen belsysteem en een nummer op jullie naam."
+          "text": "Ervaren B2B-bellers die het gesprek voeren met de eigenaar of de marketingverantwoordelijke. Geen afgelezen belscript, maar vastgelegde USP's en een echt gesprek."
         },
         {
           "icon": "users",
@@ -253,8 +253,8 @@
           "text": "Eén uur. We nemen het verhaal door, scherpen de doelgroep aan en leggen vast wanneer een afspraak meetelt."
         },
         {
-          "title": "Lijst en script",
-          "text": "Wij bouwen de bellijst met makelaarskantoren en schrijven het belscript op jullie analyse van hun websites. Jullie geven akkoord."
+          "title": "Lijst en USP's",
+          "text": "Wij bouwen de bellijst met makelaarskantoren en leggen de USP's vast op basis van jullie analyse van hun websites. Geen belscript, wel een scherp verhaal. Jullie geven akkoord."
         },
         {
           "title": "Bellen",
@@ -339,7 +339,7 @@
         },
         {
           "title": "Alles inbegrepen",
-          "text": "Kick-off, belscript, bellijst, belsysteem, telefoonnummer en de wekelijkse rapportage. Geen opstartkosten en geen kosten per afspraak."
+          "text": "Kick-off, USP's, bellijst, belsysteem, telefoonnummer en de wekelijkse rapportage. Geen opstartkosten en geen kosten per afspraak."
         },
         {
           "title": "Tien procent relatiekorting",
@@ -354,7 +354,7 @@
         "items": [
           "Tien gekwalificeerde afspraken",
           "Tien procent relatiekorting",
-          "Kick-off, script en bellijst",
+          "Kick-off, USP's en bellijst",
           "Belsysteem en nummer op jullie naam",
           "Wekelijkse rapportage",
           "Geen opstartkosten en geen kosten per afspraak"
@@ -393,8 +393,8 @@
         },
         {
           "icon": "check",
-          "title": "Akkoord op het script",
-          "text": "Wij schrijven het, jullie lezen het door. Zo staat er niets in dat jullie niet zouden zeggen."
+          "title": "Akkoord op de USP's",
+          "text": "Wij leggen ze vast, jullie lezen ze door. Zo staat er niets in dat jullie niet zouden zeggen."
         },
         {
           "icon": "calendar",
@@ -431,7 +431,7 @@
         },
         {
           "title": "Geen opstartkosten",
-          "text": "Kick-off, script, lijst, belsysteem en nummer zitten in de prijs."
+          "text": "Kick-off, USP's, lijst, belsysteem en nummer zitten in de prijs."
         },
         {
           "title": "Geen kosten per afspraak",

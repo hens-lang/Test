@@ -56,7 +56,7 @@
         {
           "value": "1",
           "label": "vast aanspreekpunt",
-          "detail": "Eén persoon die jullie campagne kent, van script tot rapportage."
+          "detail": "Eén persoon die jullie campagne kent, van kick-off tot rapportage."
         },
         {
           "value": "4",
@@ -126,7 +126,7 @@
       "steps": [
         {
           "title": "Kick-off",
-          "text": "Per klant een korte sessie: doelgroep, propositie, bezwaren en wat een goede afspraak is. Wij schrijven het belscript, de klant keurt goed."
+          "text": "Per klant een korte sessie: doelgroep, propositie, bezwaren en wat een goede afspraak is. Wij leggen de USP's vast, de klant keurt ze goed."
         },
         {
           "title": "Leads binnen",
@@ -281,7 +281,7 @@
       "cards": [
         {
           "title": "Eenmalige opstart",
-          "text": "€ 695 per klant. Kick-off, belscript, inrichting van het belsysteem en een regionaal nummer op naam van de klant. Eén keer, daarna nooit meer."
+          "text": "€ 695 per klant. Kick-off, USP's, inrichting van het belsysteem en een regionaal nummer op naam van de klant. Eén keer, daarna nooit meer."
         },
         {
           "title": "Beldagen per vier weken",
@@ -303,7 +303,7 @@
         "note": "eenmalig, excl. btw",
         "items": [
           "Kick-off met de klant",
-          "Belscript en bezwaren",
+          "USP's en bezwaren",
           "Bellijst en uitsluitingen",
           "Belsysteem en regionaal nummer",
           "Koppeling met jullie leads",
