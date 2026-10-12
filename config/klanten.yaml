@@ -218,7 +218,7 @@ klanten:
     target_per_4wk: 3.33   # 10 / 3 werkperiodes
     deliverable: gekwalificeerde afspraak (100)
     telt_als_resultaat: [100]
-    belstart: 2026-10-05
+    belstart: null      # pilot nog niet gestart (stand 12-10); vul de eerste beldag in zodra we beginnen
 
   Kubus Heerenveen:
     pids: []            # pilot; PID volgt zodra de campagne in Steam staat
@@ -228,4 +228,4 @@ klanten:
     target_per_4wk: 3.33   # 10 / 3 werkperiodes
     deliverable: gekwalificeerde afspraak (100)
     telt_als_resultaat: [100]
-    belstart: 2026-10-05
+    belstart: null      # pilot nog niet gestart (stand 12-10); vul de eerste beldag in zodra we beginnen

@@ -668,7 +668,9 @@ def _targets(cfg: Config, contacten: pd.DataFrame, peildatum: dt.date, verkoop: 
             if k.pilot_weken and start:
                 r.update(periode_van=start, periode_tot=start + dt.timedelta(days=7 * int(k.pilot_weken) - 1),
                          periode_bron=f"pilot {k.pilot_weken} weken", target=k.pilot_target)
-            r.update(stoplicht=(k.status if not k.actief else "nog niet gestart" if start
+            elif k.pilot_weken:
+                r.update(target=k.pilot_target, periode_bron=f"pilot {k.pilot_weken} weken")
+            r.update(stoplicht=(k.status if not k.actief else "nog niet gestart" if start or k.pilot_weken
                                 else "startdatum ontbreekt"), resultaten=int(len(eigen)))
         rijen.append(r)
     return pd.DataFrame(rijen)
