@@ -59,6 +59,11 @@ function addChrome(slide, theme, idx, total) {
     ],
     { x: p(94), y: p(58), w: p(300), h: p(52), isTextBox: true, margin: 0, fontFace: SANS, bold: true, fontSize: 18, align: 'left', valign: 'middle' }
   );
+  const pm = data.meta.partner && data.meta.partner.mark;
+  if (pm) {
+    const mf = path.resolve(ROOT, pm);
+    if (fs.existsSync(mf)) slide.addImage({ path: mf, x: p(1768), y: p(62), w: p(56), h: p(56) });
+  }
   const footColor = theme === 'dark' ? 'BDC3CE' : C.muted;
   slide.addText(data.meta.footerLeft, {
     x: p(96), y: p(1005), w: p(900), h: p(36), isTextBox: true, margin: 0,
@@ -532,24 +537,33 @@ async function main() {
         x: p(144), y: p(by + 26), w: p(300), h: p(26), isTextBox: true, margin: 0,
         fontFace: SANS, bold: true, fontSize: 8, color: darkInk, charSpacing: 2, valign: 'middle',
       });
-      slide.addText(s.bar.price, {
-        x: p(144), y: p(by + 52), w: p(300), h: p(64), isTextBox: true, margin: 0,
-        fontFace: SANS, bold: true, fontSize: 29, color: darkInk, valign: 'middle',
+      const priceRuns = [];
+      if (s.bar.was) {
+        priceRuns.push({ text: s.bar.was, options: { fontSize: 23, strike: 'sngStrike', color: '2C6B88' } });
+        priceRuns.push({ text: '  ', options: { fontSize: 23, color: darkInk } });
+      }
+      priceRuns.push({ text: s.bar.price, options: { fontSize: 29, color: darkInk } });
+      const pw = s.bar.was ? 470 : 300;
+      slide.addText(priceRuns, {
+        x: p(144), y: p(by + 52), w: p(pw), h: p(64), isTextBox: true, margin: 0,
+        fontFace: SANS, bold: true, valign: 'middle',
       });
       slide.addText(s.bar.note, {
-        x: p(144), y: p(by + 118), w: p(320), h: p(26), isTextBox: true, margin: 0,
+        x: p(144), y: p(by + 118), w: p(pw + 20), h: p(26), isTextBox: true, margin: 0,
         fontFace: SANS, bold: true, fontSize: 8, color: darkInk, valign: 'middle',
       });
+      const divX = s.bar.was ? 672 : 500;
       slide.addShape('line', {
-        x: p(500), y: p(by + 28), w: 0, h: p(bh - 56),
+        x: p(divX), y: p(by + 28), w: 0, h: p(bh - 56),
         line: { color: darkInk, width: 0.75, transparency: 60 },
       });
+      const colW = (1824 - (divX + 56)) / 2;
       s.bar.items.forEach((it, n) => {
-        const ix = 556 + (n % 2) * 600;
+        const ix = divX + 56 + (n % 2) * colW;
         const iy = by + 26 + Math.floor(n / 2) * 40;
         slide.addImage({ data: checkDark, x: p(ix), y: p(iy + 5), w: p(20), h: p(20) });
         slide.addText(it, {
-          x: p(ix + 32), y: p(iy), w: p(560), h: p(34), isTextBox: true, margin: 0,
+          x: p(ix + 32), y: p(iy), w: p(colW - 44), h: p(34), isTextBox: true, margin: 0,
           fontFace: SANS, bold: true, fontSize: 9, color: darkInk, valign: 'middle',
         });
       });

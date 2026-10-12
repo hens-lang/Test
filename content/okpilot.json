@@ -7,8 +7,11 @@
     "logoText": "LINK",
     "partner": {
       "name": "OK Creative Agency",
-      "logo": "assets/okcreative-logo.png",
-      "wordmark": true
+      "logo": "assets/okcreative-mark.png",
+      "mark": "assets/okcreative-mark.png",
+      "wordmark": true,
+      "solid": true,
+      "square": true
     }
   },
   "slides": [
@@ -165,7 +168,7 @@
         {
           "value": "20",
           "unit": "kantoren benaderd",
-          "label": "Met de hand, door Mark en Swaan, naast al het andere werk."
+          "label": "Met de hand opgebouwd, naast al het andere werk."
         },
         {
           "value": "8",
@@ -247,7 +250,7 @@
       "steps": [
         {
           "title": "Kick-off",
-          "text": "Anderhalf tot twee uur. We nemen het verhaal door, scherpen de doelgroep aan en leggen vast wanneer een afspraak meetelt."
+          "text": "Eén uur. We nemen het verhaal door, scherpen de doelgroep aan en leggen vast wanneer een afspraak meetelt."
         },
         {
           "title": "Lijst en script",
@@ -340,22 +343,23 @@
         },
         {
           "title": "Tien procent relatiekorting",
-          "text": "Omdat jullie sinds augustus klant zijn en wij jullie verhaal al kennen, gaat er vierhonderdvijfennegentig euro van de prijs af.",
+          "text": "We werken sinds augustus met veel plezier met jullie samen en we geloven in deze campagne. Daarom gaat er vierhonderdvijfennegentig euro van de prijs af.",
           "highlight": true
         }
       ],
       "bar": {
         "label": "De pilot, twaalf weken",
         "price": "€ 4.455",
-        "note": "normaal € 4.950, inclusief 10% relatiekorting, excl. btw",
+        "note": "€ 495 relatiekorting, excl. btw",
         "items": [
           "Tien gekwalificeerde afspraken",
+          "Tien procent relatiekorting",
           "Kick-off, script en bellijst",
           "Belsysteem en nummer op jullie naam",
           "Wekelijkse rapportage",
-          "Geen opstartkosten",
-          "Geen kosten per afspraak"
-        ]
+          "Geen opstartkosten en geen kosten per afspraak"
+        ],
+        "was": "€ 4.950"
       }
     },
     {
@@ -365,10 +369,10 @@
       "eyebrow": "Wat we van OK Creative Agency nodig hebben",
       "title": [
         {
-          "t": "Ongeveer een "
+          "t": "Eén uur "
         },
         {
-          "t": "halve dag",
+          "t": "kick-off",
           "accent": true
         },
         {
@@ -379,7 +383,7 @@
         {
           "icon": "users",
           "title": "Kick-off",
-          "text": "Anderhalf tot twee uur met Mark of Frits om het verhaal en de doelgroep scherp te krijgen.",
+          "text": "Eén uur van jullie om het verhaal en de doelgroep scherp te krijgen. Daarna kunnen wij aan de slag.",
           "highlight": true
         },
         {
@@ -419,7 +423,7 @@
       "rules": [
         {
           "title": "Eén vaste prijs",
-          "text": "€ 4.455 excl. btw voor de hele pilot van twaalf weken."
+          "text": "€ 4.455 excl. btw voor de hele pilot van twaalf weken, normaal € 4.950."
         },
         {
           "title": "Tien afspraken",
@@ -475,7 +479,7 @@
         },
         {
           "title": "Kick-off",
-          "text": "Anderhalf tot twee uur met Mark of Frits, plus de uitsluitlijst."
+          "text": "Eén uur van jullie, plus de uitsluitlijst."
         },
         {
           "title": "Bellen",

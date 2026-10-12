@@ -35,6 +35,19 @@ const icon = (name, cls = '') =>
 
 const logo = () => `<div class="logo">LINK<span class="dot">.</span></div>`;
 
+const headerMark = (meta) => {
+  const p = meta.partner;
+  if (!p || !p.mark) return '';
+  const fs = require('fs');
+  const path = require('path');
+  const file = path.resolve(__dirname, '..', p.mark);
+  if (!fs.existsSync(file)) return '';
+  const ext = path.extname(file).slice(1).toLowerCase();
+  const mime = ext === 'svg' ? 'image/svg+xml' : `image/${ext === 'jpg' ? 'jpeg' : ext}`;
+  const b64 = fs.readFileSync(file).toString('base64');
+  return `<img class="header-mark" src="data:${mime};base64,${b64}" alt="${esc(p.name)}">`;
+};
+
 const footer = (meta, n, total) =>
   `<div class="footer"><span>${esc(meta.footerLeft)}</span><span>${n} / ${total}</span></div>`;
 
@@ -309,7 +322,9 @@ function slideOffer(s) {
       ? `<div class="offer-bar">
     <div class="offer-price">
       <div class="offer-label">${esc(s.bar.label)}</div>
-      <div class="offer-amount">${esc(s.bar.price)}</div>
+      <div class="offer-amounts">${
+        s.bar.was ? `<span class="offer-was">${esc(s.bar.was)}</span>` : ''
+      }<span class="offer-amount">${esc(s.bar.price)}</span></div>
       <div class="offer-note">${esc(s.bar.note)}</div>
     </div>
     <div class="offer-items">
@@ -457,6 +472,7 @@ function renderSlides(data) {
       const body = RENDERERS[s.type](s, data.meta);
       return `<section class="slide theme-${s.theme} slide-${s.type}" id="slide-${i + 1}">
         ${logo()}
+        ${headerMark(data.meta)}
         ${body}
         ${footer(data.meta, i + 1, total)}
       </section>`;
@@ -497,6 +513,7 @@ body { font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased; }
 /* vaste posities: logo en footer identiek op elke slide */
 .logo { position:absolute; top:64px; left:var(--m); font-size:36px; font-weight:800; letter-spacing:-0.02em; }
 .logo .dot { color:var(--accent); }
+.header-mark { position:absolute; top:62px; right:var(--m); width:56px; height:56px; display:block; border-radius:12px; }
 .footer {
   position:absolute; left:var(--m); right:var(--m); bottom:48px;
   display:flex; justify-content:space-between; align-items:baseline;
@@ -704,8 +721,14 @@ h1.title { font-size:104px; letter-spacing:-0.03em; }
   display:flex; align-items:center; gap:56px; padding:34px 48px;
 }
 .offer-price { flex:none; width:300px; }
+.offer-price:has(.offer-was) { width:470px; }
 .offer-label { font-size:15px; font-weight:700; text-transform:uppercase; letter-spacing:0.22em; opacity:0.75; }
-.offer-amount { font-size:58px; font-weight:800; letter-spacing:-0.03em; line-height:1.05; margin-top:6px; }
+.offer-amounts { display:flex; align-items:baseline; gap:22px; margin-top:6px; }
+.offer-amount { font-size:58px; font-weight:800; letter-spacing:-0.03em; line-height:1.05; }
+.offer-was {
+  font-size:46px; font-weight:700; letter-spacing:-0.03em; line-height:1.05;
+  opacity:0.52; text-decoration:line-through; text-decoration-thickness:4px;
+}
 .offer-note { font-size:16px; font-weight:600; margin-top:6px; opacity:0.75; }
 .offer-items {
   flex:1; display:grid; grid-template-columns:1fr 1fr; gap:14px 40px;
