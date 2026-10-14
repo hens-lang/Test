@@ -188,7 +188,9 @@ def compute(belexport, stats):
         uren_record=S['uren_record'], uren_record_txt=S['uren_record_txt'],
         uren_ingelogd=S['uren_ingelogd'], uren_ingelogd_txt=S['uren_ingelogd_txt'],
         beldagen=S['uren_record'] / UREN_PER_BELDAG,
-        offerte_moyee=20000,
+        # Plaud 14-10-2026: OK-tarief voor een middelgroot traject is 20K; Moyee krijgt korting
+        # omdat Moyee al veel had aangeleverd. Het exacte offertebedrag is nog niet bekend.
+        tarief_moyee=20000,
     )
     c['beldagen_per_lead'] = c['n_leads'] / c['beldagen']
     c['opties'] = [dict(beldagen=b, prijs=p, aanbevolen=a, kpi=b * KPI_PER_BELDAG,
