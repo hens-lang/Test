@@ -24,12 +24,24 @@ def logo(h, wit=False, style=''):
     return f'<img src="{_LOGO["wit" if wit else "zwart"]}" alt="LINK." style="height:{h}px;width:auto;display:inline-block;vertical-align:baseline;{style}">'
 from cijfers import euro, num, d, pct
 
+FONTS = ASSETS / 'fonts'
+_FONTFILES = [l.split(';') for l in (FONTS / 'fonts.txt').read_text().splitlines()]
+
+
+def font_css(web=False):
+    # lettertypes van linkgrp.nl: Inter Tight (koppen), Instrument Serif cursief (accent), Open Sans (tekst, huisstijl)
+    if web:
+        return "@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;700;800;900&family=Instrument+Serif:ital@0;1&family=Open+Sans:wght@400;600;700&display=swap');\n"
+    return ''.join(f"@font-face {{ font-family:'{fam}'; font-style:{sty}; font-weight:{w}; src:url('{(FONTS / fn).as_uri()}'); }}\n"
+                   for fam, sty, w, fn in _FONTFILES)
+
 # --- huisstijl (zelfde tokens als gen.py van de weekrapportage) -----------------
 CSS_BASE = """
-:root { --ink:#1c2230; --blue:#38b6ff; --muted:#6f6a5c; --card:#f8f4eb; --bar:#e4dcc8; --cream:#e9e0cd; }
+:root { --ink:#1c2230; --blue:#38b6ff; --muted:#6f6a5c; --card:#f6f1e7; --bar:#e4dcc8; --cream:#e9e0cd; --night:#131a24; --night2:#222c3c; }
 * { box-sizing:border-box; }
-body { margin:0; font-family: Helvetica, Arial, "Liberation Sans", sans-serif; color:var(--ink); background:var(--cream); }
-.serif { font-family: Georgia, "Liberation Serif", serif; font-style:italic; font-weight:400; }
+body { margin:0; font-family:'Open Sans', Arial, sans-serif; color:var(--ink); background:var(--cream); }
+.serif, .it { font-family:'Instrument Serif', Georgia, serif; font-style:italic; font-weight:400; letter-spacing:0; }
+.disp, h1, h2, .big, .cap, [style*="font-weight:800"], [style*="font-weight:900"] { font-family:'Inter Tight', 'Open Sans', Arial, sans-serif; }
 .blue { color:var(--blue); }
 .logotext { font-weight:800; letter-spacing:-0.6px; }
 .logotext .dot, .dot { color:var(--blue); }
@@ -40,23 +52,26 @@ CSS_DECK = CSS_BASE + """
 @media screen { body { background:#cfc6b2; padding:24px 0; } .slide { margin:0 auto 24px; box-shadow:0 6px 24px rgba(0,0,0,.18); } }
 .slide { width:1280px; height:720px; position:relative; overflow:hidden; background:var(--cream);
          padding:56px 72px 0; page-break-after:always; break-after:page; }
-.slide.dark { background:#000; color:#fff; }
+.slide.dark { background:linear-gradient(140deg, var(--night) 0%, var(--night2) 100%); color:#fff; }
 .top { position:absolute; top:26px; left:72px; right:72px; display:flex; justify-content:space-between;
        font-size:13px; color:#a79f8b; }
 .top .logotext { font-size:18px; color:var(--ink); }
 .dark .top .logotext { color:#fff; }
 .foot { position:absolute; bottom:22px; left:72px; right:72px; display:flex; justify-content:space-between;
         font-size:11.5px; color:#a79f8b; }
-.eyebrow { color:var(--blue); font-size:13px; font-weight:700; letter-spacing:.22em; margin:22px 0 10px; text-transform:uppercase; }
-h2 { font-size:38px; line-height:1.12; font-weight:800; margin:0 0 26px; max-width:1136px; letter-spacing:-0.4px; }
+.eyebrow { color:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.24em; margin:22px 0 12px; text-transform:uppercase; }
+.eyebrow::before { content:""; display:inline-block; width:26px; height:1.5px; background:var(--blue); vertical-align:middle; margin-right:12px; }
+.dark .eyebrow { color:#9aa3b2; }
+h2 { font-size:40px; line-height:1.08; font-weight:800; margin:0 0 28px; max-width:1136px; letter-spacing:-0.5px; }
+h2 .it { font-size:1.12em; letter-spacing:-.2px; }
 .dark h2 { color:#fff; }
 .card { background:var(--card); border-radius:16px; padding:22px 24px; flex-shrink:0; }
-.dark .card { background:#15181f; }
-.card.black { background:#000; color:#fff; }
+.dark .card { background:rgba(255,255,255,.06); }
+.card.black { background:linear-gradient(140deg, var(--night) 0%, var(--night2) 100%); color:#fff; border-radius:20px; }
 .lbl { color:var(--blue); font-size:12px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; margin-bottom:8px; }
 .row { display:flex; gap:18px; }
 .col { flex:1; }
-.big { font-size:64px; font-weight:800; line-height:1; letter-spacing:-1.5px; }
+.big { font-size:64px; font-weight:800; line-height:1; letter-spacing:-2px; }
 .cap { font-size:17px; font-weight:700; margin-top:10px; }
 .sub { font-size:14px; color:var(--muted); margin-top:6px; line-height:1.45; }
 .dark .sub, .black .sub { color:#a9a9a9; }
@@ -72,7 +87,7 @@ li { margin-bottom:8px; }
 .chip.line { border:1.5px solid var(--blue); color:var(--blue); }
 table.t { width:100%; border-collapse:collapse; font-size:13.5px; }
 table.t th { text-align:left; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); padding:6px 8px; border-bottom:1.5px solid #cfc6b2; }
-table.t td { padding:6px 8px; border-bottom:1px solid #ddd3bd; }
+table.t td { padding:4.5px 8px; border-bottom:1px solid #ddd3bd; }
 table.t td.r, table.t th.r { text-align:right; }
 table.t tr.tot td { font-weight:800; border-top:1.5px solid var(--ink); border-bottom:none; }
 table.t tr.muted td { color:#9a9381; }
@@ -90,6 +105,8 @@ def foot(n):
 
 
 def slide(n, eyebrow, title, body, dark=False):
+    import re
+    title = re.sub(r'\*(.+?)\*', r'<span class="it">\1</span>', title)
     cls = 'slide dark' if dark else 'slide'
     return (f'<section class="{cls}" id="s{n}">{top(dark)}<div class="eyebrow">{eyebrow}</div>'
             f'<h2>{title}</h2>{body}{foot(n)}</section>')
@@ -104,14 +121,14 @@ def svg_wp(c, w=640, h=380):
     ih = h - pt - pb
     bw, gap = 120, (w - pl - pr - 3 * 120) / 3
     y = lambda v: pt + ih - ih * v / top_v
-    s = [f'<svg width="{w}" height="{h}" viewBox="0 0 {w} {h}" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, Liberation Sans, sans-serif">']
+    s = [f'<svg width="{w}" height="{h}" viewBox="0 0 {w} {h}" xmlns="http://www.w3.org/2000/svg" font-family="Inter Tight, Open Sans, Arial, sans-serif">']
     for v in range(0, top_v + 1, 2):
         s.append(f'<line x1="{pl}" x2="{w-pr}" y1="{y(v)}" y2="{y(v)}" stroke="#d6ccb6" stroke-width="1"/>')
         s.append(f'<text x="{pl-10}" y="{y(v)+5}" text-anchor="end" font-size="14" fill="#8d8571">{v}</text>')
     for i, (n, st, en) in enumerate(C.WP):
         x = pl + gap / 2 + i * (bw + gap)
         v = vals[i]
-        col = '#38b6ff' if i == 2 else '#000'
+        col = '#38b6ff' if i == 2 else '#1c2230'
         r = 6
         yy = y(v)
         s.append(f'<path d="M{x},{y(0)} L{x},{yy+r} Q{x},{yy} {x+r},{yy} L{x+bw-r},{yy} Q{x+bw},{yy} {x+bw},{yy+r} L{x+bw},{y(0)} Z" fill="{col}"><title>{n}: {v} leads en afspraken</title></path>')
@@ -126,12 +143,12 @@ def svg_wp(c, w=640, h=380):
 
 
 def svg_niet_geschikt(c, w=470, h=200):
-    s = [f'<svg width="{w}" height="{h}" viewBox="0 0 {w} {h}" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, Liberation Sans, sans-serif">']
+    s = [f'<svg width="{w}" height="{h}" viewBox="0 0 {w} {h}" xmlns="http://www.w3.org/2000/svg" font-family="Inter Tight, Open Sans, Arial, sans-serif">']
     rows = [(n, c['wp_bel'][n]['niet_geschikt_pct']) for n, _, _ in C.WP]
     lw, maxw = 52, w - 52 - 60
     for i, (n, p) in enumerate(rows):
         yy = 18 + i * 60
-        col = '#38b6ff' if i == 2 else '#000'
+        col = '#38b6ff' if i == 2 else '#1c2230'
         bw = max(maxw * p / 100, 8)
         s.append(f'<text x="0" y="{yy+22}" font-size="16" font-weight="700" fill="#1c2230">{n}</text>')
         s.append(f'<rect x="{lw}" y="{yy}" width="{maxw}" height="32" rx="6" fill="#e4dcc8"/>')
@@ -148,7 +165,7 @@ def svg_timeline(c, w=1136, h=330):
     pl, pr = 10, 10
     x = lambda dd: pl + (w - pl - pr) * (dd - start).days / span
     ym = 170
-    s = [f'<svg width="{w}" height="{h}" viewBox="0 0 {w} {h}" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, Liberation Sans, sans-serif">']
+    s = [f'<svg width="{w}" height="{h}" viewBox="0 0 {w} {h}" xmlns="http://www.w3.org/2000/svg" font-family="Inter Tight, Open Sans, Arial, sans-serif">']
     s.append(f'<line x1="{pl}" x2="{w-pr}" y1="{ym}" y2="{ym}" stroke="#1c2230" stroke-width="2"/>')
     maanden = ['okt', 'nov', 'dec', 'jan', 'feb', 'mrt']
     for i, m in enumerate(maanden):
@@ -186,7 +203,7 @@ def svg_timeline(c, w=1136, h=330):
 def svg_prijs(c, w=1136, h=150):
     rows = [('Pilot', c['pilot_per_afspraak'], False)] + \
            [(f'{o["beldagen"]} beldagen', o['per_afspraak'], o['aanbevolen']) for o in c['opties']]
-    s = [f'<svg width="{w}" height="{h}" viewBox="0 0 {w} {h}" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, Liberation Sans, sans-serif">']
+    s = [f'<svg width="{w}" height="{h}" viewBox="0 0 {w} {h}" xmlns="http://www.w3.org/2000/svg" font-family="Inter Tight, Open Sans, Arial, sans-serif">']
     colw = (w - 3 * 18) / 4
     maxv = 360
     for i, (lab, v, aan) in enumerate(rows):
@@ -208,42 +225,26 @@ def slides(c):
     wp = lambda n: len(c['per_wp'][n])
     o4, o6, o8 = c['opties']
 
-    # 1 Titel: de lijn van de pilot loopt door naar het vervolg
-    vals = [len(c['per_wp'][n]) for n, _, _ in C.WP]
-    tw, th = 470, 250
-    px = [40, 150, 260, 420]
-    py = lambda v: th - 40 - v * 13
-    pts = list(zip(px[:3], [py(v) for v in vals]))
-    traj = [f'<svg width="{tw}" height="{th}" viewBox="0 0 {tw} {th}" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, Liberation Sans, sans-serif">']
-    traj.append(f'<line x1="20" x2="{tw-10}" y1="{th-40}" y2="{th-40}" stroke="#ffffff" stroke-opacity=".18" stroke-width="1"/>')
-    traj.append(f'<line x1="20" x2="{tw-10}" y1="{py(C.PILOT["doel_wp"])}" y2="{py(C.PILOT["doel_wp"])}" stroke="#ffffff" stroke-opacity=".28" stroke-width="1" stroke-dasharray="3 5"/>')
-    traj.append(f'<text x="{tw-10}" y="{py(C.PILOT["doel_wp"])-8}" text-anchor="end" font-size="11" fill="#8a8a8a" letter-spacing="1.5">DOEL {C.PILOT["doel_wp"]}</text>')
-    traj.append(f'<polyline points="{" ".join(f"{x},{y}" for x, y in pts)}" fill="none" stroke="#ffffff" stroke-width="2"/>')
-    traj.append(f'<line x1="{pts[2][0]}" y1="{pts[2][1]}" x2="{px[3]}" y2="{py(12)}" stroke="#38b6ff" stroke-width="2" stroke-dasharray="6 6"/>')
-    for (x, y), v, (n, _, _) in zip(pts, vals, C.WP):
-        traj.append(f'<circle cx="{x}" cy="{y}" r="5" fill="#000" stroke="#ffffff" stroke-width="2"/>')
-        traj.append(f'<text x="{x}" y="{y-14}" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">{v}</text>')
-        traj.append(f'<text x="{x}" y="{th-18}" text-anchor="middle" font-size="11" fill="#8a8a8a" letter-spacing="1.5">{n}</text>')
-    traj.append(f'<circle cx="{px[3]}" cy="{py(12)}" r="7" fill="#38b6ff"/>')
-    traj.append(f'<text x="{px[3]}" y="{th-18}" text-anchor="middle" font-size="11" fill="#38b6ff" letter-spacing="1.5">26-10</text>')
-    traj.append(f'<text x="{px[3]-14}" y="{py(12)+5}" text-anchor="end" font-size="13" font-weight="700" fill="#38b6ff">het vervolg</text>')
-    traj.append(f'<text x="20" y="14" font-size="11" fill="#8a8a8a" letter-spacing="1.5">LEADS EN AFSPRAKEN PER WERKPERIODE</text>')
-    traj.append('</svg>')
-    S.append(f'''<section class="slide dark" id="s1" style="padding:0;background:#000">
-<div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);background-size:80px 80px"></div>
-<div style="position:absolute;right:-260px;bottom:-320px;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle, rgba(56,182,255,.30) 0%, rgba(56,182,255,.08) 38%, rgba(0,0,0,0) 68%)"></div>
-<div style="position:absolute;left:88px;right:88px;top:60px;display:flex;justify-content:space-between;align-items:center">
-  {logo(30, True)}
-  <span style="font-size:12px;letter-spacing:.22em;color:#9a9a9a">PILOTEVALUATIE  ·  15-10-2026</span>
+    # 1 Titel, in de stijl van linkgrp.nl: zware grotesk met cursief accent, cijferpaneel rechts
+    stat = lambda n, t, kleur='#fff': f'<div style="padding:16px 0;border-top:1px solid rgba(255,255,255,.12)"><div style="font-family:\'Inter Tight\';font-weight:500;font-size:46px;letter-spacing:-1.5px;line-height:1;color:{kleur}">{n}</div><div style="font-size:14px;color:#9aa3b2;margin-top:6px">{t}</div></div>'
+    paneel = (stat(c['n_leads'], 'leads en afspraken in tien weken') + stat(len(c['gepland']), 'gesprekken en contactmomenten gepland')
+              + stat(d(C.START_VERVOLG), 'start van het vervolg', '#38b6ff'))
+    S.append(f'''<section class="slide" id="s1" style="padding:0">
+<div style="position:absolute;left:88px;top:58px">{logo(30)}</div>
+<div style="position:absolute;left:88px;top:196px;width:790px">
+  <div class="eyebrow" style="margin:0 0 26px">Pilotevaluatie  ·  15-10-2026</div>
+  <div style="font-family:'Inter Tight';font-weight:900;font-size:84px;line-height:.95;letter-spacing:-3px;color:#1c2230;white-space:nowrap">Van kennismaken</div>
+  <div class="it" style="font-size:100px;line-height:1;color:#1c2230;margin-top:4px;white-space:nowrap">naar samenwerken<span style="color:#38b6ff">.</span></div>
+  <div style="font-family:'Inter Tight';font-weight:800;font-size:27px;letter-spacing:-.6px;margin-top:34px;color:#1c2230">OK Creative Agency <span class="it" style="font-size:31px;color:#38b6ff;padding:0 4px">x</span> {logo(21, False, 'margin-left:2px')}</div>
 </div>
-<div style="position:absolute;left:88px;top:232px;width:640px">
-  <div style="font-size:78px;font-weight:800;line-height:.98;letter-spacing:-2.5px;color:#fff">OK Creative<br>Agency <span style="font-weight:300;color:#38b6ff">x</span> {logo(56, True, 'margin-left:6px')}</div>
-  <div class="serif" style="font-size:30px;margin-top:22px;color:#fff">Van kennismaken naar een vaste samenwerking.</div>
+<div style="position:absolute;right:88px;top:150px;width:300px;padding:24px 30px 14px;border-radius:28px;background:linear-gradient(150deg,#131a24 0%,#222c3c 100%);color:#fff">
+  <div style="font-size:12px;font-weight:700;letter-spacing:.22em;color:#9aa3b2;margin-bottom:12px"><span style="display:inline-block;width:22px;height:1.5px;background:#38b6ff;vertical-align:middle;margin-right:10px"></span>DE PILOT IN HET KORT</div>
+  {paneel}
 </div>
-<div style="position:absolute;right:76px;top:226px">{''.join(traj)}</div>
-<div style="position:absolute;left:88px;right:88px;bottom:54px;border-top:1px solid rgba(255,255,255,.18);padding-top:16px;display:flex;justify-content:space-between;font-size:14px;color:#9a9a9a">
+<div style="position:absolute;left:88px;right:88px;bottom:44px;display:flex;justify-content:space-between;font-size:13px;color:#8d8571;border-top:1px solid #d3c9b3;padding-top:14px">
   <span>Google Meet  ·  10:00</span><span>Rob Hoogeveen, Mees Hoogeveen en Hens Boer</span><span>www.linkgrp.nl</span>
-</div></section>''')
+</div>
+</section>''')
 
     # 2 Agenda
     ag = [('De afspraak en de cijfers', 'Wat we afspraken en wat er is geleverd', 10),
@@ -256,18 +257,33 @@ def slides(c):
 <span class="serif blue" style="font-size:26px;width:56px">{i+1:02d}</span>
 <span style="font-size:21px;font-weight:700;width:430px">{a}</span><span style="font-size:16px;color:#6f6a5c;flex:1">{b}</span>
 <span style="font-size:15px;color:#6f6a5c">{m} min</span></div>''' for i, (a, b, m) in enumerate(ag))
-    S.append(slide(2, 'Agenda', 'In een uur van terugblik naar een vaste samenwerking.', rows))
+    S.append(slide(2, 'Agenda', 'In een uur van terugblik *naar een vaste samenwerking.*', rows))
 
-    # 3 De afspraak van de pilot
-    body = f'''<div class="row" style="margin-bottom:18px">
-<div class="card col"><div class="lbl">Belstart</div><div class="big" style="font-size:44px">{d(C.BELSTART)}</div><div class="sub">Bellen namens OK, in de naam van OK</div></div>
-<div class="card col"><div class="lbl">Looptijd</div><div class="big" style="font-size:44px">3 x 4 weken</div><div class="sub">{' · '.join(f'{n} {s:%d-%m} t/m {e:%d-%m}' for n, s, e in C.WP)}</div></div>
-<div class="card col"><div class="lbl">Investering</div><div class="big" style="font-size:44px">{euro(c['pilot_totaal'])}</div><div class="sub">{euro(C.PILOT['prijs_wp'])} per werkperiode</div></div>
-</div>
-<div class="row">
-<div class="card col"><div class="lbl">Doel</div><div class="big" style="font-size:44px">{c['doel_totaal']} afspraken</div><div class="sub">{C.PILOT['doel_wp']} per werkperiode</div></div>
-<div class="card black col"><div class="lbl">Prijs per afspraak</div><div class="big blue" style="font-size:44px">{euro(c['pilot_per_afspraak'])}</div><div class="sub">{euro(C.PILOT['prijs_wp'])} gedeeld door {C.PILOT['doel_wp']} afspraken</div></div>
-<div class="card col"><div class="lbl">Doelgroep</div><p style="margin:0;font-size:16px">Zakelijke dienstverlening: IT, accountancy, verzekeringen, detachering en advies. Vanaf 50 medewerkers. Beslisser is directie, MT of marketing en brand.</p></div>
+    # 3 De afspraak van de pilot: één contractstrook plus de looptijd op schaal
+    def feit(l, v, sub, eerste=False, hl=False):
+        rand = '' if eerste else 'border-left:1px solid #ddd3bd;'
+        pad = 'padding:0 22px 0 0' if eerste else 'padding:0 22px'
+        kleur = 'color:#38b6ff;' if hl else ''
+        return f'<div style="flex:1;{pad};{rand}"><div class="lbl">{l}</div><div style="font-size:29px;font-weight:800;letter-spacing:-.5px;white-space:nowrap;{kleur}">{v}</div><div class="sub">{sub}</div></div>'
+    strip = (feit('Belstart', d(C.BELSTART), 'in de naam van OK', True) + feit('Looptijd', '3 x 4 weken', 'drie werkperiodes')
+             + feit('Investering', euro(c['pilot_totaal']), f'{euro(C.PILOT["prijs_wp"])} per werkperiode')
+             + feit('Doel', f'{c["doel_totaal"]} afspraken', f'{C.PILOT["doel_wp"]} per werkperiode')
+             + feit('Per afspraak', euro(c['pilot_per_afspraak']), f'{euro(C.PILOT["prijs_wp"])} gedeeld door {C.PILOT["doel_wp"]}', hl=True))
+    t0, t1 = C.WP[0][1], C.WP[-1][2]
+    span = (t1 - t0).days + 1
+    seg = ''
+    for i, (n, st, en) in enumerate(C.WP):
+        w = 100 * ((en - st).days + 1) / span
+        rand = '' if i == 2 else 'border-right:3px solid #e9e0cd;'
+        seg += f'<div style="width:{w}%;padding:14px 16px;background:#1c2230;color:#fff;{rand}"><div style="font-size:16px;font-weight:800">{n}</div><div style="font-size:13px;color:#bdbdbd">{st:%d-%m} t/m {en:%d-%m}</div></div>'
+    today = 100 * ((C.PEILDATUM - t0).days + 0.5) / span
+    body = f'''<div class="card" style="display:flex;padding:24px 26px;margin-bottom:46px">{strip}</div>
+<div style="position:relative"><div style="display:flex;border-radius:12px;overflow:hidden">{seg}</div>
+<div style="position:absolute;left:{today}%;top:-10px;bottom:-10px;border-left:2px solid #38b6ff"></div>
+<div style="position:absolute;left:{today}%;top:-30px;margin-left:-44px;font-size:12.5px;font-weight:700;color:#38b6ff">vandaag 14-10</div></div>
+<div style="display:flex;gap:40px;margin-top:30px">
+<div style="flex:1"><div class="lbl">Doelgroep</div><p style="margin:0;font-size:17px">Zakelijke dienstverlening: IT, accountancy, verzekeringen, detachering en advies. Vanaf 50 medewerkers.</p></div>
+<div style="flex:1"><div class="lbl">Beslisser</div><p style="margin:0;font-size:17px">Directie, MT of marketing en brand. Met die persoon plannen we de afspraak in de agenda van OK.</p></div>
 </div>'''
     S.append(slide(3, 'De afspraak', 'We spraken een pilot af van drie werkperiodes, met een helder doel per periode.', body))
 
@@ -294,7 +310,7 @@ def slides(c):
  <div class="card" style="flex:1"><div class="lbl">De trend</div><p style="margin:0;font-size:16px">WP2 bleef achter met {wp('WP2')}: de lijst bevatte veel holdings en bedrijven die niet pasten. In WP3 bellen we met de Frits-insteek en scherpere lijsten, en zitten we na 2,5 week al op {wp('WP3')}.</p></div>
 </div></div>
 <div class="note" style="margin-top:12px">Geteld op aanmaakdatum van de lead in het OK-portaal, exclusief TC Productions.</div>'''
-    S.append(slide(5, 'Resultaten per werkperiode', f'WP3 zit met {wp("WP3")} leads en afspraken al boven het doel van {C.PILOT["doel_wp"]}.', body))
+    S.append(slide(5, 'Resultaten per werkperiode', f'WP3 zit met {wp("WP3")} leads en afspraken *al boven het doel* van {C.PILOT["doel_wp"]}.', body))
 
     # 6 Wat de gesprekken opleveren
     order = ['Offerte maken', 'Vervolg gepland', 'Gekwalificeerd', 'Geen match']
@@ -325,7 +341,7 @@ def slides(c):
 <div class="card col"><div class="lbl">Investering hele pilot</div><div class="big" style="font-size:44px">{euro(c['pilot_totaal'])}</div><div class="sub">3 werkperiodes van {euro(C.PILOT['prijs_wp'])}</div></div>
 <div class="card col"><div class="lbl">En daarna</div><div class="big" style="font-size:44px">Lange termijn</div><div class="sub">Er ligt ook een kans op een doorlopende samenwerking</div></div>
 </div>'''
-    S.append(slide(7, 'Uitgelicht: Moyee Coffee', 'Eén lead kan meer opleveren dan de hele pilot: Moyee Coffee krijgt een offerte in twee varianten.', body))
+    S.append(slide(7, 'Uitgelicht: Moyee Coffee', 'Eén lead kan meer opleveren dan de hele pilot: Moyee Coffee *krijgt een offerte in twee varianten.*', body))
 
     # 8 Pijplijn
     body = f'''<div class="card" style="padding:16px 20px 8px">{svg_timeline(c)}</div>
@@ -333,19 +349,23 @@ def slides(c):
 <div class="card col" style="padding:16px 22px"><span class="big" style="font-size:36px">{len(c['gepland'])}</span> <span class="cap">gepland, waarvan {sum(r['gesprek_d'] < C.dt.date(2027,1,1) for r in c['gepland'])} nog in 2026</span></div>
 <div class="card col" style="padding:16px 22px"><span class="big" style="font-size:36px">{c['terugbel_open']}</span> <span class="cap">terugbelafspraken lopen daarnaast</span></div>
 </div>'''
-    S.append(slide(8, 'De pijplijn', f'De meeste waarde moet nog komen: tot en met maart 2027 staan nog {len(c["gepland"])} gesprekken en contactmomenten gepland.', body))
+    S.append(slide(8, 'De pijplijn', f'De meeste waarde *moet nog komen*: tot en met maart 2027 staan nog {len(c["gepland"])} gesprekken en contactmomenten gepland.', body))
 
-    # 9 Wat werkt
-    werkt = [('De insteek met Frits', '“Frits, oprichter en al zo’n 30 jaar merkstrateeg, volgt jullie al langer en heeft een aantal punten voorbereid over jullie communicatie naar buiten.” We komen iets brengen in plaats van iets vragen.'),
-             ('Niet weggeven aan de telefoon', 'De punten bewaren we voor het gesprek. We stellen direct twee momenten voor.'),
-             ('Vooraf de beslisser opzoeken', 'Per bedrijf zoeken we op wie over marketing en communicatie gaat, en we vragen gericht naar die persoon.'),
-             ('Mail als tussenstap', 'Een intro per mail is een geldige stap. Binnen 3 werkdagen bellen we na.'),
-             ('De juiste snaar per organisatie', 'Elke organisatie vraagt een eigen haakje. Randstad Groep is het voorbeeld: de marketeer kende OK al en wil kijken wat OK kan betekenen voor hun campagnes en vacatures.')]
-    cards = ''.join(f'<div class="card" style="flex:1;padding:20px"><div class="serif blue" style="font-size:24px">{i+2:02d}</div><div style="font-size:18px;font-weight:800;margin:6px 0 8px">{a}</div><div style="font-size:14.5px;line-height:1.5">{b}</div></div>' for i, (a, b) in enumerate(werkt[1:]))
-    body = f'''<div class="card black" style="margin-bottom:16px;padding:22px 28px;display:flex;gap:26px;align-items:center">
-<div class="serif blue" style="font-size:30px">01</div><div><div style="font-size:20px;font-weight:800;margin-bottom:6px">{werkt[0][0]}</div><div style="font-size:17px;line-height:1.5;color:#e6e6e6">{werkt[0][1]}</div></div></div>
-<div class="row" style="gap:14px">{cards}</div>'''
-    S.append(slide(9, 'Wat we geleerd hebben', 'We komen iets brengen in plaats van iets vragen, en dat werkt.', body))
+    # 9 Wat werkt: de opening als belscript, de rest als korte lessen
+    lessen = [('Niet weggeven aan de telefoon', 'De punten bewaren we voor het gesprek. We stellen direct twee momenten voor.'),
+              ('Vooraf de beslisser opzoeken', 'Per bedrijf zoeken we op wie over marketing en communicatie gaat, en vragen gericht naar die persoon.'),
+              ('Mail als tussenstap', 'Een intro per mail telt als stap. Binnen 3 werkdagen bellen we na.'),
+              ('De juiste snaar per organisatie', 'Randstad Groep is het voorbeeld: de marketeer kende OK al en wil weten wat OK kan doen voor hun campagnes en vacatures.')]
+    lijst = ''.join(f'<div style="padding:13px 0;border-bottom:1px solid #d6ccb6"><div style="font-size:18px;font-weight:800">{a}</div><div style="font-size:15px;line-height:1.45;margin-top:3px">{b}</div></div>' for a, b in lessen)
+    body = f'''<div style="display:flex;gap:44px;align-items:flex-start">
+<div class="card black" style="flex:1.1;padding:30px 34px">
+<div class="lbl">De opening, sinds werkperiode 3</div>
+<div style="font-size:25px;line-height:1.38;font-weight:700;color:#fff;margin-top:8px">“Frits, oprichter en al zo’n 30 jaar merkstrateeg, volgt jullie al langer en heeft een aantal punten voorbereid over jullie communicatie naar buiten.”</div>
+<div style="margin-top:22px;padding-top:16px;border-top:1px solid #333;font-size:16px;color:#bdbdbd">Waarom het werkt: we komen iets <span class="blue" style="font-weight:700">brengen</span> in plaats van iets vragen.</div>
+</div>
+<div style="flex:1;border-top:1.5px solid #1c2230">{lijst}</div>
+</div>'''
+    S.append(slide(9, 'Wat we geleerd hebben', 'We komen iets *brengen* in plaats van iets vragen, en dat werkt.', body))
 
     # 10 Wat minder werkt
     minder = [('De receptie als drempel', 'We vragen gericht naar de persoon die we vooraf hebben opgezocht, en gebruiken mail als tweede ingang.'),
@@ -361,42 +381,51 @@ def slides(c):
 </div>'''
     S.append(slide(10, 'Wat minder werkt', 'Waar het schuurde, hebben we de aanpak al aangepast.', body))
 
-    # 11 Waarom de kwaliteit omhoog gaat
+    # 11 Waarom de kwaliteit omhoog gaat: augustus tegenover nu
     l1, l2 = c['lijst']['OK Project 1'], c['lijst']['OK Project 2']
-    punten = [('We kennen het verhaal van OK', 'De propositie, de cases en de toon. We vertellen het nu zoals OK het zelf vertelt.'),
-              ('De Frits-insteek is bewezen', f'Sinds WP3 de vaste opening. Resultaat: {wp("WP3")} leads en afspraken in 2,5 week.'),
-              ('Scherpere lijsten', 'We weten wie de beslisser is en welke bedrijven passen. Alleen zelfstandige Nederlandse vestigingen.'),
-              ('New Business-lijsten van OK', 'OK levert warme contacten aan uit websitebezoekers en LinkedIn. De basisdata regelen wij. Warmere contacten geven betere gesprekken.'),
-              ('Een uitsluitlijst', 'Wat OK zelf al benadert, bellen wij niet. Nooit dubbel aan de lijn.'),
-              ('Een vaste feedbackloop', 'Elke vrijdag de rapportage naar Mees, met een lijst van gebelde bedrijven en de uitkomst. OK ziet wat werkt en stuurt mee.'),
-              ('Een duo naar elke afspraak', 'Bij OK gaan een ervaren en een jonge collega samen. Dat geeft betere opvolging van wat wij inplannen.')]
-    cards = ''.join(f'<div class="card" style="width:calc(25% - 11px);padding:16px 18px"><div class="serif blue" style="font-size:20px">{i+1:02d}</div><div style="font-size:16px;font-weight:800;margin:4px 0 6px">{a}</div><div style="font-size:13.5px;line-height:1.45">{b}</div></div>' for i, (a, b) in enumerate(punten))
-    proof = f'''<div class="card black" style="width:calc(25% - 11px);padding:16px 18px"><div class="lbl">Bewijs uit de pilot</div>
-<div style="font-size:42px;font-weight:800;color:#38b6ff;line-height:1">{str(l2['pct']).replace('.', ',')}%</div><div style="font-size:13.5px;margin:4px 0 8px">van de gesproken bedrijven op de lijst van OK met relaties en gewenste klanten werd een lead</div>
-<div style="font-size:24px;font-weight:800;line-height:1">{str(l1['pct']).replace('.', ',')}%</div><div style="font-size:13.5px;color:#bdbdbd">op de brede lijst</div></div>'''
-    body = f'<div style="display:flex;flex-wrap:wrap;gap:14px">{cards}{proof}</div>'
-    S.append(slide(11, 'Waarom de kwaliteit omhoog gaat', 'De kwaliteit gaat omhoog, omdat we OK, het verhaal en de markt nu veel beter kennen.', body))
+    vgl = [('Het verhaal', 'Een algemene introductie van een creatief bureau', 'De propositie, de cases en de toon van OK, zoals OK het zelf vertelt'),
+           ('De opening', 'Zoeken naar de juiste ingang', f'De Frits-insteek: {wp("WP3")} leads en afspraken in 2,5 week'),
+           ('De lijsten', 'Breed, met holdings en buitenlandse hoofdkantoren', 'Zelfstandige Nederlandse vestigingen, plus New Business-lijsten van OK'),
+           ('De beslisser', 'Via de receptie vragen naar marketing', 'Vooraf opgezocht en gericht naar die persoon gevraagd'),
+           ('Dubbel bellen', 'Geen afstemming met wat OK zelf benadert', 'Een uitsluitlijst met wat OK zelf benadert'),
+           ('Terugkoppeling', 'Een weekrapportage met de cijfers', 'Elke vrijdag naar Mees, met de lijst van gebelde bedrijven'),
+           ('Opvolging bij OK', '', 'Een duo naar elke afspraak: een ervaren en een jonge collega')]
+    rows = ''.join(f'<tr><td style="font-weight:800;width:150px">{a}</td><td style="color:#8d8571">{b if b else "<span class=\"chip neutral\">nieuw</span>"}</td><td style="font-weight:600">{n_}</td></tr>' for a, b, n_ in vgl)
+    body = f'''<div style="display:flex;gap:22px;align-items:flex-start">
+<div class="card" style="flex:1;padding:10px 22px 6px"><table class="t" style="font-size:14.5px"><tr><th></th><th>Augustus</th><th style="color:#38b6ff">Nu</th></tr>{rows}</table></div>
+<div class="card black" style="width:250px;padding:22px"><div class="lbl">Bewijs uit de pilot</div>
+<div style="font-size:50px;font-weight:800;color:#38b6ff;line-height:1;margin-top:6px">{str(l2['pct']).replace('.', ',')}%</div><div style="font-size:14px;margin:6px 0 16px;line-height:1.4">van de gesproken bedrijven op de lijst van OK met relaties en gewenste klanten werd een lead</div>
+<div style="font-size:30px;font-weight:800;line-height:1">{str(l1['pct']).replace('.', ',')}%</div><div style="font-size:14px;color:#bdbdbd;margin-top:4px">op de brede lijst</div></div>
+</div>'''
+    S.append(slide(11, 'Waarom de kwaliteit omhoog gaat', 'De kwaliteit gaat omhoog, omdat we OK, het verhaal en de markt *nu veel beter kennen.*', body))
 
-    # 12 Samenwerking
-    blok = [('Vast aanspreekpunt', 'Mees Hoogeveen is vanaf nu ons vaste aanspreekpunt bij OK.'),
-            ('Elke vrijdag de rapportage', 'Cijfers, wat werkt, wat we terughoren en de warme leads. Plus de lijst met gebelde bedrijven en hun uitkomst.'),
-            ('Lijsten van OK', 'OK levert New Business-lijsten met warme contacten aan, wij regelen de basisdata. In de weekrapportage geven we per lead terugkoppeling.'),
-            ('Uitsluitlijst', 'OK geeft door wie het zelf benadert. Die bedrijven slaan wij over.'),
-            ('Evaluatie na werkperiode 4', 'Samen kijken we naar de cijfers, de kwaliteit van de afspraken en de doelgroep. Daarna eventueel uitbreiden naar musea en evenementen.')]
-    rows = ''.join(f'<div class="card" style="flex:1;padding:20px"><div class="serif blue" style="font-size:24px">{i+1:02d}</div><div style="font-size:18px;font-weight:800;margin:6px 0 8px">{a}</div><div style="font-size:14.5px;line-height:1.5">{b}</div></div>' for i, (a, b) in enumerate(blok))
-    flow = '''<div class="card black" style="margin-top:18px;display:flex;align-items:center;justify-content:space-between;padding:20px 30px;font-size:15px;font-weight:700">
-<span>OK levert New Business-lijsten en uitsluitingen</span><span class="blue">→</span><span>LINK. belt en plant in</span><span class="blue">→</span><span>OK voert het gesprek, met een duo</span><span class="blue">→</span><span>vrijdag: rapportage en bijsturen</span></div>'''
-    S.append(slide(12, 'Samenwerking vanaf nu', 'Vanaf nu werken we als één team, met Mees als vast aanspreekpunt.', f'<div class="row" style="gap:14px">{rows}</div>{flow}'))
+    # 12 Samenwerking: het ritme van een werkperiode van 4 weken
+    s4, e4 = c['wp4']
+    weken = ''
+    for k in range(4):
+        maandag = s4 + C.dt.timedelta(days=7 * k)
+        dagen = ''.join(f'<div style="flex:1;height:44px;border-radius:7px;background:{"#38b6ff" if j == 4 else "#f8f4eb"};text-align:center;line-height:44px;font-size:12.5px;font-weight:700;color:{"#08293c" if j == 4 else "#8d8571"}">{dn}</div>' for j, dn in enumerate(['ma', 'di', 'wo', 'do', 'vr']))
+        weken += f'<div style="flex:1"><div style="font-size:13px;color:#6f6a5c;margin-bottom:6px">week {maandag.isocalendar()[1]}  ·  {maandag:%d-%m}</div><div style="display:flex;gap:5px">{dagen}</div></div>'
+    weken += '<div style="width:120px"><div style="font-size:13px;color:#6f6a5c;margin-bottom:6px">na week 4</div><div style="height:44px;border-radius:7px;background:#000;color:#fff;text-align:center;line-height:44px;font-size:12.5px;font-weight:700">evaluatie</div></div>'
+    blok = [('Mees is het vaste aanspreekpunt', 'Afspraken, vragen en bijsturing lopen via Mees.'),
+            ('Elke vrijdag de rapportage', 'Cijfers, wat werkt, wat we terughoren en de warme leads, met de lijst van gebelde bedrijven en hun uitkomst.'),
+            ('Lijsten van OK', 'De basisdata regelen wij. OK levert New Business-lijsten met warme contacten en een uitsluitlijst aan, en krijgt per lead terugkoppeling.'),
+            ('Evaluatie na werkperiode 4', 'Cijfers, kwaliteit van de afspraken en de doelgroep. Daarna eventueel musea en evenementen.')]
+    tekst = ''.join(f'<div style="flex:1;border-top:1.5px solid #1c2230;padding-top:12px"><div style="font-size:17px;font-weight:800">{a}</div><div style="font-size:14.5px;line-height:1.45;margin-top:4px">{b}</div></div>' for a, b in blok)
+    body = f'''<div class="card" style="padding:20px 24px 22px;background:#e4dcc8"><div style="display:flex;justify-content:space-between;margin-bottom:12px"><div class="lbl" style="margin:0">Het ritme van werkperiode 4: {d(s4)} t/m {d(e4)}</div><div style="font-size:13px;font-weight:700;color:#1c2230"><span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:#38b6ff;margin-right:6px"></span>vrijdag: rapportage en bellijst naar Mees</div></div>
+<div style="display:flex;gap:16px">{weken}</div></div>
+<div style="display:flex;gap:26px;margin-top:26px">{tekst}</div>'''
+    S.append(slide(12, 'Samenwerking vanaf nu', 'Vanaf nu werken we als één team, met Mees als vast aanspreekpunt.', body))
 
-    # 13 Het vervolg
-    kpirow = ''.join(f'''<div class="card" style="flex:1;text-align:center;padding:22px">
-<div style="font-size:15px;color:#a9a9a9">{o['beldagen']} beldagen x {C.KPI_PER_BELDAG}</div><div class="big blue" style="margin-top:6px">{o['kpi']}</div><div class="cap">afspraken per werkperiode</div></div>''' for o in c['opties'])
-    body = f'''<div class="row" style="margin-bottom:18px">
-<div class="card col"><div class="lbl">Eenheid</div><div style="font-size:30px;font-weight:800">Hele beldagen</div><div class="sub">1 beldag is {C.UREN_PER_BELDAG} uur bellen voor OK, per werkperiode van 4 weken</div></div>
-<div class="card col"><div class="lbl">KPI</div><div style="font-size:30px;font-weight:800">{C.KPI_PER_BELDAG} afspraken per beldag</div><div class="sub">gekwalificeerde afspraken met een beslisser</div></div>
-<div class="card col"><div class="lbl">Start</div><div style="font-size:30px;font-weight:800">{d(C.START_VERVOLG)}</div><div class="sub">direct na werkperiode 3, zonder gat</div></div>
-</div>
-<div class="row">{kpirow}</div>'''
+    # 13 Het vervolg: de rekensom van een beldag, dan de drie uitkomsten
+    term = lambda big, small, hl=False: f'<div><div style="font-size:54px;font-weight:800;letter-spacing:-1.5px;line-height:1;color:{"#38b6ff" if hl else "#fff"}">{big}</div><div style="font-size:15px;color:#a9a9a9;margin-top:8px">{small}</div></div>'
+    op = lambda t: f'<div style="font-size:40px;font-weight:300;color:#38b6ff;padding:0 34px">{t}</div>'
+    som = (term('1 beldag', 'per werkperiode van 4 weken') + op('=') + term(f'{C.UREN_PER_BELDAG} uur', 'bellen namens OK, in de naam van OK')
+           + op('=') + term(f'{C.KPI_PER_BELDAG} afspraken', 'met een beslisser in de doelgroep', True))
+    regels = ''.join(f'<div style="display:flex;align-items:baseline;padding:14px 0;border-top:1px solid #2a2a2a"><div style="width:260px;font-size:22px;font-weight:700;color:#fff">{o["beldagen"]} beldagen</div><div style="width:120px;font-size:15px;color:#8a8a8a">x {C.KPI_PER_BELDAG}</div><div style="font-size:30px;font-weight:800;color:#38b6ff;width:80px">{o["kpi"]}</div><div style="font-size:17px;color:#d0d0d0">afspraken per werkperiode</div></div>' for o in c['opties'])
+    body = f'''<div style="display:flex;align-items:flex-start;margin:10px 0 40px">{som}</div>
+<div style="border-bottom:1px solid #2a2a2a">{regels}</div>
+<div style="margin-top:18px;font-size:16px;color:#a9a9a9">Start {d(C.START_VERVOLG)}, direct na werkperiode 3, zonder gat. Opzegbaar per werkperiode.</div>'''
     S.append(slide(13, 'Het vervolg', f'Vanaf {d(C.START_VERVOLG)} werken we in hele beldagen, met een KPI van {C.KPI_PER_BELDAG} afspraken per beldag.', body, dark=True))
 
     # 14 De opties
@@ -427,7 +456,7 @@ def slides(c):
 <div class="card" style="margin-bottom:16px"><div class="lbl">Wat telt als afspraak</div><p style="margin:0;font-size:16px">Een gekwalificeerde afspraak: de gesprekspartner is een beslisser (directie, MT of marketing en brand) bij een organisatie die in de afgesproken doelgroep past.</p></div>
 <div class="card"><div class="lbl">Wat het voor OK betekent</div><p style="margin:0;font-size:16px">OK betaalt voor resultaat. Het risico van een tegenvallende periode ligt bij ons.</p></div>
 </div></div>'''
-    S.append(slide(15, 'Onze garantie', 'Halen we de KPI niet, dan krijgt OK een beldag gratis.', body))
+    S.append(slide(15, 'Onze garantie', 'Halen we de KPI niet, dan krijgt OK *een beldag gratis.*', body))
 
     # 16 Volgende stappen
     stappen = [('15-10-2026', 'Evaluatie', 'Vandaag: keuze voor het aantal beldagen'),
@@ -444,7 +473,7 @@ def slides(c):
 <div class="card col"><div class="lbl">Doorlopend</div><p style="margin:0;font-size:16px">De pijplijn en de {c['terugbel_open']} terugbelafspraken lopen zonder onderbreking door.</p></div>
 <div class="card black col"><div class="lbl">De vraag van vandaag</div><p style="margin:0;font-size:17px;font-weight:700">Starten we op {d(C.START_VERVOLG)} met {o6['beldagen']} of met {o8['beldagen']} beldagen?</p></div>
 </div>'''
-    S.append(slide(16, 'Volgende stappen', f'Met een akkoord deze week starten we op {d(C.START_VERVOLG)}, zonder gat na de pilot.', body))
+    S.append(slide(16, 'Volgende stappen', f'Met een akkoord deze week starten we op {d(C.START_VERVOLG)}, *zonder gat* na de pilot.', body))
 
     # Bijlage A: leads
     rws = ''
@@ -458,7 +487,7 @@ def slides(c):
         cls = ' class="muted"' if not r['telt'] else ''
         wpn = r['wp'] if r['telt'] else 'telt niet mee'
         rws += f'<tr{cls}><td>{r["bedrijf"]}</td><td>{r["type"]}</td><td>{d(r["aangemaakt"])}</td><td>{wpn}</td><td>{r["gesprek_dt"]:%d-%m-%Y %H:%M}</td><td>{st}</td></tr>'
-    body = f'''<div class="card" style="padding:12px 20px"><table class="t"><tr><th>Bedrijf</th><th>Type</th><th>Aangemaakt</th><th>Werkperiode</th><th>Gesprek</th><th>Status</th></tr>{rws}</table></div>
+    body = f'''<div class="card" style="padding:10px 20px"><table class="t" style="font-size:12.5px"><tr><th>Bedrijf</th><th>Type</th><th>Aangemaakt</th><th>Werkperiode</th><th>Gesprek</th><th>Status</th></tr>{rws}</table></div>
 <div class="note" style="margin-top:8px">Bron: OK-portaal, stand 14-10-2026. TC Productions staat erin maar telt niet mee: die lead was al bekend bij OK. Totaal meetellend: {c['n_leads']}.</div>'''
     S.append(slide('A', 'Bijlage A', 'Alle leads en afspraken met hun status.', body).replace('<h2>', '<h2 style="font-size:28px;margin-bottom:12px">').replace('<div class="eyebrow">', '<div class="eyebrow" style="margin-top:14px">'))
 
@@ -489,7 +518,7 @@ def slides(c):
 
 def deck_html(c):
     return (f'<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=1320">'
-            f'<title>Pilotevaluatie OK Creative Agency</title><style>{CSS_DECK}</style></head><body>'
+            f'<title>Pilotevaluatie OK Creative Agency</title><style>{font_css()}{CSS_DECK}</style></head><body>'
             + ''.join(slides(c)) + '</body></html>')
 
 
@@ -592,8 +621,8 @@ def notities(c):
   @bottom-left { content:"LINK.   ·   Sprekersnotities pilotevaluatie OK   ·   intern"; font-family:Helvetica, Arial, sans-serif; font-size:7.4pt; color:#a79f8b; }
   @bottom-right { content: counter(page) "  /  " counter(pages); font-family:Helvetica, Arial, sans-serif; font-size:7.4pt; color:#a79f8b; } }
 body { font-size:9.6pt; line-height:1.5; background:none; }
-.hero { background:#000; color:#fff; margin:-1.4cm -1.5cm 16px; padding:26px 1.5cm 22px; }
-.hero h1 { font-size:24pt; margin:6px 0 4px; } .hero .e { color:#38b6ff; font-size:8pt; font-weight:700; letter-spacing:.22em; }
+.hero { background:linear-gradient(140deg,#131a24,#222c3c); color:#fff; margin:-1.4cm -1.5cm 16px; padding:26px 1.5cm 22px; }
+.hero h1 { font-family:'Inter Tight',Arial,sans-serif; letter-spacing:-.5px; font-size:24pt; margin:6px 0 4px; } .hero .e { color:#38b6ff; font-size:8pt; font-weight:700; letter-spacing:.22em; }
 .nb { background:#f8f4eb; border-radius:12px; padding:12px 16px; margin-bottom:10px; break-inside:avoid; }
 .nh { display:flex; align-items:baseline; gap:10px; margin-bottom:4px; }
 .nn { font-family:Georgia, serif; font-style:italic; color:#38b6ff; font-size:14pt; } .nt { font-weight:800; font-size:12pt; }
@@ -602,7 +631,7 @@ body { font-size:9.6pt; line-height:1.5; background:none; }
 ul { margin:2px 0 0; padding-left:15px; } li { font-size:9.4pt; margin-bottom:3px; line-height:1.45; }
 p { margin:2px 0 0; font-size:9.4pt; } .q { font-style:italic; } .em { font-weight:700; }
 """
-    return (f'<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>Sprekersnotities pilotevaluatie OK</title><style>{css}</style></head><body>'
+    return (f'<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>Sprekersnotities pilotevaluatie OK</title><style>{font_css()}{css}</style></head><body>'
             f'<div class="hero">{logo(20, True)}<div class="e" style="margin-top:14px">SPREKERSNOTITIES  ·  INTERN</div>'
             f'<h1>Pilotevaluatie OK Creative Agency</h1><div style="font-size:9pt;color:#cfcfcf">15-10-2026, 10:00, Google Meet. Met Rob en Mees Hoogeveen. Per slide: wat ik zeg, welke vraag ik stel en waar de nadruk ligt.</div></div>'
             f'{blocks}</body></html>')
@@ -613,19 +642,19 @@ def onepager(c):
     o4, o6, o8 = c['opties']
     rij = lambda o: f'''<div class="op{' rec' if o['aanbevolen'] else ''}">{'<span class="tag">Aanbevolen</span>' if o['aanbevolen'] else ''}
 <div class="ot">{o['beldagen']} beldagen</div><div class="opr">{euro(o['prijs'])}</div><div class="os">per werkperiode van 4 weken</div>
-<div class="ok">{o['kpi']} afspraken</div><div class="os">{euro(o['per_afspraak'])} per afspraak  ·  {euro(o['per_beldag'])} per beldag</div></div>'''
+<div class="ok">{o['kpi']} afspraken</div><div class="os">{euro(o['per_afspraak'])} per afspraak<br>{euro(o['per_beldag'])} per beldag</div></div>'''
     css = CSS_BASE + """
 @page { size:A4; margin:1.3cm 1.5cm 1.2cm; background:#e9e0cd;
   @bottom-left { content:"LINK.   ·   Vervolgvoorstel OK Creative Agency   ·   15-10-2026"; font-family:Helvetica, Arial, sans-serif; font-size:7.4pt; color:#a79f8b; }
   @bottom-right { content:"www.linkgrp.nl"; font-family:Helvetica, Arial, sans-serif; font-size:7.4pt; color:#a79f8b; } }
 body { font-size:9.2pt; line-height:1.45; background:none; }
-.hero { background:#000; color:#fff; margin:-1.3cm -1.5cm 14px; padding:20px 1.5cm 18px; }
-.hero h1 { font-size:24pt; margin:8px 0 6px; line-height:1.05; } .e { color:#38b6ff; font-size:8pt; font-weight:700; letter-spacing:.22em; }
+.hero { background:linear-gradient(140deg,#131a24,#222c3c); color:#fff; margin:-1.3cm -1.5cm 14px; padding:20px 1.5cm 18px; }
+.hero h1 { font-family:'Inter Tight',Arial,sans-serif; letter-spacing:-.5px; font-size:24pt; margin:8px 0 6px; line-height:1.05; } .e { color:#38b6ff; font-size:8pt; font-weight:700; letter-spacing:.22em; }
 .card { background:#f8f4eb; border-radius:12px; padding:13px 16px; }
 .lbl { color:#38b6ff; font-size:7.4pt; font-weight:700; letter-spacing:.15em; text-transform:uppercase; margin-bottom:5px; }
 .row { display:flex; gap:10px; margin-bottom:10px; } .col { flex:1; }
 .op { flex:1; background:#f8f4eb; border-radius:12px; padding:14px 16px; position:relative; }
-.op.rec { background:#000; color:#fff; } .op.rec .os { color:#b3b3b3; } .op.rec .opr { color:#38b6ff; }
+.op.rec { background:linear-gradient(140deg,#131a24,#222c3c); color:#fff; } .op.rec .os { color:#b3b3b3; } .op.rec .opr { color:#38b6ff; }
 .tag { position:absolute; top:-9px; right:12px; background:#38b6ff; color:#08293c; font-size:7pt; font-weight:700; border-radius:8px; padding:2px 9px; }
 .ot { font-weight:800; font-size:12pt; } .opr { font-size:22pt; font-weight:800; line-height:1.1; margin-top:6px; } .ok { font-weight:800; font-size:11pt; margin-top:8px; }
 .os { font-size:8pt; color:#6f6a5c; }
@@ -650,15 +679,15 @@ p { margin:0; } ul { margin:0; padding-left:15px; } li { margin-bottom:3px; }
 
 <div class="row">
 <div class="card col"><div class="lbl">KPI</div><p><b>{C.KPI_PER_BELDAG} gekwalificeerde afspraken per beldag</b>, dus {o4['kpi']}, {o6['kpi']} of {o8['kpi']} per werkperiode. 1 beldag is {C.UREN_PER_BELDAG} uur bellen voor OK.</p></div>
-<div class="card col" style="background:#000;color:#fff"><div class="lbl">Garantie</div><p>Halen we de KPI in een werkperiode niet, dan krijgt OK in de volgende werkperiode <b style="color:#38b6ff">een beldag gratis</b>.</p></div>
+<div class="card col" style="background:linear-gradient(140deg,#131a24,#222c3c);color:#fff"><div class="lbl">Garantie</div><p>Halen we de KPI in een werkperiode niet, dan krijgt OK in de volgende werkperiode <b style="color:#38b6ff">een beldag gratis</b>.</p></div>
 </div>
 <div class="row">
 <div class="card col"><div class="lbl">Wat telt als afspraak</div><p>De gesprekspartner is een beslisser (directie, MT of marketing en brand) bij een organisatie die in de afgesproken doelgroep past.</p></div>
 <div class="card col"><div class="lbl">Voorwaarden</div><ul><li>Start {d(C.START_VERVOLG)}, direct na de pilot, zonder gat</li><li>Opzegbaar per werkperiode</li><li>Evaluatie na werkperiode 4 (t/m {d(c['wp4'][1])})</li><li>Nieuwe overeenkomst op de Algemene Voorwaarden LINK. versie 5</li></ul></div>
 </div>
 <div class="card" style="margin-bottom:10px"><div class="lbl">Zo werken we samen</div><p>Mees is het vaste aanspreekpunt. Elke vrijdag de rapportage, met een lijst van gebelde bedrijven en hun uitkomst. De basisdata regelen wij. OK levert aanvullend New Business-lijsten met warme contacten (websitebezoekers, LinkedIn), waar we in de rapportage structureel terugkoppeling op geven, en een uitsluitlijst, zodat we nooit dubbel bellen.</p></div>
-<div class="card" style="background:#000;color:#fff"><div class="lbl">Volgende stap</div><p>Laat per mail weten met hoeveel beldagen jullie starten. Dan sturen wij de overeenkomst, zodat we op {d(C.START_VERVOLG)} beginnen. Hens Boer, LINK.</p></div>'''
-    return f'<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>Vervolgvoorstel OK Creative Agency</title><style>{css}</style></head><body>{body}</body></html>'
+<div class="card" style="background:linear-gradient(140deg,#131a24,#222c3c);color:#fff"><div class="lbl">Volgende stap</div><p>Laat per mail weten met hoeveel beldagen jullie starten. Dan sturen wij de overeenkomst, zodat we op {d(C.START_VERVOLG)} beginnen. Hens Boer, LINK.</p></div>'''
+    return f'<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>Vervolgvoorstel OK Creative Agency</title><style>{font_css()}{css}</style></head><body>{body}</body></html>'
 
 
 def deck_artifact(c):
@@ -678,7 +707,7 @@ window.addEventListener('resize',fit);fit();})();
 </script>"""
     body = ''.join(f'<div class="frame">{x}</div>' for x in slides(c))
     return (f'<title>Pilotevaluatie OK Creative Agency</title>\n<meta name="claude:viewport-fit-sides" content="cover">\n'
-            f'<style>{css}</style><div class="deck">{body}</div>{js}')
+            f'<style>{font_css(True)}{css}</style><div class="deck">{body}</div>{js}')
 
 
 def main():

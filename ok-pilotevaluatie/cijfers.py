@@ -27,10 +27,10 @@ PILOT = dict(prijs_wp=2000, doel_wp=6, wps=3)
 
 # Vervolg: KPI = 2 afspraken per beldag x aantal beldagen
 KPI_PER_BELDAG = 2
-OPTIES = [  # (beldagen, prijs per 4 weken, aanbevolen)
-    (4, 2400, False),
-    (6, 3300, True),
-    (8, 4000, False),
+OPTIES = [  # (beldagen, prijs per beldag, aanbevolen): staffel 600 / 575 / 550
+    (4, 600, False),
+    (6, 575, True),
+    (8, 550, False),
 ]
 START_VERVOLG = dt.date(2026, 10, 26)
 UREN_PER_BELDAG = 8
@@ -53,7 +53,9 @@ def wp_van(d):
 
 
 def euro(n):
-    return '€ ' + f'{n:,.0f}'.replace(',', '.')
+    if abs(n - round(n)) > 0.004:   # bedragen met centen, bijv. € 287,50
+        return '€\xa0' + f'{n:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')
+    return '€\xa0' + f'{n:,.0f}'.replace(',', '.')
 
 
 def num(n):
@@ -193,9 +195,9 @@ def compute(belexport, stats):
         tarief_moyee=20000,
     )
     c['beldagen_per_lead'] = c['n_leads'] / c['beldagen']
-    c['opties'] = [dict(beldagen=b, prijs=p, aanbevolen=a, kpi=b * KPI_PER_BELDAG,
-                        per_afspraak=round(p / (b * KPI_PER_BELDAG)),
-                        per_beldag=round(p / b)) for b, p, a in OPTIES]
+    c['opties'] = [dict(beldagen=b, prijs=b * pd, aanbevolen=a, kpi=b * KPI_PER_BELDAG,
+                        per_afspraak=b * pd / (b * KPI_PER_BELDAG),
+                        per_beldag=pd) for b, pd, a in OPTIES]
     wp4_eind = START_VERVOLG + dt.timedelta(days=27)
     c['wp4'] = (START_VERVOLG, wp4_eind)
     c['wp5_start'] = wp4_eind + dt.timedelta(days=1)
@@ -214,6 +216,8 @@ def compute(belexport, stats):
     assert len(gehouden) + len(gepland) + len(open_lead) == c['n_leads']
     for o in c['opties']:
         assert o['kpi'] == o['beldagen'] * KPI_PER_BELDAG
+    assert [o['prijs'] for o in c['opties']] == [2400, 3450, 4400]
+    assert [o['per_afspraak'] for o in c['opties']] == [300, 287.5, 275]
     return c
 
 
