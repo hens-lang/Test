@@ -39,7 +39,7 @@ UREN_PER_BELDAG = 8
 UITKOMST = {
     'Offerte maken':   ('Offerte in de maak', True),
     'Vervolg gepland': ('Vervolg gepland', True),
-    'Gekwalificeerd':  ('Gekwalificeerd', True),
+    'Gekwalificeerd':  ('Gesprek gehouden', False),   # alle leads zijn gekwalificeerd, dus geen uitkomst op zich
     'Geen match':      ('Geen match', False),
 }
 SPOKEN = [100, 101, 200, 201, 202, 500]
@@ -158,7 +158,7 @@ def compute(belexport, stats):
     # Lijsten van OK zelf vs de brede lijst
     lijst = {}
     for code, label in [('OK Project 1', 'Brede lijst zakelijke dienstverlening'),
-                        ('OK Project 2', 'Lijst van OK: (ex-)relaties en gewenste klanten')]:
+                        ('OK Project 2', 'New Business-lijst van OK')]:
         g = Bc[Bc.Projectcode == code]
         sp = g[g.code.isin(SPOKEN)]
         h = g[g.code.isin([100, 101]) & ~g.Bedrijf.isin(UITSLUITEN)]
@@ -206,7 +206,7 @@ def compute(belexport, stats):
     # belexport-hits (zonder TC) + Moyee (niet in Belstat) = portaal
     assert len(hits_bel) + 1 == c['n_leads'], len(hits_bel)
     assert S['hits'] == len(hits_bel) + len(UITSLUITEN)
-    assert len(gehouden) == 5 and len(met_resultaat) == 4
+    assert len(gehouden) == 5 and len(met_resultaat) == 3
     assert len(gepland) == 9
     assert sum(len(v) for v in per_wp.values()) == c['n_leads']
     assert len(gehouden) + len(gepland) + len(open_lead) == c['n_leads']

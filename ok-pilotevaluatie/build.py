@@ -198,17 +198,43 @@ def slides(c):
     wp = lambda n: len(c['per_wp'][n])
     o4, o6, o8 = c['opties']
 
-    # 1 Titel
-    S.append(f'''<section class="slide dark" id="s1" style="padding:72px 88px">
-<div style="display:flex;justify-content:space-between;align-items:flex-start">
-  <span class="logotext" style="font-size:34px;color:#fff">LINK<span class="dot">.</span></span>
-  <div style="text-align:right;font-size:13px;color:#bdbdbd;line-height:1.6"><span class="chip line">●  B2B SALES PARTNER</span><br>Alphen aan den Rijn<br>www.linkgrp.nl</div>
+    # 1 Titel: de belofte van OK als uitgangspunt, de lijn van de pilot als belofte voor het vervolg
+    vals = [len(c['per_wp'][n]) for n, _, _ in C.WP]
+    tw, th = 470, 250
+    px = [40, 150, 260, 420]
+    py = lambda v: th - 40 - v * 13
+    pts = list(zip(px[:3], [py(v) for v in vals]))
+    traj = [f'<svg width="{tw}" height="{th}" viewBox="0 0 {tw} {th}" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, Liberation Sans, sans-serif">']
+    traj.append(f'<line x1="20" x2="{tw-10}" y1="{th-40}" y2="{th-40}" stroke="#ffffff" stroke-opacity=".18" stroke-width="1"/>')
+    traj.append(f'<line x1="20" x2="{tw-10}" y1="{py(C.PILOT["doel_wp"])}" y2="{py(C.PILOT["doel_wp"])}" stroke="#ffffff" stroke-opacity=".28" stroke-width="1" stroke-dasharray="3 5"/>')
+    traj.append(f'<text x="{tw-10}" y="{py(C.PILOT["doel_wp"])-8}" text-anchor="end" font-size="11" fill="#8a8a8a" letter-spacing="1.5">DOEL {C.PILOT["doel_wp"]}</text>')
+    traj.append(f'<polyline points="{" ".join(f"{x},{y}" for x, y in pts)}" fill="none" stroke="#ffffff" stroke-width="2"/>')
+    traj.append(f'<line x1="{pts[2][0]}" y1="{pts[2][1]}" x2="{px[3]}" y2="{py(12)}" stroke="#38b6ff" stroke-width="2" stroke-dasharray="6 6"/>')
+    for (x, y), v, (n, _, _) in zip(pts, vals, C.WP):
+        traj.append(f'<circle cx="{x}" cy="{y}" r="5" fill="#000" stroke="#ffffff" stroke-width="2"/>')
+        traj.append(f'<text x="{x}" y="{y-14}" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">{v}</text>')
+        traj.append(f'<text x="{x}" y="{th-18}" text-anchor="middle" font-size="11" fill="#8a8a8a" letter-spacing="1.5">{n}</text>')
+    traj.append(f'<circle cx="{px[3]}" cy="{py(12)}" r="7" fill="#38b6ff"/>')
+    traj.append(f'<text x="{px[3]}" y="{th-18}" text-anchor="middle" font-size="11" fill="#38b6ff" letter-spacing="1.5">26-10</text>')
+    traj.append(f'<text x="{px[3]-14}" y="{py(12)+5}" text-anchor="end" font-size="13" font-weight="700" fill="#38b6ff">het vervolg</text>')
+    traj.append(f'<text x="20" y="14" font-size="11" fill="#8a8a8a" letter-spacing="1.5">LEADS EN AFSPRAKEN PER WERKPERIODE</text>')
+    traj.append('</svg>')
+    S.append(f'''<section class="slide dark" id="s1" style="padding:0;background:#000">
+<div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);background-size:80px 80px"></div>
+<div style="position:absolute;right:-260px;bottom:-320px;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle, rgba(56,182,255,.30) 0%, rgba(56,182,255,.08) 38%, rgba(0,0,0,0) 68%)"></div>
+<div style="position:absolute;left:88px;right:88px;top:60px;display:flex;justify-content:space-between;align-items:center">
+  <span class="logotext" style="font-size:30px;color:#fff">LINK<span class="dot">.</span></span>
+  <span style="font-size:12px;letter-spacing:.22em;color:#9a9a9a">PILOTEVALUATIE  ·  15-10-2026</span>
 </div>
-<div style="position:absolute;left:88px;bottom:120px;right:88px">
-  <div class="eyebrow">Pilotevaluatie</div>
-  <div style="font-size:72px;font-weight:800;line-height:1.02;letter-spacing:-1.5px">OK Creative Agency<br>x LINK<span class="dot">.</span></div>
-  <div class="serif" style="font-size:34px;margin-top:18px;color:#fff">van pilot naar een vaste samenwerking</div>
-  <div style="font-size:16px;color:#bdbdbd;margin-top:26px">15-10-2026  ·  10:00  ·  Google Meet  ·  Rob Hoogeveen, Mees Hoogeveen en Hens Boer</div>
+<div style="position:absolute;left:88px;top:178px;width:640px">
+  <div class="serif" style="font-size:19px;color:#b9b9b9;line-height:1.4">“Niet altijd wat je vraagt,<br>wel altijd wat je nodig hebt.”</div>
+  <div style="font-size:11.5px;letter-spacing:.2em;color:#38b6ff;margin-top:10px">DE BELOFTE VAN OK, OOK ONS UITGANGSPUNT</div>
+  <div style="font-size:78px;font-weight:800;line-height:.98;letter-spacing:-2.5px;margin-top:46px;color:#fff">OK Creative<br>Agency <span style="font-weight:300;color:#38b6ff">x</span> LINK<span class="dot">.</span></div>
+  <div class="serif" style="font-size:30px;margin-top:22px;color:#fff">Van kennismaken naar een vaste samenwerking.</div>
+</div>
+<div style="position:absolute;right:76px;top:226px">{''.join(traj)}</div>
+<div style="position:absolute;left:88px;right:88px;bottom:54px;border-top:1px solid rgba(255,255,255,.18);padding-top:16px;display:flex;justify-content:space-between;font-size:14px;color:#9a9a9a">
+  <span>Google Meet  ·  10:00</span><span>Rob Hoogeveen, Mees Hoogeveen en Hens Boer</span><span>www.linkgrp.nl</span>
 </div></section>''')
 
     # 2 Agenda
@@ -271,7 +297,7 @@ def slides(c):
     stap = lambda n, l, s, hl=False: f'<div class="card{" black" if hl else ""}" style="flex:1;text-align:left"><div class="big{" blue" if hl else ""}">{n}</div><div class="cap">{l}</div><div class="sub">{s}</div></div>'
     body = f'''<div class="row" style="align-items:stretch">
 <div class="col" style="display:flex;flex-direction:column;gap:14px">
- <div class="row">{stap(c['n_leads'], 'geleverd', 'leads en afspraken')}{stap(len(c['gehouden']), 'gehouden', 'gesprek heeft plaatsgevonden')}{stap(len(c['met_resultaat']), 'met resultaat', 'offerte, vervolg of gekwalificeerd', True)}</div>
+ <div class="row">{stap(c['n_leads'], 'geleverd', 'leads en afspraken')}{stap(len(c['gehouden']), 'gehouden', 'gesprek heeft plaatsgevonden')}{stap(len(c['met_resultaat']), 'met resultaat', 'offerte of vervolggesprek', True)}</div>
  <div class="card" style="flex:1"><div class="lbl">Nog te gaan</div><p style="margin:0;font-size:16px">{len(c['gepland'])} gesprekken staan gepland. {c['open_lead'][0]['bedrijf']} wil eerst de punten van Frits per mail ontvangen en bespreekt die intern.</p></div>
 </div>
 <div class="card" style="flex:1.05;padding:14px 24px"><div class="lbl" style="margin-top:6px">Status per gehouden gesprek</div>{cards}</div>
@@ -333,13 +359,13 @@ def slides(c):
     punten = [('We kennen het verhaal van OK', 'De propositie, de cases en de toon. We vertellen het nu zoals OK het zelf vertelt.'),
               ('De Frits-insteek is bewezen', f'Sinds WP3 de vaste opening. Resultaat: {wp("WP3")} leads en afspraken in 2,5 week.'),
               ('Scherpere lijsten', 'We weten wie de beslisser is en welke bedrijven passen. Alleen zelfstandige Nederlandse vestigingen.'),
-              ('Lijsten van OK zelf', 'Websitebezoekers, LinkedIn en de new business-lijst van Miriam. Warmere contacten geven betere gesprekken.'),
+              ('New Business-lijsten van OK', 'OK levert warme contacten aan uit websitebezoekers en LinkedIn. De basisdata regelen wij. Warmere contacten geven betere gesprekken.'),
               ('Een uitsluitlijst', 'Wat OK zelf al benadert, bellen wij niet. Nooit dubbel aan de lijn.'),
               ('Een vaste feedbackloop', 'Elke vrijdag de rapportage naar Mees, met een lijst van gebelde bedrijven en de uitkomst. OK ziet wat werkt en stuurt mee.'),
               ('Een duo naar elke afspraak', 'Bij OK gaan een ervaren en een jonge collega samen. Dat geeft betere opvolging van wat wij inplannen.')]
     cards = ''.join(f'<div class="card" style="width:calc(25% - 11px);padding:16px 18px"><div class="serif blue" style="font-size:20px">{i+1:02d}</div><div style="font-size:16px;font-weight:800;margin:4px 0 6px">{a}</div><div style="font-size:13.5px;line-height:1.45">{b}</div></div>' for i, (a, b) in enumerate(punten))
     proof = f'''<div class="card black" style="width:calc(25% - 11px);padding:16px 18px"><div class="lbl">Bewijs uit de pilot</div>
-<div style="font-size:42px;font-weight:800;color:#38b6ff;line-height:1">{str(l2['pct']).replace('.', ',')}%</div><div style="font-size:13.5px;margin:4px 0 8px">van de gesproken bedrijven op de lijst van OK werd een lead</div>
+<div style="font-size:42px;font-weight:800;color:#38b6ff;line-height:1">{str(l2['pct']).replace('.', ',')}%</div><div style="font-size:13.5px;margin:4px 0 8px">van de gesproken bedrijven op de New Business-lijst van OK werd een lead</div>
 <div style="font-size:24px;font-weight:800;line-height:1">{str(l1['pct']).replace('.', ',')}%</div><div style="font-size:13.5px;color:#bdbdbd">op de brede lijst</div></div>'''
     body = f'<div style="display:flex;flex-wrap:wrap;gap:14px">{cards}{proof}</div>'
     S.append(slide(11, 'Waarom de kwaliteit omhoog gaat', 'De kwaliteit gaat omhoog, omdat we OK, het verhaal en de markt nu veel beter kennen.', body))
@@ -347,12 +373,12 @@ def slides(c):
     # 12 Samenwerking
     blok = [('Vast aanspreekpunt', 'Mees Hoogeveen is vanaf nu ons vaste aanspreekpunt bij OK.'),
             ('Elke vrijdag de rapportage', 'Cijfers, wat werkt, wat we terughoren en de warme leads. Plus de lijst met gebelde bedrijven en hun uitkomst.'),
-            ('Lijsten van OK', 'OK levert websitebezoekers, LinkedIn-contacten en de new business-lijst aan. Wij bellen die met voorrang.'),
+            ('New Business-lijsten', 'OK levert warme contacten aan, wij regelen de basisdata. In de weekrapportage geven we per lead terugkoppeling.'),
             ('Uitsluitlijst', 'OK geeft door wie het zelf benadert. Die bedrijven slaan wij over.'),
             ('Evaluatie na werkperiode 4', 'Samen kijken we naar de cijfers, de kwaliteit van de afspraken en de doelgroep. Daarna eventueel uitbreiden naar musea en evenementen.')]
     rows = ''.join(f'<div class="card" style="flex:1;padding:20px"><div class="serif blue" style="font-size:24px">{i+1:02d}</div><div style="font-size:18px;font-weight:800;margin:6px 0 8px">{a}</div><div style="font-size:14.5px;line-height:1.5">{b}</div></div>' for i, (a, b) in enumerate(blok))
     flow = '''<div class="card black" style="margin-top:18px;display:flex;align-items:center;justify-content:space-between;padding:20px 30px;font-size:15px;font-weight:700">
-<span>OK levert lijsten en uitsluitingen</span><span class="blue">→</span><span>LINK. belt en plant in</span><span class="blue">→</span><span>OK voert het gesprek, met een duo</span><span class="blue">→</span><span>vrijdag: rapportage en bijsturen</span></div>'''
+<span>OK levert New Business-lijsten en uitsluitingen</span><span class="blue">→</span><span>LINK. belt en plant in</span><span class="blue">→</span><span>OK voert het gesprek, met een duo</span><span class="blue">→</span><span>vrijdag: rapportage en bijsturen</span></div>'''
     S.append(slide(12, 'Samenwerking vanaf nu', 'Vanaf nu werken we als één team, met Mees als vast aanspreekpunt.', f'<div class="row" style="gap:14px">{rows}</div>{flow}'))
 
     # 13 Het vervolg
@@ -489,7 +515,8 @@ def notities(c):
           f'WP3: Frits-insteek en scherpere lijsten. {wp("WP3")} leads en afspraken in 2,5 week, boven het doel van {C.PILOT["doel_wp"]}. Daarvan zijn {sum(r["type"]=="Afspraak" for r in c["per_wp"]["WP3"])} afspraken en {sum(r["type"]=="Lead" for r in c["per_wp"]["WP3"])} leads, zeg dat er eerlijk bij als ernaar gevraagd wordt.'],
          None, f'{wp("WP3")} in WP3, met nog anderhalve week te gaan.'),
         (6, 'Wat de gesprekken opleveren', 'Het gaat niet om afspraken, het gaat om wat ze opleveren.',
-         [f'{len(c["gehouden"])} gesprekken zijn al gehouden. {len(c["met_resultaat"])} daarvan leverden iets op: een offerte, twee vervolggesprekken en een gekwalificeerde lead.',
+         [f'{len(c["gehouden"])} gesprekken zijn al gehouden. {len(c["met_resultaat"])} daarvan leverden een concreet vervolg op: een offerte en twee vervolggesprekken.',
+          'Alle leads zijn gekwalificeerd, dus dat noemen we niet als uitkomst. Bij Danieli Corus ligt een concreet vraagstuk rond hun corporate presentaties.',
           'BNU Groep was geen match. Dat hoort erbij en het helpt ons scherper te kiezen.',
           f'{len(c["gepland"])} gesprekken moeten nog komen.'],
          'Doorvragen: wat zijn de vervolggesprekken met Zorgwerk en AAme waard voor jullie? Wat is een gemiddelde opdracht bij een klant als Danieli Corus?',
@@ -515,10 +542,11 @@ def notities(c):
           f'Het effect van scherpere lijsten: het aandeel gesprekken dat niet bij OK paste daalde van {c["wp_bel"]["WP1"]["niet_geschikt_pct"]}% in WP1 en {c["wp_bel"]["WP2"]["niet_geschikt_pct"]}% in WP2 naar {c["wp_bel"]["WP3"]["niet_geschikt_pct"]}% in WP3.'],
          'Mogen we in het gesprek vaker "voorheen Onze Kapel" gebruiken?', f'Van {c["wp_bel"]["WP1"]["niet_geschikt_pct"]}% naar {c["wp_bel"]["WP3"]["niet_geschikt_pct"]}% niet passend.'),
         (11, 'Waarom de kwaliteit omhoog gaat', 'Vertrouwen: het vervolg wordt beter dan de pilot.',
-         ['Loop de zeven punten kort door, de nadruk op de lijsten van OK en de feedbackloop.',
-          f'Bewijs: van de gesproken bedrijven op de lijst van OK werd {str(c["lijst"]["OK Project 2"]["pct"]).replace(".", ",")}% een lead, op de brede lijst {str(c["lijst"]["OK Project 1"]["pct"]).replace(".", ",")}%. Warmere lijsten werken.',
+         ['Loop de zeven punten kort door, de nadruk op de New Business-lijsten en de feedbackloop.',
+          'OK levert soms New Business-lijsten aan, de basisdata regelen wij. Die leads zijn warm en fijn om te bellen, en we koppelen ze voortaan structureel terug in de rapportage.',
+          f'Bewijs: van de gesproken bedrijven op de New Business-lijst van OK werd {str(c["lijst"]["OK Project 2"]["pct"]).replace(".", ",")}% een lead, op de brede lijst {str(c["lijst"]["OK Project 1"]["pct"]).replace(".", ",")}%. Warmere lijsten werken.',
           'Het duo bij OK: dat is hun eigen verbetering. Benoem het als sterk punt.'],
-         'Wanneer kunnen jullie de eerste lijsten aanleveren: websitebezoekers, LinkedIn en de lijst van Miriam?',
+         'Hoe vaak kunnen jullie de New Business-lijst aanvullen met websitebezoekers en LinkedIn? Wij geven er in de weekrapportage structureel terugkoppeling op.',
          f'{str(c["lijst"]["OK Project 2"]["pct"]).replace(".", ",")}% tegenover {str(c["lijst"]["OK Project 1"]["pct"]).replace(".", ",")}%.'),
         (12, 'Samenwerking', 'Zo werken we vanaf nu samen.',
          ['Mees is het vaste aanspreekpunt. Elke vrijdag de rapportage met de lijst van gebelde bedrijven.',
@@ -620,7 +648,7 @@ p { margin:0; } ul { margin:0; padding-left:15px; } li { margin-bottom:3px; }
 <div class="card col"><div class="lbl">Wat telt als afspraak</div><p>De gesprekspartner is een beslisser (directie, MT of marketing en brand) bij een organisatie die in de afgesproken doelgroep past.</p></div>
 <div class="card col"><div class="lbl">Voorwaarden</div><ul><li>Start {d(C.START_VERVOLG)}, direct na de pilot, zonder gat</li><li>Opzegbaar per werkperiode</li><li>Evaluatie na werkperiode 4 (t/m {d(c['wp4'][1])})</li><li>Nieuwe overeenkomst op de Algemene Voorwaarden LINK. versie 5</li></ul></div>
 </div>
-<div class="card" style="margin-bottom:12px"><div class="lbl">Zo werken we samen</div><p>Mees is het vaste aanspreekpunt. Elke vrijdag de rapportage, met een lijst van gebelde bedrijven en hun uitkomst. OK levert lijsten aan (websitebezoekers, LinkedIn, de new business-lijst) en een uitsluitlijst, zodat we nooit dubbel bellen.</p></div>
+<div class="card" style="margin-bottom:12px"><div class="lbl">Zo werken we samen</div><p>Mees is het vaste aanspreekpunt. Elke vrijdag de rapportage, met een lijst van gebelde bedrijven en hun uitkomst. De basisdata regelen wij. OK levert aanvullend New Business-lijsten met warme contacten (websitebezoekers, LinkedIn), waar we in de rapportage structureel terugkoppeling op geven, en een uitsluitlijst, zodat we nooit dubbel bellen.</p></div>
 <div class="card" style="background:#000;color:#fff"><div class="lbl">Volgende stap</div><p>Laat per mail weten met hoeveel beldagen jullie starten. Dan sturen wij de overeenkomst, zodat we op {d(C.START_VERVOLG)} beginnen. Hens Boer, LINK.</p></div>'''
     return f'<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>Vervolgvoorstel OK Creative Agency</title><style>{css}</style></head><body>{body}</body></html>'
 
