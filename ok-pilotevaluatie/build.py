@@ -625,6 +625,26 @@ p { margin:0; } ul { margin:0; padding-left:15px; } li { margin-bottom:3px; }
     return f'<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>Vervolgvoorstel OK Creative Agency</title><style>{css}</style></head><body>{body}</body></html>'
 
 
+def deck_artifact(c):
+    """Webversie voor claude.ai: zelfde slides, geschaald naar de schermbreedte."""
+    css = CSS_DECK.replace('@page { size: 1280px 720px; margin:0; }', '').replace(
+        '@media screen { body { background:#cfc6b2; padding:24px 0; } .slide { margin:0 auto 24px; box-shadow:0 6px 24px rgba(0,0,0,.18); } }', '')
+    css += """
+:root { color-scheme: light; }
+body { background:#cfc6b2; padding-block:24px; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); }
+.deck { display:flex; flex-direction:column; gap:20px; max-width:1280px; margin:0 auto; }
+.frame { position:relative; width:100%; max-width:100%; aspect-ratio:16/9; overflow:hidden; border-radius:6px; box-shadow:0 6px 24px rgba(0,0,0,.18); }
+.frame > .slide { position:absolute; top:0; left:0; transform-origin:0 0; }
+"""
+    js = """<script>
+(function(){function fit(){document.querySelectorAll('.frame').forEach(function(f){var k=f.clientWidth/1280;f.firstElementChild.style.transform='scale('+k+')';});}
+window.addEventListener('resize',fit);fit();})();
+</script>"""
+    body = ''.join(f'<div class="frame">{x}</div>' for x in slides(c))
+    return (f'<title>Pilotevaluatie OK Creative Agency</title>\n<meta name="claude:viewport-fit-sides" content="cover">\n'
+            f'<style>{css}</style><div class="deck">{body}</div>{js}')
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--belexport', required=True)
@@ -636,6 +656,7 @@ def main():
     deck = deck_html(c)
     (out / 'Pilotevaluatie OK Creative Agency.html').write_text(deck, encoding='utf-8')
     HTML(string=deck).write_pdf(out / 'Pilotevaluatie OK Creative Agency.pdf')
+    (out / 'deck-online.html').write_text(deck_artifact(c), encoding='utf-8')
     HTML(string=notities(c)).write_pdf(out / 'Sprekersnotities pilotevaluatie OK.pdf')
     HTML(string=onepager(c)).write_pdf(out / 'Vervolgvoorstel OK Creative Agency.pdf')
     print('klaar:', out)
