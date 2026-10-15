@@ -177,7 +177,7 @@ def svg_timeline(c, w=1136, h=330):
     for dd, col in [(C.PEILDATUM, '#8d8571'), (C.START_VERVOLG, '#38b6ff')]:
         xx = x(dd)
         s.append(f'<line x1="{xx}" x2="{xx}" y1="{ym-16}" y2="{ym+44}" stroke="{col}" stroke-width="1.5" stroke-dasharray="4 4"/>')
-    s.append(f'<text x="{x(C.PEILDATUM)-6}" y="{ym+56}" text-anchor="end" font-size="12" fill="#8d8571">vandaag 14-10</text>')
+    s.append(f'<text x="{x(C.PEILDATUM)-6}" y="{ym+56}" text-anchor="end" font-size="12" fill="#8d8571">vandaag {C.PEILDATUM:%d-%m}</text>')
     s.append(f'<text x="{x(C.START_VERVOLG)+6}" y="{ym+56}" font-size="12" font-weight="700" fill="#38b6ff">start vervolg 26-10</text>')
     # labels boven (negatief) of onder (positief) de lijn, vaste hoogte per item
     niveaus = [-118, 98, -52, 136, -92, 98, -52, 136, -92]
@@ -248,7 +248,7 @@ def slides(c):
 
     # 2 Agenda
     ag = [('De afspraak en de cijfers', 'Wat we afspraken en wat er is geleverd', 10),
-          ('Wat de gesprekken opleveren', 'Gehouden gesprekken, Moyee Coffee en de pijplijn', 10),
+          ('Wat de leads opleveren', 'Concrete kansen per lead en de pijplijn', 10),
           ('Wat we geleerd hebben', 'Tien weken bellen voor OK: wat werkt en wat minder', 10),
           ('Waarom de kwaliteit omhoog gaat', 'En hoe we vanaf nu samenwerken', 10),
           ('Het vervolg vanaf 26-10-2026', 'Beldagen, KPI, drie opties en onze garantie', 15),
@@ -280,7 +280,7 @@ def slides(c):
     body = f'''<div class="card" style="display:flex;padding:24px 26px;margin-bottom:46px">{strip}</div>
 <div style="position:relative"><div style="display:flex;border-radius:12px;overflow:hidden">{seg}</div>
 <div style="position:absolute;left:{today}%;top:-10px;bottom:-10px;border-left:2px solid #38b6ff"></div>
-<div style="position:absolute;left:{today}%;top:-30px;margin-left:-44px;font-size:12.5px;font-weight:700;color:#38b6ff">vandaag 14-10</div></div>
+<div style="position:absolute;left:{today}%;top:-30px;margin-left:-44px;font-size:12.5px;font-weight:700;color:#38b6ff">vandaag {C.PEILDATUM:%d-%m}</div></div>
 <div style="display:flex;gap:40px;margin-top:30px">
 <div style="flex:1"><div class="lbl">Doelgroep</div><p style="margin:0;font-size:17px">Zakelijke dienstverlening: IT, accountancy, verzekeringen, detachering en advies. Vanaf 50 medewerkers.</p></div>
 <div style="flex:1"><div class="lbl">Beslisser</div><p style="margin:0;font-size:17px">Directie, MT of marketing en brand. Met die persoon plannen we de afspraak in de agenda van OK.</p></div>
@@ -312,36 +312,23 @@ def slides(c):
 <div class="note" style="margin-top:12px">Geteld op aanmaakdatum van de lead in het OK-portaal, exclusief TC Productions.</div>'''
     S.append(slide(5, 'Resultaten per werkperiode', f'WP3 zit met {wp("WP3")} leads en afspraken *al boven het doel* van {C.PILOT["doel_wp"]}.', body))
 
-    # 6 Wat de gesprekken opleveren
-    order = ['Offerte maken', 'Vervolg gepland', 'Gekwalificeerd', 'Geen match']
-    geh = sorted(c['gehouden'], key=lambda r: order.index(r['status']))
-    cards = ''.join(f'''<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #ddd3bd">
-<div><div style="font-size:19px;font-weight:700">{r['bedrijf']}</div><div class="note">gesprek {d(r['gesprek_d'])}</div></div>
-<span class="chip {'ok' if C.UITKOMST[r['status']][1] else 'neutral'}">{C.UITKOMST[r['status']][0]}</span></div>''' for r in geh)
-    stap = lambda n, l, s, hl=False: f'<div class="card{" black" if hl else ""}" style="flex:1;text-align:left"><div class="big{" blue" if hl else ""}">{n}</div><div class="cap">{l}</div><div class="sub">{s}</div></div>'
-    body = f'''<div class="row" style="align-items:stretch">
-<div class="col" style="display:flex;flex-direction:column;gap:14px">
- <div class="row">{stap(c['n_leads'], 'geleverd', 'leads en afspraken')}{stap(len(c['gehouden']), 'gehouden', 'gesprek heeft plaatsgevonden')}{stap(len(c['met_resultaat']), 'met resultaat', 'offerte of vervolggesprek', True)}</div>
- <div class="card" style="flex:1"><div class="lbl">Nog te gaan</div><p style="margin:0;font-size:16px">{len(c['gepland'])} gesprekken en contactmomenten staan gepland. {c['open_lead'][0]['bedrijf']} wil eerst de punten van Frits per mail ontvangen en bespreekt die intern.</p></div>
-</div>
-<div class="card" style="flex:1.05;padding:14px 24px"><div class="lbl" style="margin-top:6px">Status per gehouden gesprek</div>{cards}</div>
-</div>'''
-    S.append(slide(6, 'Wat de gesprekken opleveren', f'Van de {len(c["gehouden"])} gehouden gesprekken leverden er {len(c["met_resultaat"])} een concreet vervolg op.', body))
-
-    # 7 Moyee
-    m = c['moyee']
-    stap = lambda dd, t, s, hl=False: f'''<div style="flex:1;position:relative;padding-top:34px">
-<div style="position:absolute;top:0;left:0;width:22px;height:22px;border-radius:50%;background:{'#38b6ff' if hl else '#000'}"></div>
-<div style="font-size:15px;color:#6f6a5c">{dd}</div><div style="font-size:21px;font-weight:800;margin-top:4px">{t}</div><div class="sub">{s}</div></div>'''
-    body = f'''<div class="card" style="margin-bottom:18px;padding:26px 30px">
-<div style="position:relative"><div style="position:absolute;top:10px;left:10px;right:40px;height:2px;background:#1c2230"></div>
-<div class="row" style="gap:30px">{stap(d(m['aangemaakt']), 'Afspraak ingepland', 'Lead aangemaakt in het OK-portaal, in werkperiode 2')}{stap(d(m['gesprek_d']), 'Gesprek gehouden', 'Kennismaking met OK, het FairChain-verhaal als kern')}{stap('nu', 'Offerte in de maak', 'OK werkt een offerte uit in twee varianten', True)}</div></div></div>
-<div class="row">
-<div class="card black col"><div class="lbl">De offerte</div><div class="big blue" style="font-size:44px">2 varianten</div><div class="sub">Op basis van een traject van {euro(c['tarief_moyee'])}, met korting omdat Moyee al veel heeft aangeleverd</div></div>
-<div class="card col"><div class="lbl">Investering hele pilot</div><div class="big" style="font-size:44px">{euro(c['pilot_totaal'])}</div><div class="sub">3 werkperiodes van {euro(C.PILOT['prijs_wp'])}</div></div>
-<div class="card col"><div class="lbl">En daarna</div><div class="big" style="font-size:44px">Lange termijn</div><div class="sub">Er ligt ook een kans op een doorlopende samenwerking</div></div>
-</div>'''
-    S.append(slide(7, 'Uitgelicht: Moyee Coffee', 'Eén lead kan meer opleveren dan de hele pilot: Moyee Coffee *krijgt een offerte in twee varianten.*', body))
+    # 6 Concrete kansen: achter elke lead een vraagstuk (geen OK-statussen, dat is aan OK)
+    def kaart(r):
+        status = 'gesprek geweest' if r['gehouden'] else ('gepland ' + d(r['gesprek_d']) if r['gepland'] else 'loopt')
+        kleur = '#1c2230' if r['gehouden'] else '#38b6ff'
+        return (f'<div style="padding:9px 0 9px 14px;border-left:2px solid {kleur};break-inside:avoid">'
+                f'<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><span style="font-family:\'Inter Tight\';font-weight:800;font-size:15.5px">{r["bedrijf"]}</span>'
+                f'<span style="font-size:11.5px;color:#8d8571;white-space:nowrap">{status}</span></div>'
+                f'<div style="font-size:13px;line-height:1.38;margin-top:2px">{C.KANSEN[r["bedrijf"]]}</div></div>')
+    volg = sorted(c['tellen'], key=lambda r: (0 if r['gehouden'] else 1, r['gesprek_dt']))
+    kol = [volg[i::3] for i in range(3)]
+    grid = ''.join(f'<div style="flex:1;display:flex;flex-direction:column;gap:8px">{"".join(kaart(r) for r in k)}</div>' for k in kol)
+    legenda = ('<div style="display:flex;gap:22px;font-size:12.5px;color:#6f6a5c;margin-top:20px">'
+               f'<span><span style="display:inline-block;width:10px;height:10px;background:#1c2230;margin-right:6px"></span>{len(c["gehouden"])} gesprekken geweest</span>'
+               f'<span><span style="display:inline-block;width:10px;height:10px;background:#38b6ff;margin-right:6px"></span>{len(c["gepland"])} gepland, {len(c["open_lead"])} loopt</span>'
+               '<span>Uit de belnotities, per lead</span></div>')
+    body = f'<div style="display:flex;gap:26px">{grid}</div>{legenda}'
+    S.append(slide(6, 'Concrete kansen', f'Achter alle {c["n_leads"]} leads zit een *concreet vraagstuk* waar OK op kan inspelen.', body).replace('<h2>', '<h2 style="margin-bottom:20px">', 1))
 
     # 8 Pijplijn
     body = f'''<div class="card" style="padding:16px 20px 8px">{svg_timeline(c)}</div>
@@ -349,7 +336,7 @@ def slides(c):
 <div class="card col" style="padding:16px 22px"><span class="big" style="font-size:36px">{len(c['gepland'])}</span> <span class="cap">gepland, waarvan {sum(r['gesprek_d'] < C.dt.date(2027,1,1) for r in c['gepland'])} nog in 2026</span></div>
 <div class="card col" style="padding:16px 22px"><span class="big" style="font-size:36px">{c['terugbel_open']}</span> <span class="cap">terugbelafspraken lopen daarnaast</span></div>
 </div>'''
-    S.append(slide(8, 'De pijplijn', f'De meeste waarde *moet nog komen*: tot en met maart 2027 staan nog {len(c["gepland"])} gesprekken en contactmomenten gepland.', body))
+    S.append(slide(7, 'De pijplijn', f'De meeste waarde *moet nog komen*: tot en met maart 2027 staan nog {len(c["gepland"])} gesprekken en contactmomenten gepland.', body))
 
     # 9 Wat werkt: de opening als belscript, de rest als korte lessen
     lessen = [('Niet weggeven aan de telefoon', 'De punten bewaren we voor het gesprek. We stellen direct twee momenten voor.'),
@@ -365,7 +352,7 @@ def slides(c):
 </div>
 <div style="flex:1;border-top:1.5px solid #1c2230">{lijst}</div>
 </div>'''
-    S.append(slide(9, 'Wat we geleerd hebben', 'We komen iets *brengen* in plaats van iets vragen, en dat werkt.', body))
+    S.append(slide(8, 'Wat we geleerd hebben', 'We komen iets *brengen* in plaats van iets vragen, en dat werkt.', body))
 
     # 10 Wat minder werkt
     minder = [('De receptie als drempel', 'We vragen gericht naar de persoon die we vooraf hebben opgezocht, en gebruiken mail als tweede ingang.'),
@@ -379,7 +366,7 @@ def slides(c):
 <div class="card col"><div class="lbl">Het effect van scherpere lijsten</div><div style="font-size:15px;margin-bottom:14px">Aandeel gesproken bedrijven dat niet bij OK paste</div>{svg_niet_geschikt(c)}
 <div class="note">{wb['WP1']['niet_geschikt']} van {wb['WP1']['gesproken']} in WP1, {wb['WP2']['niet_geschikt']} van {wb['WP2']['gesproken']} in WP2, {wb['WP3']['niet_geschikt']} van {wb['WP3']['gesproken']} in WP3. Ingedeeld op datum van het laatste contact.</div></div>
 </div>'''
-    S.append(slide(10, 'Wat minder werkt', 'Waar het schuurde, hebben we de aanpak al aangepast.', body))
+    S.append(slide(9, 'Wat minder werkt', 'Waar het schuurde, hebben we de aanpak al aangepast.', body))
 
     # 11 Waarom de kwaliteit omhoog gaat: augustus tegenover nu
     l1, l2 = c['lijst']['OK Project 1'], c['lijst']['OK Project 2']
@@ -394,10 +381,10 @@ def slides(c):
     body = f'''<div style="display:flex;gap:22px;align-items:flex-start">
 <div class="card" style="flex:1;padding:10px 22px 6px"><table class="t" style="font-size:14.5px"><tr><th></th><th>Augustus</th><th style="color:#38b6ff">Nu</th></tr>{rows}</table></div>
 <div class="card black" style="width:250px;padding:22px"><div class="lbl">Bewijs uit de pilot</div>
-<div style="font-size:50px;font-weight:800;color:#38b6ff;line-height:1;margin-top:6px">{str(l2['pct']).replace('.', ',')}%</div><div style="font-size:14px;margin:6px 0 16px;line-height:1.4">van de gesproken bedrijven op de lijst van OK met relaties en gewenste klanten werd een lead</div>
-<div style="font-size:30px;font-weight:800;line-height:1">{str(l1['pct']).replace('.', ',')}%</div><div style="font-size:14px;color:#bdbdbd;margin-top:4px">op de brede lijst</div></div>
+<div style="font-size:50px;font-weight:800;color:#38b6ff;line-height:1;margin-top:6px">{wp("WP3")}</div><div style="font-size:14px;margin:6px 0 16px;line-height:1.4">leads en afspraken in de eerste 2,5 week van WP3, met de nieuwe aanpak</div>
+<div style="font-size:30px;font-weight:800;line-height:1">{c["n_leads"]}</div><div style="font-size:14px;color:#bdbdbd;margin-top:4px">leads en afspraken in totaal, uit {num(c["gesproken"])} gesproken bedrijven</div></div></div>
 </div>'''
-    S.append(slide(11, 'Waarom de kwaliteit omhoog gaat', 'De kwaliteit gaat omhoog, omdat we OK, het verhaal en de markt *nu veel beter kennen.*', body))
+    S.append(slide(10, 'Waarom de kwaliteit omhoog gaat', 'De kwaliteit gaat omhoog, omdat we OK, het verhaal en de markt *nu veel beter kennen.*', body))
 
     # 12 Samenwerking: het ritme van een werkperiode van 4 weken
     s4, e4 = c['wp4']
@@ -415,7 +402,7 @@ def slides(c):
     body = f'''<div class="card" style="padding:20px 24px 22px;background:#e4dcc8"><div style="display:flex;justify-content:space-between;margin-bottom:12px"><div class="lbl" style="margin:0">Het ritme van werkperiode 4: {d(s4)} t/m {d(e4)}</div><div style="font-size:13px;font-weight:700;color:#1c2230"><span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:#38b6ff;margin-right:6px"></span>vrijdag: rapportage en bellijst naar Mees</div></div>
 <div style="display:flex;gap:16px">{weken}</div></div>
 <div style="display:flex;gap:26px;margin-top:26px">{tekst}</div>'''
-    S.append(slide(12, 'Samenwerking vanaf nu', 'Vanaf nu werken we als één team, met Mees als vast aanspreekpunt.', body))
+    S.append(slide(11, 'Samenwerking vanaf nu', 'Vanaf nu werken we als één team, met Mees als vast aanspreekpunt.', body))
 
     # 13 Het vervolg: de rekensom van een beldag, dan de drie uitkomsten
     term = lambda big, small, hl=False: f'<div><div style="font-size:54px;font-weight:800;letter-spacing:-1.5px;line-height:1;color:{"#38b6ff" if hl else "#fff"}">{big}</div><div style="font-size:15px;color:#a9a9a9;margin-top:8px">{small}</div></div>'
@@ -426,7 +413,7 @@ def slides(c):
     body = f'''<div style="display:flex;align-items:flex-start;margin:10px 0 40px">{som}</div>
 <div style="border-bottom:1px solid #2a2a2a">{regels}</div>
 <div style="margin-top:18px;font-size:16px;color:#a9a9a9">Start {d(C.START_VERVOLG)}, direct na werkperiode 3, zonder gat. Opzegbaar per werkperiode.</div>'''
-    S.append(slide(13, 'Het vervolg', f'Vanaf {d(C.START_VERVOLG)} werken we in hele beldagen, met een KPI van {C.KPI_PER_BELDAG} afspraken per beldag.', body, dark=True))
+    S.append(slide(12, 'Het vervolg', f'Vanaf {d(C.START_VERVOLG)} werken we in hele beldagen, met een KPI van {C.KPI_PER_BELDAG} afspraken per beldag.', body, dark=True))
 
     # 14 De opties
     def optie(titel, prijs, kpi, per, sub, cls='', badge=''):
@@ -437,14 +424,10 @@ def slides(c):
 <div style="font-size:15px;margin-top:10px;padding-top:10px;border-top:1px solid {'#333' if cls=='black' else '#ddd3bd'}"><b class="{'blue' if cls=='black' else ''}">{euro(per)}</b> per afspraak</div></div>'''
     cards = optie('Pilot', C.PILOT['prijs_wp'], C.PILOT['doel_wp'], c['pilot_per_afspraak'], 'ter vergelijking', 'pilot').replace('class="card pilot"', 'class="card" style="opacity:.6"')
     for o in c['opties']:
-        if o['aanbevolen']:
-            cards += optie(f'{o["beldagen"]} beldagen', o['prijs'], o['kpi'], o['per_afspraak'], f'{euro(o["per_beldag"])} per beldag', 'black',
-                           '<span class="chip ok" style="position:absolute;top:-12px;right:18px">Aanbevolen</span>')
-        else:
-            cards += optie(f'{o["beldagen"]} beldagen', o['prijs'], o['kpi'], o['per_afspraak'], f'{euro(o["per_beldag"])} per beldag')
+        cards += optie(f'{o["beldagen"]} beldagen', o['prijs'], o['kpi'], o['per_afspraak'], f'{euro(o["per_beldag"])} per beldag')
     body = f'''<div class="row" style="gap:16px;margin-top:6px">{cards}</div>
-<div class="card" style="margin-top:22px;padding:16px 24px;font-size:18px;font-weight:700">De prijs per afspraak daalt van {euro(c['pilot_per_afspraak'])} in de pilot naar <span class="blue">{euro(o6['per_afspraak'])}</span> bij {o6['beldagen']} beldagen en {euro(o8['per_afspraak'])} bij {o8['beldagen']} beldagen.</div>'''
-    S.append(slide(14, 'De opties', f'Meer afspraken voor een lagere prijs per afspraak: wij adviseren {o6["beldagen"]} beldagen.', body))
+<div class="card" style="margin-top:22px;padding:16px 24px;font-size:18px;font-weight:700">Welke keuze het ook wordt: de prijs per afspraak daalt van {euro(c['pilot_per_afspraak'])} in de pilot naar {euro(o4['per_afspraak'])}, {euro(o6['per_afspraak'])} of {euro(o8['per_afspraak'])}.</div>'''
+    S.append(slide(13, 'De opties', 'Meer afspraken voor een *lagere prijs per afspraak*, in drie varianten.', body))
 
     # 15 Garantie
     ex_n = o6['kpi'] - 2
@@ -456,7 +439,7 @@ def slides(c):
 <div class="card" style="margin-bottom:16px"><div class="lbl">Wat telt als afspraak</div><p style="margin:0;font-size:16px">Een gekwalificeerde afspraak: de gesprekspartner is een beslisser (directie, MT of marketing en brand) bij een organisatie die in de afgesproken doelgroep past.</p></div>
 <div class="card"><div class="lbl">Wat het voor OK betekent</div><p style="margin:0;font-size:16px">OK betaalt voor resultaat. Het risico van een tegenvallende periode ligt bij ons.</p></div>
 </div></div>'''
-    S.append(slide(15, 'Onze garantie', 'Halen we de KPI niet, dan krijgt OK *een beldag gratis.*', body))
+    S.append(slide(14, 'Onze garantie', 'Halen we de KPI niet, dan krijgt OK *een beldag gratis.*', body))
 
     # 16 Volgende stappen
     stappen = [('15-10-2026', 'Evaluatie', 'Vandaag: keuze voor het aantal beldagen'),
@@ -471,15 +454,15 @@ def slides(c):
 <div class="row">
 <div class="card col"><div class="lbl">Opzegbaar</div><p style="margin:0;font-size:16px">Per werkperiode van 4 weken. Geen lange verplichting.</p></div>
 <div class="card col"><div class="lbl">Doorlopend</div><p style="margin:0;font-size:16px">De pijplijn en de {c['terugbel_open']} terugbelafspraken lopen zonder onderbreking door.</p></div>
-<div class="card black col"><div class="lbl">De vraag van vandaag</div><p style="margin:0;font-size:17px;font-weight:700">Starten we op {d(C.START_VERVOLG)} met {o6['beldagen']} of met {o8['beldagen']} beldagen?</p></div>
+<div class="card black col"><div class="lbl">De vraag van vandaag</div><p style="margin:0;font-size:17px;font-weight:700">Met hoeveel beldagen per werkperiode starten jullie op {d(C.START_VERVOLG)}?</p></div>
 </div>'''
-    S.append(slide(16, 'Volgende stappen', f'Met een akkoord deze week starten we op {d(C.START_VERVOLG)}, *zonder gat* na de pilot.', body))
+    S.append(slide(15, 'Volgende stappen', f'Met een akkoord deze week starten we op {d(C.START_VERVOLG)}, *zonder gat* na de pilot.', body))
 
     # Bijlage A: leads
     rws = ''
     for r in sorted(c['portaal'], key=lambda r: r['aangemaakt']):
         if r['gehouden']:
-            st = C.UITKOMST[r['status']][0]
+            st = 'Gesprek geweest'
         elif r['gepland']:
             st = 'Gesprek gepland' if r['type'] == 'Afspraak' else 'Contactmoment gepland'
         else:
@@ -550,65 +533,57 @@ def notities(c):
           'WP2: de lijst had te veel holdings en bedrijven die niet pasten. Dat hebben we aangepakt.',
           f'WP3: Frits-insteek en scherpere lijsten. {wp("WP3")} leads en afspraken in 2,5 week, boven het doel van {C.PILOT["doel_wp"]}. Daarvan zijn {sum(r["type"]=="Afspraak" for r in c["per_wp"]["WP3"])} afspraken en {sum(r["type"]=="Lead" for r in c["per_wp"]["WP3"])} leads, zeg dat er eerlijk bij als ernaar gevraagd wordt.'],
          None, f'{wp("WP3")} in WP3, met nog anderhalve week te gaan.'),
-        (6, 'Wat de gesprekken opleveren', 'Het gaat niet om afspraken, het gaat om wat ze opleveren.',
-         [f'{len(c["gehouden"])} gesprekken zijn al gehouden. {len(c["met_resultaat"])} daarvan leverden een concreet vervolg op: een offerte en twee vervolggesprekken.',
-          'Alle leads zijn gekwalificeerd, dus dat noemen we niet als uitkomst. Bij Danieli Corus ligt een concreet vraagstuk rond hun corporate presentaties.',
-          'BNU Groep was geen match. Dat hoort erbij en het helpt ons scherper te kiezen.',
-          f'{len(c["gepland"])} gesprekken en contactmomenten moeten nog komen. Rotterdam Leisure Group en Safecourt zijn contactmomenten, de rest zijn afspraken.'],
-         'Doorvragen: wat zijn de vervolggesprekken met Zorgwerk en AAme waard voor jullie? Wat is een gemiddelde opdracht bij een klant als Danieli Corus?',
-         f'{len(c["met_resultaat"])} van de {len(c["gehouden"])}.'),
-        (7, 'Moyee Coffee', 'Eén lead kan de hele pilot terugverdienen, en meer.',
-         [f'Afspraak ingepland op {d(m["aangemaakt"])}, gesprek op {d(m["gesprek_d"])}. OK maakt nu een offerte in twee varianten, af te ronden rond 17-10.',
-          f'Basis is het OK-tarief van {euro(c["tarief_moyee"])} voor een middelgroot traject. Moyee krijgt korting, omdat ze al veel hadden aangeleverd.',
-          f'Ook met korting is één opdracht al snel meer dan de {euro(c["pilot_totaal"])} van de hele pilot. Noem geen bedrag dat OK zelf nog niet heeft genoemd.',
-          'Niet overdrijven: het is een offerte, nog geen opdracht.'],
-         'Doorvragen: wat wordt het bedrag van de offerte, en hoe groot is de kans dat Moyee tekent? En als dit het niveau is, wat is dan één extra afspraak per maand waard?',
-         f'Eén lead tegenover {euro(c["pilot_totaal"])} voor de hele pilot.'),
-        (8, 'De pijplijn', 'De meeste waarde van de pilot moet nog komen.',
+        (6, 'Concrete kansen', 'De kracht zit in alle leads samen: achter elke lead zit een echt vraagstuk.',
+         [f'{len(c["gehouden"])} gesprekken zijn al geweest, {len(c["gepland"])} staan gepland. Wat OK daarna doet, offerte of vervolg, is aan OK. Dat benoemen we niet.',
+          'Loop een paar voorbeelden door: Danieli Corus met hun corporate presentaties, Randstad Groep met campagnes en vacatures, Focus Engineering die vanaf Q2 wil uitbesteden, Moyee met het FairChain-verhaal.',
+          'Het punt: dit zijn geen koude namen, het zijn beslissers met een vraag waar OK een antwoord op heeft.'],
+         'Doorvragen: welke van deze kansen past het best bij jullie, en wat is zo\'n traject gemiddeld waard? Wat zou het betekenen als er twee of drie van deze leads klant worden?',
+         f'{c["n_leads"]} leads, {c["n_leads"]} concrete vraagstukken.'),
+        (7, 'De pijplijn', 'De meeste waarde van de pilot moet nog komen.',
          ['Loop de tijdlijn van links naar rechts: ' + ', '.join(f'{r["bedrijf"]} {d(r["gesprek_d"])}' for r in c['gepland']) + '.',
           'Benoem ING en Randstad Groep als grote namen. Safecourt pakt OK begin januari zelf op.',
           'Als we stoppen na WP3, lopen deze gesprekken wel door, maar komt er niets nieuws bij. Daarom willen we zonder gat door.'],
          None, f'{len(c["gepland"])} gesprekken gepland, tot en met {d(c["gepland"][-1]["gesprek_d"])}.'),
-        (9, 'Wat werkt', 'We hebben de opening gevonden die werkt voor OK.',
+        (8, 'Wat werkt', 'We hebben de opening gevonden die werkt voor OK.',
          ['Lees de Frits-opening letterlijk voor. Leg uit waarom die werkt: we komen iets brengen.',
           'We geven de punten niet weg aan de telefoon en stellen direct twee momenten voor.',
           'Randstad Groep als voorbeeld: de marketeer kende OK al en wil weten wat OK kan betekenen voor campagnes en vacatures.'],
          'Herkennen jullie dit in de gesprekken die jullie hebben gevoerd?', None),
-        (10, 'Wat minder werkt', 'We benoemen wat schuurde, en laten zien wat we al hebben veranderd.',
+        (9, 'Wat minder werkt', 'We benoemen wat schuurde, en laten zien wat we al hebben veranderd.',
          ['Receptie, nieuwe naam, brede lijsten en het bezwaar dat ze alles zelf doen.',
           f'Het effect van scherpere lijsten: het aandeel gesprekken dat niet bij OK paste daalde van {c["wp_bel"]["WP1"]["niet_geschikt_pct"]}% in WP1 en {c["wp_bel"]["WP2"]["niet_geschikt_pct"]}% in WP2 naar {c["wp_bel"]["WP3"]["niet_geschikt_pct"]}% in WP3.'],
          'Mogen we in het gesprek vaker "voorheen Onze Kapel" gebruiken?', f'Van {c["wp_bel"]["WP1"]["niet_geschikt_pct"]}% naar {c["wp_bel"]["WP3"]["niet_geschikt_pct"]}% niet passend.'),
-        (11, 'Waarom de kwaliteit omhoog gaat', 'Vertrouwen: het vervolg wordt beter dan de pilot.',
-         ['Loop de zeven punten kort door, de nadruk op de New Business-lijsten en de feedbackloop.',
+        (10, 'Waarom de kwaliteit omhoog gaat', 'Vertrouwen: het vervolg wordt beter dan de pilot.',
+         ['Loop het rijtje augustus tegenover nu kort door, de nadruk op de aanpak en de feedbackloop.',
           'OK levert soms New Business-lijsten aan, de basisdata regelen wij. Die leads zijn warm en fijn om te bellen, en we koppelen ze voortaan structureel terug in de rapportage.',
-          f'Bewijs: van de gesproken bedrijven op de lijst van OK met relaties en gewenste klanten werd {str(c["lijst"]["OK Project 2"]["pct"]).replace(".", ",")}% een lead, op de brede lijst {str(c["lijst"]["OK Project 1"]["pct"]).replace(".", ",")}%. Warmere lijsten werken.',
+          f'Bewijs: met de nieuwe aanpak {wp("WP3")} leads en afspraken in 2,5 week. Het gaat om alle leads samen, niet om één lijst.',
           'Het duo bij OK: dat is hun eigen verbetering. Benoem het als sterk punt.'],
          'Hoe vaak kunnen jullie de New Business-lijst aanvullen met websitebezoekers en LinkedIn? Wij geven er in de weekrapportage structureel terugkoppeling op.',
-         f'{str(c["lijst"]["OK Project 2"]["pct"]).replace(".", ",")}% tegenover {str(c["lijst"]["OK Project 1"]["pct"]).replace(".", ",")}%.'),
-        (12, 'Samenwerking', 'Zo werken we vanaf nu samen.',
+         f'{wp("WP3")} in 2,5 week, {c["n_leads"]} in totaal.'),
+        (11, 'Samenwerking', 'Zo werken we vanaf nu samen.',
          ['Mees is het vaste aanspreekpunt. Elke vrijdag de rapportage met de lijst van gebelde bedrijven.',
           'Uitsluitlijst: wat OK zelf benadert, bellen wij niet.', 'Na WP4 evalueren we, en kijken we of musea en evenementen erbij kunnen.'],
          'Mees, past vrijdag voor jou als vast moment?', None),
-        (13, 'Het vervolg', 'We gaan van een pilot naar een vaste eenheid: de beldag.',
+        (12, 'Het vervolg', 'We gaan van een pilot naar een vaste eenheid: de beldag.',
          [f'Vanaf {d(C.START_VERVOLG)}, direct na WP3.', f'KPI: {C.KPI_PER_BELDAG} afspraken per beldag, dus {o4["kpi"]}, {o6["kpi"]} of {o8["kpi"]} per werkperiode.',
           'Achtergrond, niet delen: in de pilot is '
           f'{c["uren_record_txt"]} uur aan records gebeld, dat is {str(round(c["beldagen"],1)).replace(".", ",")} beldagen. '
           f'Gemiddeld {str(round(c["beldagen_per_lead"],2)).replace(".", ",")} lead per beldag over de hele pilot, inclusief de opstart. De pilot is per werkperiode afgerekend, niet per beldag.'],
          None, f'{C.KPI_PER_BELDAG} per beldag.'),
-        (14, 'De opties', 'Meer afspraken, hogere kwaliteit, en de prijs per afspraak daalt.',
+        (13, 'De opties', 'Meer afspraken, hogere kwaliteit, en de prijs per afspraak daalt.',
          [f'Pilot {euro(c["pilot_per_afspraak"])} per afspraak. 4 beldagen {euro(o4["per_afspraak"])}, 6 beldagen {euro(o6["per_afspraak"])}, 8 beldagen {euro(o8["per_afspraak"])}.',
-          f'Ons advies is 6 beldagen: {o6["kpi"]} afspraken per werkperiode, dat is het dubbele van de pilot.',
+          'Geen advies geven. OK moet zelf achter de keuze staan. Leg per optie uit wat het oplevert en laat de keuze bij hen.',
           'Geen ja of nee vragen. Laat ze kiezen tussen 6 en 8.'],
-         f'Willen jullie starten met {o6["beldagen"]} beldagen, of meteen met {o8["beldagen"]} om het tempo van WP3 vast te houden?',
-         f'{euro(o6["per_afspraak"])} per afspraak bij 6 beldagen, {o6["kpi"]} afspraken.'),
-        (15, 'Garantie', 'Het risico ligt bij ons.',
+         'Wat past het best bij hoeveel nieuwe gesprekken jullie per maand willen en kunnen opvolgen: 4, 6 of 8 beldagen?',
+         f'De prijs per afspraak daalt bij elke optie, van {euro(c["pilot_per_afspraak"])} naar {euro(o4["per_afspraak"])}, {euro(o6["per_afspraak"])} of {euro(o8["per_afspraak"])}.'),
+        (14, 'Garantie', 'Het risico ligt bij ons.',
          [f'Halen we de KPI van {C.KPI_PER_BELDAG} per beldag in een werkperiode niet, dan een beldag gratis in de volgende periode.',
           'Een afspraak telt als de gesprekspartner een beslisser is bij een organisatie in de doelgroep.', 'Opzegbaar per werkperiode.'],
          'Is er iets dat jullie nog nodig hebben om hier ja op te zeggen?', 'Een beldag gratis.'),
-        (16, 'Volgende stappen', 'Concreet afsluiten.',
+        (15, 'Volgende stappen', 'Concreet afsluiten.',
          [f'Akkoord deze week per mail, overeenkomst op de Algemene Voorwaarden LINK. versie 5, start {d(C.START_VERVOLG)}.',
           f'WP4 loopt tot en met {d(c["wp4"][1])}. Evaluatie in de week van {d(c["wp5_start"])}.', 'Zeg toe dat de one-pager vandaag naar Mees gaat.'],
-         f'Zullen we {d(C.START_VERVOLG)} vastzetten met {o6["beldagen"]} of {o8["beldagen"]} beldagen?', f'Start {d(C.START_VERVOLG)}, zonder gat.'),
+         f'Met hoeveel beldagen zetten we {d(C.START_VERVOLG)} vast?', f'Start {d(C.START_VERVOLG)}, zonder gat.'),
     ]
     blocks = ''
     for n, t, kern, zeg, vraag, nadruk in N:
@@ -640,7 +615,7 @@ p { margin:2px 0 0; font-size:9.4pt; } .q { font-style:italic; } .em { font-weig
 # --- one-pager -------------------------------------------------------------------
 def onepager(c):
     o4, o6, o8 = c['opties']
-    rij = lambda o: f'''<div class="op{' rec' if o['aanbevolen'] else ''}">{'<span class="tag">Aanbevolen</span>' if o['aanbevolen'] else ''}
+    rij = lambda o: f'''<div class="op">
 <div class="ot">{o['beldagen']} beldagen</div><div class="opr">{euro(o['prijs'])}</div><div class="os">per werkperiode van 4 weken</div>
 <div class="ok">{o['kpi']} afspraken</div><div class="os">{euro(o['per_afspraak'])} per afspraak<br>{euro(o['per_beldag'])} per beldag</div></div>'''
     css = CSS_BASE + """
@@ -668,7 +643,7 @@ p { margin:0; } ul { margin:0; padding-left:15px; } li { margin-bottom:3px; }
 <div class="lbl" style="margin-bottom:6px">De pilot in het kort</div>
 <div class="row">
 <div class="card col"><div class="big">{c['n_leads']}</div><div class="os">leads en afspraken, doel {c['doel_totaal']}</div></div>
-<div class="card col"><div class="big">{len(c['met_resultaat'])} van {len(c['gehouden'])}</div><div class="os">gehouden gesprekken met resultaat</div></div>
+<div class="card col"><div class="big">{len(c['gehouden'])}</div><div class="os">gesprekken al geweest</div></div>
 <div class="card col"><div class="big">{len(c['gepland'])}</div><div class="os">gesprekken en contactmomenten gepland tot en met {d(c['gepland'][-1]['gesprek_d'])}</div></div>
 <div class="card col"><div class="big">{len(c['per_wp']['WP3'])}</div><div class="os">leads en afspraken in WP3, boven het doel van {C.PILOT['doel_wp']}</div></div>
 </div>

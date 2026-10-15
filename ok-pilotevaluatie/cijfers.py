@@ -14,7 +14,7 @@ import pandas as pd
 import warnings; warnings.filterwarnings('ignore')
 
 HERE = Path(__file__).parent
-PEILDATUM = dt.date(2026, 10, 14)
+PEILDATUM = dt.date(2026, 10, 15)   # dag van de evaluatie; de exports zijn van 14-10-2026
 BELSTART = dt.date(2026, 8, 3)
 UITSLUITEN = {'TC Productions'}          # was al bekend bij OK
 
@@ -27,20 +27,36 @@ PILOT = dict(prijs_wp=2000, doel_wp=6, wps=3)
 
 # Vervolg: KPI = 2 afspraken per beldag x aantal beldagen
 KPI_PER_BELDAG = 2
-OPTIES = [  # (beldagen, prijs per beldag, aanbevolen): staffel 600 / 575 / 550
+OPTIES = [  # (beldagen, prijs per beldag, aanbevolen): staffel 600 / 575 / 550, geen advies: OK kiest zelf
     (4, 600, False),
-    (6, 575, True),
+    (6, 575, False),
     (8, 550, False),
 ]
 START_VERVOLG = dt.date(2026, 10, 26)
 UREN_PER_BELDAG = 8
 
 # Status in het portaal die betekent: gesprek heeft plaatsgevonden
-UITKOMST = {
-    'Offerte maken':   ('Offerte in de maak', True),
-    'Vervolg gepland': ('Vervolg gepland', True),
-    'Gekwalificeerd':  ('Gesprek gehouden', False),   # alle leads zijn gekwalificeerd, dus geen uitkomst op zich
-    'Geen match':      ('Geen match', False),
+# Portaalstatussen die betekenen: het gesprek heeft plaatsgevonden. Wat OK daarna doet
+# (offerte, vervolg) is aan OK; in het deck heet elk gehouden gesprek 'Gesprek geweest'.
+GEHOUDEN = {'Offerte maken', 'Vervolg gepland', 'Gekwalificeerd', 'Afspraak geweest', 'Geen match'}
+
+# Het concrete vraagstuk per lead, uit de belnotities (zonder persoonsnamen)
+KANSEN = {
+    'Zorgwerk': 'Nam na ons contact zelf contact op met OK en wilde kennismaken.',
+    'Rotterdam Leisure Group': 'Hoe bezoekers van één activiteit ook de andere 15 activiteiten van de groep ontdekken.',
+    'ING': 'Wil online sparren over sponsorships en events.',
+    'Danieli Corus': 'Concreet vraagstuk rond hun corporate presentaties, waar ze handen tekort komen.',
+    'BNU Groep': 'Wilde horen hoe OK naar marketing en communicatie kijkt en wat dat voor BNU betekent.',
+    'AAme': 'Belde zelf terug en wilde kennismaken.',
+    "Doen'r": 'Kennismaking ingepland na afstemming per mail.',
+    'Moyee Coffee Nederland': 'Positionering rond het FairChain-verhaal achter de koffie.',
+    'IV': 'Employer branding: hun brand marketeer wil kennismaken.',
+    'Hunebedcentrum': 'Een blik van buiten op hun communicatie, en een ingang in de museale wereld.',
+    'Aluwdoors': 'Een merk dat voor particulieren, zakelijke klanten en nieuwe collega’s tegelijk moet werken.',
+    'Hotel Specials': 'Branding, op locatie in Haarlem. Bookerzzz zit erachter, dus mogelijk meer merken.',
+    'Safecourt': 'Groeiend merk met een volle campagnekalender, in 2027 behoefte aan extra creatieve ondersteuning.',
+    'Focus Engineering': 'Wil de marketing vanaf Q2 uitbesteden. Gesprek in maart over campagnes.',
+    'Randstad Groep': 'Veel campagnes en openstaande vacatures, wil weten wat OK voor hen kan betekenen.',
 }
 SPOKEN = [100, 101, 200, 201, 202, 500]
 
@@ -80,7 +96,7 @@ def load_portaal(path=HERE / 'data' / 'portaal.csv'):
             r['gesprek_d'] = r['gesprek_dt'].date()
             r['wp'] = wp_van(r['aangemaakt'])
             r['telt'] = r['bedrijf'] not in UITSLUITEN
-            r['gehouden'] = r['status'] in UITKOMST
+            r['gehouden'] = r['status'] in GEHOUDEN
             r['gepland'] = (not r['gehouden']) and r['gesprek_d'] > PEILDATUM
             rows.append(r)
     return rows
@@ -131,7 +147,6 @@ def compute(belexport, stats):
     # Leads per werkperiode, op aanmaakdatum
     per_wp = {n: [r for r in tellen if r['wp'] == n] for n, _, _ in WP}
     gehouden = [r for r in tellen if r['gehouden']]
-    met_resultaat = [r for r in gehouden if UITKOMST[r['status']][1]]
     gepland = sorted([r for r in tellen if r['gepland']], key=lambda r: r['gesprek_dt'])
     open_lead = [r for r in tellen if not r['gehouden'] and not r['gepland']]
 
@@ -172,7 +187,7 @@ def compute(belexport, stats):
     c = dict(
         peildatum=PEILDATUM,
         portaal=P, tellen=tellen, per_wp=per_wp,
-        gehouden=gehouden, met_resultaat=met_resultaat,
+        gehouden=gehouden,
         gepland=gepland, open_lead=open_lead, moyee=moyee,
         n_leads=len(tellen),
         n_afspraak=sum(r['type'] == 'Afspraak' for r in tellen),
@@ -210,7 +225,8 @@ def compute(belexport, stats):
     # belexport-hits (zonder TC) + Moyee (niet in Belstat) = portaal
     assert len(hits_bel) + 1 == c['n_leads'], len(hits_bel)
     assert S['hits'] == len(hits_bel) + len(UITSLUITEN)
-    assert len(gehouden) == 5 and len(met_resultaat) == 3
+    assert len(gehouden) == 5
+    assert all(r['bedrijf'] in KANSEN for r in tellen), [r['bedrijf'] for r in tellen if r['bedrijf'] not in KANSEN]
     assert len(gepland) == 9
     assert sum(len(v) for v in per_wp.values()) == c['n_leads']
     assert len(gehouden) + len(gepland) + len(open_lead) == c['n_leads']
