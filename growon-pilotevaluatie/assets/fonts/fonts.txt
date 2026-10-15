@@ -1,0 +1,9 @@
+Instrument Serif;italic;400;InstrumentSerif-400i.ttf
+Instrument Serif;normal;400;InstrumentSerif-400.ttf
+Inter Tight;normal;500;InterTight-500.ttf
+Inter Tight;normal;700;InterTight-700.ttf
+Inter Tight;normal;800;InterTight-800.ttf
+Inter Tight;normal;900;InterTight-900.ttf
+Open Sans;normal;400;OpenSans-400.ttf
+Open Sans;normal;600;OpenSans-600.ttf
+Open Sans;normal;700;OpenSans-700.ttf
