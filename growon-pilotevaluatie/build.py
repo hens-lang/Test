@@ -270,9 +270,9 @@ def slides(c):
         kleur = 'color:#38b6ff;' if hl else ''
         return f'<div style="flex:1;{pad};{rand}"><div class="lbl">{l}</div><div style="font-size:29px;font-weight:800;letter-spacing:-.5px;white-space:nowrap;{kleur}">{v}</div><div class="sub">{sub}</div></div>'
     strip = (feit('Belstart', d(C.BELSTART), 'in de naam van GrowOn', True) + feit('Looptijd', '3 x 4 weken', 'drie werkperiodes')
-             + feit('Investering', euro(c['pilot_totaal']), f'{euro(C.PILOT["prijs_wp"])} per werkperiode')
+             + feit('Investering', euro(c['pilot_totaal']), f'3 x {euro(C.PILOT["prijs_wp"])} plus {euro(C.PILOT["opstart"])} opstart')
              + feit('Doel', f'{c["doel_totaal"]} leads', f'{C.PILOT["doel_wp"]} per werkperiode')
-             + feit('Per lead', euro(C.PILOT['per_lead']), f'plus {C.PILOT["succesfee"].split(" ")[0]} succesfee', hl=True))
+             + feit('Per lead', euro(c['pilot_per_lead_incl']), f'inclusief opstart, plus {C.PILOT["succesfee"].split(" ")[0]} succesfee', hl=True))
     t0, t1 = C.WP[0][1], C.WP[-1][2]
     span = (t1 - t0).days + 1
     seg = ''
@@ -437,11 +437,11 @@ def slides(c):
 <div style="font-size:40px;font-weight:800;margin-top:14px;line-height:1">{euro(prijs)}</div><div class="sub">per 4 weken</div>
 <div style="font-size:19px;font-weight:700;margin-top:12px">{kpi} {eenheid}</div>
 <div style="font-size:15px;margin-top:10px;padding-top:10px;border-top:1px solid #ddd3bd"><b>{euro(per)}</b> per {'afspraak' if eenheid == 'afspraken' else 'lead'}</div></div>'''
-    cards = optie('Pilot', C.PILOT['prijs_wp'], C.PILOT['doel_wp'], C.PILOT['per_lead'], 'ter vergelijking', 'leads', 'pilot').replace('class="card pilot"', 'class="card" style="opacity:.6"')
+    cards = optie('Pilot', C.PILOT['prijs_wp'], C.PILOT['doel_wp'], c['pilot_per_lead_incl'], f'plus {euro(C.PILOT["opstart"])} opstart', 'leads', 'pilot').replace('class="card pilot"', 'class="card" style="opacity:.6"')
     for o in c['opties']:
         cards += optie(f'{o["beldagen"]} beldagen', o['prijs'], o['kpi'], o['per_afspraak'], f'{euro(o["per_beldag"])} per beldag')
     body = f'''<div class="row" style="gap:16px;margin-top:6px">{cards}</div>
-<div class="card" style="margin-top:22px;padding:16px 24px;font-size:17px;font-weight:600;line-height:1.45">Per afspraak betalen jullie meer dan de {euro(C.PILOT['per_lead'])} uit de pilot. Daar staat tegenover: geen leads zonder match meer, elke afspraak voldoet aan de vaste definitie, en anders geldt de garantie.</div>'''
+<div class="card" style="margin-top:22px;padding:16px 24px;font-size:17px;font-weight:600;line-height:1.45">Inclusief de opstartkosten kostte een lead in de pilot {euro(c['pilot_per_lead_incl'])}. In het vervolg zijn er geen opstartkosten, voldoet elke afspraak aan de vaste definitie en geldt de garantie.</div>'''
     S.append(slide(13, 'De opties', 'Meer afspraken per werkperiode, *en elke afspraak telt.*', body))
 
     # 14 Garantie
@@ -539,9 +539,9 @@ def notities(c):
          'Is er iets wat jullie vandaag zeker besproken willen hebben?', '60 minuten, het vervolg krijgt de meeste tijd.'),
         (3, 'De afspraak', 'Dit spraken we af in juli.',
          [f'Belstart 03-08-2026, drie werkperiodes van 4 weken, {C.PILOT["doel_wp"]} gekwalificeerde leads per periode.',
-          f'{euro(C.PILOT["per_lead"])} per lead, dus {euro(C.PILOT["prijs_wp"])} per werkperiode en {euro(c["pilot_totaal"])} in totaal. Plus {C.PILOT["succesfee"]} op klanten die hieruit komen.',
+          f'{euro(C.PILOT["per_lead"])} per lead, dus {euro(C.PILOT["prijs_wp"])} per werkperiode, plus {euro(C.PILOT["opstart"])} opstartkosten. Samen {euro(c["pilot_totaal"])}, dat is {euro(c["pilot_per_lead_incl"])} per lead. Plus {C.PILOT["succesfee"]} op klanten die hieruit komen.',
           'Jaap vroeg toen zelf om goed te kaderen waar een lead aan moet voldoen. Daar komen we op terug bij de kwaliteit.'],
-         None, f'{euro(C.PILOT["per_lead"])} per lead.'),
+         None, f'{euro(c["pilot_totaal"])} totaal, {euro(c["pilot_per_lead_incl"])} per lead inclusief opstart.'),
         (4, 'In cijfers', 'Het doel is gehaald.',
          [f'{num(c["pogingen"])} contactpogingen, {num(c["calls"])} keer iemand aan de lijn, {num(c["gesproken"])} unieke bedrijven gesproken.',
           f'{c["n_leads"]} leads en afspraken: het doel van {c["doel_totaal"]} is gehaald, met nog anderhalve week te gaan.',
@@ -591,8 +591,8 @@ def notities(c):
           f'Gemiddeld {str(round(c["beldagen_per_lead"],2)).replace(".", ",")} lead per beldag, inclusief de opstart en de leads zonder match. {K} is dus een stap omhoog: dat vraagt de scherpere lijsten en de warme contacten van GrowOn.'],
          None, f'{K} per beldag.'),
         (13, 'De opties', 'Duurder per afspraak, beter per afspraak.',
-         [f'Pilot {euro(C.PILOT["per_lead"])} per lead. Nu {euro(o4["per_afspraak"])}, {euro(o6["per_afspraak"])} of {euro(o8["per_afspraak"])} per afspraak.',
-          'Zeg het zelf voordat Jaap het zegt: het wordt per afspraak duurder. Daar staat tegenover: geen leads zonder match meer, een vaste definitie en de garantie.',
+         [f'Pilot {euro(c["pilot_per_lead_incl"])} per lead inclusief de {euro(C.PILOT["opstart"])} opstartkosten. Nu {euro(o4["per_afspraak"])}, {euro(o6["per_afspraak"])} of {euro(o8["per_afspraak"])} per afspraak, zonder opstartkosten.',
+          'Bij 8 beldagen is het per afspraak zelfs goedkoper dan de pilot. Bij 4 en 6 beldagen iets duurder: zeg dat zelf voordat Jaap het zegt. Daar staat tegenover: geen leads zonder match meer, een vaste definitie en de garantie.',
           'Rekenvoorbeeld voor jezelf: één klant met een retainer levert GrowOn veel meer op dan het verschil per afspraak.',
           'Geen advies geven. Laat de keuze bij GrowOn.'],
          'Hoeveel nieuwe gesprekken per maand kan Jaap goed opvolgen: 10, 15 of 20?',
@@ -672,7 +672,7 @@ p { margin:0; } ul { margin:0; padding-left:15px; } li { margin-bottom:3px; }
 
 <div class="lbl" style="margin:12px 0 12px">Het voorstel: hele beldagen per werkperiode van 4 weken</div>
 <div class="row" style="margin-top:4px">{''.join(rij(o) for o in c['opties'])}</div>
-<p class="os" style="margin:-4px 0 14px">Ter vergelijking, de pilot: {euro(C.PILOT['prijs_wp'])} per werkperiode voor {C.PILOT['doel_wp']} leads, {euro(C.PILOT['per_lead'])} per lead. Per afspraak betaalt GrowOn meer, en daar staat tegenover: geen leads zonder match meer en elke afspraak voldoet aan de vaste definitie.</p>
+<p class="os" style="margin:-4px 0 14px">Ter vergelijking, de pilot: {euro(c['pilot_totaal'])} voor {c['doel_totaal']} leads inclusief {euro(C.PILOT['opstart'])} opstartkosten, dus {euro(c['pilot_per_lead_incl'])} per lead. In het vervolg geen opstartkosten, geen leads zonder match en elke afspraak voldoet aan de vaste definitie.</p>
 
 <div class="row">
 <div class="card col"><div class="lbl">KPI</div><p><b>{K} gekwalificeerde afspraken per beldag</b>, dus {o4['kpi']}, {o6['kpi']} of {o8['kpi']} per werkperiode. 1 beldag is {C.UREN_PER_BELDAG} uur bellen voor GrowOn.</p></div>

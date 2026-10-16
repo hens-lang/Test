@@ -27,7 +27,8 @@ WP = [  # (naam, start, eind)
     ('WP2', dt.date(2026, 8, 31), dt.date(2026, 9, 27)),
     ('WP3', dt.date(2026, 9, 28), dt.date(2026, 10, 25)),
 ]
-PILOT = dict(prijs_wp=1600, doel_wp=8, wps=3, per_lead=200, succesfee='5% over de eerste 12 maanden')
+PILOT = dict(prijs_wp=1600, doel_wp=8, wps=3, per_lead=200, opstart=500,   # opstartkosten: factuur 2026-0052, betaald
+             succesfee='5% over de eerste 12 maanden')
 
 # Vervolg: KPI = 2,5 afspraken per beldag x aantal beldagen (keuze Hens, 15-10-2026)
 KPI_PER_BELDAG = 2.5
@@ -205,7 +206,7 @@ def compute(belexport, stats):
         n_afspraak=sum(r['type'] == 'Afspraak' for r in tellen),
         n_lead=sum(r['type'] == 'Lead' for r in tellen),
         doel_totaal=PILOT['doel_wp'] * PILOT['wps'],
-        pilot_totaal=PILOT['prijs_wp'] * PILOT['wps'],
+        pilot_totaal=PILOT['prijs_wp'] * PILOT['wps'] + PILOT['opstart'],
         pilot_per_afspraak=PILOT['prijs_wp'] / PILOT['doel_wp'],
         pogingen=S['pogingen'], calls=S['calls'],
         bereik=pct(S['calls'], S['pogingen']),
@@ -240,6 +241,8 @@ def compute(belexport, stats):
     assert [o['kpi'] for o in c['opties']] == [10, 15, 20]
     assert [o['prijs'] for o in c['opties']] == [2400, 3450, 4400]
     assert [o['per_afspraak'] for o in c['opties']] == [240, 230, 220]
+    assert c['pilot_totaal'] == 5300
+    c['pilot_per_lead_incl'] = c['pilot_totaal'] / c['doel_totaal']   # 220,83
     return c
 
 
