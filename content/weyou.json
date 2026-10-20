@@ -1,0 +1,454 @@
+{
+  "meta": {
+    "title": "LINK. pilotvoorstel WeYou",
+    "footerLeft": "LINK. · Pilot techniek · WeYou",
+    "webTitle": "LINK. x WeYou · pilot techniek",
+    "slug": "weyou",
+    "logoText": "LINK",
+    "partner": {
+      "name": "WeYou"
+    }
+  },
+  "slides": [
+    {
+      "id": "cover",
+      "type": "cover",
+      "theme": "dark",
+      "eyebrow": "Voor Nico Houwaard · WeYou · oktober 2026",
+      "title": [
+        {
+          "t": "Jullie kennen de techniek. Wij zorgen dat je "
+        },
+        {
+          "t": "aan tafel komt",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "sub": "Twaalf weken bellen bij technische bedrijven, tien gekwalificeerde afspraken, één vaste prijs. Dit voorstel gaat over het bewijs, niet over een belofte."
+    },
+    {
+      "id": "wie",
+      "type": "about",
+      "theme": "light",
+      "eyebrow": "Wie wij zijn",
+      "title": [
+        {
+          "t": "Bellen is een "
+        },
+        {
+          "t": "vak",
+          "accent": true
+        },
+        {
+          "t": ". Wij doen niets anders."
+        }
+      ],
+      "paragraphs": [
+        "LINK. is de vaste acquisitiepartner van B2B-bedrijven. Wij bellen dagelijks namens onze klanten en leveren gekwalificeerde afspraken op. Geen lijst met namen, maar een gesprek in jullie agenda met iemand die weet waarom hij aan tafel zit.",
+        "Wij werken niet met afgelezen belscripts. We leggen samen de USP's vast en voeren daarmee een echt gesprek. Jullie lezen ze door voordat we de markt in gaan, zodat er niets wordt gezegd wat jullie zelf niet zouden zeggen."
+      ],
+      "stats": [
+        {
+          "value": "12",
+          "label": "weken pilot",
+          "detail": "Van kick-off tot evaluatie, met elke week een rapportage."
+        },
+        {
+          "value": "10",
+          "label": "gekwalificeerde afspraken",
+          "detail": "Het aantal waar we ons aan verbinden, voor één vaste prijs."
+        }
+      ]
+    },
+    {
+      "id": "markt",
+      "type": "figures",
+      "theme": "light",
+      "eyebrow": "Het speelveld",
+      "title": [
+        {
+          "t": "Veertienduizend bedrijven, en wij bellen ze "
+        },
+        {
+          "t": "één voor één",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "value": "14.000+",
+          "unit": "technische bedrijven",
+          "label": "In Nederland, vanaf elf medewerkers. Maakindustrie, bouw, installatietechniek en ingenieursbureaus."
+        },
+        {
+          "value": "2.500+",
+          "unit": "daarvan vanaf vijftig fte",
+          "label": "Groot genoeg voor een eigen wervingsbudget, klein genoeg om de directeur zelf aan de lijn te krijgen."
+        },
+        {
+          "value": "150",
+          "unit": "contactpogingen per beldag",
+          "label": "Dat is wat één beller op een dag van zes uur daadwerkelijk doet. Geteld, niet geschat."
+        },
+        {
+          "value": "10",
+          "unit": "gekwalificeerde afspraken",
+          "label": "Wat daar in twaalf weken uit komt, en waar we ons in deze pilot aan verbinden.",
+          "highlight": true
+        }
+      ],
+      "closing": "De aantallen komen uit onze eigen datatool, op bedrijven met een telefoonnummer en een website. Bij de kick-off snijden we dat terug naar de bedrijven die jullie echt willen spreken."
+    },
+    {
+      "id": "waarom",
+      "type": "services",
+      "theme": "light",
+      "eyebrow": "Waarom koud bellen past bij jullie verhaal",
+      "title": [
+        {
+          "t": "Jullie verhaal is er een om te "
+        },
+        {
+          "t": "vertellen",
+          "accent": true
+        },
+        {
+          "t": ", niet om te adverteren."
+        }
+      ],
+      "cards": [
+        {
+          "icon": "spark",
+          "title": "Het begint met een vraag",
+          "text": "Een werkgever weet wel dat zijn vacature niet gevuld raakt, maar niet waarom. Dat is geen onderwerp voor een advertentie, dat is een gesprek."
+        },
+        {
+          "icon": "target",
+          "title": "De pijn is concreet",
+          "text": "Een openstaande vacature in de techniek kost elke maand geld. Dat maakt het makkelijk om aan de telefoon scherp te worden."
+        },
+        {
+          "icon": "building",
+          "title": "De beslisser is bereikbaar",
+          "text": "Bij technische bedrijven van deze omvang zit de directeur of de HR-verantwoordelijke gewoon op kantoor en neemt hij de telefoon op."
+        },
+        {
+          "icon": "usercheck",
+          "title": "Jullie kennen de sector al",
+          "text": "Dat is het verschil tussen koud en lauw bellen. We bellen met kennis van zaken, niet met een algemeen praatje.",
+          "highlight": true
+        }
+      ]
+    },
+    {
+      "id": "wat",
+      "type": "services",
+      "theme": "light",
+      "eyebrow": "Wat wij doen",
+      "title": [
+        {
+          "t": "Eén team dat belt, opvolgt en "
+        },
+        {
+          "t": "afspraken levert",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "icon": "phone",
+          "title": "Cold calling",
+          "text": "Ervaren B2B-bellers die het gesprek voeren met de directeur of de HR-verantwoordelijke. Geen afgelezen belscript, maar vastgelegde USP's en een echt gesprek."
+        },
+        {
+          "icon": "users",
+          "title": "Bellijst op maat",
+          "text": "Wij bouwen de lijst op jullie ideale klant: branche, grootte, regio en functie. Bestaande relaties en uitsluitingen gaan er vooraf uit."
+        },
+        {
+          "icon": "repeat",
+          "title": "Opvolging",
+          "text": "Terugbelafspraken komen echt terug in de lijst. Wie meer wil weten krijgt het dezelfde dag, en wordt binnen drie werkdagen nagebeld."
+        },
+        {
+          "icon": "calendar",
+          "title": "Gekwalificeerde afspraken",
+          "text": "Het resultaat waar we op sturen. Een afspraak staat pas als het bedrijf past en de juiste persoon tegenover jullie zit.",
+          "highlight": true
+        }
+      ]
+    },
+    {
+      "id": "hoe",
+      "type": "process",
+      "theme": "dark",
+      "eyebrow": "Hoe de pilot loopt",
+      "title": [
+        {
+          "t": "Twaalf weken, van bellijst naar "
+        },
+        {
+          "t": "afspraken",
+          "accent": true
+        },
+        {
+          "t": " in de agenda."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Kick-off",
+          "text": "Eén uur. We nemen het verhaal door, scherpen de doelgroep aan en leggen vast wanneer een afspraak meetelt."
+        },
+        {
+          "title": "Lijst en USP's",
+          "text": "Wij bouwen de bellijst met technische bedrijven en leggen de USP's vast. Geen belscript, wel een scherp verhaal. Jullie geven akkoord."
+        },
+        {
+          "title": "Bellen",
+          "text": "We bellen op de dagen en dagdelen die in onze data het beste werken voor de techniek, namens WeYou en met een nummer op jullie naam."
+        },
+        {
+          "title": "Rapportage en evaluatie",
+          "text": "Elke week een rapportage, om de week een evaluatie. Na twaalf weken weten we wat een afspraak in deze markt kost."
+        }
+      ],
+      "deliverables": {
+        "title": "Wat jullie ontvangen",
+        "items": [
+          "Afspraak in de agenda met bedrijfsinfo, contactpersoon en aanleiding",
+          "Bevestiging naar de prospect uit jullie naam, dezelfde dag",
+          "Wekelijks rapport in PDF plus alle gespreksnotities",
+          "De volledige bellijst met status, ook na afloop"
+        ]
+      }
+    },
+    {
+      "id": "kwalificatie",
+      "type": "qualification",
+      "theme": "light",
+      "eyebrow": "Wat wij een gekwalificeerde afspraak noemen",
+      "title": [
+        {
+          "t": "Geen afspraak om de afspraak. "
+        },
+        {
+          "t": "Drie eisen",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "icon": "building",
+          "title": "Fit",
+          "text": "Een technisch bedrijf dat groot genoeg is om structureel te werven en dat binnen de doelgroep valt die we bij de kick-off vastleggen."
+        },
+        {
+          "icon": "spark",
+          "title": "Aanleiding",
+          "text": "Er is iets concreets: openstaande vacatures, verloop dat pijn doet, of werving die al maanden niets oplevert."
+        },
+        {
+          "icon": "usercheck",
+          "title": "Beslisser",
+          "text": "De directeur of degene die over personeel en werving gaat. Bij bedrijven van deze omvang is dat vaak dezelfde persoon."
+        }
+      ],
+      "closing": "Bij de kick-off leggen we deze drie samen vast. Een afspraak die er niet aan voldoet, telt niet mee."
+    },
+    {
+      "id": "pilot",
+      "type": "offer",
+      "theme": "dark",
+      "eyebrow": "De pilot",
+      "title": [
+        {
+          "t": "Eén vaste prijs, "
+        },
+        {
+          "t": "alles inbegrepen",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "cards": [
+        {
+          "title": "Twaalf weken bellen",
+          "text": "Van kick-off tot evaluatie. We bellen op de dagen en dagdelen die in onze data het beste werken voor deze doelgroep."
+        },
+        {
+          "title": "Tien gekwalificeerde afspraken",
+          "text": "Daar verbinden we ons aan. Halen we het niet binnen de twaalf weken, dan bellen we door tot ze er staan."
+        },
+        {
+          "title": "Alles inbegrepen",
+          "text": "Kick-off, USP's, bellijst, belsysteem, telefoonnummer en de wekelijkse rapportage. Geen opstartkosten en geen kosten per afspraak."
+        },
+        {
+          "title": "Daarna weten we wat het kost",
+          "text": "Na twaalf weken ligt er een getal: wat kost één gekwalificeerde afspraak in de techniek. Daarmee kun je rekenen in plaats van gokken.",
+          "highlight": true
+        }
+      ],
+      "bar": {
+        "label": "De pilot, twaalf weken",
+        "price": "€ 4.950",
+        "note": "excl. btw, voor de hele pilot",
+        "items": [
+          "Tien gekwalificeerde afspraken",
+          "Kick-off, USP's en bellijst",
+          "Belsysteem en nummer op jullie naam",
+          "Wekelijkse rapportage",
+          "Geen opstartkosten",
+          "Geen kosten per afspraak"
+        ]
+      }
+    },
+    {
+      "id": "nodig",
+      "type": "needs",
+      "theme": "light",
+      "eyebrow": "Wat we van WeYou nodig hebben",
+      "title": [
+        {
+          "t": "Eén uur "
+        },
+        {
+          "t": "kick-off",
+          "accent": true
+        },
+        {
+          "t": ", daarna draaien wij."
+        }
+      ],
+      "cards": [
+        {
+          "icon": "users",
+          "title": "Kick-off",
+          "text": "Eén uur van jullie om het verhaal en de doelgroep scherp te krijgen. Daarna kunnen wij aan de slag.",
+          "highlight": true
+        },
+        {
+          "icon": "listx",
+          "title": "Uitsluitlijst",
+          "text": "De bedrijven die jullie zelf al benaderen of al als relatie hebben. Die halen we er vooraf uit."
+        },
+        {
+          "icon": "check",
+          "title": "Akkoord op de USP's",
+          "text": "Wij leggen ze vast, jullie lezen ze door. Zo staat er niets in dat jullie zelf niet zouden zeggen."
+        },
+        {
+          "icon": "calendar",
+          "title": "Agenda",
+          "text": "Vaste momenten waarop wij afspraken mogen inplannen. Hoe ruimer die zijn, hoe meer er staat."
+        }
+      ]
+    },
+    {
+      "id": "spelregels",
+      "type": "rules",
+      "theme": "light",
+      "eyebrow": "Spelregels",
+      "title": [
+        {
+          "t": "Transparant en zonder "
+        },
+        {
+          "t": "kleine lettertjes",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "rules": [
+        {
+          "title": "Eén vaste prijs",
+          "text": "€ 4.950 excl. btw voor de hele pilot van twaalf weken."
+        },
+        {
+          "title": "Tien afspraken",
+          "text": "Halen we dat niet binnen twaalf weken, dan bellen we door tot ze er staan."
+        },
+        {
+          "title": "Geen opstartkosten",
+          "text": "Kick-off, USP's, lijst, belsysteem en nummer zitten in de prijs."
+        },
+        {
+          "title": "Geen kosten per afspraak",
+          "text": "Geen nacalculatie en geen rekening achteraf."
+        },
+        {
+          "title": "Kwalificatie vooraf vastgelegd",
+          "text": "Bij de kick-off bepalen we samen wanneer een afspraak meetelt."
+        },
+        {
+          "title": "Bestaande relaties blijven van jullie",
+          "text": "Uitsluitlijst vooraf, die bedrijven benaderen wij niet."
+        },
+        {
+          "title": "Niet-exclusief",
+          "text": "Jullie zitten nergens aan vast en houden alle vrijheid."
+        },
+        {
+          "title": "Gegevens veilig",
+          "text": "Vastgelegd in de verwerkersovereenkomst die er al ligt."
+        }
+      ]
+    },
+    {
+      "id": "volgende",
+      "type": "next",
+      "theme": "dark",
+      "eyebrow": "Volgende stap",
+      "title": [
+        {
+          "t": "Akkoord? Dan staat de kick-off er "
+        },
+        {
+          "t": "binnen een week",
+          "accent": true
+        },
+        {
+          "t": "."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Akkoord",
+          "text": "Nico geeft akkoord op dit voorstel."
+        },
+        {
+          "title": "Kick-off",
+          "text": "Eén uur bij ons of bij jullie, plus de uitsluitlijst."
+        },
+        {
+          "title": "Bellen",
+          "text": "Een week later staat de lijst klaar en gaan we de markt in."
+        }
+      ],
+      "contact": {
+        "name": "Hens Boer",
+        "role": "Eigenaar LINK.",
+        "email": "hens@linkgrp.nl",
+        "site": "linkgrp.nl",
+        "address": "Flemingweg 8, Alphen aan den Rijn"
+      }
+    }
+  ]
+}
